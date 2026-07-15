@@ -115,17 +115,30 @@ export function SectionRenderer({ sections }: { sections: PageSection[] }) {
             );
           case "sectionProductSlider":
             return <ProductSliderSection key={section._key} section={section} />;
-          case "sectionCarousel":
+          case "sectionCarousel": {
+            const items = (section.items ?? []).map((item) =>
+              typeof item === "string"
+                ? {
+                    title: item,
+                    description: section.description,
+                    image: img(section.image, 1400),
+                  }
+                : {
+                    _key: item._key,
+                    title: item.title,
+                    description: item.description ?? section.description,
+                    image: img(item.image, 1400) ?? img(section.image, 1400),
+                  },
+            );
             return (
               <Carousel
                 key={section._key}
                 mode={section.colorMode}
                 eyebrow={section.eyebrow}
-                items={section.items}
-                description={section.description}
-                image={img(section.image, 1200)}
+                items={items.length ? items : undefined}
               />
             );
+          }
           case "sectionFiftyFifty":
             return (
               <FiftyFifty

@@ -79,10 +79,18 @@ export interface SectionProductSlider extends SectionBase {
   products?: Array<SliderProduct | null>;
 }
 
+export interface CarouselItem {
+  _key?: string;
+  title?: string;
+  description?: string;
+  image?: SanityImageSource;
+}
+
 export interface SectionCarousel extends SectionBase {
   _type: "sectionCarousel";
   eyebrow?: string;
-  items?: string[];
+  /* strings are legacy data from before items carried image/description */
+  items?: Array<string | CarouselItem>;
   description?: string;
   image?: SanityImageSource;
 }

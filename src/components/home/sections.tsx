@@ -273,49 +273,10 @@ export function ProductSlider({
   );
 }
 
-/* ---------- Carousel ---------- */
+/* ---------- Carousel (client, interactive) ---------- */
 
-export interface CarouselProps {
-  mode?: Mode;
-  eyebrow?: string;
-  items?: string[];
-  description?: string;
-  image?: string;
-}
-
-export function Carousel({
-  mode = "light",
-  eyebrow = "Shop Footwear",
-  items = ["Pioneer→", "Presidio", "Osprey", "Cardinal", "Jupiter"],
-  description = "Maecenas suspendisse ultrices pellentesque et ornare dui nisl. Eget convallis lorem faucibus tortor in. Cursus feugiat feugiat a quam vestibulum dignissim sem ullamcorper.",
-  image = "/figma/media-portrait.png",
-}: CarouselProps) {
-  return (
-    <section
-      data-mode={mode}
-      className="flex w-full flex-col items-stretch justify-between bg-surface text-ink lg:flex-row"
-    >
-      <div className="flex min-w-0 flex-1 flex-col justify-between gap-12 px-8 py-12 lg:px-32 lg:py-24">
-        <div className="flex flex-col gap-8">
-          {eyebrow && <p className="label font-medium text-ink">{eyebrow}</p>}
-          <div className="flex flex-col font-display text-headline-sm">
-            {items.map((item, i) => (
-              <p key={i} className={i === 0 ? "text-ink" : "text-ink-2"}>
-                {item}
-              </p>
-            ))}
-          </div>
-        </div>
-        {description && (
-          <p className="label max-w-[30.375rem] font-medium text-ink-2">{description}</p>
-        )}
-      </div>
-      <div className="flex min-w-0 flex-1 flex-col justify-end">
-        <Media aspect="aspect-[4/5]" image={image} pill />
-      </div>
-    </section>
-  );
-}
+export { Carousel } from "@/components/home/Carousel";
+export type { CarouselProps } from "@/components/home/Carousel";
 
 /* ---------- 50/50 ---------- */
 

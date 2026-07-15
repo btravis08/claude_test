@@ -225,13 +225,34 @@ export const sectionCarousel = defineType({
     defineField({ name: "eyebrow", type: "string", initialValue: "SAMPLE BROW" }),
     defineField({
       name: "items",
-      title: "List items (first is highlighted)",
+      title: "Items",
+      description:
+        "Hovering an item on the site swaps in its image and description. First item is active by default.",
       type: "array",
-      of: [defineArrayMember({ type: "string" })],
-      initialValue: ["Lorem→", "Ipsum", "Dolor", "Sit", "Amet"],
+      of: [
+        defineArrayMember({
+          type: "object",
+          name: "carouselItem",
+          fields: [
+            defineField({ name: "title", type: "string", initialValue: "Lorem" }),
+            defineField({ name: "description", type: "text", rows: 3, initialValue: LOREM }),
+            image(),
+          ],
+          preview: { select: { title: "title", media: "image" } },
+        }),
+      ],
+      // Five pre-filled items so a new carousel arrives full
+      initialValue: async (_, { getClient }) => {
+        const img = await placeholderImage(getClient);
+        return ["Lorem", "Ipsum", "Dolor", "Sit", "Amet"].map((title) => ({
+          _type: "carouselItem",
+          _key: key(),
+          title,
+          description: LOREM,
+          ...(img ? { image: img } : {}),
+        }));
+      },
     }),
-    defineField({ name: "description", type: "text", rows: 3, initialValue: LOREM }),
-    image(),
   ],
   preview: {
     select: { title: "eyebrow", media: "image" },

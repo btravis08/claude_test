@@ -169,10 +169,15 @@ async function run() {
         _key: key(),
         colorMode: "light",
         eyebrow: "Shop Footwear",
-        items: ["Pioneer→", "Presidio", "Osprey", "Cardinal", "Jupiter"],
-        description:
-          "Maecenas suspendisse ultrices pellentesque et ornare dui nisl. Eget convallis lorem faucibus tortor in. Cursus feugiat feugiat a quam vestibulum dignissim sem ullamcorper.",
-        image: image(portrait),
+        items: ["Pioneer", "Presidio", "Osprey", "Cardinal", "Jupiter"].map(
+          (title, i) => ({
+            _type: "carouselItem",
+            _key: key(),
+            title,
+            description: `${title} — Maecenas suspendisse ultrices pellentesque et ornare dui nisl. Eget convallis lorem faucibus tortor in. Cursus feugiat a quam vestibulum dignissim sem ullamcorper.`,
+            image: image(i % 2 === 0 ? portrait : campaign),
+          }),
+        ),
       },
       {
         _type: "sectionFiftyFifty",

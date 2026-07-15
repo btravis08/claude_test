@@ -161,6 +161,7 @@ export function FullWidth({
         overlay
         pill
         position="bottom"
+        parallax
       />
       <div
         className={`absolute inset-0 flex flex-col justify-end gap-6 p-6 ${

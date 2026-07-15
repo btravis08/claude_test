@@ -56,6 +56,7 @@ function Media({
   pill = false,
   position = "center",
   hoverScale = false,
+  parallax = false,
 }: {
   aspect: string;
   image?: string;
@@ -63,10 +64,18 @@ function Media({
   pill?: boolean;
   position?: string;
   hoverScale?: boolean;
+  parallax?: boolean;
 }) {
   return (
     <div className={`relative w-full overflow-hidden rounded-xs bg-surface-2 ${aspect}`}>
-      {image && <AnimatedMedia image={image} position={position} hoverScale={hoverScale} />}
+      {image && (
+        <AnimatedMedia
+          image={image}
+          position={position}
+          hoverScale={hoverScale}
+          parallax={parallax}
+        />
+      )}
       {overlay && <div className="media-overlay" />}
       {pill && <PausePill />}
     </div>
@@ -97,7 +106,7 @@ export function Hero({
   const centered = align === "center";
   return (
     <section data-mode={mode} className="relative w-full bg-surface text-ink">
-      <Media aspect="aspect-[1/2] sm:aspect-[3/2]" image={image} overlay pill />
+      <Media aspect="aspect-[1/2] sm:aspect-[3/2]" image={image} overlay pill parallax />
       <div
         className={`absolute inset-0 flex flex-col justify-end gap-6 p-6 ${
           centered ? "items-center text-center" : "items-start"
@@ -339,6 +348,7 @@ export function FiftyFifty({ mode = "dark", panels = defaultPanels }: FiftyFifty
             image={panel.image ?? "/figma/campaign.png"}
             overlay
             hoverScale
+            parallax
           />
           <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-6">
             <p className="font-display text-title-md">{panel.title}</p>

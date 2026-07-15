@@ -350,21 +350,24 @@ export function FiftyFifty({ mode = "dark", panels = defaultPanels }: FiftyFifty
       className="grid w-full grid-cols-1 gap-y-0.5 bg-white text-ink sm:grid-cols-2"
     >
       {panels.map((panel, i) => (
-        <div key={panel._key ?? i} className="relative">
+        /* The whole panel is the link and the hover parent — hovering
+           anywhere on the image triggers the arrow's swap animation */
+        <ArrowLink
+          key={panel._key ?? i}
+          href="#"
+          aria-label={panel.title}
+          className="relative block"
+        >
           <Media aspect="aspect-[4/5]" image={panel.image ?? "/figma/campaign.png"} overlay />
           <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-6">
             <p className="font-display text-title-md">{panel.title}</p>
-            <ArrowLink
-              href="#"
-              aria-label={panel.title}
-              className="flex size-10 items-center justify-center rounded-xs bg-btn text-btn-fg"
-            >
+            <span className="flex size-10 items-center justify-center rounded-xs bg-btn text-btn-fg">
               <ArrowSwap dx={1} dy={-1}>
                 <ArrowUpRight />
               </ArrowSwap>
-            </ArrowLink>
+            </span>
           </div>
-        </div>
+        </ArrowLink>
       ))}
     </section>
   );

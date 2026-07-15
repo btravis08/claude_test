@@ -1,9 +1,25 @@
 "use client";
 
 import { motion } from "motion/react";
+import type { Variants } from "motion/react";
 import { useState } from "react";
 
 import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
+
+/* Swatches stagger-fade up, right to left, when the card is hovered */
+const swatchVariants: Variants = {
+  rest: { opacity: 0, y: 8, transition: { duration: 0.15 } },
+  hover: (order: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.3, ease: [...MEDIA_EASE], delay: order * 0.06 },
+  }),
+};
+
+const extraLabelVariants: Variants = {
+  rest: { opacity: 1, transition: { duration: 0.2, delay: 0.15 } },
+  hover: { opacity: 0, transition: { duration: 0.15 } },
+};
 
 export interface ProductVariantData {
   name?: string;
@@ -46,8 +62,11 @@ export function ProductCard({ product }: { product: ProductCardData }) {
       : product.colorCount;
 
   return (
-    <a
+    <motion.a
       href="#"
+      initial="rest"
+      whileHover="hover"
+      animate="rest"
       className="group flex w-full flex-col justify-center gap-[1.125rem] border-r border-line bg-surface px-6 pb-16 pt-6"
     >
       <motion.div
@@ -86,21 +105,19 @@ export function ProductCard({ product }: { product: ProductCardData }) {
           <p>{colorLabel}</p>
           <span className="relative flex items-center justify-end">
             {extraLabel && (
-              <p
-                className={`transition-opacity duration-200 ${
-                  variants.length > 1 ? "group-hover:opacity-0" : ""
-                }`}
-              >
+              <motion.p variants={variants.length > 1 ? extraLabelVariants : undefined}>
                 {extraLabel}
-              </p>
+              </motion.p>
             )}
             {variants.length > 1 && (
-              <span className="absolute right-0 flex items-center gap-1.5 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+              <span className="pointer-events-none absolute right-0 flex items-center gap-1.5 group-hover:pointer-events-auto">
                 {variants.map((variant, i) => (
-                  <button
+                  <motion.button
                     key={i}
                     type="button"
                     aria-label={variant.name ?? `Variant ${i + 1}`}
+                    custom={variants.length - 1 - i}
+                    variants={swatchVariants}
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
@@ -117,6 +134,6 @@ export function ProductCard({ product }: { product: ProductCardData }) {
           </span>
         </div>
       </div>
-    </a>
+    </motion.a>
   );
 }

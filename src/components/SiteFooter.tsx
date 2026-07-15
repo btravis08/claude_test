@@ -25,7 +25,7 @@ export function SiteFooter() {
         <div
           aria-hidden
           className="absolute inset-0 bg-surface-2 bg-cover bg-center"
-          style={{ backgroundImage: "url(/figma/legacy-video.png)" }}
+          style={{ backgroundImage: "url(/figma/legacy-video.jpg)" }}
         />
         <div className="absolute inset-0 bg-black/20" />
       </div>
@@ -46,10 +46,10 @@ export function SiteFooter() {
             aria-hidden
             className="absolute left-[194px] top-[91.5px] inline-block h-[20.7px] w-[62.7px] bg-current"
             style={{
-              maskImage: "url(/figma/union-swoosh.png)",
+              maskImage: "url(/figma/union-swoosh.svg)",
               maskSize: "100% 100%",
               maskRepeat: "no-repeat",
-              WebkitMaskImage: "url(/figma/union-swoosh.png)",
+              WebkitMaskImage: "url(/figma/union-swoosh.svg)",
               WebkitMaskSize: "100% 100%",
               WebkitMaskRepeat: "no-repeat",
             }}

@@ -1,27 +1,101 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/*
+  Design tokens from Figma "[i] Design Library — SDR".
+  Two color modes (light/dark) drive the semantic variables below;
+  components use the token utilities and never hardcode mode colors.
+*/
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Colors/Background */
+  --surface: #f7f8f4;
+  --surface-2: #e1e1de;
+  /* Colors/Text + Foreground */
+  --ink: #161716;
+  --ink-2: rgba(0, 0, 0, 0.5);
+  --ink-3: #70716f;
+  --ink-disabled: #878785;
+  /* Colors/Border + Alpha */
+  --line: #dbdbd7;
+  --line-2: rgba(0, 0, 0, 0.14);
+  --wash: rgba(0, 0, 0, 0.06);
+  /* Component colors/Buttons */
+  --btn: #000000;
+  --btn-fg: #ffffff;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --surface: #000000;
+    --surface-2: #1b1c1a;
+    --ink: #ffffff;
+    --ink-2: rgba(255, 255, 255, 0.55);
+    --ink-3: #9d9e9b;
+    --ink-disabled: #878785;
+    --line: rgba(255, 255, 255, 0.18);
+    --line-2: rgba(255, 255, 255, 0.15);
+    --wash: rgba(255, 255, 255, 0.08);
+    --btn: #ffffff;
+    --btn-fg: #000000;
   }
 }
 
+@theme inline {
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-ink-disabled: var(--ink-disabled);
+  --color-line: var(--line);
+  --color-line-2: var(--line-2);
+  --color-wash: var(--wash);
+  --color-btn: var(--btn);
+  --color-btn-fg: var(--btn-fg);
+
+  --font-display: var(--font-feature-deck);
+  --font-sans: var(--font-maison);
+  --font-mono: var(--font-maison-mono);
+
+  /* Type scale from Figma text styles */
+  --text-label-sm: 12px;
+  --text-label-sm--line-height: 1.3;
+  --text-label-sm--letter-spacing: 0.02em;
+  --text-label-md: 14px;
+  --text-label-md--line-height: 1;
+  --text-label-md--letter-spacing: 0.02em;
+  --text-body-sm: 14px;
+  --text-body-sm--line-height: 20px;
+  --text-body-md: 16px;
+  --text-body-md--line-height: 24px;
+  --text-title-sm: 20px;
+  --text-title-sm--line-height: 1.1;
+  --text-title-md: 24px;
+  --text-title-md--line-height: 32px;
+  --text-headline-sm: 32px;
+  --text-headline-sm--line-height: 38px;
+  --text-headline-sm--letter-spacing: -0.01em;
+  --text-headline-lg: 48px;
+  --text-headline-lg--line-height: 1.2;
+  --text-headline-lg--letter-spacing: -0.042em;
+  --text-display-xl: 64px;
+  --text-display-xl--line-height: 1.2;
+  --text-display-xl--letter-spacing: -0.02em;
+
+  --radius-none: 0;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-maison), Arial, Helvetica, sans-serif;
+}
+
+/* Uppercase mono label — the design system's workhorse text style */
+@utility label {
+  font-family: var(--font-maison-mono), monospace;
+  font-size: 12px;
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }

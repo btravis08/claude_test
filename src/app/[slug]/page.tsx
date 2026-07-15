@@ -30,18 +30,20 @@ export default async function CmsPage({
   if (!page) notFound();
 
   return (
-    <article className="mx-auto max-w-3xl px-6 py-16">
-      <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
-        {page.title}
-      </h1>
+    <article>
+      <div className="flex flex-col gap-6 px-6 pb-12 pt-16 sm:pt-24">
+        <h1 className="max-w-4xl font-display text-headline-lg text-ink sm:text-display-xl">
+          {page.title}
+        </h1>
+      </div>
 
       {page.heroImage && (
-        <div className="relative mt-8 aspect-[16/9] overflow-hidden rounded-lg">
+        <div className="relative aspect-[16/9] overflow-hidden bg-surface-2">
           <Image
-            src={urlFor(page.heroImage).width(1600).height(900).url()}
+            src={urlFor(page.heroImage).width(2000).height(1125).url()}
             alt={page.heroImage.alt ?? page.title}
             fill
-            sizes="(min-width: 768px) 768px, 100vw"
+            sizes="100vw"
             className="object-cover"
             priority
           />
@@ -49,8 +51,10 @@ export default async function CmsPage({
       )}
 
       {page.body && (
-        <div className="prose prose-zinc mt-8 max-w-none dark:prose-invert">
-          <PortableText value={page.body} />
+        <div className="mx-auto max-w-3xl px-6 py-16">
+          <div className="prose prose-neutral max-w-none dark:prose-invert">
+            <PortableText value={page.body} />
+          </div>
         </div>
       )}
     </article>

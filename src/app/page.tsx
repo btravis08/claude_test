@@ -16,55 +16,53 @@ export default async function Home() {
 
   return (
     <div>
-      <section className="bg-zinc-950 text-white">
-        <div className="mx-auto max-w-6xl px-6 py-24 sm:py-32">
-          <h1 className="max-w-2xl text-4xl font-bold tracking-tight sm:text-5xl">
-            {settings.tagline ?? "Modern prefab builds, from factory to foundation."}
+      {/* Hero is image-dark in both color modes, per the design */}
+      <section className="relative flex min-h-[85vh] flex-col justify-end bg-black text-white">
+        <div className="flex flex-col items-center gap-6 px-6 pb-12 pt-6 text-center">
+          <p className="label font-medium">Modern prefab construction</p>
+          <h1 className="max-w-3xl font-display text-headline-lg sm:text-display-xl">
+            {settings.tagline ??
+              "Modern prefab builds, from factory to foundation."}
           </h1>
-          <p className="mt-4 max-w-xl text-lg text-zinc-300">
-            We design and deliver high-quality prefabricated homes and
-            commercial buildings — faster, more sustainable, and built to last.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-4">
+          <div className="mt-2 flex flex-col items-center gap-4">
             <Link
               href="/projects?category=residential"
-              className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-zinc-950 transition-colors hover:bg-zinc-200"
+              className="label flex h-10 min-w-[150px] items-center justify-center bg-white px-3.5 font-medium text-black transition-opacity hover:opacity-80"
             >
               Residential builds
             </Link>
             <Link
               href="/projects?category=commercial"
-              className="rounded-full border border-white/30 px-6 py-3 text-sm font-semibold transition-colors hover:bg-white/10"
+              className="group relative font-mono text-label-md uppercase text-white"
             >
               Commercial builds
+              <span className="absolute inset-x-0 -bottom-1 h-px origin-right bg-white transition-transform duration-300 group-hover:scale-x-0" />
             </Link>
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 py-16">
-        <div className="mb-8 flex items-end justify-between">
-          <h2 className="text-2xl font-bold tracking-tight">
-            Featured projects
-          </h2>
+      <section>
+        <div className="flex h-[88px] items-center justify-between border-b-[1.5px] border-line px-6">
+          <h2 className="label font-medium text-ink">Featured projects</h2>
           <Link
             href="/projects"
-            className="text-sm font-medium text-zinc-600 hover:text-zinc-950 dark:text-zinc-400 dark:hover:text-white"
+            className="label flex h-10 items-center justify-center bg-btn px-3.5 font-medium text-btn-fg transition-opacity hover:opacity-80"
           >
-            View all →
+            View all
           </Link>
         </div>
         {featured.length > 0 ? (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-px border-b border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
             {featured.map((project) => (
               <ProjectCard key={project._id} project={project} />
             ))}
           </div>
         ) : (
-          <div className="rounded-lg border border-dashed border-zinc-300 p-12 text-center text-zinc-500 dark:border-zinc-700">
+          <div className="label border-b border-line p-12 text-center text-ink-2">
             <p>
               No featured projects yet. Open{" "}
-              <Link href="/studio" className="font-medium underline">
+              <Link href="/studio" className="text-ink underline">
                 the Studio
               </Link>{" "}
               to add a project and mark it as featured.

@@ -8,36 +8,36 @@ export function ProjectCard({ project }: { project: Project }) {
   return (
     <Link
       href={`/projects/${project.slug}`}
-      className="group overflow-hidden rounded-lg border border-zinc-200 bg-white transition-shadow hover:shadow-lg dark:border-zinc-800 dark:bg-zinc-900"
+      className="group flex flex-col gap-[18px] bg-surface px-6 pb-16 pt-6"
     >
-      <div className="relative aspect-[4/3] bg-zinc-100 dark:bg-zinc-800">
+      <div className="relative aspect-[4/3] overflow-hidden bg-surface-2">
         {project.mainImage ? (
           <Image
             src={urlFor(project.mainImage).width(800).height(600).url()}
             alt={project.mainImage.alt ?? project.title}
             fill
             sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
           />
         ) : (
-          <div className="flex h-full items-center justify-center text-sm text-zinc-400">
+          <div className="label flex h-full items-center justify-center text-ink-3">
             No photo yet
           </div>
         )}
-        <span className="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold capitalize text-zinc-900">
-          {project.category}
-        </span>
       </div>
-      <div className="p-4">
-        <h3 className="font-semibold">{project.title}</h3>
-        <p className="mt-1 text-sm text-zinc-500">
-          {[project.location, project.completedYear].filter(Boolean).join(" · ")}
-        </p>
-        {project.summary && (
-          <p className="mt-2 line-clamp-2 text-sm text-zinc-600 dark:text-zinc-400">
-            {project.summary}
-          </p>
-        )}
+      <div className="flex flex-col gap-1.5">
+        <div className="flex items-baseline justify-between gap-4">
+          <h3 className="label font-medium text-ink">{project.title}</h3>
+          {project.completedYear && (
+            <p className="label font-medium text-ink">{project.completedYear}</p>
+          )}
+        </div>
+        <div className="flex items-baseline justify-between gap-4">
+          {project.location && (
+            <p className="label text-ink-2">{project.location}</p>
+          )}
+          <p className="label ml-auto text-ink-2">{project.category}</p>
+        </div>
       </div>
     </Link>
   );

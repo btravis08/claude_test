@@ -40,13 +40,17 @@ export default async function ProjectsPage({
     : await sanityFetch<Project[]>(allProjectsQuery, {}, []);
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-16">
-      <h1 className="text-3xl font-bold tracking-tight">Projects</h1>
-      <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-        A look at our residential and commercial prefab builds.
-      </p>
+    <div>
+      <div className="flex flex-col gap-6 px-6 pb-12 pt-16 sm:pt-24">
+        <p className="label font-medium text-ink-2">
+          Residential + Commercial
+        </p>
+        <h1 className="font-display text-headline-lg text-ink sm:text-display-xl">
+          Projects
+        </h1>
+      </div>
 
-      <div className="mt-8 flex gap-2">
+      <div className="flex items-center gap-2 border-b-[1.5px] border-line px-6 pb-6">
         {filters.map((filter) => {
           const isActive = filter.value === activeCategory;
           return (
@@ -57,10 +61,8 @@ export default async function ProjectsPage({
                   ? `/projects?category=${filter.value}`
                   : "/projects"
               }
-              className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-                isActive
-                  ? "bg-zinc-950 text-white dark:bg-white dark:text-zinc-950"
-                  : "bg-zinc-100 text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
+              className={`label flex h-10 items-center justify-center px-3.5 font-medium transition-opacity hover:opacity-80 ${
+                isActive ? "bg-btn text-btn-fg" : "bg-wash text-ink"
               }`}
             >
               {filter.label}
@@ -70,16 +72,16 @@ export default async function ProjectsPage({
       </div>
 
       {projects.length > 0 ? (
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-px border-b border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
           {projects.map((project) => (
             <ProjectCard key={project._id} project={project} />
           ))}
         </div>
       ) : (
-        <div className="mt-10 rounded-lg border border-dashed border-zinc-300 p-12 text-center text-zinc-500 dark:border-zinc-700">
+        <div className="label border-b border-line p-12 text-center text-ink-2">
           <p>
             No {activeCategory ?? ""} projects yet. Add some in{" "}
-            <Link href="/studio" className="font-medium underline">
+            <Link href="/studio" className="text-ink underline">
               the Studio
             </Link>
             .

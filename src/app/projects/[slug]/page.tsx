@@ -53,29 +53,31 @@ export default async function ProjectPage({
   ].filter((stat) => stat.value !== undefined && stat.value !== null);
 
   return (
-    <article className="mx-auto max-w-4xl px-6 py-16">
-      <Link
-        href="/projects"
-        className="text-sm font-medium text-zinc-500 hover:text-zinc-950 dark:hover:text-white"
-      >
-        ← All projects
-      </Link>
-      <h1 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
-        {project.title}
-      </h1>
-      {project.summary && (
-        <p className="mt-3 text-lg text-zinc-600 dark:text-zinc-400">
-          {project.summary}
-        </p>
-      )}
+    <article>
+      <div className="flex flex-col gap-6 px-6 pb-12 pt-16 sm:pt-24">
+        <Link
+          href="/projects"
+          className="label font-medium text-ink-2 hover:text-ink"
+        >
+          ← All projects
+        </Link>
+        <h1 className="max-w-4xl font-display text-headline-lg text-ink sm:text-display-xl">
+          {project.title}
+        </h1>
+        {project.summary && (
+          <p className="max-w-2xl text-body-md text-ink-2">
+            {project.summary}
+          </p>
+        )}
+      </div>
 
       {project.mainImage && (
-        <div className="relative mt-8 aspect-[16/9] overflow-hidden rounded-lg">
+        <div className="relative aspect-[16/9] overflow-hidden bg-surface-2">
           <Image
-            src={urlFor(project.mainImage).width(1600).height(900).url()}
+            src={urlFor(project.mainImage).width(2000).height(1125).url()}
             alt={project.mainImage.alt ?? project.title}
             fill
-            sizes="(min-width: 1024px) 896px, 100vw"
+            sizes="100vw"
             className="object-cover"
             priority
           />
@@ -83,35 +85,44 @@ export default async function ProjectPage({
       )}
 
       {stats.length > 0 && (
-        <dl className="mt-8 grid grid-cols-2 gap-4 rounded-lg bg-zinc-50 p-6 sm:grid-cols-3 dark:bg-zinc-900">
-          {stats.map((stat) => (
-            <div key={stat.label}>
-              <dt className="text-xs font-medium uppercase tracking-wide text-zinc-500">
-                {stat.label}
-              </dt>
-              <dd className="mt-1 font-semibold capitalize">{stat.value}</dd>
+        <dl className="grid grid-cols-2 border-t-[1.5px] border-line sm:grid-cols-3 lg:grid-cols-6">
+          {stats.map((stat, i) => (
+            <div
+              key={stat.label}
+              className={`flex flex-col gap-[18px] border-b border-line px-6 pb-16 pt-6 ${
+                i > 0 ? "border-l" : ""
+              }`}
+            >
+              <dt className="label font-medium opacity-70">{stat.label}</dt>
+              <dd className="label font-medium capitalize text-ink">
+                {stat.value}
+              </dd>
             </div>
           ))}
         </dl>
       )}
 
       {project.body && (
-        <div className="prose prose-zinc mt-10 max-w-none dark:prose-invert">
-          <PortableText value={project.body} />
+        <div className="mx-auto max-w-3xl px-6 py-16">
+          <div className="prose prose-neutral max-w-none dark:prose-invert">
+            <PortableText value={project.body} />
+          </div>
         </div>
       )}
 
       {project.gallery && project.gallery.length > 0 && (
-        <section className="mt-12">
-          <h2 className="text-xl font-bold tracking-tight">Gallery</h2>
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+        <section>
+          <div className="flex h-[88px] items-center border-y-[1.5px] border-line px-6">
+            <h2 className="label font-medium text-ink">Gallery</h2>
+          </div>
+          <div className="grid gap-px bg-line sm:grid-cols-2">
             {project.gallery.map((image) => (
               <div
                 key={image._key}
-                className="relative aspect-[4/3] overflow-hidden rounded-lg"
+                className="relative aspect-[4/3] overflow-hidden bg-surface-2"
               >
                 <Image
-                  src={urlFor(image).width(800).height(600).url()}
+                  src={urlFor(image).width(1200).height(900).url()}
                   alt={image.alt ?? project.title}
                   fill
                   sizes="(min-width: 640px) 50vw, 100vw"

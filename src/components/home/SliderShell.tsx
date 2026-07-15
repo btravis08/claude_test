@@ -104,7 +104,7 @@ export function SliderShell({ title, items }: { title?: string; items: SliderIte
 
   return (
     <div className="flex w-full flex-col">
-      <div className="flex w-full items-center justify-between gap-4 border-y border-line bg-surface p-6">
+      <div className="flex w-full items-center justify-between gap-4 border-t border-line bg-surface p-6">
         {title !== undefined && (
           <p className="min-w-0 flex-1 font-display text-title-sm text-ink">{title}</p>
         )}
@@ -147,7 +147,7 @@ export function SliderShell({ title, items }: { title?: string; items: SliderIte
       </div>
       <div
         ref={trackRef}
-        className="no-scrollbar grid w-full snap-x snap-mandatory auto-cols-[85%] grid-flow-col overflow-x-auto sm:auto-cols-[45%] lg:auto-cols-[25%]"
+        className="no-scrollbar grid w-full snap-x snap-mandatory auto-cols-[85%] grid-flow-col overflow-x-auto border-y border-line sm:auto-cols-[45%] lg:auto-cols-[25%]"
       >
         <AnimatePresence initial={false} onExitComplete={updateArrows}>
           {visible.map((item) => (

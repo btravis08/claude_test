@@ -200,7 +200,7 @@ export function InfoSlider({
           card: (
             <a
               href="#"
-              className="flex w-full flex-col gap-[18px] rounded-xs border border-line bg-surface px-6 pb-16 pt-6"
+              className="flex w-full flex-col gap-[18px] border-r border-line bg-surface px-6 pb-16 pt-6"
             >
               <Media aspect="aspect-[3/4]" image={card.image ?? "/figma/media-portrait.png"} />
               <p className="text-body-md font-medium text-ink">{card.title}</p>
@@ -243,7 +243,7 @@ function ProductCard({ product }: { product: ProductCardData }) {
   return (
     <a
       href="#"
-      className="flex w-full flex-col justify-center gap-[18px] rounded-xs border border-line bg-surface px-6 pb-16 pt-6"
+      className="flex w-full flex-col justify-center gap-[18px] border-r border-line bg-surface px-6 pb-16 pt-6"
     >
       <div className="relative flex aspect-[236/301] w-full flex-col justify-end rounded-xs bg-surface-2 p-6">
         <div

@@ -11,7 +11,7 @@ import {
 import type { ProductCardData } from "@/components/home/sections";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { urlFor } from "@/sanity/lib/image";
-import { sliderProductsQuery } from "@/sanity/lib/queries";
+import { productsByTagQuery } from "@/sanity/lib/queries";
 import type { PageSection, SectionProductSlider, SliderProduct } from "@/sanity/types";
 import type { SanityImageSource } from "@sanity/image-url";
 
@@ -37,13 +37,21 @@ function toCard(product: SliderProduct): ProductCardData {
   };
 }
 
-/* Referenced products, or the latest products when the section is empty */
+/* Manual selections render as-is; automatic sliders pull products by
+   tag, newest post date first */
 async function ProductSliderSection({ section }: { section: SectionProductSlider }) {
-  let products = (section.products ?? []).filter(
-    (product): product is SliderProduct => Boolean(product?._id),
-  );
-  if (products.length === 0) {
-    products = await sanityFetch<SliderProduct[]>(sliderProductsQuery, {}, []);
+  let products =
+    section.source === "manual"
+      ? (section.products ?? []).filter(
+          (product): product is SliderProduct => Boolean(product?._id),
+        )
+      : [];
+  if (section.source !== "manual" || products.length === 0) {
+    products = await sanityFetch<SliderProduct[]>(
+      productsByTagQuery,
+      { productTag: section.tag ?? "all" },
+      [],
+    );
   }
   return (
     <ProductSlider

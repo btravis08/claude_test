@@ -67,6 +67,8 @@ export interface SliderProduct {
 export interface SectionProductSlider extends SectionBase {
   _type: "sectionProductSlider";
   title?: string;
+  source?: "auto" | "manual";
+  tag?: string;
   products?: Array<SliderProduct | null>;
 }
 

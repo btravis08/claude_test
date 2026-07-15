@@ -57,13 +57,17 @@ const sectionFields = groq`
   items,
   body,
   image,
+  source,
+  tag,
   cards[] { _key, title, image },
   products[]->{ _id, title, price, gender, variants, "thumb": images[0] },
   panels[] { _key, title, image }
 `;
 
-export const sliderProductsQuery = groq`
-  *[_type == "product"] | order(_createdAt asc)[0...24] {
+/* Products for automatic sliders: filtered by tag, newest post first */
+export const productsByTagQuery = groq`
+  *[_type == "product" && ($productTag == "all" || $productTag in tags)]
+    | order(postedAt desc, _createdAt desc)[0...24] {
     _id, title, price, gender, variants, "thumb": images[0]
   }
 `;

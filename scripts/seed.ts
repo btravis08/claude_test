@@ -1,11 +1,12 @@
 /**
  * One-shot seed for the SDR dataset:
  *   1. uploads the placeholder + campaign imagery as Sanity assets
- *   2. creates 24 products (12 mens / 12 womens) with lorem names,
- *      prices, color variants, and up to 6 images each — the
- *      placeholder image is always first, so it's the card thumbnail
- *   3. creates/replaces the "home" page built from sections whose
- *      product sliders reference the seeded products
+ *   2. creates 120 products (24 per tag: footwear/pants/polos/headwear/
+ *      tshirts, half mens half womens) with lorem names, prices, color
+ *      variants, post dates spread over recent months, and up to 6
+ *      images each — the placeholder image is always the thumbnail
+ *   3. creates/replaces the "home" page; its product sliders pull
+ *      products automatically by tag (footwear / polos / all)
  *
  * Run locally (needs your Sanity login):
  *   npx sanity exec scripts/seed.ts --with-user-token
@@ -36,6 +37,10 @@ const WORDS = [
   "Feugiat", "Sodales", "Aliquam", "Tempor", "Magna", "Ornare",
 ];
 const COLORS = ["Lorem", "Ipsum", "Dolor", "Sit", "Amet", "Elit", "Magna", "Quam"];
+const TAGS = ["footwear", "pants", "polos", "headwear", "tshirts"];
+const PRODUCT_COUNT = 120; // 24 per tag
+/* Post dates walk back from a fixed base so re-runs stay identical */
+const BASE_DATE = Date.UTC(2026, 6, 15);
 
 const imageRef = (id: string) => ({
   _type: "image" as const,
@@ -60,11 +65,17 @@ async function run() {
   const shoe = await uploadImage("card-shoe.png");
   const pool = [campaign, portrait, shoe];
 
-  /* 2 — 24 products */
-  const productIds: string[] = [];
-  for (let i = 1; i <= 24; i++) {
-    const id = `product-seed-${String(i).padStart(2, "0")}`;
+  /* 2 — products: primary tag round-robins so each tag gets 24, with a
+     ~30% chance of a second tag on top */
+  for (let i = 1; i <= PRODUCT_COUNT; i++) {
+    const id = `product-seed-${String(i).padStart(3, "0")}`;
     const title = `${pick(WORDS)} ${pick(WORDS)}`;
+    const primaryTag = TAGS[(i - 1) % TAGS.length];
+    const tags = [primaryTag];
+    if (rng() < 0.3) {
+      const extra = pick(TAGS.filter((t) => t !== primaryTag));
+      tags.push(extra);
+    }
     const variantCount = 2 + Math.floor(rng() * 4); // 2–5 variants
     const variants = Array.from(
       { length: variantCount },
@@ -80,17 +91,16 @@ async function run() {
       title,
       slug: { _type: "slug", current: `${title.toLowerCase().replace(/\s+/g, "-")}-${i}` },
       gender: i % 2 === 1 ? "mens" : "womens",
+      tags,
+      postedAt: new Date(BASE_DATE - Math.floor(rng() * 180) * 86400000).toISOString(),
       price: `$${58 + Math.floor(rng() * 19) * 10}.00`,
       variants,
       images: [imageRef(placeholder), ...extraImages],
     });
-    productIds.push(id);
-    console.log(`✓ ${id} (${title})`);
+    console.log(`✓ ${id} (${title}) [${tags.join(", ")}]`);
   }
 
   /* 3 — home page */
-  const productRefs = (ids: string[]) =>
-    ids.map((id) => ({ _type: "reference" as const, _key: key(), _ref: id }));
   const image = (id: string) => ({
     _type: "image" as const,
     asset: { _type: "reference" as const, _ref: id },
@@ -162,14 +172,16 @@ async function run() {
         _key: key(),
         colorMode: "light",
         title: "Best Sellers",
-        products: productRefs(productIds),
+        source: "auto",
+        tag: "footwear",
       },
       {
         _type: "sectionProductSlider",
         _key: key(),
         colorMode: "light",
         title: "Best Sellers",
-        products: productRefs(productIds),
+        source: "auto",
+        tag: "polos",
       },
       {
         _type: "sectionFullWidth",
@@ -185,12 +197,29 @@ async function run() {
         _type: "sectionProductSlider",
         _key: key(),
         colorMode: "light",
-        products: productRefs(productIds),
+        source: "auto",
+        tag: "all",
       },
     ],
   });
 
-  console.log("✓ seeded page-home with 9 sections and 24 products");
+  /* 4 — remove stale seed products from earlier runs (safe now that the
+     home page no longer references them) */
+  const stale = await client.fetch<string[]>(
+    `*[_type == "product" && _id match "product-seed-*"]._id`,
+  );
+  const current = new Set(
+    Array.from({ length: PRODUCT_COUNT }, (_, i) =>
+      `product-seed-${String(i + 1).padStart(3, "0")}`,
+    ),
+  );
+  const toDelete = stale.filter((id) => !current.has(id));
+  for (const id of toDelete) await client.delete(id);
+  if (toDelete.length) console.log(`✂ removed ${toDelete.length} stale seed products`);
+
+  console.log(
+    `✓ seeded page-home with 9 sections and ${PRODUCT_COUNT} tagged products`,
+  );
   console.log("Open /studio → Page → Homepage, or Product, to edit.");
 }
 

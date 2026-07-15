@@ -32,6 +32,30 @@ export const product = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: "tags",
+      title: "Tags",
+      description: "Categories this product belongs to — sliders pull products by these.",
+      type: "array",
+      of: [defineArrayMember({ type: "string" })],
+      options: {
+        list: [
+          { title: "Footwear", value: "footwear" },
+          { title: "Pants", value: "pants" },
+          { title: "Polos", value: "polos" },
+          { title: "Headwear", value: "headwear" },
+          { title: "T-Shirts", value: "tshirts" },
+        ],
+        layout: "grid",
+      },
+    }),
+    defineField({
+      name: "postedAt",
+      title: "Post date",
+      description: "Used to sort sliders newest-first (new arrivals).",
+      type: "datetime",
+      initialValue: () => new Date().toISOString(),
+    }),
+    defineField({
       name: "price",
       title: "Price",
       type: "string",

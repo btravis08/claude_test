@@ -169,27 +169,50 @@ export const sectionProductSlider = defineType({
       initialValue: "Lorem Ipsum Slider",
     }),
     defineField({
+      name: "source",
+      title: "Products source",
+      type: "string",
+      options: {
+        list: [
+          { title: "Automatic (by tag, newest first)", value: "auto" },
+          { title: "Manual selection", value: "manual" },
+        ],
+        layout: "radio",
+      },
+      initialValue: "auto",
+    }),
+    defineField({
+      name: "tag",
+      title: "Tag",
+      description: "Which products the slider pulls in automatically.",
+      type: "string",
+      options: {
+        list: [
+          { title: "All products", value: "all" },
+          { title: "Footwear", value: "footwear" },
+          { title: "Pants", value: "pants" },
+          { title: "Polos", value: "polos" },
+          { title: "Headwear", value: "headwear" },
+          { title: "T-Shirts", value: "tshirts" },
+        ],
+      },
+      initialValue: "all",
+      hidden: ({ parent }) => parent?.source === "manual",
+    }),
+    defineField({
       name: "products",
-      description:
-        "Products shown in the slider. Leave empty to show the latest products automatically.",
+      title: "Products (manual selection)",
       type: "array",
       of: [defineArrayMember({ type: "reference", to: [{ type: "product" }] })],
-      // Pre-fill with up to 24 products so a new slider arrives full
-      initialValue: async (_, { getClient }) => {
-        try {
-          const ids = await getClient(API).fetch<string[]>(
-            `*[_type == "product"] | order(_createdAt asc)[0...24]._id`,
-          );
-          return ids.map((id) => ({ _type: "reference" as const, _key: key(), _ref: id }));
-        } catch {
-          return [];
-        }
-      },
+      hidden: ({ parent }) => parent?.source !== "manual",
     }),
   ],
   preview: {
-    select: { title: "title" },
-    prepare: ({ title }) => ({ title: title || "Product Slider", subtitle: "Product Slider" }),
+    select: { title: "title", tag: "tag", source: "source" },
+    prepare: ({ title, tag, source }) => ({
+      title: title || "Product Slider",
+      subtitle: `Product Slider — ${source === "manual" ? "manual" : tag || "all"}`,
+    }),
   },
 });
 

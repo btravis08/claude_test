@@ -174,11 +174,11 @@ export const sectionProductSlider = defineType({
         "Products shown in the slider. Leave empty to show the latest products automatically.",
       type: "array",
       of: [defineArrayMember({ type: "reference", to: [{ type: "product" }] })],
-      // Pre-fill with the first eight products so a new slider arrives full
+      // Pre-fill with up to 24 products so a new slider arrives full
       initialValue: async (_, { getClient }) => {
         try {
           const ids = await getClient(API).fetch<string[]>(
-            `*[_type == "product"] | order(_createdAt asc)[0...8]._id`,
+            `*[_type == "product"] | order(_createdAt asc)[0...24]._id`,
           );
           return ids.map((id) => ({ _type: "reference" as const, _key: key(), _ref: id }));
         } catch {

@@ -177,13 +177,15 @@ export function SliderShell({ title, items }: { title?: string; items: SliderIte
           ))}
         </AnimatePresence>
       </div>
-      {/* Custom scroll progress: eased fill, full width at the end */}
-      <div className="h-0.5 w-full bg-wash">
+      {/* Custom scroll progress: eased fill, full width at the end.
+          Sits on top of the cards' bottom hairline (-mt) with no track
+          background of its own. */}
+      <div className="relative z-10 -mt-0.5 h-0.5 w-full">
         <motion.div
           className="h-full bg-ink"
           initial={false}
           animate={{ width: `${Math.min(progress, 1) * 100}%` }}
-          transition={{ duration: 0.5, ease: "easeInOut" }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
         />
       </div>
     </div>

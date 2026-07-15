@@ -162,14 +162,14 @@ async function run() {
         _key: key(),
         colorMode: "light",
         title: "Best Sellers",
-        products: productRefs(productIds.slice(0, 8)),
+        products: productRefs(productIds),
       },
       {
         _type: "sectionProductSlider",
         _key: key(),
         colorMode: "light",
         title: "Best Sellers",
-        products: productRefs(productIds.slice(8, 16)),
+        products: productRefs(productIds),
       },
       {
         _type: "sectionFullWidth",
@@ -185,7 +185,7 @@ async function run() {
         _type: "sectionProductSlider",
         _key: key(),
         colorMode: "light",
-        products: productRefs(productIds.slice(16, 24)),
+        products: productRefs(productIds),
       },
     ],
   });

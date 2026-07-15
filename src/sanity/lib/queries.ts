@@ -63,7 +63,7 @@ const sectionFields = groq`
 `;
 
 export const sliderProductsQuery = groq`
-  *[_type == "product"] | order(_createdAt asc)[0...12] {
+  *[_type == "product"] | order(_createdAt asc)[0...24] {
     _id, title, price, gender, variants, "thumb": images[0]
   }
 `;

@@ -230,7 +230,7 @@ export interface ProductSliderProps {
   products?: ProductCardData[];
 }
 
-const defaultProducts = Array.from({ length: 8 }, (_, i) => ({
+const defaultProducts = Array.from({ length: 24 }, (_, i) => ({
   title: "Presidio",
   price: "$198.00",
   gender: i % 2 === 0 ? "mens" : "womens",

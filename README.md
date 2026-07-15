@@ -16,16 +16,22 @@ Managed in Sanity Studio (`/studio`):
 
 ## One-time setup
 
-### 1. Create a Sanity project
+The site is wired to Sanity project **`alsdve2t`** (dataset `production`) — see
+`src/sanity/env.ts`. To point at a different project, copy
+`.env.local.example` to `.env.local` and override the values there (or set the
+same variables in Vercel).
 
-1. Sign up at [sanity.io](https://www.sanity.io) (free tier is plenty).
-2. Create a new project at [sanity.io/manage](https://www.sanity.io/manage) and note the **project ID**.
-3. In the project's **API → CORS origins**, add `http://localhost:3000` and your production URL (with *Allow credentials* checked, so the embedded Studio can log in).
+### 1. Configure the Sanity project
+
+In [sanity.io/manage](https://www.sanity.io/manage), open the project and
+under **API → CORS origins** add `http://localhost:3000` and your production
+URL (with *Allow credentials* checked, so the embedded Studio can log in).
+Make sure a dataset named `production` exists (**Datasets** tab — create it as
+*public* if it's missing).
 
 ### 2. Run locally
 
 ```bash
-cp .env.local.example .env.local   # then paste in your project ID
 npm install
 npm run dev
 ```
@@ -38,11 +44,10 @@ In the Studio, create a **Site settings** document, a couple of **Projects**, an
 ### 3. Deploy to Vercel
 
 1. Go to [vercel.com/new](https://vercel.com/new), sign in with GitHub, and import this repository.
-2. Under **Environment Variables**, add:
-   - `NEXT_PUBLIC_SANITY_PROJECT_ID` — your project ID
-   - `NEXT_PUBLIC_SANITY_DATASET` — `production`
-3. Deploy. Every push to the default branch redeploys automatically.
-4. Add your Vercel URL to the Sanity CORS origins (step 1.3).
+2. Deploy — no environment variables needed (the project ID is baked in; set
+   `NEXT_PUBLIC_SANITY_PROJECT_ID` / `NEXT_PUBLIC_SANITY_DATASET` only to
+   override). Every push to the default branch redeploys automatically.
+3. Add your Vercel URL to the Sanity CORS origins (step 1).
 
 ## Project structure
 

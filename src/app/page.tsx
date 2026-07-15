@@ -1,7 +1,6 @@
 import Link from "next/link";
 
 import { ProjectCard } from "@/components/ProjectCard";
-import { isSanityConfigured } from "@/sanity/env";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import {
   featuredProjectsQuery,
@@ -63,21 +62,13 @@ export default async function Home() {
           </div>
         ) : (
           <div className="rounded-lg border border-dashed border-zinc-300 p-12 text-center text-zinc-500 dark:border-zinc-700">
-            {isSanityConfigured ? (
-              <p>
-                No featured projects yet. Open{" "}
-                <Link href="/studio" className="font-medium underline">
-                  the Studio
-                </Link>{" "}
-                to add a project and mark it as featured.
-              </p>
-            ) : (
-              <p>
-                Sanity isn&apos;t connected yet. Copy{" "}
-                <code>.env.local.example</code> to <code>.env.local</code> and
-                add your project ID — see the README for setup steps.
-              </p>
-            )}
+            <p>
+              No featured projects yet. Open{" "}
+              <Link href="/studio" className="font-medium underline">
+                the Studio
+              </Link>{" "}
+              to add a project and mark it as featured.
+            </p>
           </div>
         )}
       </section>

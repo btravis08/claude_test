@@ -1,4 +1,7 @@
+import { AnimatedMedia } from "@/components/home/AnimatedMedia";
 import { ArrowLink, ArrowSwap } from "@/components/home/ArrowHover";
+import { ProductCard } from "@/components/home/ProductCard";
+import type { ProductCardData } from "@/components/home/ProductCard";
 import { SliderShell } from "@/components/home/SliderShell";
 import { ArrowUpRight, Pause } from "@/components/icons";
 
@@ -52,22 +55,18 @@ function Media({
   overlay = false,
   pill = false,
   position = "center",
+  hoverScale = false,
 }: {
   aspect: string;
   image?: string;
   overlay?: boolean;
   pill?: boolean;
   position?: string;
+  hoverScale?: boolean;
 }) {
   return (
     <div className={`relative w-full overflow-hidden rounded-xs bg-surface-2 ${aspect}`}>
-      {image && (
-        <div
-          aria-hidden
-          className="absolute inset-0 bg-cover"
-          style={{ backgroundImage: `url(${image})`, backgroundPosition: position }}
-        />
-      )}
+      {image && <AnimatedMedia image={image} position={position} hoverScale={hoverScale} />}
       {overlay && <div className="media-overlay" />}
       {pill && <PausePill />}
     </div>
@@ -201,9 +200,13 @@ export function InfoSlider({
           card: (
             <a
               href="#"
-              className="flex w-full flex-col gap-[1.125rem] border-r border-line bg-surface px-6 pb-16 pt-6"
+              className="group flex w-full flex-col gap-[1.125rem] border-r border-line bg-surface px-6 pb-16 pt-6"
             >
-              <Media aspect="aspect-[3/4]" image={card.image ?? "/figma/media-portrait.png"} />
+              <Media
+                aspect="aspect-[3/4]"
+                image={card.image ?? "/figma/media-portrait.png"}
+                hoverScale
+              />
               <p className="text-body-md font-medium text-ink">{card.title}</p>
             </a>
           ),
@@ -215,58 +218,31 @@ export function InfoSlider({
 
 /* ---------- Product Slider ---------- */
 
-export interface ProductCardData {
-  _key?: string;
-  title?: string;
-  price?: string;
-  gender?: string;
-  colorway?: string;
-  colorCount?: string;
-  image?: string;
-}
-
 export interface ProductSliderProps {
   mode?: Mode;
   title?: string;
   products?: ProductCardData[];
 }
 
-const defaultProducts = Array.from({ length: 24 }, (_, i) => ({
+const SAMPLE_SWATCHES = [
+  { name: "White / Navy", color: "#f4f4f2" },
+  { name: "Black / Gray", color: "#161716" },
+  { name: "Navy / White", color: "#232c3b" },
+  { name: "Sky / Gray", color: "#c9d7e4" },
+];
+
+const defaultProducts: ProductCardData[] = Array.from({ length: 24 }, (_, i) => ({
   title: "Presidio",
   price: "$198.00",
   gender: i % 2 === 0 ? "mens" : "womens",
   colorway: "Gray / Navy",
-  colorCount: "+4 colors",
   image: "/figma/card-shoe.png",
+  hoverImage: "/figma/campaign.png",
+  variants: SAMPLE_SWATCHES.map((swatch) => ({
+    ...swatch,
+    image: "/figma/card-shoe.png",
+  })),
 }));
-
-function ProductCard({ product }: { product: ProductCardData }) {
-  return (
-    <a
-      href="#"
-      className="flex w-full flex-col justify-center gap-[1.125rem] border-r border-line bg-surface px-6 pb-16 pt-6"
-    >
-      <div className="relative flex aspect-[236/301] w-full flex-col justify-end rounded-xs bg-surface-2 p-6">
-        <div
-          role="img"
-          aria-label={product.title}
-          className="absolute inset-x-[17.77%] top-1/2 aspect-square -translate-y-1/2 bg-contain bg-center bg-no-repeat"
-          style={{ backgroundImage: `url(${product.image ?? "/figma/card-shoe.png"})` }}
-        />
-      </div>
-      <div className="flex w-full flex-col gap-1.5">
-        <div className="label flex w-full items-center justify-between font-medium text-ink">
-          <p>{product.title}</p>
-          <p>{product.price}</p>
-        </div>
-        <div className="flex w-full items-center justify-between font-mono text-[0.75rem] uppercase leading-none text-ink-2">
-          <p>{product.colorway}</p>
-          <p>{product.colorCount}</p>
-        </div>
-      </div>
-    </a>
-  );
-}
 
 export function ProductSlider({
   mode = "light",
@@ -356,9 +332,14 @@ export function FiftyFifty({ mode = "dark", panels = defaultPanels }: FiftyFifty
           key={panel._key ?? i}
           href="#"
           aria-label={panel.title}
-          className="relative block"
+          className="group relative block overflow-hidden"
         >
-          <Media aspect="aspect-[4/5]" image={panel.image ?? "/figma/campaign.png"} overlay />
+          <Media
+            aspect="aspect-[4/5]"
+            image={panel.image ?? "/figma/campaign.png"}
+            overlay
+            hoverScale
+          />
           <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-6">
             <p className="font-display text-title-md">{panel.title}</p>
             <span className="flex size-10 items-center justify-center rounded-xs bg-btn text-btn-fg">

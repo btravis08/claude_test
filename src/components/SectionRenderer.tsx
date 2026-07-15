@@ -8,7 +8,7 @@ import {
   InfoSlider,
   ProductSlider,
 } from "@/components/home/sections";
-import type { ProductCardData } from "@/components/home/sections";
+import type { ProductCardData } from "@/components/home/ProductCard";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { urlFor } from "@/sanity/lib/image";
 import { productsByTagQuery } from "@/sanity/lib/queries";
@@ -25,15 +25,22 @@ function img(source: SanityImageSource | undefined, width = 2000): string | unde
 }
 
 function toCard(product: SliderProduct): ProductCardData {
-  const extra = (product.variants?.length ?? 0) - 1;
+  const variants = (product.variants ?? [])
+    .filter((variant) => variant && (variant.name || variant.color))
+    .map((variant) => ({
+      name: variant.name,
+      color: variant.color,
+      image: img(variant.image, 800),
+    }));
   return {
     _key: product._id,
     title: product.title,
     price: product.price,
     gender: product.gender,
-    colorway: product.variants?.[0],
-    colorCount: extra > 0 ? `+${extra} colors` : undefined,
+    colorway: variants[0]?.name,
     image: img(product.thumb, 800),
+    hoverImage: img(product.hoverImage, 1200),
+    variants,
   };
 }
 

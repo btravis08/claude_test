@@ -60,7 +60,12 @@ const sectionFields = groq`
   source,
   tag,
   cards[] { _key, title, image },
-  products[]->{ _id, title, price, gender, variants, "thumb": images[0] },
+  products[]->{
+    _id, title, price, gender,
+    variants[] { name, color, image },
+    "thumb": images[0],
+    "hoverImage": images[1]
+  },
   panels[] { _key, title, image }
 `;
 
@@ -68,7 +73,10 @@ const sectionFields = groq`
 export const productsByTagQuery = groq`
   *[_type == "product" && ($productTag == "all" || $productTag in tags)]
     | order(postedAt desc, _createdAt desc)[0...24] {
-    _id, title, price, gender, variants, "thumb": images[0]
+    _id, title, price, gender,
+    variants[] { name, color, image },
+    "thumb": images[0],
+    "hoverImage": images[1]
   }
 `;
 

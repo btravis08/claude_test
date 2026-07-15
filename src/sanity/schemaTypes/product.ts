@@ -64,9 +64,31 @@ export const product = defineType({
     defineField({
       name: "variants",
       title: "Color variants",
-      description: "First variant shows on the card; the rest count toward “+N colors”.",
+      description:
+        "First variant is the card default; the rest show as swatches on hover. Each has a display name, a swatch color, and the product image for that colorway.",
       type: "array",
-      of: [defineArrayMember({ type: "string" })],
+      of: [
+        defineArrayMember({
+          type: "object",
+          name: "productVariant",
+          fields: [
+            defineField({ name: "name", type: "string", initialValue: "Lorem / Ipsum" }),
+            defineField({
+              name: "color",
+              title: "Swatch color",
+              type: "string",
+              description: "Hex value, e.g. #232c3b",
+              initialValue: "#9d9e9b",
+            }),
+            defineField({
+              name: "image",
+              type: "image",
+              options: { hotspot: true },
+            }),
+          ],
+          preview: { select: { title: "name", subtitle: "color", media: "image" } },
+        }),
+      ],
     }),
     defineField({
       name: "images",

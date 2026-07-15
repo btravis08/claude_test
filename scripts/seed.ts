@@ -36,7 +36,16 @@ const WORDS = [
   "Lorem", "Ipsum", "Dolor", "Amet", "Cursus", "Vestibulum",
   "Feugiat", "Sodales", "Aliquam", "Tempor", "Magna", "Ornare",
 ];
-const COLORS = ["Lorem", "Ipsum", "Dolor", "Sit", "Amet", "Elit", "Magna", "Quam"];
+/* Sample color set for variant swatches */
+const PALETTE = [
+  { name: "White", hex: "#f4f4f2" },
+  { name: "Black", hex: "#161716" },
+  { name: "Navy", hex: "#232c3b" },
+  { name: "Sky", hex: "#c9d7e4" },
+  { name: "Gray", hex: "#9d9e9b" },
+  { name: "Sand", hex: "#d6cec2" },
+  { name: "Red", hex: "#7a1f1f" },
+];
 const TAGS = ["footwear", "pants", "polos", "headwear", "tshirts"];
 const PRODUCT_COUNT = 120; // 24 per tag
 /* Post dates walk back from a fixed base so re-runs stay identical */
@@ -76,13 +85,21 @@ async function run() {
       const extra = pick(TAGS.filter((t) => t !== primaryTag));
       tags.push(extra);
     }
-    const variantCount = 2 + Math.floor(rng() * 4); // 2–5 variants
-    const variants = Array.from(
-      { length: variantCount },
-      () => `${pick(COLORS)} / ${pick(COLORS)}`,
-    );
+    // 2–5 variants with distinct swatch colors from the sample palette
+    const variantCount = 2 + Math.floor(rng() * 4);
+    const shuffled = [...PALETTE].sort(() => rng() - 0.5);
+    const variants = shuffled.slice(0, variantCount).map((color) => {
+      const accent = pick(PALETTE.filter((p) => p.name !== color.name));
+      return {
+        _type: "productVariant",
+        _key: key(),
+        name: `${color.name} / ${accent.name}`,
+        color: color.hex,
+        image: imageRef(pick(pool)),
+      };
+    });
     const extraImages = Array.from(
-      { length: Math.floor(rng() * 6) }, // 0–5 extra → up to 6 total
+      { length: Math.floor(rng() * 4) }, // up to 6 total with thumb + hover
       () => imageRef(pick(pool)),
     );
     await client.createOrReplace({
@@ -95,7 +112,8 @@ async function run() {
       postedAt: new Date(BASE_DATE - Math.floor(rng() * 180) * 86400000).toISOString(),
       price: `$${58 + Math.floor(rng() * 19) * 10}.00`,
       variants,
-      images: [imageRef(placeholder), ...extraImages],
+      // images[0] = card thumbnail, images[1] = full-bleed hover image
+      images: [imageRef(placeholder), imageRef(campaign), ...extraImages],
     });
     console.log(`✓ ${id} (${title}) [${tags.join(", ")}]`);
   }

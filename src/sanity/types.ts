@@ -55,13 +55,20 @@ export interface SectionInfoSlider extends SectionBase {
 
 export type ProductGender = "mens" | "womens";
 
+export interface ProductVariant {
+  name?: string;
+  color?: string;
+  image?: SanityImageSource;
+}
+
 export interface SliderProduct {
   _id: string;
   title?: string;
   price?: string;
   gender?: ProductGender;
-  variants?: string[];
+  variants?: ProductVariant[];
   thumb?: SanityImageSource;
+  hoverImage?: SanityImageSource;
 }
 
 export interface SectionProductSlider extends SectionBase {

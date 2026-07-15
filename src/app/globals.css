@@ -108,6 +108,14 @@ body {
   text-transform: uppercase;
 }
 
+/* Hide the native scrollbar on slider tracks (custom progress bar instead) */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 /* Media overlay: 20% scrim + bottom gradient (Figma content-overlay mask) */
 @utility media-overlay {
   position: absolute;

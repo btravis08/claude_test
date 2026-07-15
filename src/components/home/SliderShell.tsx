@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { ArrowLeft, ArrowRight } from "@/components/icons";
@@ -10,15 +11,26 @@ export interface SliderItem {
   card: React.ReactNode;
 }
 
-const FADE_MS = 220;
-const MAX_STAGGER_MS = 260;
+const FADE_S = 0.22;
+const STAGGER_S = 0.26;
+
+/* Deterministic pseudo-random in [0,1) — stable during render */
+function hash01(s: string) {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return ((h >>> 0) % 1000) / 1000;
+}
 
 /*
   Slider chrome from the Figma SDR library, made functional:
   - arrows scroll the track by exactly one card width; each arrow is
     disabled when its end of the track is reached
-  - when items carry genders, MENS/WOMENS buttons filter the set with a
-    randomly staggered fade-out, then fade the new set in
+  - when items carry genders, MENS/WOMENS buttons filter the set; the
+    outgoing cards fade in random staggered order, then the incoming
+    set fades in (Motion AnimatePresence)
   - the track stays natively swipeable on touch
 */
 export function SliderShell({ title, items }: { title?: string; items: SliderItem[] }) {
@@ -29,30 +41,26 @@ export function SliderShell({ title, items }: { title?: string; items: SliderIte
   const filterable = genders.length > 1;
 
   const [gender, setGender] = useState<string | null>(null);
-  const [visible, setVisible] = useState(items);
-  // "in" = shown, "out" = fading away, "pre" = new set mounted at opacity 0
-  const [phase, setPhase] = useState<"in" | "out" | "pre">("in");
-  const [delays, setDelays] = useState<Record<string, number>>({});
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  // Fresh server data resets the slider (state-adjustment during render)
-  const [prevItems, setPrevItems] = useState(items);
-  if (prevItems !== items) {
-    setPrevItems(items);
-    setVisible(items);
-    setGender(null);
-    setPhase("in");
-  }
+  // Bumped per filter click so the stagger order reshuffles each time
+  const [generation, setGeneration] = useState(0);
+  const visible = useMemo(
+    () => (gender ? items.filter((i) => !i.gender || i.gender === gender) : items),
+    [items, gender],
+  );
 
   const trackRef = useRef<HTMLDivElement>(null);
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(false);
+  // Fraction of the track scrolled past + in view: clientWidth/scrollWidth
+  // at the start, 1 at the end
+  const [progress, setProgress] = useState(0);
 
   const updateArrows = useCallback(() => {
     const el = trackRef.current;
     if (!el) return;
     setCanPrev(el.scrollLeft > 4);
     setCanNext(el.scrollLeft < el.scrollWidth - el.clientWidth - 4);
+    setProgress(el.scrollWidth > 0 ? (el.scrollLeft + el.clientWidth) / el.scrollWidth : 1);
   }, []);
 
   useEffect(() => {
@@ -67,10 +75,6 @@ export function SliderShell({ title, items }: { title?: string; items: SliderIte
     };
   }, [updateArrows, visible.length]);
 
-  useEffect(() => () => {
-    if (timer.current) clearTimeout(timer.current);
-  }, []);
-
   const slide = (dir: 1 | -1) => {
     const el = trackRef.current;
     if (!el) return;
@@ -78,24 +82,25 @@ export function SliderShell({ title, items }: { title?: string; items: SliderIte
     el.scrollBy({ left: dir * (first?.offsetWidth ?? el.clientWidth), behavior: "smooth" });
   };
 
-  const stagger = (list: SliderItem[]) =>
-    Object.fromEntries(list.map((i) => [i.key, Math.random() * MAX_STAGGER_MS]));
-
   const applyFilter = (next: string | null) => {
-    const target = next === gender ? null : next;
-    setGender(target);
-    setDelays(stagger(visible));
-    setPhase("out");
-    if (timer.current) clearTimeout(timer.current);
-    timer.current = setTimeout(() => {
-      const list = target ? items.filter((i) => !i.gender || i.gender === target) : items;
-      setDelays(stagger(list));
-      setVisible(list);
-      trackRef.current?.scrollTo({ left: 0 });
-      setPhase("pre");
-      requestAnimationFrame(() => requestAnimationFrame(() => setPhase("in")));
-    }, FADE_MS + MAX_STAGGER_MS);
+    setGender(next === gender ? null : next);
+    setGeneration((g) => g + 1);
   };
+
+  // On filter change: reset the track, and re-settle once the card
+  // transition is done (scroll snapping can nudge scrollLeft mid-swap)
+  useEffect(() => {
+    trackRef.current?.scrollTo({ left: 0 });
+    updateArrows();
+    const t = setTimeout(
+      () => {
+        trackRef.current?.scrollTo({ left: 0 });
+        updateArrows();
+      },
+      (FADE_S + 2 * STAGGER_S) * 1000 + 150,
+    );
+    return () => clearTimeout(t);
+  }, [gender, updateArrows]);
 
   return (
     <div className="flex w-full flex-col">
@@ -142,22 +147,44 @@ export function SliderShell({ title, items }: { title?: string; items: SliderIte
       </div>
       <div
         ref={trackRef}
-        className="grid w-full snap-x snap-mandatory auto-cols-[85%] grid-flow-col overflow-x-auto sm:auto-cols-[45%] lg:auto-cols-[25%]"
+        className="no-scrollbar grid w-full snap-x snap-mandatory auto-cols-[85%] grid-flow-col overflow-x-auto sm:auto-cols-[45%] lg:auto-cols-[25%]"
       >
-        {visible.map((item) => (
-          <div
-            key={item.key}
-            data-slide
-            className="flex min-w-0 snap-start"
-            style={{
-              opacity: phase === "in" ? 1 : 0,
-              transition: `opacity ${FADE_MS}ms ease`,
-              transitionDelay: phase === "pre" ? "0ms" : `${delays[item.key] ?? 0}ms`,
-            }}
-          >
-            {item.card}
-          </div>
-        ))}
+        <AnimatePresence initial={false} onExitComplete={updateArrows}>
+          {visible.map((item) => (
+            <motion.div
+              key={item.key}
+              data-slide
+              className="flex min-w-0 snap-start"
+              initial={{ opacity: 0 }}
+              animate={{
+                opacity: 1,
+                // incoming cards wait for the outgoing stagger to clear
+                transition: {
+                  duration: FADE_S,
+                  delay: FADE_S + STAGGER_S + hash01(item.key + generation) * STAGGER_S,
+                },
+              }}
+              exit={{
+                opacity: 0,
+                transition: {
+                  duration: FADE_S,
+                  delay: hash01(item.key + generation) * STAGGER_S,
+                },
+              }}
+            >
+              {item.card}
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+      {/* Custom scroll progress: eased fill, full width at the end */}
+      <div className="h-0.5 w-full bg-wash">
+        <motion.div
+          className="h-full bg-ink"
+          initial={false}
+          animate={{ width: `${Math.min(progress, 1) * 100}%` }}
+          transition={{ duration: 0.5, ease: "easeInOut" }}
+        />
       </div>
     </div>
   );

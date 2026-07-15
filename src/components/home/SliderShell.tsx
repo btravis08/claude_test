@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { ArrowButton, ArrowSwap } from "@/components/home/ArrowHover";
 import { ArrowLeft, ArrowRight } from "@/components/icons";
 
 export interface SliderItem {
@@ -125,24 +126,28 @@ export function SliderShell({ title, items }: { title?: string; items: SliderIte
           </div>
         )}
         <div className={`flex items-start pl-3 ${title === undefined ? "ml-auto" : ""}`}>
-          <button
+          <ArrowButton
             type="button"
             aria-label="Previous"
             disabled={!canPrev}
             onClick={() => slide(-1)}
             className="flex size-10 items-center justify-center rounded-xs bg-wash text-ink transition-all disabled:bg-transparent disabled:opacity-30"
           >
-            <ArrowLeft />
-          </button>
-          <button
+            <ArrowSwap dx={-1}>
+              <ArrowLeft />
+            </ArrowSwap>
+          </ArrowButton>
+          <ArrowButton
             type="button"
             aria-label="Next"
             disabled={!canNext}
             onClick={() => slide(1)}
             className="flex size-10 items-center justify-center rounded-xs bg-wash text-ink transition-all disabled:bg-transparent disabled:opacity-30"
           >
-            <ArrowRight />
-          </button>
+            <ArrowSwap dx={1}>
+              <ArrowRight />
+            </ArrowSwap>
+          </ArrowButton>
         </div>
       </div>
       <div

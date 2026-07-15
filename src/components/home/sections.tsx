@@ -1,3 +1,4 @@
+import { ArrowLink, ArrowSwap } from "@/components/home/ArrowHover";
 import { SliderShell } from "@/components/home/SliderShell";
 import { ArrowUpRight, Pause } from "@/components/icons";
 
@@ -353,13 +354,15 @@ export function FiftyFifty({ mode = "dark", panels = defaultPanels }: FiftyFifty
           <Media aspect="aspect-[4/5]" image={panel.image ?? "/figma/campaign.png"} overlay />
           <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-6">
             <p className="font-display text-title-md">{panel.title}</p>
-            <a
+            <ArrowLink
               href="#"
               aria-label={panel.title}
               className="flex size-10 items-center justify-center rounded-xs bg-btn text-btn-fg"
             >
-              <ArrowUpRight />
-            </a>
+              <ArrowSwap dx={1} dy={-1}>
+                <ArrowUpRight />
+              </ArrowSwap>
+            </ArrowLink>
           </div>
         </div>
       ))}

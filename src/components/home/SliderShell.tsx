@@ -88,6 +88,52 @@ export function SliderShell({ title, items }: { title?: string; items: SliderIte
     setGeneration((g) => g + 1);
   };
 
+  /* Cursor drag: mouse-drag the track (touch already swipes natively).
+     Snap is suspended while dragging and the track snaps to the nearest
+     card on release; a drag suppresses the click it would end on. */
+  const drag = useRef({ active: false, startX: 0, startScroll: 0, moved: false });
+  const [dragging, setDragging] = useState(false);
+
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType !== "mouse" || e.button !== 0) return;
+    const el = trackRef.current;
+    if (!el) return;
+    drag.current = { active: true, startX: e.clientX, startScroll: el.scrollLeft, moved: false };
+  };
+
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const el = trackRef.current;
+    if (!el || !drag.current.active) return;
+    const dx = e.clientX - drag.current.startX;
+    if (!drag.current.moved) {
+      if (Math.abs(dx) < 5) return;
+      drag.current.moved = true;
+      setDragging(true);
+      el.setPointerCapture(e.pointerId);
+    }
+    el.scrollLeft = drag.current.startScroll - dx;
+  };
+
+  const endDrag = () => {
+    const el = trackRef.current;
+    if (!el || !drag.current.active) return;
+    drag.current.active = false;
+    if (drag.current.moved) {
+      setDragging(false);
+      const first = el.querySelector<HTMLElement>("[data-slide]");
+      const cardW = first?.offsetWidth ?? el.clientWidth;
+      el.scrollTo({ left: Math.round(el.scrollLeft / cardW) * cardW, behavior: "smooth" });
+    }
+  };
+
+  const onClickCapture = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (drag.current.moved) {
+      e.preventDefault();
+      e.stopPropagation();
+      drag.current.moved = false;
+    }
+  };
+
   // On filter change: reset the track, and re-settle once the card
   // transition is done (scroll snapping can nudge scrollLeft mid-swap)
   useEffect(() => {
@@ -152,7 +198,17 @@ export function SliderShell({ title, items }: { title?: string; items: SliderIte
       </div>
       <div
         ref={trackRef}
-        className="no-scrollbar grid w-full snap-x snap-mandatory auto-cols-[85%] grid-flow-col overflow-x-auto border-y border-line sm:auto-cols-[45%] lg:auto-cols-[25%]"
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        onClickCapture={onClickCapture}
+        onDragStart={(e) => e.preventDefault()}
+        className={`no-scrollbar grid w-full auto-cols-[85%] grid-flow-col overflow-x-auto border-y border-line sm:auto-cols-[45%] lg:auto-cols-[25%] ${
+          dragging
+            ? "cursor-grabbing select-none"
+            : "cursor-grab snap-x snap-mandatory"
+        }`}
       >
         <AnimatePresence initial={false} onExitComplete={updateArrows}>
           {visible.map((item) => (

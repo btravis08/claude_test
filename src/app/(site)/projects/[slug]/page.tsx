@@ -89,7 +89,7 @@ export default async function ProjectPage({
           {stats.map((stat, i) => (
             <div
               key={stat.label}
-              className={`flex flex-col gap-[18px] border-b border-line px-6 pb-16 pt-6 ${
+              className={`flex flex-col gap-[1.125rem] border-b border-line px-6 pb-16 pt-6 ${
                 i > 0 ? "border-l" : ""
               }`}
             >
@@ -112,7 +112,7 @@ export default async function ProjectPage({
 
       {project.gallery && project.gallery.length > 0 && (
         <section>
-          <div className="flex h-[88px] items-center border-y-[1.5px] border-line px-6">
+          <div className="flex h-[5.5rem] items-center border-y-[1.5px] border-line px-6">
             <h2 className="label font-medium text-ink">Gallery</h2>
           </div>
           <div className="grid gap-px bg-line sm:grid-cols-2">

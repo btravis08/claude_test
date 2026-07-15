@@ -16,7 +16,7 @@ export function PrimaryButton({ label }: { label: string }) {
   return (
     <a
       href="#"
-      className="label flex h-10 min-w-[150px] items-center justify-center rounded-xs bg-btn px-3.5 font-medium text-btn-fg transition-opacity hover:opacity-80"
+      className="label flex h-10 min-w-[9.375rem] items-center justify-center rounded-xs bg-btn px-3.5 font-medium text-btn-fg transition-opacity hover:opacity-80"
     >
       {label}
     </a>
@@ -200,7 +200,7 @@ export function InfoSlider({
           card: (
             <a
               href="#"
-              className="flex w-full flex-col gap-[18px] border-r border-line bg-surface px-6 pb-16 pt-6"
+              className="flex w-full flex-col gap-[1.125rem] border-r border-line bg-surface px-6 pb-16 pt-6"
             >
               <Media aspect="aspect-[3/4]" image={card.image ?? "/figma/media-portrait.png"} />
               <p className="text-body-md font-medium text-ink">{card.title}</p>
@@ -243,7 +243,7 @@ function ProductCard({ product }: { product: ProductCardData }) {
   return (
     <a
       href="#"
-      className="flex w-full flex-col justify-center gap-[18px] border-r border-line bg-surface px-6 pb-16 pt-6"
+      className="flex w-full flex-col justify-center gap-[1.125rem] border-r border-line bg-surface px-6 pb-16 pt-6"
     >
       <div className="relative flex aspect-[236/301] w-full flex-col justify-end rounded-xs bg-surface-2 p-6">
         <div
@@ -258,7 +258,7 @@ function ProductCard({ product }: { product: ProductCardData }) {
           <p>{product.title}</p>
           <p>{product.price}</p>
         </div>
-        <div className="flex w-full items-center justify-between font-mono text-[12px] uppercase leading-none text-ink-2">
+        <div className="flex w-full items-center justify-between font-mono text-[0.75rem] uppercase leading-none text-ink-2">
           <p>{product.colorway}</p>
           <p>{product.colorCount}</p>
         </div>
@@ -320,7 +320,7 @@ export function Carousel({
           </div>
         </div>
         {description && (
-          <p className="label max-w-[486px] font-medium text-ink-2">{description}</p>
+          <p className="label max-w-[30.375rem] font-medium text-ink-2">{description}</p>
         )}
       </div>
       <div className="flex min-w-0 flex-1 flex-col justify-end">

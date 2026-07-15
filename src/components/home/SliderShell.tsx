@@ -115,7 +115,7 @@ export function SliderShell({ title, items }: { title?: string; items: SliderIte
                 key={g}
                 type="button"
                 onClick={() => applyFilter(g)}
-                className={`label flex h-10 min-w-[120px] items-center justify-center rounded-xs px-3.5 font-medium transition-colors hover:opacity-80 ${
+                className={`label flex h-10 min-w-[7.5rem] items-center justify-center rounded-xs px-3.5 font-medium transition-colors hover:opacity-80 ${
                   gender === g ? "bg-btn text-btn-fg" : "bg-wash text-ink"
                 }`}
               >

@@ -8,7 +8,7 @@ export function ProjectCard({ project }: { project: Project }) {
   return (
     <Link
       href={`/projects/${project.slug}`}
-      className="group flex flex-col gap-[18px] bg-surface px-6 pb-16 pt-6"
+      className="group flex flex-col gap-[1.125rem] bg-surface px-6 pb-16 pt-6"
     >
       <div className="relative aspect-[4/3] overflow-hidden rounded-xs bg-surface-2">
         {project.mainImage ? (

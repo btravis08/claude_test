@@ -32,7 +32,7 @@ export function Navigation() {
         overlay ? "absolute" : "sticky bg-surface"
       } top-0 z-50 w-full border-b-[1.5px] border-line-2 text-ink`}
     >
-      <div className="flex h-[60px] items-center px-6 py-3">
+      <div className="flex h-[3.75rem] items-center px-6 py-3">
         <div className="flex flex-1 items-center gap-8">
           {leftLinks.map((label, i) => (
             <span key={label} className={i > 2 ? "hidden lg:inline-block" : ""}>

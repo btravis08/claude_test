@@ -18,8 +18,8 @@ export function Logo({
       aria-label="Sun Day Red"
       className={`inline-block bg-current ${className}`}
       style={{
-        width,
-        height,
+        width: `${width / 16}rem`,
+        height: `${height / 16}rem`,
         maskImage: "url(/figma/union.svg)",
         maskSize: "100% 100%",
         maskRepeat: "no-repeat",

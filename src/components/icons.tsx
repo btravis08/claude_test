@@ -11,8 +11,7 @@ function Base({
 }) {
   return (
     <svg
-      width={size}
-      height={size}
+      style={{ width: `${size / 16}rem`, height: `${size / 16}rem` }}
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -61,8 +60,7 @@ export function ChevronRight({ size, className }: { size?: number; className?: s
 export function SearchMd({ size = 20, className }: { size?: number; className?: string }) {
   return (
     <svg
-      width={size}
-      height={size}
+      style={{ width: `${size / 16}rem`, height: `${size / 16}rem` }}
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -79,7 +77,7 @@ export function SearchMd({ size = 20, className }: { size?: number; className?: 
 
 export function Pause({ className }: { className?: string }) {
   return (
-    <svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor" className={className} aria-hidden>
+    <svg style={{ width: "0.5rem", height: "0.5rem" }} viewBox="0 0 8 8" fill="currentColor" className={className} aria-hidden>
       <rect x="1.4" y="0" width="1.4" height="8" />
       <rect x="5.1" y="0" width="1.4" height="8" />
     </svg>

@@ -43,11 +43,31 @@ export const projectBySlugQuery = groq`
   }
 `;
 
+const sectionFields = groq`
+  _key,
+  _type,
+  colorMode,
+  eyebrow,
+  headline,
+  align,
+  primaryCta,
+  secondaryCta,
+  title,
+  description,
+  items,
+  body,
+  image,
+  cards[] { _key, title, image },
+  products[] { _key, title, price, colorway, colorCount, image },
+  panels[] { _key, title, image }
+`;
+
 export const pageBySlugQuery = groq`
   *[_type == "page" && slug.current == $slug][0] {
     _id,
     title,
     "slug": slug.current,
+    sections[] { ${sectionFields} },
     heroImage,
     body
   }

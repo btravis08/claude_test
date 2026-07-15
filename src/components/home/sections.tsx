@@ -5,6 +5,15 @@ import {
   Pause,
 } from "@/components/icons";
 
+/*
+  Presentational sections from the Figma SDR library. Content and color
+  mode come in as props (fed from Sanity page sections); defaults match
+  the Figma "Homepage — V1 Grid" design. Breakpoints follow the
+  desktop/tablet/mobile variants in the library.
+*/
+
+type Mode = "light" | "dark";
+
 /* ---------- shared primitives ---------- */
 
 export function PrimaryButton({ label }: { label: string }) {
@@ -68,20 +77,49 @@ function Media({
   );
 }
 
-/* ---------- Hero (align=left) ---------- */
+/* ---------- Hero ---------- */
 
-export function Hero() {
+export interface HeroProps {
+  mode?: Mode;
+  eyebrow?: string;
+  headline?: string;
+  align?: "left" | "center";
+  primaryCta?: string;
+  secondaryCta?: string;
+  image?: string;
+}
+
+export function Hero({
+  mode = "dark",
+  eyebrow = "JUST ARRIVED",
+  headline = "Spring Traditions",
+  align = "left",
+  primaryCta = "SHOP SPRING TRADITIONS",
+  secondaryCta = "Secondary Button",
+  image = "/figma/campaign.png",
+}: HeroProps) {
+  const centered = align === "center";
   return (
-    <section data-mode="dark" className="relative w-full bg-surface text-ink">
-      <Media aspect="aspect-[3/2]" image="/figma/campaign.png" overlay pill />
-      <div className="absolute inset-0 flex flex-col items-start justify-end gap-6 p-6">
-        <div className="flex flex-col gap-6">
-          <p className="label font-medium">JUST ARRIVED</p>
-          <h1 className="font-display text-headline-lg">Spring Traditions</h1>
+    <section data-mode={mode} className="relative w-full bg-surface text-ink">
+      <Media aspect="aspect-[1/2] sm:aspect-[3/2]" image={image} overlay pill />
+      <div
+        className={`absolute inset-0 flex flex-col justify-end gap-6 p-6 ${
+          centered ? "items-center text-center" : "items-start"
+        }`}
+      >
+        <div className={`flex flex-col gap-6 ${centered ? "items-center" : "items-start"}`}>
+          {eyebrow && <p className="label font-medium">{eyebrow}</p>}
+          {headline && (
+            <h1 className="font-display text-headline-sm sm:text-headline-lg">{headline}</h1>
+          )}
         </div>
-        <div className="flex items-center gap-6">
-          <PrimaryButton label="SHOP SPRING TRADITIONS" />
-          <SecondaryTextButton label="Secondary Button" />
+        <div
+          className={`flex ${
+            centered ? "flex-col items-center gap-4" : "flex-wrap items-center gap-6"
+          }`}
+        >
+          {primaryCta && <PrimaryButton label={primaryCta} />}
+          {secondaryCta && <SecondaryTextButton label={secondaryCta} />}
         </div>
       </div>
     </section>
@@ -90,32 +128,49 @@ export function Hero() {
 
 /* ---------- Full Width campaign ---------- */
 
+export interface FullWidthProps {
+  mode?: Mode;
+  eyebrow?: string;
+  headline?: string;
+  align?: "left" | "center";
+  primaryCta?: string;
+  secondaryCta?: string;
+  image?: string;
+}
+
 export function FullWidth({
-  headline,
-  cta,
-  center = false,
-  secondary,
-}: {
-  headline: string;
-  cta: string;
-  center?: boolean;
-  secondary?: string;
-}) {
+  mode = "dark",
+  eyebrow = "JUST ARRIVED",
+  headline = "Spring Traditions",
+  align = "center",
+  primaryCta = "SHOP SPRING TRADITIONS",
+  secondaryCta,
+  image = "/figma/campaign.png",
+}: FullWidthProps) {
+  const centered = align === "center";
   return (
-    <section data-mode="dark" className="relative w-full bg-white text-ink">
-      <Media aspect="aspect-[16/9]" image="/figma/campaign.png" overlay pill position="bottom" />
+    <section data-mode={mode} className="relative w-full bg-white text-ink">
+      <Media
+        aspect="aspect-[2/3] sm:aspect-[16/9]"
+        image={image}
+        overlay
+        pill
+        position="bottom"
+      />
       <div
         className={`absolute inset-0 flex flex-col justify-end gap-6 p-6 ${
-          center ? "items-center pb-12 text-center" : "items-start"
+          centered ? "items-center pb-12 text-center" : "items-start"
         }`}
       >
-        <div className={`flex flex-col gap-6 ${center ? "items-center" : "items-start"}`}>
-          <p className="label font-medium">JUST ARRIVED</p>
-          <h2 className="font-display text-headline-lg">{headline}</h2>
+        <div className={`flex flex-col gap-6 ${centered ? "items-center" : "items-start"}`}>
+          {eyebrow && <p className="label font-medium">{eyebrow}</p>}
+          {headline && (
+            <h2 className="font-display text-headline-sm sm:text-headline-lg">{headline}</h2>
+          )}
         </div>
-        <div className={`flex ${center ? "flex-col items-center gap-4" : "items-center gap-6"}`}>
-          <PrimaryButton label={cta} />
-          {secondary && <SecondaryTextButton label={secondary} />}
+        <div className={`flex ${centered ? "flex-col items-center gap-4" : "items-center gap-6"}`}>
+          {primaryCta && <PrimaryButton label={primaryCta} />}
+          {secondaryCta && <SecondaryTextButton label={secondaryCta} />}
         </div>
       </div>
     </section>
@@ -130,7 +185,7 @@ export function SliderNav({ title }: { title?: string }) {
       {title !== undefined && (
         <p className="min-w-0 flex-1 font-display text-title-sm text-ink">{title}</p>
       )}
-      <div className="flex w-[252px] items-center gap-3">
+      <div className="hidden items-center gap-3 sm:flex sm:w-[252px]">
         <a
           href="#"
           className="label flex h-10 min-w-[120px] items-center justify-center bg-wash px-3.5 font-medium text-ink transition-opacity hover:opacity-80"
@@ -159,76 +214,154 @@ export function SliderNav({ title }: { title?: string }) {
   );
 }
 
-/* ---------- Info Card (Explore slider) ---------- */
-
-export function InfoCard({ title }: { title: string }) {
+/* Horizontal slider track: scrolls on mobile/tablet, 4-up at desktop */
+function SliderTrack({ children }: { children: React.ReactNode }) {
   return (
-    <a
-      href="#"
-      className="flex min-w-0 flex-1 flex-col gap-[18px] border border-line bg-surface px-6 pb-16 pt-6"
-    >
-      <Media aspect="aspect-[3/4]" image="/figma/media-portrait.png" />
-      <p className="text-body-md font-medium text-ink">{title}</p>
-    </a>
+    <div className="grid w-full snap-x snap-mandatory auto-cols-[85%] grid-flow-col overflow-x-auto sm:auto-cols-[45%] lg:auto-cols-fr">
+      {children}
+    </div>
   );
 }
 
-/* ---------- Product Card V1 ---------- */
+/* ---------- Info Card Slider ---------- */
 
-export function ProductCardV1() {
+export interface InfoSliderProps {
+  mode?: Mode;
+  title?: string;
+  cards?: Array<{ _key?: string; title?: string; image?: string }>;
+}
+
+const defaultInfoCards = ["Footwear", "Polos", "Headwear", "T-Shirts"].map((title) => ({
+  title,
+  image: "/figma/media-portrait.png",
+}));
+
+export function InfoSlider({
+  mode = "light",
+  title = "Explore Sun Day Red",
+  cards = defaultInfoCards,
+}: InfoSliderProps) {
   return (
-    <a
-      href="#"
-      className="flex min-w-0 flex-1 flex-col justify-center gap-[18px] border border-line bg-surface px-6 pb-16 pt-6"
-    >
-      <div className="relative flex aspect-[236/301] w-full flex-col justify-end bg-surface-2 p-6">
-        <div
-          role="img"
-          aria-label="Presidio"
-          className="absolute inset-x-[17.77%] top-1/2 aspect-square -translate-y-1/2 bg-contain bg-center bg-no-repeat"
-          style={{ backgroundImage: "url(/figma/card-shoe.png)" }}
-        />
-      </div>
-      <div className="flex w-full flex-col gap-1.5">
-        <div className="label flex w-full items-center justify-between font-medium text-ink">
-          <p>Presidio</p>
-          <p>$198.00</p>
-        </div>
-        <div className="flex w-full items-center justify-between font-mono text-[12px] uppercase leading-none text-ink-2">
-          <p>Gray / Navy</p>
-          <p>+4 colors</p>
-        </div>
-      </div>
-    </a>
+    <section data-mode={mode} className="flex w-full flex-col bg-surface text-ink">
+      <SliderNav title={title} />
+      <SliderTrack>
+        {cards.map((card, i) => (
+          <a
+            key={card._key ?? i}
+            href="#"
+            className="flex min-w-0 snap-start flex-col gap-[18px] border border-line bg-surface px-6 pb-16 pt-6"
+          >
+            <Media aspect="aspect-[3/4]" image={card.image ?? "/figma/media-portrait.png"} />
+            <p className="text-body-md font-medium text-ink">{card.title}</p>
+          </a>
+        ))}
+      </SliderTrack>
+    </section>
   );
 }
 
-/* ---------- Carousel (Shop Footwear) ---------- */
+/* ---------- Product Slider ---------- */
 
-const carouselItems = ["Pioneer→", "Presidio", "Osprey", "Cardinal", "Jupiter"];
+export interface ProductSliderProps {
+  mode?: Mode;
+  title?: string;
+  products?: Array<{
+    _key?: string;
+    title?: string;
+    price?: string;
+    colorway?: string;
+    colorCount?: string;
+    image?: string;
+  }>;
+}
 
-export function Carousel() {
+const defaultProducts = Array.from({ length: 4 }, () => ({
+  title: "Presidio",
+  price: "$198.00",
+  colorway: "Gray / Navy",
+  colorCount: "+4 colors",
+  image: "/figma/card-shoe.png",
+}));
+
+export function ProductSlider({
+  mode = "light",
+  title,
+  products = defaultProducts,
+}: ProductSliderProps) {
   return (
-    <section data-mode="light" className="flex w-full items-stretch justify-between bg-surface">
+    <section data-mode={mode} className="flex w-full flex-col bg-surface text-ink">
+      <SliderNav title={title} />
+      <SliderTrack>
+        {products.map((product, i) => (
+          <a
+            key={product._key ?? i}
+            href="#"
+            className="flex min-w-0 snap-start flex-col justify-center gap-[18px] border border-line bg-surface px-6 pb-16 pt-6"
+          >
+            <div className="relative flex aspect-[236/301] w-full flex-col justify-end bg-surface-2 p-6">
+              <div
+                role="img"
+                aria-label={product.title}
+                className="absolute inset-x-[17.77%] top-1/2 aspect-square -translate-y-1/2 bg-contain bg-center bg-no-repeat"
+                style={{ backgroundImage: `url(${product.image ?? "/figma/card-shoe.png"})` }}
+              />
+            </div>
+            <div className="flex w-full flex-col gap-1.5">
+              <div className="label flex w-full items-center justify-between font-medium text-ink">
+                <p>{product.title}</p>
+                <p>{product.price}</p>
+              </div>
+              <div className="flex w-full items-center justify-between font-mono text-[12px] uppercase leading-none text-ink-2">
+                <p>{product.colorway}</p>
+                <p>{product.colorCount}</p>
+              </div>
+            </div>
+          </a>
+        ))}
+      </SliderTrack>
+    </section>
+  );
+}
+
+/* ---------- Carousel ---------- */
+
+export interface CarouselProps {
+  mode?: Mode;
+  eyebrow?: string;
+  items?: string[];
+  description?: string;
+  image?: string;
+}
+
+export function Carousel({
+  mode = "light",
+  eyebrow = "Shop Footwear",
+  items = ["Pioneer→", "Presidio", "Osprey", "Cardinal", "Jupiter"],
+  description = "Maecenas suspendisse ultrices pellentesque et ornare dui nisl. Eget convallis lorem faucibus tortor in. Cursus feugiat feugiat a quam vestibulum dignissim sem ullamcorper.",
+  image = "/figma/media-portrait.png",
+}: CarouselProps) {
+  return (
+    <section
+      data-mode={mode}
+      className="flex w-full flex-col items-stretch justify-between bg-surface text-ink lg:flex-row"
+    >
       <div className="flex min-w-0 flex-1 flex-col justify-between gap-12 px-8 py-12 lg:px-32 lg:py-24">
         <div className="flex flex-col gap-8">
-          <p className="label font-medium text-ink">Shop Footwear</p>
+          {eyebrow && <p className="label font-medium text-ink">{eyebrow}</p>}
           <div className="flex flex-col font-display text-headline-sm">
-            {carouselItems.map((item, i) => (
-              <p key={item} className={i === 0 ? "text-ink" : "text-ink-2"}>
+            {items.map((item, i) => (
+              <p key={i} className={i === 0 ? "text-ink" : "text-ink-2"}>
                 {item}
               </p>
             ))}
           </div>
         </div>
-        <p className="label max-w-[486px] font-medium text-ink-2">
-          Maecenas suspendisse ultrices pellentesque et ornare dui nisl. Eget
-          convallis lorem faucibus tortor in. Cursus feugiat feugiat a quam
-          vestibulum dignissim sem ullamcorper.
-        </p>
+        {description && (
+          <p className="label max-w-[486px] font-medium text-ink-2">{description}</p>
+        )}
       </div>
       <div className="flex min-w-0 flex-1 flex-col justify-end">
-        <Media aspect="aspect-[4/5]" image="/figma/media-portrait.png" pill />
+        <Media aspect="aspect-[4/5]" image={image} pill />
       </div>
     </section>
   );
@@ -236,18 +369,30 @@ export function Carousel() {
 
 /* ---------- 50/50 ---------- */
 
-export function FiftyFifty() {
-  const panels = ["Women’s Apparel", "Men’s Apparel"];
+export interface FiftyFiftyProps {
+  mode?: Mode;
+  panels?: Array<{ _key?: string; title?: string; image?: string }>;
+}
+
+const defaultPanels = ["Women’s Apparel", "Men’s Apparel"].map((title) => ({
+  title,
+  image: "/figma/campaign.png",
+}));
+
+export function FiftyFifty({ mode = "dark", panels = defaultPanels }: FiftyFiftyProps) {
   return (
-    <section data-mode="dark" className="grid w-full grid-cols-1 gap-y-0.5 bg-white text-ink sm:grid-cols-2">
-      {panels.map((title) => (
-        <div key={title} className="relative">
-          <Media aspect="aspect-[4/5]" image="/figma/campaign.png" overlay />
+    <section
+      data-mode={mode}
+      className="grid w-full grid-cols-1 gap-y-0.5 bg-white text-ink sm:grid-cols-2"
+    >
+      {panels.map((panel, i) => (
+        <div key={panel._key ?? i} className="relative">
+          <Media aspect="aspect-[4/5]" image={panel.image ?? "/figma/campaign.png"} overlay />
           <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-6">
-            <p className="font-display text-title-md">{title}</p>
+            <p className="font-display text-title-md">{panel.title}</p>
             <a
               href="#"
-              aria-label={title}
+              aria-label={panel.title}
               className="flex size-10 items-center justify-center bg-btn text-btn-fg"
             >
               <ArrowUpRight />

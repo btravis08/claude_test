@@ -1,69 +1,45 @@
+import { SectionRenderer } from "@/components/SectionRenderer";
 import {
   Carousel,
   FiftyFifty,
   FullWidth,
   Hero,
-  InfoCard,
-  ProductCardV1,
-  SliderNav,
+  InfoSlider,
+  ProductSlider,
 } from "@/components/home/sections";
+import { sanityFetch } from "@/sanity/lib/fetch";
+import { pageBySlugQuery } from "@/sanity/lib/queries";
+import type { Page } from "@/sanity/types";
 
 /*
-  Homepage — V1 Grid from Figma "[i] Design Library — SDR" (node 33581:41491).
-  Section order and color modes match the design exactly.
+  The homepage is built from the Sanity "home" page's sections. Until
+  that document exists, it renders the Figma "Homepage — V1 Grid"
+  composition (node 33581:41491) as the default.
 */
-export default function Home() {
+export default async function Home() {
+  const page = await sanityFetch<Page | null>(
+    pageBySlugQuery,
+    { slug: "home" },
+    null,
+  );
+
   return (
     <div data-mode="light" className="flex flex-col items-start bg-surface">
-      <Hero />
-
-      {/* Slider — Explore Sun Day Red (light) */}
-      <section data-mode="light" className="flex w-full flex-col">
-        <SliderNav title="Explore Sun Day Red" />
-        <div className="grid w-full grid-cols-2 lg:grid-cols-4">
-          {["Footwear", "Polos", "Headwear", "T-Shirts"].map((title) => (
-            <InfoCard key={title} title={title} />
-          ))}
-        </div>
-      </section>
-
-      <FullWidth headline="Spring Traditions" cta="SHOP SPRING TRADITIONS" center secondary="Secondary Button" />
-
-      <Carousel />
-
-      <FiftyFifty />
-
-      {/* Slider — Best Sellers (light) */}
-      <section data-mode="light" className="flex w-full flex-col">
-        <SliderNav title="Best Sellers" />
-        <div className="grid w-full grid-cols-2 lg:grid-cols-4">
-          {[0, 1, 2, 3].map((i) => (
-            <ProductCardV1 key={i} />
-          ))}
-        </div>
-      </section>
-
-      {/* Slider — Best Sellers (light) */}
-      <section data-mode="light" className="flex w-full flex-col">
-        <SliderNav title="Best Sellers" />
-        <div className="grid w-full grid-cols-2 lg:grid-cols-4">
-          {[0, 1, 2, 3].map((i) => (
-            <ProductCardV1 key={i} />
-          ))}
-        </div>
-      </section>
-
-      <FullWidth headline="TW Performance" cta="shop tw performance" />
-
-      {/* Product Slider — no title (light) */}
-      <section data-mode="light" className="flex w-full flex-col">
-        <SliderNav />
-        <div className="grid w-full grid-cols-2 lg:grid-cols-4">
-          {[0, 1, 2, 3].map((i) => (
-            <ProductCardV1 key={i} />
-          ))}
-        </div>
-      </section>
+      {page?.sections?.length ? (
+        <SectionRenderer sections={page.sections} />
+      ) : (
+        <>
+          <Hero />
+          <InfoSlider />
+          <FullWidth secondaryCta="Secondary Button" />
+          <Carousel />
+          <FiftyFifty />
+          <ProductSlider title="Best Sellers" />
+          <ProductSlider title="Best Sellers" />
+          <FullWidth headline="TW Performance" primaryCta="shop tw performance" align="left" />
+          <ProductSlider />
+        </>
+      )}
     </div>
   );
 }

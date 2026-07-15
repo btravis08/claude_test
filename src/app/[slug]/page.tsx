@@ -3,6 +3,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { PortableText } from "next-sanity";
 
+import { SectionRenderer } from "@/components/SectionRenderer";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { urlFor } from "@/sanity/lib/image";
 import { pageBySlugQuery } from "@/sanity/lib/queries";
@@ -29,6 +30,16 @@ export default async function CmsPage({
 
   if (!page) notFound();
 
+  // Section-built page
+  if (page.sections?.length) {
+    return (
+      <div data-mode="light" className="flex flex-col items-start bg-surface">
+        <SectionRenderer sections={page.sections} />
+      </div>
+    );
+  }
+
+  // Legacy page (heroImage + body)
   return (
     <article>
       <div className="flex flex-col gap-6 px-6 pb-12 pt-16 sm:pt-24">

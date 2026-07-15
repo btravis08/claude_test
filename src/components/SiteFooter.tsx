@@ -62,7 +62,7 @@ export function SiteFooter() {
       </div>
 
       {/* link columns */}
-      <div className="grid w-full grid-cols-2 border-t-[1.5px] border-line sm:grid-cols-4">
+      <div className="grid w-full grid-cols-1 border-t-[1.5px] border-line sm:grid-cols-2 lg:grid-cols-4">
         {columns.map((col) => (
           <div
             key={col.heading}
@@ -88,7 +88,7 @@ export function SiteFooter() {
       </div>
 
       {/* newsletter */}
-      <form className="flex w-full items-start gap-0 p-6">
+      <form className="flex w-full flex-col items-stretch gap-3 p-6 sm:flex-row sm:gap-0">
         <label className="flex h-10 flex-1 items-center bg-wash pl-4 pr-3 backdrop-blur-[12px]">
           <span className="sr-only">Email address</span>
           <input
@@ -106,11 +106,11 @@ export function SiteFooter() {
       </form>
 
       {/* bottom bar */}
-      <div className="flex h-[72px] w-full items-start gap-8 px-6 py-8">
+      <div className="flex w-full flex-col gap-6 px-6 py-8 sm:h-[72px] sm:flex-row sm:items-start sm:gap-8">
         <div className="flex flex-1 items-center">
           <p className="label font-medium">©2026 SUN DAY RED</p>
         </div>
-        <div className="flex flex-1 items-center justify-between">
+        <div className="flex flex-1 items-center justify-between gap-4">
           {social.map((s) => (
             <a key={s} href="#" className="label font-medium hover:opacity-70">
               {s}

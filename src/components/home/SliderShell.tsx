@@ -125,7 +125,7 @@ export function SliderShell({ title, items }: { title?: string; items: SliderIte
             aria-label="Previous"
             disabled={!canPrev}
             onClick={() => slide(-1)}
-            className="flex size-10 items-center justify-center text-ink transition-opacity disabled:opacity-30"
+            className="flex size-10 items-center justify-center bg-wash text-ink transition-all disabled:bg-transparent disabled:opacity-30"
           >
             <ArrowLeft />
           </button>
@@ -134,7 +134,7 @@ export function SliderShell({ title, items }: { title?: string; items: SliderIte
             aria-label="Next"
             disabled={!canNext}
             onClick={() => slide(1)}
-            className="flex size-10 items-center justify-center bg-wash text-ink transition-opacity disabled:opacity-30"
+            className="flex size-10 items-center justify-center bg-wash text-ink transition-all disabled:bg-transparent disabled:opacity-30"
           >
             <ArrowRight />
           </button>

@@ -89,7 +89,7 @@ export function SiteFooter() {
 
       {/* newsletter */}
       <form className="flex w-full flex-col items-stretch gap-3 p-6 sm:flex-row sm:gap-0">
-        <label className="flex h-10 flex-1 items-center bg-wash pl-4 pr-3 backdrop-blur-[12px]">
+        <label className="flex h-10 flex-1 items-center rounded-xs bg-wash pl-4 pr-3 backdrop-blur-[12px]">
           <span className="sr-only">Email address</span>
           <input
             type="email"
@@ -99,7 +99,7 @@ export function SiteFooter() {
         </label>
         <button
           type="submit"
-          className="label flex h-10 min-w-[150px] flex-1 items-center justify-center bg-btn px-3.5 font-medium text-btn-fg transition-opacity hover:opacity-80"
+          className="label flex h-10 min-w-[150px] flex-1 items-center justify-center rounded-xs bg-btn px-3.5 font-medium text-btn-fg transition-opacity hover:opacity-80"
         >
           Submit
         </button>

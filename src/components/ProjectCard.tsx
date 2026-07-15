@@ -10,7 +10,7 @@ export function ProjectCard({ project }: { project: Project }) {
       href={`/projects/${project.slug}`}
       className="group flex flex-col gap-[18px] bg-surface px-6 pb-16 pt-6"
     >
-      <div className="relative aspect-[4/3] overflow-hidden bg-surface-2">
+      <div className="relative aspect-[4/3] overflow-hidden rounded-xs bg-surface-2">
         {project.mainImage ? (
           <Image
             src={urlFor(project.mainImage).width(800).height(600).url()}

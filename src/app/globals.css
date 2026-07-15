@@ -89,7 +89,8 @@
   --text-display-xl--line-height: 1.2;
   --text-display-xl--letter-spacing: -1.28px;
 
-  --radius-none: 0;
+  /* Subtle 1px rounding on tiles, buttons, cards, and media wells */
+  --radius-xs: 1px;
 }
 
 body {

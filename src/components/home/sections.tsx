@@ -16,7 +16,7 @@ export function PrimaryButton({ label }: { label: string }) {
   return (
     <a
       href="#"
-      className="label flex h-10 min-w-[150px] items-center justify-center bg-btn px-3.5 font-medium text-btn-fg transition-opacity hover:opacity-80"
+      className="label flex h-10 min-w-[150px] items-center justify-center rounded-xs bg-btn px-3.5 font-medium text-btn-fg transition-opacity hover:opacity-80"
     >
       {label}
     </a>
@@ -59,7 +59,7 @@ function Media({
   position?: string;
 }) {
   return (
-    <div className={`relative w-full overflow-hidden bg-surface-2 ${aspect}`}>
+    <div className={`relative w-full overflow-hidden rounded-xs bg-surface-2 ${aspect}`}>
       {image && (
         <div
           aria-hidden
@@ -200,7 +200,7 @@ export function InfoSlider({
           card: (
             <a
               href="#"
-              className="flex w-full flex-col gap-[18px] border border-line bg-surface px-6 pb-16 pt-6"
+              className="flex w-full flex-col gap-[18px] rounded-xs border border-line bg-surface px-6 pb-16 pt-6"
             >
               <Media aspect="aspect-[3/4]" image={card.image ?? "/figma/media-portrait.png"} />
               <p className="text-body-md font-medium text-ink">{card.title}</p>
@@ -243,9 +243,9 @@ function ProductCard({ product }: { product: ProductCardData }) {
   return (
     <a
       href="#"
-      className="flex w-full flex-col justify-center gap-[18px] border border-line bg-surface px-6 pb-16 pt-6"
+      className="flex w-full flex-col justify-center gap-[18px] rounded-xs border border-line bg-surface px-6 pb-16 pt-6"
     >
-      <div className="relative flex aspect-[236/301] w-full flex-col justify-end bg-surface-2 p-6">
+      <div className="relative flex aspect-[236/301] w-full flex-col justify-end rounded-xs bg-surface-2 p-6">
         <div
           role="img"
           aria-label={product.title}
@@ -356,7 +356,7 @@ export function FiftyFifty({ mode = "dark", panels = defaultPanels }: FiftyFifty
             <a
               href="#"
               aria-label={panel.title}
-              className="flex size-10 items-center justify-center bg-btn text-btn-fg"
+              className="flex size-10 items-center justify-center rounded-xs bg-btn text-btn-fg"
             >
               <ArrowUpRight />
             </a>

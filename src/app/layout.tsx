@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import { IBM_Plex_Mono, Instrument_Serif, Inter } from "next/font/google";
 import "./globals.css";
 
-import { Navigation } from "@/components/Navigation";
-import { SiteFooter } from "@/components/SiteFooter";
-
 /*
+  Root layout: fonts + tokens only. The SDR site chrome (navigation,
+  footer) lives in the (site) route group so /studio stays bare.
+
   Brand fonts in the Figma library are Feature Deck (display serif) and
-  Maison Neue / Maison Neue Mono — both commercially licensed. These are the
-  closest Google Fonts stand-ins; swap to next/font/local when licensed
-  files are available. The CSS variable names stay the same either way.
+  Maison Neue / Maison Neue Mono — both commercially licensed. These are
+  the closest Google Fonts stand-ins; swap to next/font/local when
+  licensed files are available. The CSS variable names stay the same.
 */
 const featureDeck = Instrument_Serif({
   variable: "--font-feature-deck",
@@ -46,11 +46,7 @@ export default function RootLayout({
       lang="en"
       className={`${featureDeck.variable} ${maison.variable} ${maisonMono.variable} h-full antialiased`}
     >
-      <body className="relative flex min-h-full flex-col">
-        <Navigation />
-        <main className="flex-1">{children}</main>
-        <SiteFooter />
-      </body>
+      <body className="min-h-full">{children}</body>
     </html>
   );
 }

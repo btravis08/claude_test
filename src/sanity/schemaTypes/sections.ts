@@ -1,11 +1,46 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
+import type { SanityClient } from "sanity";
 
 /*
   Page-builder sections mirroring the Figma "[i] Design Library — SDR"
   components. Every section carries a colorMode matching the library's
   variable modes; the frontend wraps each section in data-mode so the
   design tokens resolve per section.
+
+  Every field ships an initialValue so a freshly added section arrives
+  pre-filled: lorem copy, sample labels, and a placeholder image asset
+  (resolved from the dataset — seeded by scripts/seed-placeholder.ts,
+  falling back to the campaign shot from scripts/seed-home.ts).
 */
+
+const API = { apiVersion: "2026-07-01" };
+
+const LOREM =
+  "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
+
+const key = () => `k${Math.random().toString(36).slice(2, 10)}`;
+
+type GetClient = (options: { apiVersion: string }) => SanityClient;
+
+async function placeholderAssetId(getClient: GetClient): Promise<string | null> {
+  try {
+    const client = getClient(API);
+    return await client.fetch(
+      `*[_type == "sanity.imageAsset" && originalFilename in ["sdr-placeholder.png", "campaign.png"]]
+        | order(originalFilename desc)[0]._id`,
+    );
+  } catch {
+    return null;
+  }
+}
+
+async function placeholderImage(getClient: GetClient) {
+  const id = await placeholderAssetId(getClient);
+  // An empty image value keeps the field blank when no asset is seeded yet
+  return id
+    ? { _type: "image" as const, asset: { _type: "reference" as const, _ref: id } }
+    : { _type: "image" as const };
+}
 
 const colorMode = (initialValue: "light" | "dark") =>
   defineField({
@@ -29,30 +64,43 @@ const image = (title = "Image") =>
     title,
     type: "image",
     options: { hotspot: true },
+    initialValue: async (_, { getClient }) => placeholderImage(getClient),
   });
+
+/* Shared fields for hero / full-width campaign sections */
+const campaignFields = (align: "left" | "center") => [
+  defineField({ name: "eyebrow", type: "string", initialValue: "SAMPLE BROW" }),
+  defineField({ name: "headline", type: "string", initialValue: "Lorem Ipsum Dolor" }),
+  defineField({
+    name: "align",
+    type: "string",
+    options: {
+      list: ["left", "center"],
+      layout: "radio",
+      direction: "horizontal",
+    },
+    initialValue: align,
+  }),
+  defineField({
+    name: "primaryCta",
+    title: "Primary button label",
+    type: "string",
+    initialValue: "Button 1",
+  }),
+  defineField({
+    name: "secondaryCta",
+    title: "Secondary button label",
+    type: "string",
+    initialValue: "Button 2",
+  }),
+  image(),
+];
 
 export const sectionHero = defineType({
   name: "sectionHero",
   title: "Hero",
   type: "object",
-  fields: [
-    colorMode("dark"),
-    defineField({ name: "eyebrow", type: "string", initialValue: "JUST ARRIVED" }),
-    defineField({ name: "headline", type: "string" }),
-    defineField({
-      name: "align",
-      type: "string",
-      options: {
-        list: ["left", "center"],
-        layout: "radio",
-        direction: "horizontal",
-      },
-      initialValue: "left",
-    }),
-    defineField({ name: "primaryCta", title: "Primary button label", type: "string" }),
-    defineField({ name: "secondaryCta", title: "Secondary button label", type: "string" }),
-    image(),
-  ],
+  fields: [colorMode("dark"), ...campaignFields("left")],
   preview: {
     select: { title: "headline", media: "image" },
     prepare: ({ title, media }) => ({ title: title || "Hero", subtitle: "Hero", media }),
@@ -63,24 +111,7 @@ export const sectionFullWidth = defineType({
   name: "sectionFullWidth",
   title: "Full Width",
   type: "object",
-  fields: [
-    colorMode("dark"),
-    defineField({ name: "eyebrow", type: "string", initialValue: "JUST ARRIVED" }),
-    defineField({ name: "headline", type: "string" }),
-    defineField({
-      name: "align",
-      type: "string",
-      options: {
-        list: ["left", "center"],
-        layout: "radio",
-        direction: "horizontal",
-      },
-      initialValue: "center",
-    }),
-    defineField({ name: "primaryCta", title: "Primary button label", type: "string" }),
-    defineField({ name: "secondaryCta", title: "Secondary button label", type: "string" }),
-    image(),
-  ],
+  fields: [colorMode("dark"), ...campaignFields("center")],
   preview: {
     select: { title: "headline", media: "image" },
     prepare: ({ title, media }) => ({ title: title || "Full Width", subtitle: "Full Width", media }),
@@ -93,7 +124,7 @@ export const sectionInfoSlider = defineType({
   type: "object",
   fields: [
     colorMode("light"),
-    defineField({ name: "title", type: "string" }),
+    defineField({ name: "title", type: "string", initialValue: "Lorem Ipsum Slider" }),
     defineField({
       name: "cards",
       type: "array",
@@ -102,12 +133,22 @@ export const sectionInfoSlider = defineType({
           type: "object",
           name: "infoCard",
           fields: [
-            defineField({ name: "title", type: "string" }),
+            defineField({ name: "title", type: "string", initialValue: "Lorem Card" }),
             image(),
           ],
           preview: { select: { title: "title", media: "image" } },
         }),
       ],
+      // Four pre-filled cards so a new slider arrives full
+      initialValue: async (_, { getClient }) => {
+        const img = await placeholderImage(getClient);
+        return [1, 2, 3, 4].map((n) => ({
+          _type: "infoCard",
+          _key: key(),
+          title: `Lorem Card ${n}`,
+          ...(img ? { image: img } : {}),
+        }));
+      },
     }),
   ],
   preview: {
@@ -126,6 +167,7 @@ export const sectionProductSlider = defineType({
       name: "title",
       type: "string",
       description: "Optional — leave empty for the untitled variant",
+      initialValue: "Lorem Ipsum Slider",
     }),
     defineField({
       name: "products",
@@ -135,15 +177,33 @@ export const sectionProductSlider = defineType({
           type: "object",
           name: "productCard",
           fields: [
-            defineField({ name: "title", type: "string" }),
-            defineField({ name: "price", type: "string" }),
-            defineField({ name: "colorway", type: "string" }),
-            defineField({ name: "colorCount", title: "Extra colors note", type: "string" }),
+            defineField({ name: "title", type: "string", initialValue: "Lorem Product" }),
+            defineField({ name: "price", type: "string", initialValue: "$0.00" }),
+            defineField({ name: "colorway", type: "string", initialValue: "Lorem / Ipsum" }),
+            defineField({
+              name: "colorCount",
+              title: "Extra colors note",
+              type: "string",
+              initialValue: "+4 colors",
+            }),
             image(),
           ],
           preview: { select: { title: "title", subtitle: "price", media: "image" } },
         }),
       ],
+      // Four pre-filled products so a new slider arrives full
+      initialValue: async (_, { getClient }) => {
+        const img = await placeholderImage(getClient);
+        return [1, 2, 3, 4].map((n) => ({
+          _type: "productCard",
+          _key: key(),
+          title: `Lorem Product ${n}`,
+          price: "$0.00",
+          colorway: "Lorem / Ipsum",
+          colorCount: "+4 colors",
+          ...(img ? { image: img } : {}),
+        }));
+      },
     }),
   ],
   preview: {
@@ -158,14 +218,15 @@ export const sectionCarousel = defineType({
   type: "object",
   fields: [
     colorMode("light"),
-    defineField({ name: "eyebrow", type: "string" }),
+    defineField({ name: "eyebrow", type: "string", initialValue: "SAMPLE BROW" }),
     defineField({
       name: "items",
       title: "List items (first is highlighted)",
       type: "array",
       of: [defineArrayMember({ type: "string" })],
+      initialValue: ["Lorem→", "Ipsum", "Dolor", "Sit", "Amet"],
     }),
-    defineField({ name: "description", type: "text", rows: 3 }),
+    defineField({ name: "description", type: "text", rows: 3, initialValue: LOREM }),
     image(),
   ],
   preview: {
@@ -189,12 +250,22 @@ export const sectionFiftyFifty = defineType({
           type: "object",
           name: "panel",
           fields: [
-            defineField({ name: "title", type: "string" }),
+            defineField({ name: "title", type: "string", initialValue: "Lorem Panel" }),
             image(),
           ],
           preview: { select: { title: "title", media: "image" } },
         }),
       ],
+      // Both panels pre-filled
+      initialValue: async (_, { getClient }) => {
+        const img = await placeholderImage(getClient);
+        return [1, 2].map((n) => ({
+          _type: "panel",
+          _key: key(),
+          title: `Lorem Panel ${n}`,
+          ...(img ? { image: img } : {}),
+        }));
+      },
     }),
   ],
   preview: {
@@ -209,7 +280,19 @@ export const sectionRichText = defineType({
   type: "object",
   fields: [
     colorMode("light"),
-    defineField({ name: "body", type: "blockContent" }),
+    defineField({
+      name: "body",
+      type: "blockContent",
+      initialValue: () => [
+        {
+          _type: "block",
+          _key: key(),
+          style: "normal",
+          markDefs: [],
+          children: [{ _type: "span", _key: key(), text: `${LOREM} ${LOREM}`, marks: [] }],
+        },
+      ],
+    }),
   ],
   preview: {
     prepare: () => ({ title: "Rich Text", subtitle: "Rich Text" }),

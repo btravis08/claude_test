@@ -2,11 +2,8 @@ import type { Metadata } from "next";
 import { IBM_Plex_Mono, Instrument_Serif, Inter } from "next/font/google";
 import "./globals.css";
 
+import { Navigation } from "@/components/Navigation";
 import { SiteFooter } from "@/components/SiteFooter";
-import { SiteHeader } from "@/components/SiteHeader";
-import { sanityFetch } from "@/sanity/lib/fetch";
-import { siteSettingsQuery } from "@/sanity/lib/queries";
-import type { SiteSettings } from "@/sanity/types";
 
 /*
   Brand fonts in the Figma library are Feature Deck (display serif) and
@@ -33,33 +30,26 @@ const maisonMono = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Prefab Co. — Modern Prefab Construction",
-    template: "%s | Prefab Co.",
+    default: "Sun Day Red",
+    template: "%s | Sun Day Red",
   },
-  description:
-    "Residential and commercial prefab builds, designed and delivered.",
+  description: "SDR design library implementation.",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const settings = await sanityFetch<SiteSettings>(
-    siteSettingsQuery,
-    {},
-    {},
-  );
-
   return (
     <html
       lang="en"
       className={`${featureDeck.variable} ${maison.variable} ${maisonMono.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col">
-        <SiteHeader companyName={settings.companyName ?? "Prefab Co."} />
+      <body className="relative flex min-h-full flex-col">
+        <Navigation />
         <main className="flex-1">{children}</main>
-        <SiteFooter settings={settings} />
+        <SiteFooter />
       </body>
     </html>
   );

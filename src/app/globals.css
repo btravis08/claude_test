@@ -3,10 +3,16 @@
 
 /*
   Design tokens from Figma "[i] Design Library — SDR".
-  Two color modes (light/dark) drive the semantic variables below;
-  components use the token utilities and never hardcode mode colors.
+
+  Every section in the page designs carries its own color mode: sections
+  are wrapped in data-mode="light" or data-mode="dark" and the semantic
+  variables below resolve per section, exactly like Figma variable modes.
+
+  Light values come from the library's light mode; dark values from its
+  dark mode (bg #000 / text #fff / inverted buttons / white-alpha lines).
 */
-:root {
+:root,
+[data-mode="light"] {
   /* Colors/Background */
   --surface: #f7f8f4;
   --surface-2: #e1e1de;
@@ -15,29 +21,30 @@
   --ink-2: rgba(0, 0, 0, 0.5);
   --ink-3: #70716f;
   --ink-disabled: #878785;
-  /* Colors/Border + Alpha */
+  /* Colors/Border + Component colors/Alpha */
   --line: #dbdbd7;
   --line-2: rgba(0, 0, 0, 0.14);
   --wash: rgba(0, 0, 0, 0.06);
-  /* Component colors/Buttons */
+  /* Component colors/Buttons/Primary */
   --btn: #000000;
   --btn-fg: #ffffff;
+  /* Component colors/Buttons/Secondary Color */
+  --btn-2-fg: #9d9e9b;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --surface: #000000;
-    --surface-2: #1b1c1a;
-    --ink: #ffffff;
-    --ink-2: rgba(255, 255, 255, 0.55);
-    --ink-3: #9d9e9b;
-    --ink-disabled: #878785;
-    --line: rgba(255, 255, 255, 0.18);
-    --line-2: rgba(255, 255, 255, 0.15);
-    --wash: rgba(255, 255, 255, 0.08);
-    --btn: #ffffff;
-    --btn-fg: #000000;
-  }
+[data-mode="dark"] {
+  --surface: #000000;
+  --surface-2: #1b1c1a;
+  --ink: #ffffff;
+  --ink-2: rgba(255, 255, 255, 0.55);
+  --ink-3: #9d9e9b;
+  --ink-disabled: #878785;
+  --line: rgba(255, 255, 255, 0.18);
+  --line-2: rgba(255, 255, 255, 0.15);
+  --wash: rgba(255, 255, 255, 0.08);
+  --btn: #ffffff;
+  --btn-fg: #000000;
+  --btn-2-fg: #9d9e9b;
 }
 
 @theme inline {
@@ -52,12 +59,13 @@
   --color-wash: var(--wash);
   --color-btn: var(--btn);
   --color-btn-fg: var(--btn-fg);
+  --color-btn-2-fg: var(--btn-2-fg);
 
   --font-display: var(--font-feature-deck);
   --font-sans: var(--font-maison);
   --font-mono: var(--font-maison-mono);
 
-  /* Type scale from Figma text styles */
+  /* Type scale from the Figma text styles */
   --text-label-sm: 12px;
   --text-label-sm--line-height: 1.3;
   --text-label-sm--letter-spacing: 0.02em;
@@ -74,13 +82,12 @@
   --text-title-md--line-height: 32px;
   --text-headline-sm: 32px;
   --text-headline-sm--line-height: 38px;
-  --text-headline-sm--letter-spacing: -0.01em;
   --text-headline-lg: 48px;
   --text-headline-lg--line-height: 1.2;
-  --text-headline-lg--letter-spacing: -0.042em;
+  --text-headline-lg--letter-spacing: -0.96px;
   --text-display-xl: 64px;
   --text-display-xl--line-height: 1.2;
-  --text-display-xl--letter-spacing: -0.02em;
+  --text-display-xl--letter-spacing: -1.28px;
 
   --radius-none: 0;
 }
@@ -91,11 +98,26 @@ body {
   font-family: var(--font-maison), Arial, Helvetica, sans-serif;
 }
 
-/* Uppercase mono label — the design system's workhorse text style */
+/* Label Small/Medium — the design system's workhorse text style */
 @utility label {
   font-family: var(--font-maison-mono), monospace;
   font-size: 12px;
   line-height: 1.3;
   letter-spacing: 0.02em;
   text-transform: uppercase;
+}
+
+/* Media overlay: 20% scrim + bottom gradient (Figma content-overlay mask) */
+@utility media-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.56),
+      rgba(0, 0, 0, 0.14) 45%,
+      rgba(0, 0, 0, 0) 70%
+    ),
+    rgba(0, 0, 0, 0.2);
 }

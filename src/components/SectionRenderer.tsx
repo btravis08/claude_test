@@ -8,8 +8,11 @@ import {
   InfoSlider,
   ProductSlider,
 } from "@/components/home/sections";
+import type { ProductCardData } from "@/components/home/sections";
+import { sanityFetch } from "@/sanity/lib/fetch";
 import { urlFor } from "@/sanity/lib/image";
-import type { PageSection } from "@/sanity/types";
+import { sliderProductsQuery } from "@/sanity/lib/queries";
+import type { PageSection, SectionProductSlider, SliderProduct } from "@/sanity/types";
 import type { SanityImageSource } from "@sanity/image-url";
 
 function img(source: SanityImageSource | undefined, width = 2000): string | undefined {
@@ -19,6 +22,36 @@ function img(source: SanityImageSource | undefined, width = 2000): string | unde
   } catch {
     return undefined;
   }
+}
+
+function toCard(product: SliderProduct): ProductCardData {
+  const extra = (product.variants?.length ?? 0) - 1;
+  return {
+    _key: product._id,
+    title: product.title,
+    price: product.price,
+    gender: product.gender,
+    colorway: product.variants?.[0],
+    colorCount: extra > 0 ? `+${extra} colors` : undefined,
+    image: img(product.thumb, 800),
+  };
+}
+
+/* Referenced products, or the latest products when the section is empty */
+async function ProductSliderSection({ section }: { section: SectionProductSlider }) {
+  let products = (section.products ?? []).filter(
+    (product): product is SliderProduct => Boolean(product?._id),
+  );
+  if (products.length === 0) {
+    products = await sanityFetch<SliderProduct[]>(sliderProductsQuery, {}, []);
+  }
+  return (
+    <ProductSlider
+      mode={section.colorMode}
+      title={section.title}
+      products={products.length ? products.map(toCard) : undefined}
+    />
+  );
 }
 
 export function SectionRenderer({ sections }: { sections: PageSection[] }) {
@@ -66,21 +99,7 @@ export function SectionRenderer({ sections }: { sections: PageSection[] }) {
               />
             );
           case "sectionProductSlider":
-            return (
-              <ProductSlider
-                key={section._key}
-                mode={section.colorMode}
-                title={section.title}
-                products={section.products?.map((product) => ({
-                  _key: product._key,
-                  title: product.title,
-                  price: product.price,
-                  colorway: product.colorway,
-                  colorCount: product.colorCount,
-                  image: img(product.image, 800),
-                }))}
-              />
-            );
+            return <ProductSliderSection key={section._key} section={section} />;
           case "sectionCarousel":
             return (
               <Carousel

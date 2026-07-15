@@ -9,8 +9,7 @@ import type { SanityClient } from "sanity";
 
   Every field ships an initialValue so a freshly added section arrives
   pre-filled: lorem copy, sample labels, and a placeholder image asset
-  (resolved from the dataset — seeded by scripts/seed-placeholder.ts,
-  falling back to the campaign shot from scripts/seed-home.ts).
+  resolved from the dataset (seeded by scripts/seed.ts).
 */
 
 const API = { apiVersion: "2026-07-01" };
@@ -171,38 +170,20 @@ export const sectionProductSlider = defineType({
     }),
     defineField({
       name: "products",
+      description:
+        "Products shown in the slider. Leave empty to show the latest products automatically.",
       type: "array",
-      of: [
-        defineArrayMember({
-          type: "object",
-          name: "productCard",
-          fields: [
-            defineField({ name: "title", type: "string", initialValue: "Lorem Product" }),
-            defineField({ name: "price", type: "string", initialValue: "$0.00" }),
-            defineField({ name: "colorway", type: "string", initialValue: "Lorem / Ipsum" }),
-            defineField({
-              name: "colorCount",
-              title: "Extra colors note",
-              type: "string",
-              initialValue: "+4 colors",
-            }),
-            image(),
-          ],
-          preview: { select: { title: "title", subtitle: "price", media: "image" } },
-        }),
-      ],
-      // Four pre-filled products so a new slider arrives full
+      of: [defineArrayMember({ type: "reference", to: [{ type: "product" }] })],
+      // Pre-fill with the first eight products so a new slider arrives full
       initialValue: async (_, { getClient }) => {
-        const img = await placeholderImage(getClient);
-        return [1, 2, 3, 4].map((n) => ({
-          _type: "productCard",
-          _key: key(),
-          title: `Lorem Product ${n}`,
-          price: "$0.00",
-          colorway: "Lorem / Ipsum",
-          colorCount: "+4 colors",
-          ...(img ? { image: img } : {}),
-        }));
+        try {
+          const ids = await getClient(API).fetch<string[]>(
+            `*[_type == "product"] | order(_createdAt asc)[0...8]._id`,
+          );
+          return ids.map((id) => ({ _type: "reference" as const, _key: key(), _ref: id }));
+        } catch {
+          return [];
+        }
       },
     }),
   ],

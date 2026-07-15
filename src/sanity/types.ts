@@ -53,17 +53,21 @@ export interface SectionInfoSlider extends SectionBase {
   cards?: Array<{ _key: string; title?: string; image?: SanityImageSource }>;
 }
 
+export type ProductGender = "mens" | "womens";
+
+export interface SliderProduct {
+  _id: string;
+  title?: string;
+  price?: string;
+  gender?: ProductGender;
+  variants?: string[];
+  thumb?: SanityImageSource;
+}
+
 export interface SectionProductSlider extends SectionBase {
   _type: "sectionProductSlider";
   title?: string;
-  products?: Array<{
-    _key: string;
-    title?: string;
-    price?: string;
-    colorway?: string;
-    colorCount?: string;
-    image?: SanityImageSource;
-  }>;
+  products?: Array<SliderProduct | null>;
 }
 
 export interface SectionCarousel extends SectionBase {

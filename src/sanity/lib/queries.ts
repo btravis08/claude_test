@@ -58,8 +58,14 @@ const sectionFields = groq`
   body,
   image,
   cards[] { _key, title, image },
-  products[] { _key, title, price, colorway, colorCount, image },
+  products[]->{ _id, title, price, gender, variants, "thumb": images[0] },
   panels[] { _key, title, image }
+`;
+
+export const sliderProductsQuery = groq`
+  *[_type == "product"] | order(_createdAt asc)[0...12] {
+    _id, title, price, gender, variants, "thumb": images[0]
+  }
 `;
 
 export const pageBySlugQuery = groq`

@@ -19,7 +19,7 @@ const swap = (dx: number, dy: number): Variants => ({
     y: [0, dy * DIST, -dy * DIST, 0],
     opacity: [1, 0, 0, 1],
     transition: {
-      duration: 0.45,
+      duration: 0.3,
       times: [0, 0.42, 0.58, 1],
       ease: ["easeIn", "linear", "easeOut"],
     },
@@ -47,10 +47,19 @@ export function ArrowSwap({
 /* Motion-enabled hover parents: set initial="rest" / whileHover="hover"
    so the ArrowSwap child animates when the whole control is hovered */
 
-export function ArrowButton(
-  props: React.ComponentProps<typeof motion.button>,
-) {
-  return <motion.button initial="rest" whileHover="hover" animate="rest" {...props} />;
+export function ArrowButton({
+  disabled,
+  ...props
+}: React.ComponentProps<typeof motion.button>) {
+  return (
+    <motion.button
+      initial="rest"
+      whileHover={disabled ? undefined : "hover"}
+      animate="rest"
+      disabled={disabled}
+      {...props}
+    />
+  );
 }
 
 export function ArrowLink(props: React.ComponentProps<typeof motion.a>) {

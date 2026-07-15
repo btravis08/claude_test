@@ -3,9 +3,9 @@ import type { QueryParams } from "next-sanity";
 import { client } from "@/sanity/lib/client";
 
 /**
- * Fetch from Sanity, returning `fallback` if the request fails, so the site
- * still renders (with empty states) when the API is unreachable or the
- * dataset is empty.
+ * Fetch from Sanity, returning `fallback` if the request fails or matches no
+ * documents (GROQ returns null), so the site still renders with empty states
+ * when the API is unreachable or the dataset is empty.
  */
 export async function sanityFetch<T>(
   query: string,
@@ -13,9 +13,10 @@ export async function sanityFetch<T>(
   fallback: T,
 ): Promise<T> {
   try {
-    return await client.fetch<T>(query, params, {
+    const result = await client.fetch<T | null>(query, params, {
       next: { revalidate: 60 },
     });
+    return result ?? fallback;
   } catch (error) {
     console.error("Sanity fetch failed:", error);
     return fallback;

@@ -45,7 +45,7 @@ export default async function ProjectsPage({
         <p className="label font-medium text-ink-2">
           Residential + Commercial
         </p>
-        <h1 className="font-display text-headline-lg text-ink sm:text-display-xl">
+        <h1 className="font-display text-display-xl text-ink">
           Projects
         </h1>
       </div>

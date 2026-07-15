@@ -106,7 +106,7 @@ export function Hero({
         <div className={`flex flex-col gap-6 ${centered ? "items-center" : "items-start"}`}>
           {eyebrow && <p className="label font-medium">{eyebrow}</p>}
           {headline && (
-            <h1 className="font-display text-headline-sm sm:text-headline-lg">{headline}</h1>
+            <h1 className="font-display text-headline-lg">{headline}</h1>
           )}
         </div>
         <div
@@ -161,7 +161,7 @@ export function FullWidth({
         <div className={`flex flex-col gap-6 ${centered ? "items-center" : "items-start"}`}>
           {eyebrow && <p className="label font-medium">{eyebrow}</p>}
           {headline && (
-            <h2 className="font-display text-headline-sm sm:text-headline-lg">{headline}</h2>
+            <h2 className="font-display text-headline-lg">{headline}</h2>
           )}
         </div>
         <div className={`flex ${centered ? "flex-col items-center gap-4" : "items-center gap-6"}`}>

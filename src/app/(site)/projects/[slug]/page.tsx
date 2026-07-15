@@ -61,7 +61,7 @@ export default async function ProjectPage({
         >
           ← All projects
         </Link>
-        <h1 className="max-w-4xl font-display text-headline-lg text-ink sm:text-display-xl">
+        <h1 className="max-w-4xl font-display text-display-xl text-ink">
           {project.title}
         </h1>
         {project.summary && (

@@ -43,7 +43,7 @@ export default async function CmsPage({
   return (
     <article>
       <div className="flex flex-col gap-6 px-6 pb-12 pt-16 sm:pt-24">
-        <h1 className="max-w-4xl font-display text-headline-lg text-ink sm:text-display-xl">
+        <h1 className="max-w-4xl font-display text-display-xl text-ink">
           {page.title}
         </h1>
       </div>

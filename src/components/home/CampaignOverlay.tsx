@@ -7,17 +7,17 @@ import { useEffect, useRef, useState } from "react";
 import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
 
 /*
-  Hero / Full Width text treatment: three display-type elements sit on
-  the media's vertical center. They start well apart (sides inset ~26%
-  from each edge) and, while the image entrance is still settling, the
-  left and right texts fade in as they travel outward to the edges
-  (Motion layout/FLIP, long ease-in-out); the center text fades in
-  place, centered on the container.
+  Hero / Full Width text treatment: nav-style label texts on the sides,
+  display type in the middle, sitting on the media's vertical center.
+  The sides start 5% in from each edge and, while the image entrance is
+  still settling, fade in as they travel outward to the 24px insets
+  (Motion layout/FLIP, ease-in-out); the center text fades in place,
+  centered on the container.
 
   Hovering the whole section animates the right element's underline
   exactly like the nav links (the section provides the `group`).
 */
-const SPREAD: Transition = { duration: 1.35, ease: "easeInOut" };
+const SPREAD: Transition = { duration: 0.7, ease: "easeInOut" };
 
 export function CampaignOverlay({
   left,
@@ -50,8 +50,8 @@ export function CampaignOverlay({
           container regardless of the side texts' widths; the padding
           swap is what the sides travel through (FLIP) */}
       <motion.div
-        className={`grid w-full grid-cols-[1fr_auto_1fr] items-center font-display text-title-sm ${
-          go ? "px-6" : "px-[26%]"
+        className={`grid w-full grid-cols-[1fr_auto_1fr] items-center ${
+          go ? "px-6" : "px-[5%]"
         }`}
         initial={{ opacity: 0 }}
         animate={{ opacity: go ? 1 : 0 }}
@@ -61,7 +61,7 @@ export function CampaignOverlay({
           <motion.span
             layout="position"
             transition={SPREAD}
-            className="col-start-1 justify-self-start"
+            className="label col-start-1 justify-self-start font-medium"
           >
             {left}
           </motion.span>
@@ -70,7 +70,7 @@ export function CampaignOverlay({
           <motion.span
             layout="position"
             transition={SPREAD}
-            className="col-start-2 justify-self-center"
+            className="col-start-2 justify-self-center font-display text-headline-sm"
           >
             {center}
           </motion.span>
@@ -79,11 +79,11 @@ export function CampaignOverlay({
           <motion.span
             layout="position"
             transition={SPREAD}
-            className="relative col-start-3 justify-self-end"
+            className="label relative col-start-3 justify-self-end font-medium"
           >
             {right}
             {/* nav-style underline, driven by hovering the whole section */}
-            <span className="absolute inset-x-0 -bottom-1 h-px origin-right scale-x-0 bg-current transition-transform duration-300 group-hover:origin-left group-hover:scale-x-100" />
+            <span className="absolute inset-x-0 -bottom-0.5 h-px origin-right scale-x-0 bg-current transition-transform duration-300 group-hover:origin-left group-hover:scale-x-100" />
           </motion.span>
         )}
       </motion.div>

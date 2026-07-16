@@ -132,14 +132,7 @@ export function Hero({
       {/* the whole hero is the link and the hover parent: image scales,
           the right text's underline draws in */}
       <a href="#" aria-label={headline} className="group block w-full">
-        <Media
-          aspect="aspect-[1/2] sm:aspect-[3/2]"
-          image={image}
-          overlay
-          pill
-          hoverScale
-          parallax
-        />
+        <Media aspect="h-screen" image={image} overlay pill hoverScale parallax />
         <CampaignOverlay left={eyebrow} center={headline} right={primaryCta} />
       </a>
     </section>

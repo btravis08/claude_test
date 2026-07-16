@@ -255,7 +255,7 @@ export function InfoSlider({
                 image={card.image ?? "/figma/media-portrait.png"}
                 hoverScale
               />
-              <p className="text-body-md font-medium text-ink">{card.title}</p>
+              <p className="px-4 text-body-md font-medium text-ink sm:px-6">{card.title}</p>
             </a>
           ),
         }))}

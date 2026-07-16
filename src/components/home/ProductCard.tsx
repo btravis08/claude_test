@@ -148,7 +148,7 @@ export function ProductCard({ product }: { product: ProductCardData }) {
           </div>
         )}
       </motion.div>
-      <div className="flex w-full flex-col gap-1.5">
+      <div className="flex w-full flex-col gap-1.5 px-4 sm:px-6">
         <div className="label flex w-full items-center justify-between font-medium text-ink">
           <p>{product.title}</p>
           <p className="flex items-baseline gap-1.5">

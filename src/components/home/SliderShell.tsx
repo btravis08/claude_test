@@ -210,7 +210,7 @@ export function SliderShell({ title, items }: { title?: string; items: SliderIte
         onPointerCancel={endDrag}
         onClickCapture={onClickCapture}
         onDragStart={(e) => e.preventDefault()}
-        className={`no-scrollbar grid w-full auto-cols-[85%] grid-flow-col gap-px overflow-x-auto sm:auto-cols-[45%] lg:auto-cols-[25%] ${
+        className={`no-scrollbar grid w-full auto-cols-[85%] grid-flow-col gap-px overflow-x-auto sm:auto-cols-[45%] lg:auto-cols-[31%] xl:auto-cols-[23.75%] ${
           dragging
             ? "cursor-grabbing select-none"
             : "cursor-grab snap-x snap-mandatory"

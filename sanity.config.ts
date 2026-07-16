@@ -72,6 +72,9 @@ const structure: StructureResolver = (S) =>
         .schemaType("page")
         .child(S.documentTypeList("page").title("Pages")),
       S.listItem()
+        .title("Navigation")
+        .child(S.document().schemaType("navigation").documentId("navigation")),
+      S.listItem()
         .title("Projects")
         .schemaType("project")
         .child(S.documentTypeList("project").title("Projects")),

@@ -11,101 +11,156 @@ import { Logo } from "@/components/Logo";
 import { ArrowUpRight, Close, Menu, SearchMd } from "@/components/icons";
 
 /*
-  Site navigation.
+  Site navigation. Content comes from the Sanity "navigation" singleton
+  (menu items → dropdown layouts → links, Shopify-style); the constants
+  below are the fallback when the document doesn't exist yet.
 
   Desktop / tablet (md+):
-  - fixed; transparent over the hero, otherwise light
-  - slides up and away on scroll down, back in on scroll up
-  - hovering the nav (or opening a dropdown) fills it with the light
-    surface and flips the color mode
-  - hovering a menu link slides the meganav down (columns of links +
-    an image card), Moncler-style
+  - fixed; transparent over the hero, otherwise light-gray tiles with
+    1px white gaps (the product grid scheme)
+  - slides away on scroll down, back in on scroll up
+  - hovering fills the nav; hovering a menu link slides the meganav
+    down. Three dropdown layouts: link columns + image card, a product
+    grid, and image cards.
 
   Mobile (< md):
   - the control bar (SEARCH / ACCOUNT / BAG / menu) is fixed to the
-    bottom of the screen at all times
+    bottom at all times, blurred over content, inverting over dark
+    sections
   - the menu button opens a full-screen sheet with accordion sections
 */
 
-interface MenuColumn {
-  title: string;
-  links: string[];
+export interface NavLink {
+  label: string;
+  url: string;
 }
 
-interface MenuItem {
+export interface MenuColumn {
   title: string;
+  links: NavLink[];
+}
+
+export interface NavCard {
+  title: string;
+  image?: string;
+  url: string;
+}
+
+export interface NavProduct {
+  title: string;
+  image?: string;
+}
+
+export interface MenuItem {
+  title: string;
+  layout: "columns" | "products" | "cards" | "none";
   columns?: MenuColumn[];
+  products?: NavProduct[];
+  cards?: NavCard[];
   image?: string;
   imageTitle?: string;
 }
 
+export interface NavData {
+  items: MenuItem[];
+  company: NavLink[];
+}
+
+/* ---------- fallback content (mirrors the seeded navigation) ---------- */
+
+const L = (labels: string[]): NavLink[] => labels.map((label) => ({ label, url: "#" }));
+
 const FEATURED: MenuColumn = {
   title: "Featured",
-  links: [
+  links: L([
     "New Arrivals",
     "The Coral Standard",
     "Training Gear",
     "First Light Collection",
     "Footwear",
     "Final Few",
-  ],
+  ]),
 };
 
-const MENU: MenuItem[] = [
-  {
-    title: "Men",
-    image: "/figma/products/presidio-white.png",
-    imageTitle: "Men’s Apparel",
-    columns: [
-      FEATURED,
-      { title: "Tops", links: ["Polos", "T-Shirts", "Sweaters", "Hoodies & Pullovers", "Outerwear"] },
-      { title: "Bottoms", links: ["Shorts", "Pants", "Joggers"] },
-      { title: "Accessories", links: ["Headwear", "Gloves", "Bags", "Socks", "Outerwear"] },
-    ],
-  },
-  {
-    title: "Women",
-    image: "/figma/media-portrait.png",
-    imageTitle: "Women’s Apparel",
-    columns: [
-      FEATURED,
-      { title: "Tops", links: ["Polos", "T-Shirts", "Sweaters", "Hoodies & Pullovers", "Outerwear"] },
-      { title: "Bottoms", links: ["Shorts", "Pants", "Joggers"] },
-      { title: "Accessories", links: ["Headwear", "Gloves", "Bags", "Socks", "Outerwear"] },
-    ],
-  },
-  {
-    title: "Footwear",
-    image: "/figma/card-shoe.png",
-    imageTitle: "Footwear",
-    columns: [
-      FEATURED,
-      { title: "Styles", links: ["Spikeless", "Spiked", "Trainers", "Slides"] },
-      { title: "Collections", links: ["Presidio", "Pioneer", "Osprey", "Cardinal"] },
-      { title: "Accessories", links: ["Socks", "Laces", "Shoe Care"] },
-    ],
-  },
-  {
-    title: "Gear",
-    image: "/figma/campaign.png",
-    imageTitle: "Gear",
-    columns: [
-      FEATURED,
-      { title: "On Course", links: ["Gloves", "Headcovers", "Towels", "Markers"] },
-      { title: "Carry", links: ["Bags", "Duffels", "Backpacks"] },
-      { title: "Accessories", links: ["Headwear", "Socks", "Outerwear"] },
-    ],
-  },
-  { title: "Explore" },
-];
-
-const COMPANY = ["The Legacy", "Honors Journal", "Team Sun Day Red", "Careers"];
+const DEFAULT_NAV: NavData = {
+  items: [
+    {
+      title: "Men",
+      layout: "columns",
+      image: "/figma/products/presidio-white.png",
+      imageTitle: "Men’s Apparel",
+      columns: [
+        FEATURED,
+        { title: "Tops", links: L(["Polos", "T-Shirts", "Sweaters", "Hoodies & Pullovers", "Outerwear"]) },
+        { title: "Bottoms", links: L(["Shorts", "Pants", "Joggers"]) },
+        { title: "Accessories", links: L(["Headwear", "Gloves", "Bags", "Socks", "Outerwear"]) },
+      ],
+    },
+    {
+      title: "Women",
+      layout: "columns",
+      image: "/figma/media-portrait.png",
+      imageTitle: "Women’s Apparel",
+      columns: [
+        FEATURED,
+        { title: "Tops", links: L(["Polos", "T-Shirts", "Sweaters", "Hoodies & Pullovers"]) },
+        { title: "Bottoms", links: L(["Shorts", "Skirts", "Pants", "Joggers"]) },
+        { title: "Accessories", links: L(["Headwear", "Gloves", "Bags", "Socks"]) },
+      ],
+    },
+    {
+      title: "Footwear",
+      layout: "products",
+      columns: [
+        { title: "Footwear", links: L(["Men’s Footwear", "Women’s Footwear"]) },
+      ],
+      products: [
+        { title: "Pioneer Willow", image: "/figma/products/presidio-white-hover.png" },
+        { title: "Pioneer Cypress", image: "/figma/products/presidio-black-hover.png" },
+        { title: "Pioneer Magnolia", image: "/figma/products/presidio-blue-hover.png" },
+        { title: "Presidio", image: "/figma/products/presidio-navy-hover.png" },
+        { title: "Osprey", image: "/figma/products/presidio-red-hover.png" },
+        { title: "Jupiter", image: "/figma/products/presidio-white-hover.png" },
+      ],
+    },
+    {
+      title: "Gear",
+      layout: "columns",
+      image: "/figma/campaign.png",
+      imageTitle: "Gear",
+      columns: [
+        { title: "Featured", links: L(["New Arrivals", "Sun Day Red x Vessel", "Tiger’s Favorites"]) },
+        { title: "Bags & Headcovers", links: L(["Golf Bags", "Headcovers", "Shoe Bags", "Totes"]) },
+        { title: "Wearables", links: L(["Headwear", "Gloves", "Socks"]) },
+        { title: "On Course", links: L(["Tees", "Ball Markers"]) },
+      ],
+    },
+    {
+      title: "Explore",
+      layout: "cards",
+      cards: [
+        { title: "The Legacy", image: "/figma/legacy-video.jpg", url: "#" },
+        { title: "Honors Journal", image: "/figma/campaign.png", url: "#" },
+        { title: "Team Sunday Red", image: "/figma/media-portrait.png", url: "#" },
+      ],
+    },
+  ],
+  company: L(["The Legacy", "Honors Journal", "Team Sun Day Red", "Careers"]),
+};
 
 const NAV_H = "3.75rem";
 
-function NavButton({ label, active = false }: { label: string; active?: boolean }) {
+function NavButton({
+  label,
+  href = "#",
+  active = false,
+}: {
+  label: string;
+  href?: string;
+  active?: boolean;
+}) {
   return (
-    <a href="#" className="label group relative text-ink">
+    <a href={href} className="label group relative text-ink">
       {label}
       <span
         className={`absolute inset-x-0 -bottom-0.5 h-px origin-right bg-ink transition-transform duration-300 group-hover:origin-left group-hover:scale-x-100 ${
@@ -116,8 +171,6 @@ function NavButton({ label, active = false }: { label: string; active?: boolean 
   );
 }
 
-/* ---------- desktop meganav panel ---------- */
-
 /* Content fade shared by the panel tiles when the active item swaps */
 const contentFade = {
   initial: { opacity: 0 },
@@ -125,9 +178,9 @@ const contentFade = {
   transition: { duration: 0.3, ease: [...MEDIA_EASE], delay: 0.08 },
 } as const;
 
-/* The tile containers persist while the active menu item changes —
-   only their contents (text / image) fade */
-function MegaPanel({ item }: { item: MenuItem }) {
+/* ---------- desktop dropdown: link columns + image card ---------- */
+
+function ColumnsPanel({ item }: { item: MenuItem }) {
   return (
     <div className="flex w-full items-stretch gap-px">
       <div className="grid flex-1 grid-cols-2 gap-px lg:grid-cols-4">
@@ -141,7 +194,7 @@ function MegaPanel({ item }: { item: MenuItem }) {
               <p className="label text-ink-2">{column.title.toUpperCase()}</p>
               <div className="flex flex-col items-start gap-4">
                 {column.links.map((link) => (
-                  <NavButton key={link} label={link.toUpperCase()} />
+                  <NavButton key={link.label} label={link.label.toUpperCase()} href={link.url} />
                 ))}
               </div>
             </motion.div>
@@ -180,13 +233,96 @@ function MegaPanel({ item }: { item: MenuItem }) {
   );
 }
 
+/* ---------- desktop dropdown: link column + product grid ---------- */
+
+function ProductsPanel({ item }: { item: MenuItem }) {
+  const column = item.columns?.[0];
+  return (
+    <motion.div key={item.title} {...contentFade} className="flex w-full items-stretch gap-px">
+      {column && (
+        <div className="w-1/4 shrink-0 bg-surface-2 px-6 pb-16 pt-8">
+          <div className="flex flex-col items-start gap-5">
+            <p className="label text-ink-2">{column.title.toUpperCase()}</p>
+            <div className="flex flex-col items-start gap-4">
+              {column.links.map((link) => (
+                <NavButton key={link.label} label={link.label.toUpperCase()} href={link.url} />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+      <div className="grid flex-1 grid-cols-2 gap-px lg:grid-cols-3">
+        {(item.products ?? []).map((product, i) => (
+          <div key={i} className="flex flex-col bg-surface-2 pb-10">
+            <a href="#" className="group block w-full overflow-hidden">
+              <div
+                aria-hidden
+                className="aspect-[16/10] w-full bg-cover bg-center transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
+                style={product.image ? { backgroundImage: `url(${product.image})` } : undefined}
+              />
+            </a>
+            <div className="label flex items-center justify-between gap-4 px-6 py-5 text-ink">
+              <p>{product.title.toUpperCase()}</p>
+              <span className="flex items-center gap-4">
+                <a href="#" className="underline decoration-1 underline-offset-4">
+                  MEN’S
+                </a>
+                <a href="#" className="underline decoration-1 underline-offset-4">
+                  WOMEN’S
+                </a>
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </motion.div>
+  );
+}
+
+/* ---------- desktop dropdown: image cards ---------- */
+
+function CardsPanel({ item }: { item: MenuItem }) {
+  return (
+    <motion.div key={item.title} {...contentFade} className="grid w-full grid-cols-3 gap-px">
+      {(item.cards ?? []).map((card, i) => (
+        <a key={i} href={card.url} className="group block bg-surface-2 pb-16">
+          <div className="w-full overflow-hidden">
+            <div
+              aria-hidden
+              className="aspect-[8/7] w-full bg-cover bg-center transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
+              style={card.image ? { backgroundImage: `url(${card.image})` } : undefined}
+            />
+          </div>
+          <p className="px-6 pt-6 font-display text-title-md text-ink">{card.title}</p>
+        </a>
+      ))}
+    </motion.div>
+  );
+}
+
+function MegaPanel({ item }: { item: MenuItem }) {
+  if (item.layout === "cards") return <CardsPanel item={item} />;
+  if (item.layout === "products") return <ProductsPanel item={item} />;
+  return <ColumnsPanel item={item} />;
+}
+
 /* ---------- mobile accordion sheet ---------- */
 
 function MobileSection({ item }: { item: MenuItem }) {
   const [open, setOpen] = useState(false);
   const [featuredOpen, setFeaturedOpen] = useState(false);
-  const featured = item.columns?.[0];
-  const flat = ["All", ...(item.columns ?? []).slice(1).map((c) => c.title)];
+
+  /* cards → their titles; one column → its links; several columns →
+     the first as a nested group, the rest as flat category links */
+  const columns = item.columns ?? [];
+  const featured = columns.length > 1 ? columns[0] : undefined;
+  const flat: NavLink[] =
+    item.layout === "cards"
+      ? (item.cards ?? []).map((card) => ({ label: card.title, url: card.url }))
+      : columns.length === 1
+        ? columns[0].links
+        : [{ label: "All", url: "#" }, ...columns.slice(1).map((c) => ({ label: c.title, url: "#" }))];
+  const expandable = featured !== undefined || flat.length > 0;
 
   return (
     <div className="border-t border-line">
@@ -197,10 +333,10 @@ function MobileSection({ item }: { item: MenuItem }) {
         className="flex w-full items-center justify-between px-6 py-5"
       >
         <span className="font-display text-title-md text-ink">{item.title}</span>
-        {item.columns && <span className="label text-ink-2">{open ? "[ - ]" : "[ + ]"}</span>}
+        {expandable && <span className="label text-ink-2">{open ? "[ - ]" : "[ + ]"}</span>}
       </button>
       <AnimatePresence initial={false}>
-        {open && item.columns && (
+        {open && expandable && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
@@ -231,8 +367,8 @@ function MobileSection({ item }: { item: MenuItem }) {
                       >
                         <div className="flex flex-col gap-3 py-2 pl-4">
                           {featured.links.map((link) => (
-                            <a key={link} href="#" className="label text-ink-2">
-                              {link.toUpperCase()}
+                            <a key={link.label} href={link.url} className="label text-ink-2">
+                              {link.label.toUpperCase()}
                             </a>
                           ))}
                         </div>
@@ -242,8 +378,8 @@ function MobileSection({ item }: { item: MenuItem }) {
                 </>
               )}
               {flat.map((link) => (
-                <a key={link} href="#" className="label py-2 text-ink">
-                  {link.toUpperCase()}
+                <a key={link.label} href={link.url} className="label py-2 text-ink">
+                  {link.label.toUpperCase()}
                 </a>
               ))}
             </div>
@@ -256,7 +392,8 @@ function MobileSection({ item }: { item: MenuItem }) {
 
 /* ---------- navigation ---------- */
 
-export function Navigation() {
+export function Navigation({ data }: { data?: NavData | null }) {
+  const nav = data ?? DEFAULT_NAV;
   const pathname = usePathname();
   const isHome = pathname === "/";
 
@@ -318,10 +455,11 @@ export function Navigation() {
   /* the transparent flip waits for the meganav's exit animation, so
      the bar fades white → transparent instead of snapping dark */
   const transparent = overHero && !hovered && active === null && !panelVisible;
-  const activeItem = active !== null ? MENU[active] : null;
+  const activeItem = active !== null ? nav.items[active] : null;
+  const hasDropdown = (item: MenuItem) => item.layout !== "none";
 
   useEffect(() => {
-    if (activeItem?.columns) setPanelVisible(true);
+    if (activeItem && hasDropdown(activeItem)) setPanelVisible(true);
   }, [activeItem]);
 
   return (
@@ -351,11 +489,11 @@ export function Navigation() {
           }`}
         >
           <div className="hidden flex-1 items-center gap-8 md:flex">
-            {MENU.map((item, i) => (
+            {nav.items.map((item, i) => (
               <span
                 key={item.title}
-                onMouseEnter={() => setActive(item.columns ? i : null)}
-                onFocus={() => setActive(item.columns ? i : null)}
+                onMouseEnter={() => setActive(hasDropdown(item) ? i : null)}
+                onFocus={() => setActive(hasDropdown(item) ? i : null)}
               >
                 <NavButton label={item.title.toUpperCase()} active={active === i} />
               </span>
@@ -379,7 +517,7 @@ export function Navigation() {
 
         {/* meganav: slides open under the bar, Moncler-style */}
         <AnimatePresence onExitComplete={() => setPanelVisible(false)}>
-          {activeItem?.columns && (
+          {activeItem && hasDropdown(activeItem) && (
             <motion.div
               key="meganav"
               initial={{ height: 0 }}
@@ -397,7 +535,7 @@ export function Navigation() {
       {/* 30% scrim over the page while the meganav is open — fades in
           place rather than sliding with the panel */}
       <AnimatePresence>
-        {activeItem?.columns && (
+        {activeItem && hasDropdown(activeItem) && (
           <motion.div
             key="meganav-scrim"
             aria-hidden
@@ -430,15 +568,17 @@ export function Navigation() {
               </Link>
             </div>
             <div className="mt-4 flex flex-col">
-              {MENU.filter((item) => item.columns).map((item) => (
-                <MobileSection key={item.title} item={item} />
-              ))}
+              {nav.items
+                .filter((item) => hasDropdown(item))
+                .map((item) => (
+                  <MobileSection key={item.title} item={item} />
+                ))}
             </div>
             <div className="mt-auto flex flex-col gap-3 px-6 pb-32 pt-16">
               <p className="label text-ink-3">COMPANY</p>
-              {COMPANY.map((link) => (
-                <a key={link} href="#" className="label text-ink">
-                  {link.toUpperCase()}
+              {nav.company.map((link) => (
+                <a key={link.label} href={link.url} className="label text-ink">
+                  {link.label.toUpperCase()}
                 </a>
               ))}
             </div>

@@ -1,6 +1,7 @@
 import { blockContent } from "./blockContent";
 import { collection } from "./collection";
 import { discount } from "./discount";
+import { navigation } from "./navigation";
 import { page } from "./page";
 import { product } from "./product";
 import { project } from "./project";
@@ -14,6 +15,7 @@ export const schemaTypes = [
   collection,
   discount,
   page,
+  navigation,
   siteSettings,
   storeSettings,
   blockContent,

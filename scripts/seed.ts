@@ -260,6 +260,7 @@ async function run() {
     { id: "collection-footwear", title: "Footwear", field: "tag", value: "footwear" },
     { id: "collection-polos", title: "Polos", field: "tag", value: "polos" },
     { id: "collection-mens", title: "Mens", field: "gender", value: "mens" },
+    { id: "collection-womens", title: "Womens", field: "gender", value: "womens" },
   ];
   for (const { id, title, field, value } of smartCollections) {
     await client.createOrReplace({
@@ -361,6 +362,114 @@ async function run() {
   ];
   for (const doc of discounts) await client.createOrReplace(doc);
   console.log("✓ 4 discounts (20% polos auto, WELCOME10, FREESHIP50, B2G1 draft)");
+
+  /* 2d½ — navigation singleton (Shopify-style menu). Layouts mirror
+     the Figma dropdowns: columns+image card, product grid, image cards */
+  const navLink = (label: string, collection?: string) => ({
+    _type: "navLink",
+    _key: key(),
+    label,
+    url: "#",
+    ...(collection
+      ? { collection: { _type: "reference", _ref: collection } }
+      : {}),
+  });
+  const navColumn = (title: string, labels: string[]) => ({
+    _type: "navColumn",
+    _key: key(),
+    title,
+    links: labels.map((label) => navLink(label)),
+  });
+  const featuredColumn = () =>
+    navColumn("Featured", [
+      "New Arrivals",
+      "The Coral Standard",
+      "Training Gear",
+      "First Light Collection",
+      "Footwear",
+      "Final Few",
+    ]);
+  await client.createOrReplace({
+    _id: "navigation",
+    _type: "navigation",
+    items: [
+      {
+        _type: "navItem",
+        _key: key(),
+        title: "Men",
+        layout: "columns",
+        columns: [
+          featuredColumn(),
+          navColumn("Tops", ["Polos", "T-Shirts", "Sweaters", "Hoodies & Pullovers", "Outerwear"]),
+          navColumn("Bottoms", ["Shorts", "Pants", "Joggers"]),
+          navColumn("Accessories", ["Headwear", "Gloves", "Bags", "Socks", "Outerwear"]),
+        ],
+        imageCollection: { _type: "reference", _ref: "collection-mens" },
+        imageTitle: "Men’s Apparel",
+        image: image(campaign),
+      },
+      {
+        _type: "navItem",
+        _key: key(),
+        title: "Women",
+        layout: "columns",
+        columns: [
+          featuredColumn(),
+          navColumn("Tops", ["Polos", "T-Shirts", "Sweaters", "Hoodies & Pullovers"]),
+          navColumn("Bottoms", ["Shorts", "Skirts", "Pants", "Joggers"]),
+          navColumn("Accessories", ["Headwear", "Gloves", "Bags", "Socks"]),
+        ],
+        imageCollection: { _type: "reference", _ref: "collection-womens" },
+        imageTitle: "Women’s Apparel",
+        image: image(portrait),
+      },
+      {
+        _type: "navItem",
+        _key: key(),
+        title: "Footwear",
+        layout: "products",
+        columns: [navColumn("Footwear", ["Men’s Footwear", "Women’s Footwear"])],
+        products: [
+          "product-presidio",
+          "product-seed-001",
+          "product-seed-006",
+          "product-seed-011",
+          "product-seed-016",
+          "product-seed-021",
+        ].map((ref) => ({ _type: "reference", _key: key(), _ref: ref })),
+      },
+      {
+        _type: "navItem",
+        _key: key(),
+        title: "Gear",
+        layout: "columns",
+        columns: [
+          navColumn("Featured", ["New Arrivals", "Sun Day Red x Vessel", "Tiger’s Favorites"]),
+          navColumn("Bags & Headcovers", ["Golf Bags", "Headcovers", "Shoe Bags", "Totes"]),
+          navColumn("Wearables", ["Headwear", "Gloves", "Socks"]),
+          navColumn("On Course", ["Tees", "Ball Markers"]),
+        ],
+        imageCollection: { _type: "reference", _ref: "collection-summer-picks" },
+        imageTitle: "Gear",
+        image: image(campaign),
+      },
+      {
+        _type: "navItem",
+        _key: key(),
+        title: "Explore",
+        layout: "cards",
+        cards: [
+          { _type: "navCard", _key: key(), title: "The Legacy", image: image(campaign), url: "#" },
+          { _type: "navCard", _key: key(), title: "Honors Journal", image: image(portrait), url: "#" },
+          { _type: "navCard", _key: key(), title: "Team Sunday Red", image: image(shoe), url: "#" },
+        ],
+      },
+    ],
+    companyLinks: ["The Legacy", "Honors Journal", "Team Sun Day Red", "Careers"].map(
+      (label) => navLink(label),
+    ),
+  });
+  console.log("✓ navigation (5 items: columns / products / cards layouts)");
 
   /* 2e — store settings singleton */
   await client.createOrReplace({

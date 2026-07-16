@@ -131,6 +131,23 @@ export const automaticDiscountsQuery = groq`
   }
 `;
 
+export const navigationQuery = groq`
+  *[_type == "navigation"][0] {
+    items[] {
+      _key, title, layout,
+      columns[] {
+        _key, title,
+        links[] { _key, label, url, collection->{ title } }
+      },
+      products[]->{ _id, title, "thumb": images[0], "hoverImage": images[1] },
+      cards[] { _key, title, image, url },
+      imageCollection->{ title, image },
+      imageTitle, image
+    },
+    companyLinks[] { _key, label, url, collection->{ title } }
+  }
+`;
+
 export const storeSettingsQuery = groq`
   *[_type == "storeSettings"][0] {
     currency, locale, showCompareAt, applyAutomaticDiscounts

@@ -223,6 +223,52 @@ export interface Page {
   body?: PortableTextBlock[];
 }
 
+/* ---------- navigation ---------- */
+
+export interface NavLinkDoc {
+  _key?: string;
+  label?: string;
+  url?: string;
+  collection?: { title?: string } | null;
+}
+
+export interface NavColumnDoc {
+  _key?: string;
+  title?: string;
+  links?: NavLinkDoc[];
+}
+
+export interface NavProductDoc {
+  _id: string;
+  title?: string;
+  thumb?: SanityImageSource;
+  hoverImage?: SanityImageSource;
+}
+
+export interface NavCardDoc {
+  _key?: string;
+  title?: string;
+  image?: SanityImageSource;
+  url?: string;
+}
+
+export interface NavItemDoc {
+  _key?: string;
+  title?: string;
+  layout?: "columns" | "products" | "cards" | "none";
+  columns?: NavColumnDoc[];
+  products?: Array<NavProductDoc | null>;
+  cards?: NavCardDoc[];
+  imageCollection?: { title?: string; image?: SanityImageSource } | null;
+  imageTitle?: string;
+  image?: SanityImageSource;
+}
+
+export interface NavigationDoc {
+  items?: NavItemDoc[];
+  companyLinks?: NavLinkDoc[];
+}
+
 export interface SiteSettings {
   companyName?: string;
   tagline?: string;

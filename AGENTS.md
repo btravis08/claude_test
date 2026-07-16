@@ -65,7 +65,11 @@ embedded at /studio, with Motion (framer-motion) for interactions.
   price discounts are applied to displayed card prices (best wins,
   original struck). `storeSettings` singleton = currency/locale +
   display toggles. Sliders source by tag, collection, or manual refs.
-  The Studio desk mirrors the Shopify admin sidebar.
+  The Studio desk mirrors the Shopify admin sidebar. `navigation`
+  singleton = Shopify-style menu (items → dropdown layout: columns +
+  collection-fed image card / product grid / image cards; links can
+  reference collections); Navigation.tsx falls back to hardcoded
+  defaults when the document is missing.
 - GOTCHA: `tag` is a reserved Sanity fetch-option name — GROQ params
   use `$productTag`.
 

@@ -219,7 +219,12 @@ export function AutoplayVideo({
         <button
           type="button"
           aria-label={paused ? "Play" : "Pause"}
-          onClick={() => setPaused((v) => !v)}
+          onClick={(e) => {
+            // the hero wraps its media in a link — the toggle must not navigate
+            e.preventDefault();
+            e.stopPropagation();
+            setPaused((v) => !v);
+          }}
           className="pointer-events-auto flex size-7 items-center justify-center rounded-full bg-btn text-btn-fg"
         >
           {paused ? <Play /> : <Pause />}

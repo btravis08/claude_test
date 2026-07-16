@@ -10,7 +10,7 @@ import type { LookProductData } from "@/components/home/MediaBlock";
 import { ProductCard } from "@/components/home/ProductCard";
 import type { ProductCardData } from "@/components/home/ProductCard";
 import { SliderShell } from "@/components/home/SliderShell";
-import { ArrowUpRight, Pause } from "@/components/icons";
+import { ArrowUpRight } from "@/components/icons";
 
 /*
   Presentational sections from the Figma SDR library. Content and color
@@ -43,19 +43,6 @@ export function SecondaryTextButton({ label }: { label: string }) {
   );
 }
 
-function PausePill() {
-  return (
-    <div className="absolute inset-0 flex items-end justify-end p-6">
-      <button
-        aria-label="Pause"
-        className="flex size-7 items-center justify-center rounded-full bg-btn text-btn-fg"
-      >
-        <Pause />
-      </button>
-    </div>
-  );
-}
-
 /* Media-block behaviors shared by Full Width and 50/50 columns */
 export type MediaKind = "image" | "look" | "videoPlayer" | "videoAutoplay";
 
@@ -69,7 +56,6 @@ function Media({
   aspect,
   image,
   overlay = false,
-  pill = false,
   position = "center",
   hoverScale = false,
   parallax = false,
@@ -81,7 +67,6 @@ function Media({
   image?: string;
   /* true = gradient scrim; "flat" = constant 25% black layer */
   overlay?: boolean | "flat";
-  pill?: boolean;
   position?: string;
   hoverScale?: boolean;
   parallax?: boolean;
@@ -110,10 +95,9 @@ function Media({
           }
         />
       )}
+      {/* video UI only exists on video kinds — an image shows none */}
       {kind === "videoPlayer" && videoUrl && <VideoPlayerBlock src={videoUrl} />}
       {kind === "look" && lookProducts && <ShopTheLook products={lookProducts} />}
-      {/* decorative pill only on plain images — videos bring their own */}
-      {pill && kind === "image" && <PausePill />}
     </div>
   );
 }
@@ -150,7 +134,6 @@ export function Hero({
           aspect="h-screen"
           image={image}
           overlay="flat"
-          pill
           hoverScale={kind === "image"}
           parallax
           kind={kind}
@@ -189,7 +172,6 @@ export function FullWidth({
         aspect="aspect-[2/3] sm:aspect-[16/9]"
         image={image}
         overlay
-        pill
         position="bottom"
         hoverScale={kind === "image"}
         parallax

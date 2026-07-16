@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
-import { ArrowSwap } from "@/components/home/ArrowHover";
+import { ArrowLink, ArrowSwap } from "@/components/home/ArrowHover";
 import { Logo } from "@/components/Logo";
 import { ArrowUpRight, Close, Menu, SearchMd } from "@/components/icons";
 
@@ -122,8 +122,8 @@ function MegaPanel({ item }: { item: MenuItem }) {
   return (
     <motion.div
       key={item.title}
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
       transition={{ duration: 0.4, ease: [...MEDIA_EASE], delay: 0.08 }}
       className="flex w-full items-stretch"
     >
@@ -145,8 +145,9 @@ function MegaPanel({ item }: { item: MenuItem }) {
         ))}
       </div>
       {item.image && (
-        /* image card, styled like a 50/50 panel */
-        <a
+        /* image card, hover-identical to a 50/50 panel: image scales,
+           the arrow swaps */
+        <ArrowLink
           href="#"
           aria-label={item.imageTitle}
           className="group relative hidden aspect-[5/6] w-1/3 shrink-0 overflow-hidden lg:block"
@@ -165,7 +166,7 @@ function MegaPanel({ item }: { item: MenuItem }) {
               </ArrowSwap>
             </span>
           </div>
-        </a>
+        </ArrowLink>
       )}
     </motion.div>
   );
@@ -299,11 +300,17 @@ export function Navigation() {
           setHovered(false);
           setActive(null);
         }}
-        className={`fixed top-0 z-50 w-full border-b-[1.5px] border-line-2 text-ink transition-colors duration-300 ${
+        className={`fixed top-0 z-50 w-full text-ink transition-colors duration-300 ${
           transparent ? "bg-transparent" : "bg-surface"
         }`}
       >
-        <div className="flex h-[3.75rem] items-center px-6 py-3">
+        {/* the bar keeps its hairline when transparent or when the
+            dropdown is open; the plain white fill goes borderless */}
+        <div
+          className={`flex h-[3.75rem] items-center border-b-[1.5px] px-6 py-3 transition-colors duration-300 ${
+            transparent || active !== null ? "border-line-2" : "border-transparent"
+          }`}
+        >
           <div className="hidden flex-1 items-center gap-8 md:flex">
             {MENU.map((item, i) => (
               <span
@@ -347,6 +354,22 @@ export function Navigation() {
           )}
         </AnimatePresence>
       </motion.header>
+
+      {/* 30% scrim over the page while the meganav is open — fades in
+          place rather than sliding with the panel */}
+      <AnimatePresence>
+        {activeItem?.columns && (
+          <motion.div
+            key="meganav-scrim"
+            aria-hidden
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4, ease: [...MEDIA_EASE] }}
+            className="pointer-events-none fixed inset-0 z-40 hidden bg-black/30 md:block"
+          />
+        )}
+      </AnimatePresence>
 
       {/* content offset on pages without a full-bleed hero */}
       {!isHome && <div style={{ height: NAV_H }} />}

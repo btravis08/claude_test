@@ -8,14 +8,16 @@ import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
 
 /*
   Hero / Full Width text treatment: three display-type elements sit on
-  the media's vertical center. On load (after the image entrance) they
-  fade in clustered at the center, then spread — left to the left edge,
-  right to the right edge, center staying put (Motion layout/FLIP).
+  the media's vertical center. They start well apart (sides inset ~26%
+  from each edge) and, while the image entrance is still settling, the
+  left and right texts fade in as they travel outward to the edges
+  (Motion layout/FLIP, long ease-in-out); the center text fades in
+  place, centered on the container.
 
   Hovering the whole section animates the right element's underline
   exactly like the nav links (the section provides the `group`).
 */
-const SPREAD: Transition = { duration: 0.9, ease: [...MEDIA_EASE] };
+const SPREAD: Transition = { duration: 1.35, ease: "easeInOut" };
 
 export function CampaignOverlay({
   left,
@@ -28,18 +30,13 @@ export function CampaignOverlay({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.2 });
-  const [shown, setShown] = useState(false);
-  const [spread, setSpread] = useState(false);
+  const [go, setGo] = useState(false);
 
   useEffect(() => {
     if (!inView) return;
-    // image entrance (0.9s) → texts fade in at center → spread apart
-    const reveal = setTimeout(() => setShown(true), 900);
-    const apart = setTimeout(() => setSpread(true), 1500);
-    return () => {
-      clearTimeout(reveal);
-      clearTimeout(apart);
-    };
+    // kick off while the image entrance is still running
+    const t = setTimeout(() => setGo(true), 300);
+    return () => clearTimeout(t);
   }, [inView]);
 
   if (!left && !center && !right) return null;
@@ -49,16 +46,15 @@ export function CampaignOverlay({
       ref={ref}
       className="pointer-events-none absolute inset-0 flex items-center"
     >
-      {/* end state is a 1fr/auto/1fr grid so the center text centers on
-          the container regardless of the side texts' widths */}
+      {/* 1fr/auto/1fr grid keeps the center text centered on the
+          container regardless of the side texts' widths; the padding
+          swap is what the sides travel through (FLIP) */}
       <motion.div
-        className={`w-full items-center px-6 font-display text-title-sm ${
-          spread
-            ? "grid grid-cols-[1fr_auto_1fr]"
-            : "flex justify-center gap-4"
+        className={`grid w-full grid-cols-[1fr_auto_1fr] items-center font-display text-title-sm ${
+          go ? "px-6" : "px-[26%]"
         }`}
         initial={{ opacity: 0 }}
-        animate={{ opacity: shown ? 1 : 0 }}
+        animate={{ opacity: go ? 1 : 0 }}
         transition={{ duration: 0.45, ease: [...MEDIA_EASE] }}
       >
         {left !== undefined && (

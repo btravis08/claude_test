@@ -65,7 +65,7 @@ export const product = defineType({
       name: "variants",
       title: "Color variants",
       description:
-        "First variant is the card default; the rest show as swatches on hover. Each has a display name, a swatch color, and the product image for that colorway.",
+        "First variant is the card default; the rest show as swatches on hover. Each has a display name, a swatch color, the product image for that colorway, and its full-bleed hover image.",
       type: "array",
       of: [
         defineArrayMember({
@@ -82,6 +82,14 @@ export const product = defineType({
             }),
             defineField({
               name: "image",
+              type: "image",
+              options: { hotspot: true },
+            }),
+            defineField({
+              name: "hoverImage",
+              title: "Hover image",
+              description:
+                "Full-bleed image shown while the card is hovered, for this colorway. Falls back to the product's second image.",
               type: "image",
               options: { hotspot: true },
             }),

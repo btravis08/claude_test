@@ -34,6 +34,7 @@ function toCards(product: SliderProduct): ProductCardData[] {
       name: variant.name,
       color: variant.color,
       image: img(variant.image, 800),
+      hoverImage: img(variant.hoverImage, 1200),
     }));
   const base: ProductCardData = {
     title: product.title,

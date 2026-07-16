@@ -59,6 +59,7 @@ export interface ProductVariant {
   name?: string;
   color?: string;
   image?: SanityImageSource;
+  hoverImage?: SanityImageSource;
 }
 
 export interface SliderProduct {

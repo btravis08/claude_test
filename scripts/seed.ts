@@ -76,13 +76,15 @@ async function uploadIfExists(filename: string): Promise<string | null> {
 }
 
 /* The example Presidio product: real colorway imagery dropped into
-   public/figma/products/ (see filenames below) */
+   public/figma/products/. Each colorway carries its own full-bleed
+   hover image (shown while the card is hovered — clicking a swatch
+   mid-hover crossfades this hover image, not just the product shot) */
 const PRESIDIO_VARIANTS = [
-  { file: "products/presidio-white.png", name: "White / White", color: "#f4f4f2" },
-  { file: "products/presidio-red.png", name: "White / Red", color: "#b01f24" },
-  { file: "products/presidio-black.png", name: "Black / White", color: "#161716" },
-  { file: "products/presidio-sky.png", name: "White / Sky", color: "#7ea8d4" },
-  { file: "products/presidio-gray.png", name: "Gray / Navy", color: "#9aa0a8" },
+  { file: "products/presidio-white.png", hoverFile: "products/presidio-white-hover.png", name: "White / White", color: "#f4f4f2" },
+  { file: "products/presidio-red.png", hoverFile: "products/presidio-red-hover.png", name: "White / Red", color: "#b01f24" },
+  { file: "products/presidio-black.png", hoverFile: "products/presidio-black-hover.png", name: "Black / White", color: "#161716" },
+  { file: "products/presidio-sky.png", hoverFile: "products/presidio-sky-hover.png", name: "White / Sky", color: "#7ea8d4" },
+  { file: "products/presidio-gray.png", hoverFile: "products/presidio-gray-hover.png", name: "Gray / Navy", color: "#9aa0a8" },
 ];
 
 async function run() {
@@ -115,8 +117,10 @@ async function run() {
         name: `${color.name} / ${accent.name}`,
         color: color.hex,
         // cycle the pool so adjacent variants always swap to a
-        // visibly different image
+        // visibly different image — and offset the hover image so a
+        // swatch click also visibly changes the hover state
         image: imageRef(pool[idx % pool.length]),
+        hoverImage: imageRef(pool[(idx + 1) % pool.length]),
       };
     });
     const extraImages = Array.from(
@@ -141,8 +145,10 @@ async function run() {
 
   /* 2b — the example Presidio with real colorway imagery */
   const presidioImages: (string | null)[] = [];
+  const presidioHovers: (string | null)[] = [];
   for (const variant of PRESIDIO_VARIANTS) {
     presidioImages.push(await uploadIfExists(variant.file));
+    presidioHovers.push(await uploadIfExists(variant.hoverFile));
   }
   await client.createOrReplace({
     _id: "product-presidio",
@@ -160,8 +166,12 @@ async function run() {
       name: variant.name,
       color: variant.color,
       image: imageRef(presidioImages[i] ?? placeholder),
+      hoverImage: imageRef(presidioHovers[i] ?? campaign),
     })),
-    images: [imageRef(presidioImages[0] ?? placeholder), imageRef(campaign)],
+    images: [
+      imageRef(presidioImages[0] ?? placeholder),
+      imageRef(presidioHovers[0] ?? campaign),
+    ],
   });
   console.log("✓ product-presidio (5 colorways)");
 

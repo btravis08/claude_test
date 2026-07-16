@@ -235,10 +235,10 @@ export interface ProductSliderProps {
 }
 
 const SAMPLE_SWATCHES = [
-  { name: "White / Navy", color: "#f4f4f2" },
-  { name: "Black / Gray", color: "#161716" },
-  { name: "Navy / White", color: "#232c3b" },
-  { name: "Sky / Gray", color: "#c9d7e4" },
+  { name: "White / Navy", color: "#f4f4f2", hoverImage: "/figma/campaign.png" },
+  { name: "Black / Gray", color: "#161716", hoverImage: "/figma/media-portrait.png" },
+  { name: "Navy / White", color: "#232c3b", hoverImage: "/figma/campaign.png" },
+  { name: "Sky / Gray", color: "#c9d7e4", hoverImage: "/figma/media-portrait.png" },
 ];
 
 const defaultProducts: ProductCardData[] = Array.from({ length: 24 }, (_, i) => ({

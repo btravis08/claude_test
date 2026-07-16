@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import type { Variants } from "motion/react";
 import { useState } from "react";
 
@@ -25,6 +25,7 @@ export interface ProductVariantData {
   name?: string;
   color?: string;
   image?: string;
+  hoverImage?: string;
 }
 
 export interface ProductCardData {
@@ -54,6 +55,7 @@ export function ProductCard({ product }: { product: ProductCardData }) {
   const [selected, setSelected] = useState(product.defaultVariant ?? 0);
   const active = variants[selected];
   const wellImage = active?.image ?? product.image ?? "/figma/card-shoe.png";
+  const hoverImage = active?.hoverImage ?? product.hoverImage;
   const extra = variants.length > 0 ? variants.length - 1 : undefined;
   const colorLabel = active?.name ?? product.colorway;
   const extraLabel =
@@ -89,13 +91,26 @@ export function ProductCard({ product }: { product: ProductCardData }) {
           className="absolute inset-x-[17.77%] top-1/2 aspect-square -translate-y-1/2 bg-contain bg-center bg-no-repeat"
           style={{ backgroundImage: `url(${wellImage})` }}
         />
-        {/* full-bleed hover image, settles 1.05x → 1x */}
-        {product.hoverImage && (
+        {/* full-bleed hover image, settles 1.05x → 1x; the wrapper owns
+            the show/hide-on-hover, the keyed layers crossfade when a
+            swatch picks another colorway mid-hover */}
+        {hoverImage && (
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 scale-105 bg-cover bg-center opacity-0 transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-100 group-hover:opacity-100"
-            style={{ backgroundImage: `url(${product.hoverImage})` }}
-          />
+            className="pointer-events-none absolute inset-0 scale-105 opacity-0 transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-100 group-hover:opacity-100"
+          >
+            <AnimatePresence initial={false}>
+              <motion.div
+                key={selected}
+                className="absolute inset-0 bg-cover bg-center"
+                style={{ backgroundImage: `url(${hoverImage})` }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.25 }}
+              />
+            </AnimatePresence>
+          </div>
         )}
       </motion.div>
       <div className="flex w-full flex-col gap-1.5">

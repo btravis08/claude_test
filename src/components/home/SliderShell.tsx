@@ -158,7 +158,9 @@ export function SliderShell({ title, items }: { title?: string; items: SliderIte
   return (
     <div className="flex w-full flex-col">
       <div className="flex w-full items-center justify-between gap-4 border-t border-line bg-surface p-6">
-        {title !== undefined && (
+        {/* no title (undefined, null, or empty) → the gender toggles
+            take the left side and the arrows stay right */}
+        {Boolean(title) && (
           <p className="min-w-0 flex-1 font-display text-title-sm text-ink">{title}</p>
         )}
         {filterable && (
@@ -177,7 +179,7 @@ export function SliderShell({ title, items }: { title?: string; items: SliderIte
             ))}
           </div>
         )}
-        <div className={`flex items-start pl-3 ${title === undefined ? "ml-auto" : ""}`}>
+        <div className={`flex items-start pl-3 ${title ? "" : "ml-auto"}`}>
           <ArrowButton
             type="button"
             aria-label="Previous"

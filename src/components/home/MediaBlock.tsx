@@ -52,7 +52,7 @@ export function ShopTheLook({ products }: { products: LookProductData[] }) {
     >
       <AnimatePresence>
         {open && (
-          <div className="flex w-56 flex-col gap-1">
+          <div className="flex w-80 flex-col gap-1.5">
             {products.map((product, i) => (
               <motion.a
                 key={product._key ?? i}
@@ -62,30 +62,31 @@ export function ShopTheLook({ products }: { products: LookProductData[] }) {
                 initial="hidden"
                 animate="visible"
                 exit="exit"
-                className="flex w-full items-center gap-2 rounded-xs bg-white p-1.5 pr-2 text-[#161716]"
+                className="flex w-full items-center gap-3 rounded-xs bg-white p-2 pr-3 text-[#161716]"
               >
                 <span
                   aria-hidden
-                  className="size-10 shrink-0 rounded-xs bg-[#eceded] bg-cover bg-center"
+                  className="size-12 shrink-0 rounded-xs bg-[#eceded] bg-cover bg-center"
                   style={
                     product.thumb
                       ? { backgroundImage: `url(${product.thumb})` }
                       : undefined
                   }
                 />
-                <span className="flex min-w-0 flex-1 flex-col gap-1 font-mono text-[0.625rem] uppercase leading-none">
-                  <span className="flex items-baseline justify-between gap-2">
+                {/* same type scale as the slider's MENS/WOMENS toggle */}
+                <span className="label flex min-w-0 flex-1 flex-col gap-1.5">
+                  <span className="flex items-baseline justify-between gap-3">
                     <span className="truncate font-medium">{product.title}</span>
-                    <span className="shrink-0">{product.price}</span>
+                    <span className="shrink-0 font-medium">{product.price}</span>
                   </span>
-                  <span className="flex items-baseline justify-between gap-2 text-[#818380]">
+                  <span className="flex items-baseline justify-between gap-3 text-[#818380]">
                     <span className="truncate">{product.colorway}</span>
                     {product.colorCount && (
                       <span className="shrink-0">{product.colorCount}</span>
                     )}
                   </span>
                 </span>
-                <ChevronRight size={12} className="shrink-0 text-[#161716]" />
+                <ChevronRight size={14} className="shrink-0 text-[#161716]" />
               </motion.a>
             ))}
           </div>
@@ -96,7 +97,7 @@ export function ShopTheLook({ products }: { products: LookProductData[] }) {
         aria-label="Shop the look"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
-        className="flex size-7 items-center justify-center rounded-xs bg-white text-[#161716]"
+        className="flex size-10 items-center justify-center rounded-xs bg-btn text-btn-fg"
       >
         <Bag />
       </button>
@@ -123,7 +124,7 @@ export function VideoPlayerBlock({ src }: { src: string }) {
           type="button"
           aria-label="Play video"
           onClick={() => setOpen(true)}
-          className="flex size-7 items-center justify-center rounded-xs bg-white text-[#161716] transition-transform duration-300 hover:scale-110"
+          className="flex size-10 items-center justify-center rounded-xs bg-btn text-btn-fg transition-transform duration-300 hover:scale-110"
         >
           <Play />
         </button>

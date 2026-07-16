@@ -6,7 +6,8 @@ import { useState } from "react";
 
 import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
 
-/* Swatches stagger-fade in from the right, right to left, on card hover */
+/* Swatches stagger-fade in from the right, right to left, when the
+   pointer is over the card but outside the image well */
 const swatchVariants: Variants = {
   rest: { opacity: 0, x: 8, transition: { duration: 0.15 } },
   hover: (order: number) => ({
@@ -45,14 +46,19 @@ export interface ProductCardData {
 /*
   Product Card V1 with the standard image behaviors:
   - the padded product shot enters with the fade/settle animation
-  - hovering the card reveals a full-bleed image over the well,
+  - hovering the IMAGE WELL reveals its full-bleed hover image,
     settling from 1.05x to 1x
-  - on hover, "+N colors" swaps for clickable swatches; picking one
-    switches the product image and the variant name on the card
+  - hovering the card anywhere OUTSIDE the well swaps "+N colors" for
+    clickable swatches; picking one switches the visible product shot,
+    the hover image, and the variant name — the two hover zones never
+    overlap, so the swap is always visible
 */
 export function ProductCard({ product }: { product: ProductCardData }) {
   const variants = product.variants ?? [];
   const [selected, setSelected] = useState(product.defaultVariant ?? 0);
+  const [cardHover, setCardHover] = useState(false);
+  const [wellHover, setWellHover] = useState(false);
+  const showSwatches = cardHover && !wellHover;
   const active = variants[selected];
   const wellImage = active?.image ?? product.image ?? "/figma/card-shoe.png";
   const hoverImage = active?.hoverImage ?? product.hoverImage;
@@ -69,12 +75,15 @@ export function ProductCard({ product }: { product: ProductCardData }) {
     <motion.a
       href="#"
       initial="rest"
-      whileHover="hover"
-      animate="rest"
-      className="group flex w-full flex-col justify-center gap-[1.125rem] border-r border-line bg-surface px-6 pb-16 pt-6"
+      animate={showSwatches ? "hover" : "rest"}
+      onMouseEnter={() => setCardHover(true)}
+      onMouseLeave={() => setCardHover(false)}
+      className="flex w-full flex-col justify-center gap-[1.125rem] border-r border-line bg-surface px-6 pb-16 pt-6"
     >
       <motion.div
-        className="relative flex aspect-[236/301] w-full flex-col justify-end overflow-hidden rounded-xs bg-surface-2 p-6"
+        onMouseEnter={() => setWellHover(true)}
+        onMouseLeave={() => setWellHover(false)}
+        className="group/well relative flex aspect-[236/301] w-full flex-col justify-end overflow-hidden rounded-xs bg-surface-2 p-6"
         initial={{ opacity: 0, scale: 1.05 }}
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true, amount: 0.2 }}
@@ -91,13 +100,13 @@ export function ProductCard({ product }: { product: ProductCardData }) {
           className="absolute inset-x-[17.77%] top-1/2 aspect-square -translate-y-1/2 bg-contain bg-center bg-no-repeat"
           style={{ backgroundImage: `url(${wellImage})` }}
         />
-        {/* full-bleed hover image, settles 1.05x → 1x; the wrapper owns
-            the show/hide-on-hover, the keyed layers crossfade when a
-            swatch picks another colorway mid-hover */}
+        {/* full-bleed hover image, settles 1.05x → 1x, shown only while
+            the pointer is over the well itself; the keyed layers
+            crossfade when a swatch picks another colorway */}
         {hoverImage && (
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 scale-105 opacity-0 transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-100 group-hover:opacity-100"
+            className="pointer-events-none absolute inset-0 scale-105 opacity-0 transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/well:scale-100 group-hover/well:opacity-100"
           >
             <AnimatePresence initial={false}>
               <motion.div
@@ -127,7 +136,11 @@ export function ProductCard({ product }: { product: ProductCardData }) {
               </motion.p>
             )}
             {variants.length > 1 && (
-              <span className="pointer-events-none absolute right-0 flex items-center gap-1.5 group-hover:pointer-events-auto">
+              <span
+                className={`absolute right-0 flex items-center gap-1.5 ${
+                  showSwatches ? "pointer-events-auto" : "pointer-events-none"
+                }`}
+              >
                 {variants.map((variant, i) => (
                   <motion.button
                     key={i}

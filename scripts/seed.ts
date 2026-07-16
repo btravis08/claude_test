@@ -83,8 +83,8 @@ const PRESIDIO_VARIANTS = [
   { file: "products/presidio-white.png", hoverFile: "products/presidio-white-hover.png", name: "White / White", color: "#f4f4f2" },
   { file: "products/presidio-red.png", hoverFile: "products/presidio-red-hover.png", name: "White / Red", color: "#b01f24" },
   { file: "products/presidio-black.png", hoverFile: "products/presidio-black-hover.png", name: "Black / White", color: "#161716" },
-  { file: "products/presidio-sky.png", hoverFile: "products/presidio-sky-hover.png", name: "White / Sky", color: "#7ea8d4" },
-  { file: "products/presidio-gray.png", hoverFile: "products/presidio-gray-hover.png", name: "Gray / Navy", color: "#9aa0a8" },
+  { file: "products/presidio-blue.png", hoverFile: "products/presidio-blue-hover.png", name: "White / Blue", color: "#4b74ad" },
+  { file: "products/presidio-navy.png", hoverFile: "products/presidio-navy-hover.png", name: "Gray / Navy", color: "#9aa0a8" },
 ];
 
 async function run() {

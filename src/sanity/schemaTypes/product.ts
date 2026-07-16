@@ -1,26 +1,112 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
 
+/*
+  Shopify-modeled product document.
+
+  Parity map:
+  - status (Active / Draft / Archived) — only Active products render on
+    the site
+  - organization: vendor, product type, tags, gender (SDR-specific)
+  - pricing: price, compare-at price (sale strikethrough), cost per
+    item, charge-tax toggle — product-level defaults that variants can
+    override
+  - options (up to 3, e.g. Color / Size) whose values describe the
+    variant matrix; variants pick their combination via selectedOptions
+  - variants: per-variant price override, SKU, barcode, tracked
+    inventory with quantity + oversell toggle, and the SDR colorway
+    fields (swatch, product shot, hover image) that drive the cards
+  - shipping: physical toggle + weight
+  - SEO: title/description overrides
+*/
+
+const money = (name: string, title: string, description?: string, group?: string) =>
+  defineField({
+    name,
+    title,
+    type: "number",
+    description,
+    ...(group ? { group } : {}),
+    validation: (rule) => rule.min(0),
+  });
+
 export const product = defineType({
   name: "product",
   title: "Product",
   type: "document",
+  groups: [
+    { name: "content", title: "Product", default: true },
+    { name: "pricing", title: "Pricing" },
+    { name: "variants", title: "Variants" },
+    { name: "shipping", title: "Shipping" },
+    { name: "seo", title: "SEO" },
+  ],
   fields: [
+    /* ---------- content ---------- */
+    defineField({
+      name: "status",
+      title: "Status",
+      type: "string",
+      group: "content",
+      options: {
+        list: [
+          { title: "Active", value: "active" },
+          { title: "Draft", value: "draft" },
+          { title: "Archived", value: "archived" },
+        ],
+        layout: "radio",
+        direction: "horizontal",
+      },
+      initialValue: "active",
+      description: "Only Active products appear on the site.",
+    }),
     defineField({
       name: "title",
-      title: "Name",
+      title: "Title",
       type: "string",
+      group: "content",
       validation: (rule) => rule.required(),
     }),
     defineField({
       name: "slug",
-      title: "Slug",
+      title: "Handle",
       type: "slug",
+      group: "content",
       options: { source: "title", maxLength: 96 },
+    }),
+    defineField({
+      name: "description",
+      title: "Description",
+      type: "blockContent",
+      group: "content",
+    }),
+    defineField({
+      name: "images",
+      title: "Media",
+      description: "Up to 6. The first image is the card thumbnail.",
+      type: "array",
+      group: "content",
+      of: [defineArrayMember({ type: "image", options: { hotspot: true } })],
+      validation: (rule) => rule.max(6),
+    }),
+    defineField({
+      name: "vendor",
+      title: "Vendor",
+      type: "string",
+      group: "content",
+      initialValue: "Sun Day Red",
+    }),
+    defineField({
+      name: "productType",
+      title: "Product type",
+      type: "string",
+      group: "content",
+      description: "Freeform category, e.g. Footwear.",
     }),
     defineField({
       name: "gender",
       title: "Gender",
       type: "string",
+      group: "content",
       options: {
         list: [
           { title: "Mens", value: "mens" },
@@ -34,8 +120,10 @@ export const product = defineType({
     defineField({
       name: "tags",
       title: "Tags",
-      description: "Categories this product belongs to — sliders pull products by these.",
+      description:
+        "Categories this product belongs to — sliders and smart collections pull products by these.",
       type: "array",
+      group: "content",
       of: [defineArrayMember({ type: "string" })],
       options: {
         list: [
@@ -53,36 +141,104 @@ export const product = defineType({
       title: "Post date",
       description: "Used to sort sliders newest-first (new arrivals).",
       type: "datetime",
+      group: "content",
       initialValue: () => new Date().toISOString(),
     }),
+
+    /* ---------- pricing ---------- */
     defineField({
-      name: "price",
-      title: "Price",
-      type: "string",
-      description: "Display price, e.g. $198.00",
+      name: "pricing",
+      title: "Pricing",
+      type: "object",
+      group: "pricing",
+      options: { columns: 2 },
+      fields: [
+        money("price", "Price"),
+        money(
+          "compareAtPrice",
+          "Compare-at price",
+          "Set higher than the price to show a sale strikethrough.",
+        ),
+        money(
+          "costPerItem",
+          "Cost per item",
+          "Internal — used for margin, never shown to customers.",
+        ),
+        defineField({
+          name: "chargeTax",
+          title: "Charge tax on this product",
+          type: "boolean",
+          initialValue: true,
+        }),
+      ],
+    }),
+
+    /* ---------- variants ---------- */
+    defineField({
+      name: "options",
+      title: "Options",
+      description:
+        "Up to 3 options (like Color or Size). Variants pick a value per option.",
+      type: "array",
+      group: "variants",
+      validation: (rule) => rule.max(3),
+      of: [
+        defineArrayMember({
+          type: "object",
+          name: "productOption",
+          fields: [
+            defineField({ name: "name", type: "string", initialValue: "Color" }),
+            defineField({
+              name: "values",
+              type: "array",
+              of: [defineArrayMember({ type: "string" })],
+              options: { layout: "tags" },
+            }),
+          ],
+          preview: {
+            select: { title: "name", values: "values" },
+            prepare: ({ title, values }) => ({
+              title: title || "Option",
+              subtitle: (values ?? []).join(" · "),
+            }),
+          },
+        }),
+      ],
     }),
     defineField({
       name: "variants",
-      title: "Color variants",
+      title: "Variants",
       description:
-        "First variant is the card default; the rest show as swatches on hover. Each has a display name, a swatch color, the product image for that colorway, and its full-bleed hover image.",
+        "First variant is the card default; the rest show as swatches on hover. Pricing and inventory here override the product-level defaults.",
       type: "array",
+      group: "variants",
       of: [
         defineArrayMember({
           type: "object",
           name: "productVariant",
+          groups: [
+            { name: "look", title: "Appearance", default: true },
+            { name: "commerce", title: "Pricing & inventory" },
+          ],
           fields: [
-            defineField({ name: "name", type: "string", initialValue: "Lorem / Ipsum" }),
+            defineField({
+              name: "name",
+              type: "string",
+              group: "look",
+              initialValue: "Lorem / Ipsum",
+            }),
             defineField({
               name: "color",
               title: "Swatch color",
               type: "string",
+              group: "look",
               description: "Hex value, e.g. #232c3b",
               initialValue: "#9d9e9b",
             }),
             defineField({
               name: "image",
               type: "image",
+              group: "look",
               options: { hotspot: true },
             }),
             defineField({
@@ -91,27 +247,167 @@ export const product = defineType({
               description:
                 "Full-bleed image shown while the card is hovered, for this colorway. Falls back to the product's second image.",
               type: "image",
+              group: "look",
               options: { hotspot: true },
             }),
+            defineField({
+              name: "selectedOptions",
+              title: "Option values",
+              description: "Which value of each product option this variant is.",
+              type: "array",
+              group: "look",
+              of: [
+                defineArrayMember({
+                  type: "object",
+                  name: "selectedOption",
+                  fields: [
+                    defineField({ name: "option", type: "string" }),
+                    defineField({ name: "value", type: "string" }),
+                  ],
+                  preview: {
+                    select: { title: "option", subtitle: "value" },
+                  },
+                }),
+              ],
+            }),
+            money("price", "Price (override)", undefined, "commerce"),
+            money("compareAtPrice", "Compare-at price (override)", undefined, "commerce"),
+            defineField({ name: "sku", title: "SKU", type: "string", group: "commerce" }),
+            defineField({
+              name: "barcode",
+              title: "Barcode (ISBN, UPC, GTIN)",
+              type: "string",
+              group: "commerce",
+            }),
+            defineField({
+              name: "inventory",
+              title: "Inventory",
+              type: "object",
+              group: "commerce",
+              options: { columns: 2 },
+              fields: [
+                defineField({
+                  name: "track",
+                  title: "Track quantity",
+                  type: "boolean",
+                  initialValue: true,
+                }),
+                defineField({
+                  name: "quantity",
+                  title: "Quantity",
+                  type: "number",
+                  initialValue: 0,
+                  validation: (rule) => rule.min(0),
+                }),
+                defineField({
+                  name: "continueSelling",
+                  title: "Continue selling when out of stock",
+                  type: "boolean",
+                  initialValue: false,
+                }),
+              ],
+            }),
           ],
-          preview: { select: { title: "name", subtitle: "color", media: "image" } },
+          preview: {
+            select: {
+              title: "name",
+              sku: "sku",
+              quantity: "inventory.quantity",
+              media: "image",
+            },
+            prepare: ({ title, sku, quantity, media }) => ({
+              title: title || "Variant",
+              subtitle: [sku, quantity != null ? `${quantity} in stock` : null]
+                .filter(Boolean)
+                .join(" · "),
+              media,
+            }),
+          },
         }),
       ],
     }),
+
+    /* ---------- shipping ---------- */
     defineField({
-      name: "images",
-      title: "Images",
-      description: "Up to 6. The first image is the card thumbnail.",
-      type: "array",
-      of: [defineArrayMember({ type: "image", options: { hotspot: true } })],
-      validation: (rule) => rule.max(6),
+      name: "shipping",
+      title: "Shipping",
+      type: "object",
+      group: "shipping",
+      fields: [
+        defineField({
+          name: "physical",
+          title: "This is a physical product",
+          type: "boolean",
+          initialValue: true,
+        }),
+        defineField({
+          name: "weight",
+          title: "Weight",
+          type: "number",
+          validation: (rule) => rule.min(0),
+          hidden: ({ parent }) => parent?.physical === false,
+        }),
+        defineField({
+          name: "weightUnit",
+          title: "Unit",
+          type: "string",
+          options: { list: ["g", "kg", "oz", "lb"] },
+          initialValue: "g",
+          hidden: ({ parent }) => parent?.physical === false,
+        }),
+      ],
+    }),
+
+    /* ---------- seo ---------- */
+    defineField({
+      name: "seo",
+      title: "Search engine listing",
+      type: "object",
+      group: "seo",
+      fields: [
+        defineField({
+          name: "title",
+          title: "Page title",
+          type: "string",
+          description: "Defaults to the product title.",
+        }),
+        defineField({
+          name: "description",
+          title: "Meta description",
+          type: "text",
+          rows: 3,
+          validation: (rule) => rule.max(320),
+        }),
+      ],
+    }),
+
+    /* legacy display price from the first content model; superseded by
+       Pricing → price. Kept so old documents keep rendering. */
+    defineField({
+      name: "price",
+      title: "Legacy price label",
+      type: "string",
+      hidden: true,
     }),
   ],
   preview: {
-    select: { title: "title", gender: "gender", price: "price", media: "images.0" },
-    prepare: ({ title, gender, price, media }) => ({
+    select: {
+      title: "title",
+      status: "status",
+      gender: "gender",
+      price: "pricing.price",
+      legacy: "price",
+      media: "images.0",
+    },
+    prepare: ({ title, status, gender, price, legacy, media }) => ({
       title,
-      subtitle: [gender, price].filter(Boolean).join(" · "),
+      subtitle: [
+        status && status !== "active" ? status.toUpperCase() : null,
+        gender,
+        price != null ? `$${price.toFixed(2)}` : legacy,
+      ]
+        .filter(Boolean)
+        .join(" · "),
       media,
     }),
   },

@@ -10,10 +10,29 @@ import {
 } from "@/components/home/sections";
 import type { LookProductData } from "@/components/home/MediaBlock";
 import type { ProductCardData } from "@/components/home/ProductCard";
+import {
+  basePrice,
+  buildRulesFilter,
+  COLLECTION_ORDER,
+  formatPrice,
+  resolveDisplayPrice,
+} from "@/sanity/lib/commerce";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { urlFor } from "@/sanity/lib/image";
-import { productsByTagQuery } from "@/sanity/lib/queries";
-import type { PageSection, SectionProductSlider, SliderProduct } from "@/sanity/types";
+import {
+  automaticDiscountsQuery,
+  collectionProductsQuery,
+  productsByTagQuery,
+  smartCollectionProductsQuery,
+  storeSettingsQuery,
+} from "@/sanity/lib/queries";
+import type {
+  Discount,
+  PageSection,
+  SectionProductSlider,
+  SliderProduct,
+  StoreSettings,
+} from "@/sanity/types";
 import type { SanityImageSource } from "@sanity/image-url";
 
 function img(source: SanityImageSource | undefined, width = 2000): string | undefined {
@@ -27,19 +46,46 @@ function img(source: SanityImageSource | undefined, width = 2000): string | unde
 
 /* Each color variant renders as its own card: the card defaults to
    that colorway but keeps every sibling variant switchable via the
-   swatches. Products without variants yield a single card. */
-function toCards(product: SliderProduct): ProductCardData[] {
+   swatches. Products without variants yield a single card. Prices run
+   through the store settings + active automatic discounts. */
+function toCards(
+  product: SliderProduct,
+  discounts: Discount[] = [],
+  settings?: StoreSettings | null,
+): ProductCardData[] {
+  const displayed = resolveDisplayPrice(
+    basePrice(product),
+    product.pricing?.compareAtPrice,
+    product,
+    discounts,
+    settings,
+  );
   const variants = (product.variants ?? [])
     .filter((variant) => variant && (variant.name || variant.color))
-    .map((variant) => ({
-      name: variant.name,
-      color: variant.color,
-      image: img(variant.image, 800),
-      hoverImage: img(variant.hoverImage, 1200),
-    }));
+    .map((variant) => {
+      const own =
+        typeof variant.price === "number"
+          ? resolveDisplayPrice(
+              variant.price,
+              variant.compareAtPrice,
+              product,
+              discounts,
+              settings,
+            )
+          : undefined;
+      return {
+        name: variant.name,
+        color: variant.color,
+        image: img(variant.image, 800),
+        hoverImage: img(variant.hoverImage, 1200),
+        price: own?.price,
+        compareAtPrice: own?.compareAt,
+      };
+    });
   const base: ProductCardData = {
     title: product.title,
-    price: product.price,
+    price: displayed.price ?? formatPrice(product.price, settings),
+    compareAtPrice: displayed.compareAt,
     gender: product.gender,
     colorway: variants[0]?.name,
     image: img(product.thumb, 800),
@@ -54,6 +100,61 @@ function toCards(product: SliderProduct): ProductCardData[] {
   }));
 }
 
+const activeOnly = (products: Array<SliderProduct | null>) =>
+  products.filter(
+    (product): product is SliderProduct =>
+      Boolean(product?._id) && (!product?.status || product.status === "active"),
+  );
+
+/* Manual collections honor their sort order in JS (the reference
+   array itself is the manual order) */
+function sortProducts(products: SliderProduct[], sort?: string): SliderProduct[] {
+  const num = (product: SliderProduct) =>
+    typeof product.pricing?.price === "number" ? product.pricing.price : Infinity;
+  switch (sort) {
+    case "priceAsc":
+      return [...products].sort((a, b) => num(a) - num(b));
+    case "priceDesc":
+      return [...products].sort((a, b) => num(b) - num(a));
+    case "titleAsc":
+      return [...products].sort((a, b) => (a.title ?? "").localeCompare(b.title ?? ""));
+    case "newest":
+      return [...products].sort(
+        (a, b) => Date.parse(b.postedAt ?? "") - Date.parse(a.postedAt ?? ""),
+      );
+    default:
+      return products;
+  }
+}
+
+async function collectionProducts(
+  section: SectionProductSlider,
+): Promise<SliderProduct[]> {
+  const collection = section.collection;
+  if (!collection?._id) return [];
+  if (collection.type === "smart") {
+    const { filter, params } = buildRulesFilter(
+      collection.rules ?? [],
+      collection.match ?? "all",
+    );
+    const order = COLLECTION_ORDER[collection.sortOrder ?? "newest"];
+    return sanityFetch<SliderProduct[]>(
+      smartCollectionProductsQuery(filter, order),
+      params,
+      [],
+    );
+  }
+  const referenced = await sanityFetch<Array<SliderProduct | null> | null>(
+    collectionProductsQuery,
+    { collectionId: collection._id },
+    [],
+  );
+  const active = activeOnly(referenced ?? []);
+  return collection.sortOrder && collection.sortOrder !== "manual"
+    ? sortProducts(active, collection.sortOrder)
+    : active;
+}
+
 /* Shop-the-look product references become the mini cards hovered up
    from the bag button */
 function toLookCards(products?: Array<SliderProduct | null>): LookProductData[] {
@@ -62,7 +163,7 @@ function toLookCards(products?: Array<SliderProduct | null>): LookProductData[] 
     .map((product) => ({
       _key: product._id,
       title: product.title,
-      price: product.price,
+      price: formatPrice(product.pricing?.price ?? product.price),
       colorway: product.variants?.[0]?.name,
       colorCount:
         product.variants && product.variants.length > 1
@@ -72,23 +173,29 @@ function toLookCards(products?: Array<SliderProduct | null>): LookProductData[] 
     }));
 }
 
-/* Manual selections render as-is; automatic sliders pull products by
-   tag, newest post date first */
+/* Sliders source products manually, from a collection, or by tag
+   (newest post date first) */
 async function ProductSliderSection({ section }: { section: SectionProductSlider }) {
-  let products =
-    section.source === "manual"
-      ? (section.products ?? []).filter(
-          (product): product is SliderProduct => Boolean(product?._id),
-        )
-      : [];
-  if (section.source !== "manual" || products.length === 0) {
+  const [settings, discounts] = await Promise.all([
+    sanityFetch<StoreSettings | null>(storeSettingsQuery, {}, null),
+    sanityFetch<Discount[]>(automaticDiscountsQuery, {}, []),
+  ]);
+  let products: SliderProduct[] = [];
+  if (section.source === "manual") {
+    products = activeOnly(section.products ?? []);
+  } else if (section.source === "collection") {
+    products = await collectionProducts(section);
+  }
+  if (products.length === 0 && section.source !== "collection") {
     products = await sanityFetch<SliderProduct[]>(
       productsByTagQuery,
       { productTag: section.tag ?? "all" },
       [],
     );
   }
-  const cards = products.flatMap(toCards).slice(0, 24);
+  const cards = products
+    .flatMap((product) => toCards(product, discounts, settings))
+    .slice(0, 24);
   return (
     <ProductSlider
       mode={section.colorMode}

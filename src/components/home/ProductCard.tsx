@@ -27,12 +27,17 @@ export interface ProductVariantData {
   color?: string;
   image?: string;
   hoverImage?: string;
+  /* formatted price override for this variant */
+  price?: string;
+  compareAtPrice?: string;
 }
 
 export interface ProductCardData {
   _key?: string;
   title?: string;
   price?: string;
+  /* formatted original price to strike through (sale) */
+  compareAtPrice?: string;
   gender?: string;
   colorway?: string;
   colorCount?: string;
@@ -78,6 +83,9 @@ export function ProductCard({ product }: { product: ProductCardData }) {
   const hoverImage = active?.hoverImage ?? product.hoverImage;
   const extra = variants.length > 0 ? variants.length - 1 : undefined;
   const colorLabel = active?.name ?? product.colorway;
+  /* variant price override wins; sale shows the struck original */
+  const priceLabel = active?.price ?? product.price;
+  const compareAtLabel = active?.price ? active?.compareAtPrice : product.compareAtPrice;
   const extraLabel =
     extra !== undefined
       ? extra > 0
@@ -143,7 +151,12 @@ export function ProductCard({ product }: { product: ProductCardData }) {
       <div className="flex w-full flex-col gap-1.5">
         <div className="label flex w-full items-center justify-between font-medium text-ink">
           <p>{product.title}</p>
-          <p>{product.price}</p>
+          <p className="flex items-baseline gap-1.5">
+            {compareAtLabel && (
+              <s className="text-ink-3 line-through">{compareAtLabel}</s>
+            )}
+            <span>{priceLabel}</span>
+          </p>
         </div>
         <div className="flex h-4 w-full items-center justify-between font-mono text-[0.75rem] uppercase leading-none text-ink-2">
           <p>{colorLabel}</p>

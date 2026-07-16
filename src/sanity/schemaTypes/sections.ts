@@ -217,11 +217,19 @@ export const sectionProductSlider = defineType({
       options: {
         list: [
           { title: "Automatic (by tag, newest first)", value: "auto" },
+          { title: "Collection", value: "collection" },
           { title: "Manual selection", value: "manual" },
         ],
         layout: "radio",
       },
       initialValue: "auto",
+    }),
+    defineField({
+      name: "collection",
+      title: "Collection",
+      type: "reference",
+      to: [{ type: "collection" }],
+      hidden: ({ parent }) => parent?.source !== "collection",
     }),
     defineField({
       name: "tag",
@@ -239,7 +247,7 @@ export const sectionProductSlider = defineType({
         ],
       },
       initialValue: "all",
-      hidden: ({ parent }) => parent?.source === "manual",
+      hidden: ({ parent }) => parent?.source !== "auto" && parent?.source !== undefined,
     }),
     defineField({
       name: "products",

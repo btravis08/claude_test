@@ -47,6 +47,13 @@ const PALETTE = [
   { name: "Red", hex: "#7a1f1f" },
 ];
 const TAGS = ["footwear", "pants", "polos", "headwear", "tshirts"];
+const TYPE_LABEL: Record<string, string> = {
+  footwear: "Footwear",
+  pants: "Pants",
+  polos: "Polos",
+  headwear: "Headwear",
+  tshirts: "T-Shirts",
+};
 const PRODUCT_COUNT = 120; // 24 per tag
 /* Post dates walk back from a fixed base so re-runs stay identical */
 const BASE_DATE = Date.UTC(2026, 6, 15);
@@ -106,6 +113,12 @@ async function run() {
       const extra = pick(TAGS.filter((t) => t !== primaryTag));
       tags.push(extra);
     }
+    // Shopify-style commerce data: numeric pricing (some on sale),
+    // cost per item, options, and per-variant SKU + tracked inventory
+    const price = 58 + Math.floor(rng() * 19) * 10;
+    const onSale = rng() < 0.25;
+    const sizeValues =
+      primaryTag === "footwear" ? ["8", "9", "10", "11", "12"] : ["S", "M", "L", "XL"];
     // 2–5 variants with distinct swatch colors from the sample palette
     const variantCount = 2 + Math.floor(rng() * 4);
     const shuffled = [...PALETTE].sort(() => rng() - 0.5);
@@ -121,6 +134,17 @@ async function run() {
         // swatch click also visibly changes the hover state
         image: imageRef(pool[idx % pool.length]),
         hoverImage: imageRef(pool[(idx + 1) % pool.length]),
+        selectedOptions: [
+          { _type: "selectedOption", _key: key(), option: "Color", value: color.name },
+        ],
+        sku: `SDR-${String(i).padStart(3, "0")}-${color.name.slice(0, 3).toUpperCase()}`,
+        barcode: String(700000000000 + i * 7919 + idx * 101),
+        // ~10% of variants sit at zero stock for the inventory views
+        inventory: {
+          track: true,
+          quantity: rng() < 0.1 ? 0 : 1 + Math.floor(rng() * 120),
+          continueSelling: false,
+        },
       };
     });
     const extraImages = Array.from(
@@ -130,17 +154,37 @@ async function run() {
     await client.createOrReplace({
       _id: id,
       _type: "product",
+      // a few drafts to exercise the status views; they never render
+      status: rng() < 0.05 ? "draft" : "active",
       title,
       slug: { _type: "slug", current: `${title.toLowerCase().replace(/\s+/g, "-")}-${i}` },
+      vendor: "Sun Day Red",
+      productType: TYPE_LABEL[primaryTag],
       gender: i % 2 === 1 ? "mens" : "womens",
       tags,
       postedAt: new Date(BASE_DATE - Math.floor(rng() * 180) * 86400000).toISOString(),
-      price: `$${58 + Math.floor(rng() * 19) * 10}.00`,
+      pricing: {
+        price,
+        ...(onSale ? { compareAtPrice: price + 30 } : {}),
+        costPerItem: Math.round(price * 0.45),
+        chargeTax: true,
+      },
+      options: [
+        {
+          _type: "productOption",
+          _key: key(),
+          name: "Color",
+          values: variants.map((variant) => variant.name.split(" / ")[0]),
+        },
+        { _type: "productOption", _key: key(), name: "Size", values: sizeValues },
+      ],
       variants,
+      shipping: { physical: true, weight: 200 + Math.floor(rng() * 600), weightUnit: "g" },
+      seo: { title, description: `${title} — Sun Day Red.` },
       // images[0] = card thumbnail, images[1] = full-bleed hover image
       images: [imageRef(placeholder), imageRef(campaign), ...extraImages],
     });
-    console.log(`✓ ${id} (${title}) [${tags.join(", ")}]`);
+    console.log(`✓ ${id} (${title}) [${tags.join(", ")}] $${price}${onSale ? " SALE" : ""}`);
   }
 
   /* 2b — the example Presidio with real colorway imagery */
@@ -150,16 +194,34 @@ async function run() {
     presidioImages.push(await uploadIfExists(variant.file));
     presidioHovers.push(await uploadIfExists(variant.hoverFile));
   }
+  const PRESIDIO_STOCK = [24, 12, 0, 36, 8];
   await client.createOrReplace({
     _id: "product-presidio",
     _type: "product",
+    status: "active",
     title: "Presidio",
     slug: { _type: "slug", current: "presidio" },
+    vendor: "Sun Day Red",
+    productType: "Footwear",
     gender: "mens",
     tags: ["footwear"],
     // newest post date so it leads every footwear/all slider
     postedAt: new Date(BASE_DATE + 86400000).toISOString(),
-    price: "$198.00",
+    pricing: { price: 198, costPerItem: 86, chargeTax: true },
+    options: [
+      {
+        _type: "productOption",
+        _key: key(),
+        name: "Color",
+        values: PRESIDIO_VARIANTS.map((variant) => variant.name),
+      },
+      {
+        _type: "productOption",
+        _key: key(),
+        name: "Size",
+        values: ["8", "9", "10", "11", "12", "13"],
+      },
+    ],
     variants: PRESIDIO_VARIANTS.map((variant, i) => ({
       _type: "productVariant",
       _key: key(),
@@ -167,7 +229,20 @@ async function run() {
       color: variant.color,
       image: imageRef(presidioImages[i] ?? placeholder),
       hoverImage: imageRef(presidioHovers[i] ?? campaign),
+      selectedOptions: [
+        { _type: "selectedOption", _key: key(), option: "Color", value: variant.name },
+      ],
+      // the red colorway demos a per-variant sale override
+      ...(variant.name === "White / Red" ? { price: 178, compareAtPrice: 198 } : {}),
+      sku: `PRES-${variant.name.split(" / ").map((part) => part.slice(0, 3).toUpperCase()).join("-")}`,
+      barcode: String(701000000000 + i),
+      inventory: { track: true, quantity: PRESIDIO_STOCK[i], continueSelling: false },
     })),
+    shipping: { physical: true, weight: 380, weightUnit: "g" },
+    seo: {
+      title: "Presidio — Sun Day Red",
+      description: "The Presidio spikeless golf shoe in five colorways.",
+    },
     images: [
       imageRef(presidioImages[0] ?? placeholder),
       imageRef(presidioHovers[0] ?? campaign),
@@ -175,12 +250,130 @@ async function run() {
   });
   console.log("✓ product-presidio (5 colorways)");
 
-  /* 3 — home page */
+  /* 2c — collections: smart (rule-driven) + a manual example */
   const image = (id: string) => ({
     _type: "image" as const,
     asset: { _type: "reference" as const, _ref: id },
   });
+  const ruleKey = () => ({ _type: "collectionRule", _key: key() });
+  const smartCollections = [
+    { id: "collection-footwear", title: "Footwear", field: "tag", value: "footwear" },
+    { id: "collection-polos", title: "Polos", field: "tag", value: "polos" },
+    { id: "collection-mens", title: "Mens", field: "gender", value: "mens" },
+  ];
+  for (const { id, title, field, value } of smartCollections) {
+    await client.createOrReplace({
+      _id: id,
+      _type: "collection",
+      title,
+      slug: { _type: "slug", current: title.toLowerCase() },
+      description: `All ${title.toLowerCase()} — pulled in automatically.`,
+      image: image(campaign),
+      type: "smart",
+      match: "all",
+      rules: [{ ...ruleKey(), field, operator: "eq", value }],
+      sortOrder: "newest",
+    });
+  }
+  await client.createOrReplace({
+    _id: "collection-summer-picks",
+    _type: "collection",
+    title: "Summer Picks",
+    slug: { _type: "slug", current: "summer-picks" },
+    description: "Hand-picked for the season, shown in this order.",
+    image: image(campaign),
+    type: "manual",
+    products: [
+      "product-presidio",
+      "product-seed-003",
+      "product-seed-001",
+      "product-seed-004",
+      "product-seed-005",
+      "product-seed-002",
+    ].map((ref) => ({ _type: "reference", _key: key(), _ref: ref })),
+    sortOrder: "manual",
+  });
+  console.log("✓ 4 collections (3 smart, 1 manual)");
 
+  /* 2d — discounts: one of each Shopify type */
+  const discounts: Array<{ _id: string; _type: string } & Record<string, unknown>> = [
+    {
+      _id: "discount-summer-sale",
+      _type: "discount",
+      title: "Summer Sale",
+      status: "active",
+      method: "automatic",
+      type: "percentage",
+      value: 20,
+      appliesTo: "collections",
+      collections: [
+        { _type: "reference", _key: key(), _ref: "collection-polos" },
+      ],
+      minimumRequirement: { type: "none" },
+      combinesWith: { productDiscounts: false, shippingDiscounts: true },
+      startsAt: new Date(BASE_DATE - 30 * 86400000).toISOString(),
+    },
+    {
+      _id: "discount-welcome10",
+      _type: "discount",
+      title: "Welcome 10",
+      status: "active",
+      method: "code",
+      code: "WELCOME10",
+      type: "percentage",
+      value: 10,
+      appliesTo: "all",
+      minimumRequirement: { type: "amount", value: 100 },
+      usageLimit: 500,
+      oncePerCustomer: true,
+      combinesWith: { productDiscounts: false, shippingDiscounts: true },
+      startsAt: new Date(BASE_DATE - 30 * 86400000).toISOString(),
+    },
+    {
+      _id: "discount-freeship50",
+      _type: "discount",
+      title: "Free shipping over $50",
+      status: "active",
+      method: "code",
+      code: "FREESHIP50",
+      type: "freeShipping",
+      minimumRequirement: { type: "amount", value: 50 },
+      oncePerCustomer: false,
+      combinesWith: { productDiscounts: true, shippingDiscounts: false },
+      startsAt: new Date(BASE_DATE - 30 * 86400000).toISOString(),
+    },
+    {
+      _id: "discount-polo-b2g1",
+      _type: "discount",
+      title: "Buy 2 polos get 1 free",
+      status: "draft",
+      method: "automatic",
+      type: "buyXGetY",
+      buyXGetY: {
+        buyQuantity: 2,
+        getQuantity: 1,
+        discountPercent: 100,
+      },
+      minimumRequirement: { type: "none" },
+      combinesWith: { productDiscounts: false, shippingDiscounts: false },
+      startsAt: new Date(BASE_DATE).toISOString(),
+    },
+  ];
+  for (const doc of discounts) await client.createOrReplace(doc);
+  console.log("✓ 4 discounts (20% polos auto, WELCOME10, FREESHIP50, B2G1 draft)");
+
+  /* 2e — store settings singleton */
+  await client.createOrReplace({
+    _id: "storeSettings",
+    _type: "storeSettings",
+    currency: "USD",
+    locale: "en-US",
+    showCompareAt: true,
+    applyAutomaticDiscounts: true,
+  });
+  console.log("✓ storeSettings (USD)");
+
+  /* 3 — home page */
   await client.createOrReplace({
     _id: "page-home",
     _type: "page",
@@ -282,11 +475,12 @@ async function run() {
         ],
       },
       {
+        // untitled slider sourcing the manual collection
         _type: "sectionProductSlider",
         _key: key(),
         colorMode: "light",
-        source: "auto",
-        tag: "all",
+        source: "collection",
+        collection: { _type: "reference", _ref: "collection-summer-picks" },
       },
     ],
   });

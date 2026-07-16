@@ -64,29 +64,112 @@ export interface SectionInfoSlider extends SectionBase {
 }
 
 export type ProductGender = "mens" | "womens";
+export type ProductStatus = "active" | "draft" | "archived";
+
+export interface ProductPricing {
+  price?: number;
+  compareAtPrice?: number;
+  costPerItem?: number;
+  chargeTax?: boolean;
+}
+
+export interface VariantInventory {
+  track?: boolean;
+  quantity?: number;
+  continueSelling?: boolean;
+}
 
 export interface ProductVariant {
   name?: string;
   color?: string;
   image?: SanityImageSource;
   hoverImage?: SanityImageSource;
+  selectedOptions?: Array<{ option?: string; value?: string }>;
+  price?: number;
+  compareAtPrice?: number;
+  sku?: string;
+  barcode?: string;
+  inventory?: VariantInventory;
 }
 
 export interface SliderProduct {
   _id: string;
   title?: string;
+  /* legacy display string from the first content model */
   price?: string;
+  pricing?: ProductPricing;
+  status?: ProductStatus;
   gender?: ProductGender;
+  tags?: string[];
+  vendor?: string;
+  productType?: string;
+  postedAt?: string;
   variants?: ProductVariant[];
   thumb?: SanityImageSource;
   hoverImage?: SanityImageSource;
+  /* manual collections this product belongs to (reverse lookup) */
+  collectionIds?: string[];
+}
+
+export type CollectionRuleField =
+  | "tag"
+  | "gender"
+  | "vendor"
+  | "productType"
+  | "title"
+  | "price";
+export type CollectionRuleOperator = "eq" | "neq" | "contains" | "gt" | "lt";
+
+export interface CollectionRule {
+  field?: CollectionRuleField;
+  operator?: CollectionRuleOperator;
+  value?: string;
+}
+
+export type CollectionSort = "newest" | "priceAsc" | "priceDesc" | "titleAsc" | "manual";
+
+export interface CollectionDoc {
+  _id: string;
+  title?: string;
+  type?: "manual" | "smart";
+  match?: "all" | "any";
+  rules?: CollectionRule[];
+  sortOrder?: CollectionSort;
+  products?: Array<SliderProduct | null>;
+  /* light form used inside discounts */
+  productIds?: string[];
+}
+
+export type DiscountType = "percentage" | "fixedAmount" | "buyXGetY" | "freeShipping";
+
+export interface Discount {
+  _id: string;
+  title?: string;
+  status?: "active" | "draft";
+  method?: "code" | "automatic";
+  code?: string;
+  type?: DiscountType;
+  value?: number;
+  appliesTo?: "all" | "collections" | "products";
+  productIds?: string[];
+  collections?: CollectionDoc[];
+  startsAt?: string;
+  endsAt?: string;
+}
+
+export interface StoreSettings {
+  currency?: string;
+  locale?: string;
+  showCompareAt?: boolean;
+  applyAutomaticDiscounts?: boolean;
 }
 
 export interface SectionProductSlider extends SectionBase {
   _type: "sectionProductSlider";
   title?: string;
-  source?: "auto" | "manual";
+  source?: "auto" | "collection" | "manual";
   tag?: string;
+  collection?: CollectionDoc | null;
   products?: Array<SliderProduct | null>;
 }
 

@@ -70,7 +70,7 @@ export function CampaignOverlay({
             initial={{ opacity: 0 }}
             animate={{ opacity: go ? 1 : 0 }}
             transition={SPREAD}
-            className="col-start-2 justify-self-center font-display text-headline-sm"
+            className="col-start-2 justify-self-center font-display text-headline-lg"
           >
             {center}
           </motion.span>

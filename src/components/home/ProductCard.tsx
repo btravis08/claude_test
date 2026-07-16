@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import type { Variants } from "motion/react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
 
@@ -60,6 +60,20 @@ export function ProductCard({ product }: { product: ProductCardData }) {
   const [wellHover, setWellHover] = useState(false);
   const showSwatches = cardHover && !wellHover;
   const active = variants[selected];
+
+  /* Warm the browser cache for every colorway's images on first hover
+     so a swatch click swaps instantly instead of flashing while the
+     new image loads */
+  const preloaded = useRef(false);
+  useEffect(() => {
+    if (!cardHover || preloaded.current) return;
+    preloaded.current = true;
+    for (const variant of variants) {
+      for (const src of [variant.image, variant.hoverImage]) {
+        if (src) new window.Image().src = src;
+      }
+    }
+  }, [cardHover, variants]);
   const wellImage = active?.image ?? product.image ?? "/figma/card-shoe.png";
   const hoverImage = active?.hoverImage ?? product.hoverImage;
   const extra = variants.length > 0 ? variants.length - 1 : undefined;
@@ -89,17 +103,21 @@ export function ProductCard({ product }: { product: ProductCardData }) {
         viewport={{ once: true, amount: 0.2 }}
         transition={{ duration: 0.9, ease: [...MEDIA_EASE] }}
       >
-        {/* padded product shot; crossfades when the variant changes */}
-        <motion.div
-          key={selected}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.25 }}
-          role="img"
-          aria-label={product.title}
-          className="absolute inset-x-[17.77%] top-1/2 aspect-square -translate-y-1/2 bg-contain bg-center bg-no-repeat"
-          style={{ backgroundImage: `url(${wellImage})` }}
-        />
+        {/* padded product shot; the outgoing colorway stays visible
+            while the new one fades in, so the swap never goes blank */}
+        <AnimatePresence initial={false}>
+          <motion.div
+            key={selected}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            role="img"
+            aria-label={product.title}
+            className="absolute inset-x-[17.77%] top-1/2 aspect-square -translate-y-1/2 bg-contain bg-center bg-no-repeat"
+            style={{ backgroundImage: `url(${wellImage})` }}
+          />
+        </AnimatePresence>
         {/* full-bleed hover image, settles 1.05x → 1x, shown only while
             the pointer is over the well itself; the keyed layers
             crossfade when a swatch picks another colorway */}

@@ -234,23 +234,23 @@ export interface ProductSliderProps {
   products?: ProductCardData[];
 }
 
+/* Mirrors the seeded Presidio colorways so the CMS-less fallback
+   behaves exactly like production data */
 const SAMPLE_SWATCHES = [
-  { name: "White / Navy", color: "#f4f4f2", hoverImage: "/figma/campaign.png" },
-  { name: "Black / Gray", color: "#161716", hoverImage: "/figma/media-portrait.png" },
-  { name: "Navy / White", color: "#232c3b", hoverImage: "/figma/campaign.png" },
-  { name: "Sky / Gray", color: "#c9d7e4", hoverImage: "/figma/media-portrait.png" },
+  { name: "White / White", color: "#f4f4f2", image: "/figma/products/presidio-white.png", hoverImage: "/figma/products/presidio-white-hover.png" },
+  { name: "White / Red", color: "#b01f24", image: "/figma/products/presidio-red.png", hoverImage: "/figma/products/presidio-red-hover.png" },
+  { name: "Black / White", color: "#161716", image: "/figma/products/presidio-black.png", hoverImage: "/figma/products/presidio-black-hover.png" },
+  { name: "White / Blue", color: "#4b74ad", image: "/figma/products/presidio-blue.png", hoverImage: "/figma/products/presidio-blue-hover.png" },
+  { name: "Gray / Navy", color: "#9aa0a8", image: "/figma/products/presidio-navy.png", hoverImage: "/figma/products/presidio-navy-hover.png" },
 ];
 
 const defaultProducts: ProductCardData[] = Array.from({ length: 24 }, (_, i) => ({
   title: "Presidio",
   price: "$198.00",
   gender: i % 2 === 0 ? "mens" : "womens",
-  image: "/figma/card-shoe.png",
-  hoverImage: "/figma/campaign.png",
-  variants: SAMPLE_SWATCHES.map((swatch) => ({
-    ...swatch,
-    image: "/figma/card-shoe.png",
-  })),
+  image: "/figma/products/presidio-white.png",
+  hoverImage: "/figma/products/presidio-white-hover.png",
+  variants: SAMPLE_SWATCHES,
   // variant-per-card: each card defaults to a different colorway
   defaultVariant: i % SAMPLE_SWATCHES.length,
 }));

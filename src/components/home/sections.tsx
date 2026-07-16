@@ -245,13 +245,14 @@ const defaultProducts: ProductCardData[] = Array.from({ length: 24 }, (_, i) => 
   title: "Presidio",
   price: "$198.00",
   gender: i % 2 === 0 ? "mens" : "womens",
-  colorway: "Gray / Navy",
   image: "/figma/card-shoe.png",
   hoverImage: "/figma/campaign.png",
   variants: SAMPLE_SWATCHES.map((swatch) => ({
     ...swatch,
     image: "/figma/card-shoe.png",
   })),
+  // variant-per-card: each card defaults to a different colorway
+  defaultVariant: i % SAMPLE_SWATCHES.length,
 }));
 
 export function ProductSlider({

@@ -14,7 +14,7 @@
  * Idempotent: fixed document ids and a seeded RNG, so re-running
  * resets everything to the same state.
  */
-import { createReadStream } from "node:fs";
+import { createReadStream, existsSync } from "node:fs";
 import path from "node:path";
 
 import { getCliClient } from "sanity/cli";
@@ -66,6 +66,25 @@ async function uploadImage(filename: string, uploadAs = filename) {
   return asset._id;
 }
 
+async function uploadIfExists(filename: string): Promise<string | null> {
+  const filePath = path.join(process.cwd(), "public/figma", filename);
+  if (!existsSync(filePath)) {
+    console.warn(`⚠ missing ${filename} — using placeholder for this variant`);
+    return null;
+  }
+  return uploadImage(filename);
+}
+
+/* The example Presidio product: real colorway imagery dropped into
+   public/figma/products/ (see filenames below) */
+const PRESIDIO_VARIANTS = [
+  { file: "products/presidio-white.png", name: "White / White", color: "#f4f4f2" },
+  { file: "products/presidio-red.png", name: "White / Red", color: "#b01f24" },
+  { file: "products/presidio-black.png", name: "Black / White", color: "#161716" },
+  { file: "products/presidio-sky.png", name: "White / Sky", color: "#7ea8d4" },
+  { file: "products/presidio-gray.png", name: "Gray / Navy", color: "#9aa0a8" },
+];
+
 async function run() {
   /* 1 — assets */
   const placeholder = await uploadImage("placeholder.png", "sdr-placeholder.png");
@@ -88,14 +107,16 @@ async function run() {
     // 2–5 variants with distinct swatch colors from the sample palette
     const variantCount = 2 + Math.floor(rng() * 4);
     const shuffled = [...PALETTE].sort(() => rng() - 0.5);
-    const variants = shuffled.slice(0, variantCount).map((color) => {
+    const variants = shuffled.slice(0, variantCount).map((color, idx) => {
       const accent = pick(PALETTE.filter((p) => p.name !== color.name));
       return {
         _type: "productVariant",
         _key: key(),
         name: `${color.name} / ${accent.name}`,
         color: color.hex,
-        image: imageRef(pick(pool)),
+        // cycle the pool so adjacent variants always swap to a
+        // visibly different image
+        image: imageRef(pool[idx % pool.length]),
       };
     });
     const extraImages = Array.from(
@@ -117,6 +138,32 @@ async function run() {
     });
     console.log(`✓ ${id} (${title}) [${tags.join(", ")}]`);
   }
+
+  /* 2b — the example Presidio with real colorway imagery */
+  const presidioImages: (string | null)[] = [];
+  for (const variant of PRESIDIO_VARIANTS) {
+    presidioImages.push(await uploadIfExists(variant.file));
+  }
+  await client.createOrReplace({
+    _id: "product-presidio",
+    _type: "product",
+    title: "Presidio",
+    slug: { _type: "slug", current: "presidio" },
+    gender: "mens",
+    tags: ["footwear"],
+    // newest post date so it leads every footwear/all slider
+    postedAt: new Date(BASE_DATE + 86400000).toISOString(),
+    price: "$198.00",
+    variants: PRESIDIO_VARIANTS.map((variant, i) => ({
+      _type: "productVariant",
+      _key: key(),
+      name: variant.name,
+      color: variant.color,
+      image: imageRef(presidioImages[i] ?? placeholder),
+    })),
+    images: [imageRef(presidioImages[0] ?? placeholder), imageRef(campaign)],
+  });
+  console.log("✓ product-presidio (5 colorways)");
 
   /* 3 — home page */
   const image = (id: string) => ({

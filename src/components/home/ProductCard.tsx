@@ -37,6 +37,8 @@ export interface ProductCardData {
   image?: string;
   hoverImage?: string;
   variants?: ProductVariantData[];
+  /* which variant this card shows by default (variant-per-card model) */
+  defaultVariant?: number;
 }
 
 /*
@@ -49,7 +51,7 @@ export interface ProductCardData {
 */
 export function ProductCard({ product }: { product: ProductCardData }) {
   const variants = product.variants ?? [];
-  const [selected, setSelected] = useState(0);
+  const [selected, setSelected] = useState(product.defaultVariant ?? 0);
   const active = variants[selected];
   const wellImage = active?.image ?? product.image ?? "/figma/card-shoe.png";
   const extra = variants.length > 0 ? variants.length - 1 : undefined;

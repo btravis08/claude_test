@@ -24,7 +24,10 @@ function img(source: SanityImageSource | undefined, width = 2000): string | unde
   }
 }
 
-function toCard(product: SliderProduct): ProductCardData {
+/* Each color variant renders as its own card: the card defaults to
+   that colorway but keeps every sibling variant switchable via the
+   swatches. Products without variants yield a single card. */
+function toCards(product: SliderProduct): ProductCardData[] {
   const variants = (product.variants ?? [])
     .filter((variant) => variant && (variant.name || variant.color))
     .map((variant) => ({
@@ -32,8 +35,7 @@ function toCard(product: SliderProduct): ProductCardData {
       color: variant.color,
       image: img(variant.image, 800),
     }));
-  return {
-    _key: product._id,
+  const base: ProductCardData = {
     title: product.title,
     price: product.price,
     gender: product.gender,
@@ -42,6 +44,12 @@ function toCard(product: SliderProduct): ProductCardData {
     hoverImage: img(product.hoverImage, 1200),
     variants,
   };
+  if (variants.length === 0) return [{ ...base, _key: product._id }];
+  return variants.map((_, i) => ({
+    ...base,
+    _key: `${product._id}-${i}`,
+    defaultVariant: i,
+  }));
 }
 
 /* Manual selections render as-is; automatic sliders pull products by
@@ -60,11 +68,12 @@ async function ProductSliderSection({ section }: { section: SectionProductSlider
       [],
     );
   }
+  const cards = products.flatMap(toCards).slice(0, 24);
   return (
     <ProductSlider
       mode={section.colorMode}
       title={section.title}
-      products={products.length ? products.map(toCard) : undefined}
+      products={cards.length ? cards : undefined}
     />
   );
 }

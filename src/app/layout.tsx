@@ -1,31 +1,39 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Mono, Instrument_Serif, Inter } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
 /*
   Root layout: fonts + tokens only. The SDR site chrome (navigation,
   footer) lives in the (site) route group so /studio stays bare.
 
-  Brand fonts in the Figma library are Feature Deck (display serif) and
-  Maison Neue / Maison Neue Mono — both commercially licensed. These are
-  the closest Google Fonts stand-ins; swap to next/font/local when
-  licensed files are available. The CSS variable names stay the same.
+  Licensed brand fonts, self-hosted from src/fonts:
+  - Feature Deck — the display serif for all titles
+  - Maison Neue Book (400) + Medium (500) — Medium carries the label
+    style everywhere the mono cut used to
+  - Maison Neue Mono — kept as the alternative via the font-mono
+    utility
 */
-const featureDeck = Instrument_Serif({
-  variable: "--font-feature-deck",
+const featureDeck = localFont({
+  src: "../fonts/FeatureDeck-Regular-Trial.woff",
   weight: "400",
-  subsets: ["latin"],
+  variable: "--font-feature-deck",
+  display: "swap",
 });
 
-const maison = Inter({
+const maison = localFont({
+  src: [
+    { path: "../fonts/MaisonNeue-Book.woff", weight: "400" },
+    { path: "../fonts/MaisonNeue-Medium.woff", weight: "500" },
+  ],
   variable: "--font-maison",
-  subsets: ["latin"],
+  display: "swap",
 });
 
-const maisonMono = IBM_Plex_Mono({
+const maisonMono = localFont({
+  src: "../fonts/MaisonNeue-Mono.woff",
+  weight: "400",
   variable: "--font-maison-mono",
-  weight: ["400", "500"],
-  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {

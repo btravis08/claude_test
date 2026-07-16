@@ -90,9 +90,10 @@ embedded at /studio, with Motion (framer-motion) for interactions.
   (`gap-px`), cards are full-bleed (no horizontal padding), and the
   arrow/snap step measures consecutive slide offsetLefts so it
   includes the gap.
-- Brand fonts (Feature Deck, Maison Neue) are licensed; Instrument
-  Serif / Inter / IBM Plex Mono stand in via next/font under the same
-  CSS variables — swap to next/font/local when license files exist.
+- Brand fonts are self-hosted from `src/fonts/` via next/font/local:
+  Feature Deck (display serif, trial cut), Maison Neue Book 400 +
+  Medium 500 (Medium carries the label style), Maison Neue Mono
+  (unused by default; available through the `font-mono` utility).
 
 ## Local dev (user's machine)
 

@@ -43,6 +43,12 @@ export const projectBySlugQuery = groq`
   }
 `;
 
+const lookProductFields = groq`
+  _id, title, price, gender,
+  variants[] { name, color, image },
+  "thumb": images[0]
+`;
+
 const sectionFields = groq`
   _key,
   _type,
@@ -59,6 +65,10 @@ const sectionFields = groq`
   image,
   source,
   tag,
+  ratio,
+  mediaKind,
+  "videoUrl": video.asset->url,
+  lookProducts[]->{ ${lookProductFields} },
   cards[] { _key, title, image },
   products[]->{
     _id, title, price, gender,
@@ -66,7 +76,11 @@ const sectionFields = groq`
     "thumb": images[0],
     "hoverImage": images[1]
   },
-  panels[] { _key, title, image }
+  panels[] {
+    _key, title, image, mediaKind,
+    "videoUrl": video.asset->url,
+    lookProducts[]->{ ${lookProductFields} }
+  }
 `;
 
 /* Products for automatic sliders: filtered by tag, newest post first */

@@ -83,3 +83,37 @@ export function Pause({ className }: { className?: string }) {
     </svg>
   );
 }
+
+export function Play({ className }: { className?: string }) {
+  return (
+    <svg style={{ width: "0.5rem", height: "0.5rem" }} viewBox="0 0 8 8" fill="currentColor" className={className} aria-hidden>
+      <path d="M1.5 0.5l6 3.5-6 3.5z" />
+    </svg>
+  );
+}
+
+export function Bag({ size = 12, className }: { size?: number; className?: string }) {
+  return (
+    <svg
+      style={{ width: `${size / 16}rem`, height: `${size / 16}rem` }}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinejoin="miter"
+      className={className}
+      aria-hidden
+    >
+      <path d="M5 8h14l-1.2 13H6.2L5 8z" />
+      <path d="M9 11V6a3 3 0 0 1 6 0v5" />
+    </svg>
+  );
+}
+
+export function Close({ size = 14, className }: { size?: number; className?: string }) {
+  return (
+    <Base size={size} className={className}>
+      <path d="M6 6l12 12M18 6L6 18" />
+    </Base>
+  );
+}

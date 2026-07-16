@@ -8,6 +8,7 @@ import {
   InfoSlider,
   ProductSlider,
 } from "@/components/home/sections";
+import type { LookProductData } from "@/components/home/MediaBlock";
 import type { ProductCardData } from "@/components/home/ProductCard";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { urlFor } from "@/sanity/lib/image";
@@ -51,6 +52,24 @@ function toCards(product: SliderProduct): ProductCardData[] {
     _key: `${product._id}-${i}`,
     defaultVariant: i,
   }));
+}
+
+/* Shop-the-look product references become the mini cards hovered up
+   from the bag button */
+function toLookCards(products?: Array<SliderProduct | null>): LookProductData[] {
+  return (products ?? [])
+    .filter((product): product is SliderProduct => Boolean(product?._id))
+    .map((product) => ({
+      _key: product._id,
+      title: product.title,
+      price: product.price,
+      colorway: product.variants?.[0]?.name,
+      colorCount:
+        product.variants && product.variants.length > 1
+          ? `+${product.variants.length - 1} colors`
+          : undefined,
+      thumb: img(product.variants?.[0]?.image ?? product.thumb, 200),
+    }));
 }
 
 /* Manual selections render as-is; automatic sliders pull products by
@@ -108,6 +127,9 @@ export function SectionRenderer({ sections }: { sections: PageSection[] }) {
                 primaryCta={section.primaryCta}
                 secondaryCta={section.secondaryCta}
                 image={img(section.image) ?? "/figma/campaign.png"}
+                kind={section.mediaKind}
+                videoUrl={section.videoUrl}
+                lookProducts={toLookCards(section.lookProducts)}
               />
             );
           case "sectionInfoSlider":
@@ -154,10 +176,14 @@ export function SectionRenderer({ sections }: { sections: PageSection[] }) {
               <FiftyFifty
                 key={section._key}
                 mode={section.colorMode}
+                ratio={section.ratio}
                 panels={section.panels?.map((panel) => ({
                   _key: panel._key,
                   title: panel.title,
                   image: img(panel.image, 1400),
+                  kind: panel.mediaKind,
+                  videoUrl: panel.videoUrl,
+                  lookProducts: toLookCards(panel.lookProducts),
                 }))}
               />
             );

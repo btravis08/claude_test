@@ -240,10 +240,12 @@ async function run() {
         _type: "sectionFiftyFifty",
         _key: key(),
         colorMode: "dark",
+        ratio: "5:4",
         panels: ["Women’s Apparel", "Men’s Apparel"].map((title) => ({
           _type: "panel",
           _key: key(),
           title,
+          mediaKind: "image",
           image: image(campaign),
         })),
       },
@@ -272,6 +274,12 @@ async function run() {
         align: "left",
         primaryCta: "shop tw performance",
         image: image(campaign),
+        // shop-the-look example: bag button lists these over the image
+        mediaKind: "look",
+        lookProducts: [
+          { _type: "reference", _key: key(), _ref: "product-presidio" },
+          { _type: "reference", _key: key(), _ref: "product-seed-003" },
+        ],
       },
       {
         _type: "sectionProductSlider",

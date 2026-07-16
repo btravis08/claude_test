@@ -1,5 +1,11 @@
 import { AnimatedMedia } from "@/components/home/AnimatedMedia";
 import { ArrowLink, ArrowSwap } from "@/components/home/ArrowHover";
+import {
+  AutoplayVideo,
+  ShopTheLook,
+  VideoPlayerBlock,
+} from "@/components/home/MediaBlock";
+import type { LookProductData } from "@/components/home/MediaBlock";
 import { ProductCard } from "@/components/home/ProductCard";
 import type { ProductCardData } from "@/components/home/ProductCard";
 import { SliderShell } from "@/components/home/SliderShell";
@@ -49,6 +55,15 @@ function PausePill() {
   );
 }
 
+/* Media-block behaviors shared by Full Width and 50/50 columns */
+export type MediaKind = "image" | "look" | "videoPlayer" | "videoAutoplay";
+
+export interface MediaBlockProps {
+  kind?: MediaKind;
+  videoUrl?: string;
+  lookProducts?: LookProductData[];
+}
+
 function Media({
   aspect,
   image,
@@ -57,6 +72,9 @@ function Media({
   position = "center",
   hoverScale = false,
   parallax = false,
+  kind = "image",
+  videoUrl,
+  lookProducts,
 }: {
   aspect: string;
   image?: string;
@@ -65,19 +83,27 @@ function Media({
   position?: string;
   hoverScale?: boolean;
   parallax?: boolean;
-}) {
+} & MediaBlockProps) {
+  const autoplay = kind === "videoAutoplay" && videoUrl;
   return (
     <div className={`relative w-full overflow-hidden rounded-xs bg-surface-2 ${aspect}`}>
-      {image && (
-        <AnimatedMedia
-          image={image}
-          position={position}
-          hoverScale={hoverScale}
-          parallax={parallax}
-        />
+      {autoplay ? (
+        <AutoplayVideo src={videoUrl} poster={image} />
+      ) : (
+        image && (
+          <AnimatedMedia
+            image={image}
+            position={position}
+            hoverScale={hoverScale}
+            parallax={parallax}
+          />
+        )
       )}
       {overlay && <div className="media-overlay" />}
-      {pill && <PausePill />}
+      {kind === "videoPlayer" && videoUrl && <VideoPlayerBlock src={videoUrl} />}
+      {kind === "look" && lookProducts && <ShopTheLook products={lookProducts} />}
+      {/* decorative pill only on plain images — videos bring their own */}
+      {pill && kind === "image" && <PausePill />}
     </div>
   );
 }
@@ -133,7 +159,7 @@ export function Hero({
 
 /* ---------- Full Width campaign ---------- */
 
-export interface FullWidthProps {
+export interface FullWidthProps extends MediaBlockProps {
   mode?: Mode;
   eyebrow?: string;
   headline?: string;
@@ -151,6 +177,9 @@ export function FullWidth({
   primaryCta = "SHOP SPRING TRADITIONS",
   secondaryCta,
   image = "/figma/campaign.png",
+  kind = "image",
+  videoUrl,
+  lookProducts,
 }: FullWidthProps) {
   const centered = align === "center";
   return (
@@ -162,9 +191,14 @@ export function FullWidth({
         pill
         position="bottom"
         parallax
+        kind={kind}
+        videoUrl={videoUrl}
+        lookProducts={lookProducts}
       />
+      {/* pointer-events pass through the text overlay so the media's
+          own controls (bag, play, pause) stay hoverable beneath it */}
       <div
-        className={`absolute inset-0 flex flex-col justify-end gap-6 p-6 ${
+        className={`pointer-events-none absolute inset-0 flex flex-col justify-end gap-6 p-6 ${
           centered ? "items-center pb-12 text-center" : "items-start"
         }`}
       >
@@ -174,7 +208,11 @@ export function FullWidth({
             <h2 className="font-display text-headline-lg">{headline}</h2>
           )}
         </div>
-        <div className={`flex ${centered ? "flex-col items-center gap-4" : "items-center gap-6"}`}>
+        <div
+          className={`pointer-events-auto flex ${
+            centered ? "flex-col items-center gap-4" : "items-center gap-6"
+          }`}
+        >
           {primaryCta && <PrimaryButton label={primaryCta} />}
           {secondaryCta && <SecondaryTextButton label={secondaryCta} />}
         </div>
@@ -281,48 +319,96 @@ export type { CarouselProps } from "@/components/home/Carousel";
 
 /* ---------- 50/50 ---------- */
 
-export interface FiftyFiftyProps {
-  mode?: Mode;
-  panels?: Array<{ _key?: string; title?: string; image?: string }>;
+export interface FiftyPanelData extends MediaBlockProps {
+  _key?: string;
+  title?: string;
+  image?: string;
 }
 
-const defaultPanels = ["Women’s Apparel", "Men’s Apparel"].map((title) => ({
-  title,
-  image: "/figma/campaign.png",
-}));
+export type FiftyRatio = "5:4" | "1:1" | "flex";
 
-export function FiftyFifty({ mode = "dark", panels = defaultPanels }: FiftyFiftyProps) {
+export interface FiftyFiftyProps {
+  mode?: Mode;
+  /* aspect applied to both columns; flex = the whole 50/50 fills the
+     viewport height and the columns fill it */
+  ratio?: FiftyRatio;
+  panels?: FiftyPanelData[];
+}
+
+const defaultPanels: FiftyPanelData[] = ["Women’s Apparel", "Men’s Apparel"].map(
+  (title) => ({
+    title,
+    image: "/figma/campaign.png",
+  }),
+);
+
+const RATIO_ASPECT: Record<FiftyRatio, string> = {
+  "5:4": "aspect-[4/5]",
+  "1:1": "aspect-square",
+  // flex: columns fill the 100vh section (stacked 50vh each on mobile)
+  flex: "h-[50vh] sm:h-full",
+};
+
+export function FiftyFifty({
+  mode = "dark",
+  ratio = "5:4",
+  panels = defaultPanels,
+}: FiftyFiftyProps) {
+  const aspect = RATIO_ASPECT[ratio] ?? RATIO_ASPECT["5:4"];
   return (
     <section
       data-mode={mode}
-      className="grid w-full grid-cols-1 gap-y-0.5 bg-white text-ink sm:grid-cols-2"
+      className={`grid w-full grid-cols-1 gap-y-0.5 bg-white text-ink sm:grid-cols-2 ${
+        ratio === "flex" ? "sm:h-screen" : ""
+      }`}
     >
-      {panels.map((panel, i) => (
-        /* The whole panel is the link and the hover parent — hovering
-           anywhere on the image triggers the arrow's swap animation */
-        <ArrowLink
-          key={panel._key ?? i}
-          href="#"
-          aria-label={panel.title}
-          className="group relative block overflow-hidden"
-        >
+      {panels.map((panel, i) => {
+        const kind = panel.kind ?? "image";
+        const media = (
           <Media
-            aspect="aspect-[4/5]"
+            aspect={aspect}
             image={panel.image ?? "/figma/campaign.png"}
             overlay
-            hoverScale
-            parallax
+            hoverScale={kind === "image"}
+            parallax={kind !== "videoAutoplay"}
+            kind={kind}
+            videoUrl={panel.videoUrl}
+            lookProducts={panel.lookProducts}
           />
-          <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-6">
-            <p className="font-display text-title-md">{panel.title}</p>
-            <span className="flex size-10 items-center justify-center rounded-xs bg-btn text-btn-fg">
-              <ArrowSwap dx={1} dy={-1}>
-                <ArrowUpRight />
-              </ArrowSwap>
-            </span>
+        );
+        /* Plain image columns keep the clickable panel with the arrow
+           swap; interactive media owns its own controls instead */
+        if (kind === "image") {
+          return (
+            <ArrowLink
+              key={panel._key ?? i}
+              href="#"
+              aria-label={panel.title}
+              className="group relative block overflow-hidden"
+            >
+              {media}
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between p-6">
+                <p className="font-display text-title-md">{panel.title}</p>
+                <span className="flex size-10 items-center justify-center rounded-xs bg-btn text-btn-fg">
+                  <ArrowSwap dx={1} dy={-1}>
+                    <ArrowUpRight />
+                  </ArrowSwap>
+                </span>
+              </div>
+            </ArrowLink>
+          );
+        }
+        return (
+          <div key={panel._key ?? i} className="relative overflow-hidden">
+            {media}
+            {panel.title && (
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end p-6">
+                <p className="font-display text-title-md">{panel.title}</p>
+              </div>
+            )}
           </div>
-        </ArrowLink>
-      ))}
+        );
+      })}
     </section>
   );
 }

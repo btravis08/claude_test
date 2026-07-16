@@ -37,7 +37,17 @@ export interface SectionHero extends SectionBase {
   image?: SanityImageSource;
 }
 
-export interface SectionFullWidth extends SectionBase {
+export type MediaKind = "image" | "look" | "videoPlayer" | "videoAutoplay";
+
+/* Shared media-block fields: a media slot is an image or a video with
+   a behavior (static / shop the look / click to play / autoplay) */
+export interface MediaBlockFields {
+  mediaKind?: MediaKind;
+  videoUrl?: string;
+  lookProducts?: Array<SliderProduct | null>;
+}
+
+export interface SectionFullWidth extends SectionBase, MediaBlockFields {
   _type: "sectionFullWidth";
   eyebrow?: string;
   headline?: string;
@@ -98,7 +108,10 @@ export interface SectionCarousel extends SectionBase {
 
 export interface SectionFiftyFifty extends SectionBase {
   _type: "sectionFiftyFifty";
-  panels?: Array<{ _key: string; title?: string; image?: SanityImageSource }>;
+  ratio?: "5:4" | "1:1" | "flex";
+  panels?: Array<
+    { _key: string; title?: string; image?: SanityImageSource } & MediaBlockFields
+  >;
 }
 
 export interface SectionRichText extends SectionBase {

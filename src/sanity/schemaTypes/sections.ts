@@ -66,6 +66,48 @@ const image = (title = "Image") =>
     initialValue: async (_, { getClient }) => placeholderImage(getClient),
   });
 
+/* Media block: every media slot (Full Width, 50/50 columns) is an
+   image or a video with a behavior picked here. The image doubles as
+   the poster frame for the click-to-play video. */
+const isVideoKind = (parent: { mediaKind?: string } | undefined) =>
+  parent?.mediaKind !== "videoPlayer" && parent?.mediaKind !== "videoAutoplay";
+
+const mediaBlockFields = () => [
+  defineField({
+    name: "mediaKind",
+    title: "Media type",
+    type: "string",
+    options: {
+      list: [
+        { title: "Image", value: "image" },
+        { title: "Image — Shop the look", value: "look" },
+        { title: "Video — click to play", value: "videoPlayer" },
+        { title: "Video — autoplay", value: "videoAutoplay" },
+      ],
+      layout: "radio",
+    },
+    initialValue: "image",
+  }),
+  defineField({
+    name: "video",
+    title: "Video file",
+    type: "file",
+    options: { accept: "video/*" },
+    description:
+      "Click to play: opens in a player. Autoplay: plays muted in view with a pause control. The image above is the poster frame.",
+    hidden: ({ parent }) => isVideoKind(parent),
+  }),
+  defineField({
+    name: "lookProducts",
+    title: "Shop the look — products",
+    type: "array",
+    of: [defineArrayMember({ type: "reference", to: [{ type: "product" }] })],
+    description:
+      "Products tagged in this look. A bag button appears on the media; hovering it lists these over the image.",
+    hidden: ({ parent }) => parent?.mediaKind !== "look",
+  }),
+];
+
 /* Shared fields for hero / full-width campaign sections */
 const campaignFields = (align: "left" | "center") => [
   defineField({ name: "eyebrow", type: "string", initialValue: "SAMPLE BROW" }),
@@ -110,7 +152,7 @@ export const sectionFullWidth = defineType({
   name: "sectionFullWidth",
   title: "Full Width",
   type: "object",
-  fields: [colorMode("dark"), ...campaignFields("center")],
+  fields: [colorMode("dark"), ...campaignFields("center"), ...mediaBlockFields()],
   preview: {
     select: { title: "headline", media: "image" },
     prepare: ({ title, media }) => ({ title: title || "Full Width", subtitle: "Full Width", media }),
@@ -267,7 +309,24 @@ export const sectionFiftyFifty = defineType({
   fields: [
     colorMode("dark"),
     defineField({
+      name: "ratio",
+      title: "Column ratio",
+      type: "string",
+      description:
+        "Aspect ratio applied to both columns. Flex scales the whole 50/50 to the viewport height and the columns fill it.",
+      options: {
+        list: [
+          { title: "5:4 portrait", value: "5:4" },
+          { title: "Square (1:1)", value: "1:1" },
+          { title: "Flex — fill screen height", value: "flex" },
+        ],
+        layout: "radio",
+      },
+      initialValue: "5:4",
+    }),
+    defineField({
       name: "panels",
+      title: "Columns",
       type: "array",
       validation: (rule) => rule.max(2),
       of: [
@@ -275,8 +334,14 @@ export const sectionFiftyFifty = defineType({
           type: "object",
           name: "panel",
           fields: [
-            defineField({ name: "title", type: "string", initialValue: "Lorem Panel" }),
+            defineField({
+              name: "title",
+              type: "string",
+              description: "Optional overlay title; image columns with a title get the arrow link.",
+              initialValue: "Lorem Panel",
+            }),
             image(),
+            ...mediaBlockFields(),
           ],
           preview: { select: { title: "title", media: "image" } },
         }),

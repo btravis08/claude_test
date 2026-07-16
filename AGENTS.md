@@ -46,13 +46,26 @@ embedded at /studio, with Motion (framer-motion) for interactions.
 - Content model: `page` documents are built from a reorderable
   `sections[]` array (hero, info slider, full width, carousel, 50/50,
   product slider, rich text). Every section has a `colorMode`
-  (light/dark) matching the Figma variable modes. `product` documents
-  carry gender (mens/womens), tags (footwear/pants/polos/headwear/
-  tshirts), postedAt, price, variants, up to 6 images (first = card
-  thumbnail). Product sliders source products automatically by tag
-  (newest postedAt first) or by manual reference. New sections arrive
-  pre-filled with lorem copy and a placeholder image resolved from the
-  dataset by filename (sdr-placeholder.png).
+  (light/dark) matching the Figma variable modes. Full Width sections
+  and 50/50 columns are media blocks (image / shop-the-look with
+  product refs / click-to-play video / autoplay video); 50/50 carries
+  a ratio (5:4, 1:1, flex = 100vh). New sections arrive pre-filled
+  with lorem copy and a placeholder image resolved from the dataset by
+  filename (sdr-placeholder.png).
+- Commerce model (Shopify-shaped): `product` has status (only Active
+  renders), vendor/productType/gender/tags/postedAt, pricing {price,
+  compareAtPrice, costPerItem}, options (Color/Size), variants with
+  SKU/barcode/tracked inventory + per-variant price overrides and the
+  SDR colorway visuals (swatch, image, hoverImage), shipping, SEO, up
+  to 6 images (first = card thumbnail, second = hover). `collection`
+  is manual (ordered refs) or smart (whitelisted rules compiled to
+  parameterized GROQ in `src/sanity/lib/commerce.ts`). `discount`
+  mirrors Shopify (code/automatic × percentage/fixed/BOGO/free
+  shipping, scheduling, minimums, usage limits); active automatic
+  price discounts are applied to displayed card prices (best wins,
+  original struck). `storeSettings` singleton = currency/locale +
+  display toggles. Sliders source by tag, collection, or manual refs.
+  The Studio desk mirrors the Shopify admin sidebar.
 - GOTCHA: `tag` is a reserved Sanity fetch-option name — GROQ params
   use `$productTag`.
 

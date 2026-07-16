@@ -125,15 +125,13 @@ function MegaPanel({ item }: { item: MenuItem }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4, ease: [...MEDIA_EASE], delay: 0.08 }}
-      className="flex w-full items-stretch"
+      className="flex w-full items-stretch gap-px"
     >
-      <div className="grid flex-1 grid-cols-2 lg:grid-cols-4">
-        {(item.columns ?? []).map((column, i) => (
+      <div className="grid flex-1 grid-cols-2 gap-px lg:grid-cols-4">
+        {(item.columns ?? []).map((column) => (
           <div
             key={column.title}
-            className={`flex flex-col items-start gap-5 px-6 pb-16 pt-8 ${
-              i > 0 ? "border-l border-line" : ""
-            }`}
+            className="flex flex-col items-start gap-5 bg-surface px-6 pb-16 pt-8"
           >
             <p className="label text-ink-2">{column.title.toUpperCase()}</p>
             <div className="flex flex-col items-start gap-4">
@@ -328,15 +326,18 @@ export function Navigation() {
           setHovered(false);
           setActive(null);
         }}
-        className={`fixed top-0 z-50 w-full text-ink transition-colors duration-300 ${
-          transparent ? "bg-transparent" : "bg-surface"
+        className={`fixed top-0 z-50 flex w-full flex-col gap-px text-ink transition-colors duration-300 ${
+          transparent ? "bg-transparent" : "bg-surface-2"
         }`}
       >
-        {/* the bar keeps its hairline when transparent or when the
-            dropdown is open; the plain white fill goes borderless */}
+        {/* like the product grid: surface tiles separated by 1px of the
+            wash backdrop instead of borders. The hairline only exists
+            in the transparent state. */}
         <div
           className={`flex h-[3.75rem] items-center border-b-[1.5px] px-6 py-3 transition-colors duration-300 ${
-            transparent || active !== null ? "border-line-2" : "border-transparent"
+            transparent
+              ? "border-line-2 bg-transparent"
+              : "border-transparent bg-surface"
           }`}
         >
           <div className="hidden flex-1 items-center gap-8 md:flex">
@@ -375,7 +376,7 @@ export function Navigation() {
               animate={{ height: "auto" }}
               exit={{ height: 0 }}
               transition={{ duration: 0.55, ease: [...MEDIA_EASE] }}
-              className="hidden max-h-[calc(100vh-3.75rem)] overflow-hidden bg-surface md:block"
+              className="hidden max-h-[calc(100vh-3.75rem)] overflow-hidden md:block"
             >
               <MegaPanel item={activeItem} />
             </motion.div>
@@ -443,7 +444,11 @@ export function Navigation() {
         data-mode={mobileOpen ? "light" : barMode}
         className="fixed inset-x-4 bottom-4 z-[70] md:hidden"
       >
-        <div className="label flex h-12 items-center justify-between rounded-xs bg-surface/85 px-6 text-ink backdrop-blur-md transition-colors duration-300">
+        <div
+          className={`label flex h-12 items-center justify-between rounded-xs px-6 text-ink transition-colors duration-300 ${
+            mobileOpen ? "bg-surface-2" : "bg-surface/85 backdrop-blur-md"
+          }`}
+        >
           <a href="#">SEARCH</a>
           <a href="#">ACCOUNT</a>
           <a href="#">BAG [1]</a>

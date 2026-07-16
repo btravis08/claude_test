@@ -118,55 +118,65 @@ function NavButton({ label, active = false }: { label: string; active?: boolean 
 
 /* ---------- desktop meganav panel ---------- */
 
+/* Content fade shared by the panel tiles when the active item swaps */
+const contentFade = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
+  transition: { duration: 0.3, ease: [...MEDIA_EASE], delay: 0.08 },
+} as const;
+
+/* The tile containers persist while the active menu item changes —
+   only their contents (text / image) fade */
 function MegaPanel({ item }: { item: MenuItem }) {
   return (
-    <motion.div
-      key={item.title}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.4, ease: [...MEDIA_EASE], delay: 0.08 }}
-      className="flex w-full items-stretch gap-px"
-    >
+    <div className="flex w-full items-stretch gap-px">
       <div className="grid flex-1 grid-cols-2 gap-px lg:grid-cols-4">
-        {(item.columns ?? []).map((column) => (
-          <div
-            key={column.title}
-            className="flex flex-col items-start gap-5 bg-surface px-6 pb-16 pt-8"
-          >
-            <p className="label text-ink-2">{column.title.toUpperCase()}</p>
-            <div className="flex flex-col items-start gap-4">
-              {column.links.map((link) => (
-                <NavButton key={link} label={link.toUpperCase()} />
-              ))}
-            </div>
+        {(item.columns ?? []).map((column, i) => (
+          <div key={i} className="bg-surface-2 px-6 pb-16 pt-8">
+            <motion.div
+              key={`${item.title}-${column.title}`}
+              {...contentFade}
+              className="flex flex-col items-start gap-5"
+            >
+              <p className="label text-ink-2">{column.title.toUpperCase()}</p>
+              <div className="flex flex-col items-start gap-4">
+                {column.links.map((link) => (
+                  <NavButton key={link} label={link.toUpperCase()} />
+                ))}
+              </div>
+            </motion.div>
           </div>
         ))}
       </div>
       {item.image && (
-        /* image card, hover-identical to a 50/50 panel: image scales,
-           the arrow swaps */
-        <ArrowLink
-          href="#"
-          aria-label={item.imageTitle}
-          className="group relative hidden aspect-[5/6] w-1/3 shrink-0 overflow-hidden lg:block"
-        >
-          <div
-            aria-hidden
-            className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
-            style={{ backgroundImage: `url(${item.image})` }}
-          />
-          <div className="media-overlay" />
-          <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-6">
-            <p className="font-display text-title-md text-white">{item.imageTitle}</p>
-            <span className="flex size-10 items-center justify-center rounded-xs bg-white text-[#161716]">
-              <ArrowSwap dx={1} dy={-1}>
-                <ArrowUpRight />
-              </ArrowSwap>
-            </span>
-          </div>
-        </ArrowLink>
+        <div className="relative hidden aspect-[5/6] w-1/3 shrink-0 overflow-hidden bg-surface-2 lg:block">
+          {/* image card, hover-identical to a 50/50 panel: image
+              scales, the arrow swaps */}
+          <motion.div key={item.title} {...contentFade} className="absolute inset-0">
+            <ArrowLink
+              href="#"
+              aria-label={item.imageTitle}
+              className="group absolute inset-0 block overflow-hidden"
+            >
+              <div
+                aria-hidden
+                className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
+                style={{ backgroundImage: `url(${item.image})` }}
+              />
+              <div className="media-overlay" />
+              <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-6">
+                <p className="font-display text-title-md text-white">{item.imageTitle}</p>
+                <span className="flex size-10 items-center justify-center rounded-xs bg-white text-[#161716]">
+                  <ArrowSwap dx={1} dy={-1}>
+                    <ArrowUpRight />
+                  </ArrowSwap>
+                </span>
+              </div>
+            </ArrowLink>
+          </motion.div>
+        </div>
       )}
-    </motion.div>
+    </div>
   );
 }
 
@@ -327,17 +337,17 @@ export function Navigation() {
           setActive(null);
         }}
         className={`fixed top-0 z-50 flex w-full flex-col gap-px text-ink transition-colors duration-300 ${
-          transparent ? "bg-transparent" : "bg-surface-2"
+          transparent ? "bg-transparent" : "bg-white"
         }`}
       >
-        {/* like the product grid: surface tiles separated by 1px of the
-            wash backdrop instead of borders. The hairline only exists
-            in the transparent state. */}
+        {/* like the product grid: soft-gray tiles (the product-well
+            tone) separated by 1px of white instead of borders. The
+            hairline only exists in the transparent state. */}
         <div
           className={`flex h-[3.75rem] items-center border-b-[1.5px] px-6 py-3 transition-colors duration-300 ${
             transparent
               ? "border-line-2 bg-transparent"
-              : "border-transparent bg-surface"
+              : "border-transparent bg-surface-2"
           }`}
         >
           <div className="hidden flex-1 items-center gap-8 md:flex">

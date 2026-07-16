@@ -248,7 +248,7 @@ export function InfoSlider({
           card: (
             <a
               href="#"
-              className="group flex w-full flex-col gap-[1.125rem] border-r border-line bg-surface px-6 pb-16 pt-6"
+              className="group flex w-full flex-col gap-[1.125rem] bg-surface pb-16"
             >
               <Media
                 aspect="aspect-[3/4]"

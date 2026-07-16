@@ -86,8 +86,10 @@ embedded at /studio, with Motion (framer-motion) for interactions.
   card width and disable at the ends, MENS/WOMENS filter with staggered
   Motion fade, eased progress bar replacing the scrollbar, arrow-swap
   hover via `ArrowHover.tsx`).
-- Slider cards carry only a right border (track owns top/bottom) so
-  hairlines never stack.
+- Slider cards are borderless: the track is a grid with 1px gaps
+  (`gap-px`), cards are full-bleed (no horizontal padding), and the
+  arrow/snap step measures consecutive slide offsetLefts so it
+  includes the gap.
 - Brand fonts (Feature Deck, Maison Neue) are licensed; Instrument
   Serif / Inter / IBM Plex Mono stand in via next/font under the same
   CSS variables — swap to next/font/local when license files exist.

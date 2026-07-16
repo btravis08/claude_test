@@ -76,11 +76,18 @@ export function SliderShell({ title, items }: { title?: string; items: SliderIte
     };
   }, [updateArrows, visible.length]);
 
+  /* One step = distance between consecutive card starts (card width
+     plus the 1px gap), so arrows and snap stay exact */
+  const stepWidth = (el: HTMLDivElement) => {
+    const slides = el.querySelectorAll<HTMLElement>("[data-slide]");
+    if (slides.length >= 2) return slides[1].offsetLeft - slides[0].offsetLeft;
+    return slides[0]?.offsetWidth ?? el.clientWidth;
+  };
+
   const slide = (dir: 1 | -1) => {
     const el = trackRef.current;
     if (!el) return;
-    const first = el.querySelector<HTMLElement>("[data-slide]");
-    el.scrollBy({ left: dir * (first?.offsetWidth ?? el.clientWidth), behavior: "smooth" });
+    el.scrollBy({ left: dir * stepWidth(el), behavior: "smooth" });
   };
 
   const applyFilter = (next: string | null) => {
@@ -120,8 +127,7 @@ export function SliderShell({ title, items }: { title?: string; items: SliderIte
     drag.current.active = false;
     if (drag.current.moved) {
       setDragging(false);
-      const first = el.querySelector<HTMLElement>("[data-slide]");
-      const cardW = first?.offsetWidth ?? el.clientWidth;
+      const cardW = stepWidth(el);
       el.scrollTo({ left: Math.round(el.scrollLeft / cardW) * cardW, behavior: "smooth" });
     }
   };
@@ -204,7 +210,7 @@ export function SliderShell({ title, items }: { title?: string; items: SliderIte
         onPointerCancel={endDrag}
         onClickCapture={onClickCapture}
         onDragStart={(e) => e.preventDefault()}
-        className={`no-scrollbar grid w-full auto-cols-[85%] grid-flow-col overflow-x-auto border-y border-line sm:auto-cols-[45%] lg:auto-cols-[25%] ${
+        className={`no-scrollbar grid w-full auto-cols-[85%] grid-flow-col gap-px overflow-x-auto sm:auto-cols-[45%] lg:auto-cols-[25%] ${
           dragging
             ? "cursor-grabbing select-none"
             : "cursor-grab snap-x snap-mandatory"

@@ -158,7 +158,7 @@ export function ProductCard({ product }: { product: ProductCardData }) {
             <span>{priceLabel}</span>
           </p>
         </div>
-        <div className="flex h-4 w-full items-center justify-between font-mono text-[0.75rem] uppercase leading-none text-ink-2">
+        <div className="flex h-4 w-full items-center justify-between text-[0.75rem] font-medium uppercase leading-none text-ink-2">
           <p>{colorLabel}</p>
           <span className="relative flex items-center justify-end">
             {extraLabel && (

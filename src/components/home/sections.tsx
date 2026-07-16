@@ -36,7 +36,7 @@ export function PrimaryButton({ label }: { label: string }) {
 
 export function SecondaryTextButton({ label }: { label: string }) {
   return (
-    <a href="#" className="group relative font-mono text-label-md uppercase text-ink">
+    <a href="#" className="group relative text-label-md font-medium uppercase text-ink">
       {label}
       <span className="absolute inset-x-0 -bottom-1 h-px origin-right bg-ink transition-transform duration-300 group-hover:scale-x-0" />
     </a>
@@ -79,7 +79,8 @@ function Media({
 }: {
   aspect: string;
   image?: string;
-  overlay?: boolean;
+  /* true = gradient scrim; "flat" = constant 25% black layer */
+  overlay?: boolean | "flat";
   pill?: boolean;
   position?: string;
   hoverScale?: boolean;
@@ -100,7 +101,15 @@ function Media({
           />
         )
       )}
-      {overlay && <div className="media-overlay" />}
+      {overlay && (
+        <div
+          className={
+            overlay === "flat"
+              ? "pointer-events-none absolute inset-0 bg-black/25"
+              : "media-overlay"
+          }
+        />
+      )}
       {kind === "videoPlayer" && videoUrl && <VideoPlayerBlock src={videoUrl} />}
       {kind === "look" && lookProducts && <ShopTheLook products={lookProducts} />}
       {/* decorative pill only on plain images — videos bring their own */}
@@ -132,7 +141,7 @@ export function Hero({
       {/* the whole hero is the link and the hover parent: image scales,
           the right text's underline draws in */}
       <a href="#" aria-label={headline} className="group block w-full">
-        <Media aspect="h-screen" image={image} overlay pill hoverScale parallax />
+        <Media aspect="h-screen" image={image} overlay="flat" pill hoverScale parallax />
         <CampaignOverlay left={eyebrow} center={headline} right={primaryCta} />
       </a>
     </section>

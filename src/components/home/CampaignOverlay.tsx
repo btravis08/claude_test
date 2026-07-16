@@ -4,12 +4,10 @@ import { motion, useInView } from "motion/react";
 import type { Transition } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
-import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
-
 /*
   Hero / Full Width text treatment: nav-style label texts on the sides,
   display type in the middle, sitting on the media's vertical center.
-  The sides start 5% in from each edge and, while the image entrance is
+  The sides start 4% in from each edge and, while the image entrance is
   still settling, fade in as they travel outward to the 24px insets
   (Motion layout/FLIP, ease-in-out); the center text fades in place,
   centered on the container.
@@ -49,17 +47,17 @@ export function CampaignOverlay({
       {/* 1fr/auto/1fr grid keeps the center text centered on the
           container regardless of the side texts' widths; the padding
           swap is what the sides travel through (FLIP) */}
-      <motion.div
+      {/* each text fades in over the same ease-in-out as its travel */}
+      <div
         className={`grid w-full grid-cols-[1fr_auto_1fr] items-center ${
-          go ? "px-6" : "px-[5%]"
+          go ? "px-6" : "px-[4%]"
         }`}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: go ? 1 : 0 }}
-        transition={{ duration: 0.45, ease: [...MEDIA_EASE] }}
       >
         {left !== undefined && (
           <motion.span
             layout="position"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: go ? 1 : 0 }}
             transition={SPREAD}
             className="label col-start-1 justify-self-start font-medium"
           >
@@ -69,6 +67,8 @@ export function CampaignOverlay({
         {center !== undefined && (
           <motion.span
             layout="position"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: go ? 1 : 0 }}
             transition={SPREAD}
             className="col-start-2 justify-self-center font-display text-headline-sm"
           >
@@ -78,6 +78,8 @@ export function CampaignOverlay({
         {right !== undefined && (
           <motion.span
             layout="position"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: go ? 1 : 0 }}
             transition={SPREAD}
             className="label relative col-start-3 justify-self-end font-medium"
           >
@@ -86,7 +88,7 @@ export function CampaignOverlay({
             <span className="absolute inset-x-0 -bottom-0.5 h-px origin-right scale-x-0 bg-current transition-transform duration-300 group-hover:origin-left group-hover:scale-x-100" />
           </motion.span>
         )}
-      </motion.div>
+      </div>
     </div>
   );
 }

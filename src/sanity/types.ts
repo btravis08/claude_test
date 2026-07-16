@@ -35,6 +35,9 @@ export interface SectionHero extends SectionBase {
   primaryCta?: string;
   secondaryCta?: string;
   image?: SanityImageSource;
+  /* restricted media block: image or autoplay video */
+  mediaKind?: MediaKind;
+  videoUrl?: string;
 }
 
 export type MediaKind = "image" | "look" | "videoPlayer" | "videoAutoplay";

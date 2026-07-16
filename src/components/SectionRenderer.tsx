@@ -219,6 +219,8 @@ export function SectionRenderer({ sections }: { sections: PageSection[] }) {
                 headline={section.headline}
                 primaryCta={section.primaryCta}
                 image={img(section.image) ?? "/figma/campaign.png"}
+                kind={section.mediaKind === "videoAutoplay" ? "videoAutoplay" : "image"}
+                videoUrl={section.videoUrl}
               />
             );
           case "sectionFullWidth":

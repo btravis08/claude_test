@@ -66,46 +66,59 @@ const image = (title = "Image") =>
     initialValue: async (_, { getClient }) => placeholderImage(getClient),
   });
 
-/* Media block: every media slot (Full Width, 50/50 columns) is an
-   image or a video with a behavior picked here. The image doubles as
-   the poster frame for the click-to-play video. */
+/* Media block: every media slot (hero, Full Width, 50/50 columns) is
+   an image or a video with a behavior picked here. The image doubles
+   as the poster frame for videos. Pass `allowed` to restrict the
+   choices (the hero only offers image / autoplay). */
 const isVideoKind = (parent: { mediaKind?: string } | undefined) =>
   parent?.mediaKind !== "videoPlayer" && parent?.mediaKind !== "videoAutoplay";
 
-const mediaBlockFields = () => [
+const MEDIA_KIND_OPTIONS = [
+  { title: "Image", value: "image" },
+  { title: "Image — Shop the look", value: "look" },
+  { title: "Video — click to play", value: "videoPlayer" },
+  { title: "Video — autoplay", value: "videoAutoplay" },
+];
+
+const mediaBlockFields = (
+  allowed: string[] = ["image", "look", "videoPlayer", "videoAutoplay"],
+) => [
   defineField({
     name: "mediaKind",
     title: "Media type",
     type: "string",
     options: {
-      list: [
-        { title: "Image", value: "image" },
-        { title: "Image — Shop the look", value: "look" },
-        { title: "Video — click to play", value: "videoPlayer" },
-        { title: "Video — autoplay", value: "videoAutoplay" },
-      ],
+      list: MEDIA_KIND_OPTIONS.filter((option) => allowed.includes(option.value)),
       layout: "radio",
     },
     initialValue: "image",
   }),
-  defineField({
-    name: "video",
-    title: "Video file",
-    type: "file",
-    options: { accept: "video/*" },
-    description:
-      "Click to play: opens in a player. Autoplay: plays muted in view with a pause control. The image above is the poster frame.",
-    hidden: ({ parent }) => isVideoKind(parent),
-  }),
-  defineField({
-    name: "lookProducts",
-    title: "Shop the look — products",
-    type: "array",
-    of: [defineArrayMember({ type: "reference", to: [{ type: "product" }] })],
-    description:
-      "Products tagged in this look. A bag button appears on the media; hovering it lists these over the image.",
-    hidden: ({ parent }) => parent?.mediaKind !== "look",
-  }),
+  ...(allowed.some((kind) => kind.startsWith("video"))
+    ? [
+        defineField({
+          name: "video",
+          title: "Video file",
+          type: "file",
+          options: { accept: "video/*" },
+          description:
+            "Click to play: opens in a player. Autoplay: plays muted in view with a pause control. The image above is the poster frame.",
+          hidden: ({ parent }) => isVideoKind(parent),
+        }),
+      ]
+    : []),
+  ...(allowed.includes("look")
+    ? [
+        defineField({
+          name: "lookProducts",
+          title: "Shop the look — products",
+          type: "array",
+          of: [defineArrayMember({ type: "reference", to: [{ type: "product" }] })],
+          description:
+            "Products tagged in this look. A bag button appears on the media; hovering it lists these over the image.",
+          hidden: ({ parent }) => parent?.mediaKind !== "look",
+        }),
+      ]
+    : []),
 ];
 
 /* Shared fields for hero / full-width campaign sections: three texts
@@ -138,7 +151,11 @@ export const sectionHero = defineType({
   name: "sectionHero",
   title: "Hero",
   type: "object",
-  fields: [colorMode("dark"), ...campaignFields()],
+  fields: [
+    colorMode("dark"),
+    ...campaignFields(),
+    ...mediaBlockFields(["image", "videoAutoplay"]),
+  ],
   preview: {
     select: { title: "headline", media: "image" },
     prepare: ({ title, media }) => ({ title: title || "Hero", subtitle: "Hero", media }),

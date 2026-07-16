@@ -127,6 +127,9 @@ export interface HeroProps {
   headline?: string;
   primaryCta?: string;
   image?: string;
+  /* the hero's media is a static image or an autoplay video only */
+  kind?: "image" | "videoAutoplay";
+  videoUrl?: string;
 }
 
 export function Hero({
@@ -135,13 +138,24 @@ export function Hero({
   headline = "Spring Traditions",
   primaryCta = "Shop Collection",
   image = "/figma/campaign.png",
+  kind = "image",
+  videoUrl,
 }: HeroProps) {
   return (
     <section data-mode={mode} className="relative w-full bg-surface text-ink">
       {/* the whole hero is the link and the hover parent: image scales,
           the right text's underline draws in */}
       <a href="#" aria-label={headline} className="group block w-full">
-        <Media aspect="h-screen" image={image} overlay="flat" pill hoverScale parallax />
+        <Media
+          aspect="h-screen"
+          image={image}
+          overlay="flat"
+          pill
+          hoverScale={kind === "image"}
+          parallax
+          kind={kind}
+          videoUrl={videoUrl}
+        />
         <CampaignOverlay left={eyebrow} center={headline} right={primaryCta} />
       </a>
     </section>

@@ -1,4 +1,4 @@
-import { FiftyFifty, FullWidth } from "@/components/home/sections";
+import { FiftyFifty, FullWidth, Hero } from "@/components/home/sections";
 import type { LookProductData } from "@/components/home/MediaBlock";
 
 /*
@@ -30,6 +30,12 @@ const sampleLook: LookProductData[] = [
 export default function MediaTest() {
   return (
     <div data-mode="light" className="flex flex-col items-start bg-surface">
+      <Hero
+        headline="Hero Autoplay"
+        eyebrow="HERO — VIDEO AUTOPLAY"
+        kind="videoAutoplay"
+        videoUrl="/figma/sample-video.webm"
+      />
       <FullWidth
         headline="Shop the Look"
         eyebrow="FULL WIDTH — LOOK"

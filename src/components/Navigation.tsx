@@ -256,10 +256,27 @@ export function Navigation() {
   const [overHero, setOverHero] = useState(isHome);
   const [hovered, setHovered] = useState(false);
   const [active, setActive] = useState<number | null>(null);
+  /* keeps the light presentation while the meganav exit-animates */
+  const [panelVisible, setPanelVisible] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  /* color mode of the section under the mobile bottom bar */
+  const [barMode, setBarMode] = useState<"light" | "dark">("light");
   const lastY = useRef(0);
 
   useEffect(() => {
+    const modeUnderBar = (): "light" | "dark" => {
+      // the bar sits bottom-4 with h-12 → its center is 40px up
+      const stack = document.elementsFromPoint(
+        window.innerWidth / 2,
+        window.innerHeight - 40,
+      );
+      for (const el of stack) {
+        if (el.closest("[data-navbar]") || el.closest("header")) continue;
+        const section = el.closest<HTMLElement>("[data-mode]");
+        if (section) return section.dataset.mode === "dark" ? "dark" : "light";
+      }
+      return "light";
+    };
     const onScroll = () => {
       const y = window.scrollY;
       const delta = y - lastY.current;
@@ -271,10 +288,15 @@ export function Navigation() {
       lastY.current = y;
       // the hero fills the viewport; past it the nav needs its surface
       setOverHero(isHome && y < window.innerHeight - 60);
+      setBarMode(modeUnderBar());
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, [isHome]);
 
   // lock page scroll behind the mobile sheet
@@ -285,8 +307,14 @@ export function Navigation() {
     };
   }, [mobileOpen]);
 
-  const transparent = overHero && !hovered && active === null;
+  /* the transparent flip waits for the meganav's exit animation, so
+     the bar fades white → transparent instead of snapping dark */
+  const transparent = overHero && !hovered && active === null && !panelVisible;
   const activeItem = active !== null ? MENU[active] : null;
+
+  useEffect(() => {
+    if (activeItem?.columns) setPanelVisible(true);
+  }, [activeItem]);
 
   return (
     <>
@@ -339,7 +367,7 @@ export function Navigation() {
         </div>
 
         {/* meganav: slides open under the bar, Moncler-style */}
-        <AnimatePresence>
+        <AnimatePresence onExitComplete={() => setPanelVisible(false)}>
           {activeItem?.columns && (
             <motion.div
               key="meganav"
@@ -407,12 +435,15 @@ export function Navigation() {
         )}
       </AnimatePresence>
 
-      {/* mobile control bar: fixed to the bottom, always present */}
+      {/* mobile control bar: fixed to the bottom, always present.
+          Blurred light surface normally; inverts over dark sections.
+          Always light while the menu sheet is open. */}
       <div
-        data-mode="light"
+        data-navbar
+        data-mode={mobileOpen ? "light" : barMode}
         className="fixed inset-x-4 bottom-4 z-[70] md:hidden"
       >
-        <div className="label flex h-12 items-center justify-between rounded-xs bg-wash px-6 text-ink">
+        <div className="label flex h-12 items-center justify-between rounded-xs bg-surface/85 px-6 text-ink backdrop-blur-md transition-colors duration-300">
           <a href="#">SEARCH</a>
           <a href="#">ACCOUNT</a>
           <a href="#">BAG [1]</a>

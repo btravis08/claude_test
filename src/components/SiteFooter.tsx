@@ -20,8 +20,8 @@ const social = ["FB", "TT", "IG", "X", "TW"];
 export function SiteFooter() {
   return (
     <footer data-mode="light" className="mt-auto bg-surface text-ink">
-      {/* legacy video band */}
-      <div className="relative h-[26.75rem] w-full overflow-hidden">
+      {/* legacy video band — a dark region for the mobile bar detection */}
+      <div data-mode="dark" className="relative h-[26.75rem] w-full overflow-hidden">
         <div
           aria-hidden
           className="absolute inset-0 bg-surface-2 bg-cover bg-center"

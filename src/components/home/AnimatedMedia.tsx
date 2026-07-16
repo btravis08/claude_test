@@ -21,11 +21,14 @@ export function AnimatedMedia({
   position = "center",
   hoverScale = false,
   parallax = false,
+  entranceDuration = 0.9,
 }: {
   image: string;
   position?: string;
   hoverScale?: boolean;
   parallax?: boolean;
+  /* seconds for the fade/settle entrance (the hero runs it slower) */
+  entranceDuration?: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
@@ -54,7 +57,7 @@ export function AnimatedMedia({
         initial={{ opacity: 0, scale: parallax ? 1.2 : 1.05 }}
         whileInView={{ opacity: 1, scale: parallax ? 1.15 : 1 }}
         viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 0.9, ease: [...MEDIA_EASE] }}
+        transition={{ duration: entranceDuration, ease: [...MEDIA_EASE] }}
       >
         {inner}
       </motion.div>

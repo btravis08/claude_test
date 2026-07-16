@@ -62,6 +62,7 @@ function Media({
   kind = "image",
   videoUrl,
   lookProducts,
+  entranceDuration,
 }: {
   aspect: string;
   image?: string;
@@ -70,6 +71,7 @@ function Media({
   position?: string;
   hoverScale?: boolean;
   parallax?: boolean;
+  entranceDuration?: number;
 } & MediaBlockProps) {
   const autoplay = kind === "videoAutoplay" && videoUrl;
   return (
@@ -83,6 +85,7 @@ function Media({
             position={position}
             hoverScale={hoverScale}
             parallax={parallax}
+            entranceDuration={entranceDuration}
           />
         )
       )}
@@ -130,14 +133,15 @@ export function Hero({
       {/* the whole hero is the link and the hover parent: image scales,
           the right text's underline draws in */}
       <a href="#" aria-label={headline} className="group block w-full">
+        {/* slower entrance (2x) and no hover zoom on the hero image */}
         <Media
           aspect="h-screen"
           image={image}
           overlay="flat"
-          hoverScale={kind === "image"}
           parallax
           kind={kind}
           videoUrl={videoUrl}
+          entranceDuration={1.8}
         />
         <CampaignOverlay left={eyebrow} center={headline} right={primaryCta} />
       </a>

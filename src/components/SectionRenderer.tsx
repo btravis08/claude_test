@@ -217,9 +217,7 @@ export function SectionRenderer({ sections }: { sections: PageSection[] }) {
                 mode={section.colorMode}
                 eyebrow={section.eyebrow}
                 headline={section.headline}
-                align={section.align}
                 primaryCta={section.primaryCta}
-                secondaryCta={section.secondaryCta}
                 image={img(section.image) ?? "/figma/campaign.png"}
               />
             );
@@ -230,9 +228,7 @@ export function SectionRenderer({ sections }: { sections: PageSection[] }) {
                 mode={section.colorMode}
                 eyebrow={section.eyebrow}
                 headline={section.headline}
-                align={section.align}
                 primaryCta={section.primaryCta}
-                secondaryCta={section.secondaryCta}
                 image={img(section.image) ?? "/figma/campaign.png"}
                 kind={section.mediaKind}
                 videoUrl={section.videoUrl}

@@ -33,8 +33,6 @@ export default function MediaTest() {
       <FullWidth
         headline="Shop the Look"
         eyebrow="FULL WIDTH — LOOK"
-        align="left"
-        primaryCta="SHOP"
         kind="look"
         lookProducts={sampleLook}
         image="/figma/products/presidio-white-hover.png"
@@ -42,8 +40,6 @@ export default function MediaTest() {
       <FullWidth
         headline="Click to Play"
         eyebrow="FULL WIDTH — VIDEO PLAYER"
-        align="left"
-        primaryCta="SHOP"
         kind="videoPlayer"
         videoUrl="/figma/sample-video.webm"
         image="/figma/products/presidio-black-hover.png"
@@ -51,8 +47,6 @@ export default function MediaTest() {
       <FullWidth
         headline="Autoplay"
         eyebrow="FULL WIDTH — VIDEO AUTOPLAY"
-        align="left"
-        primaryCta="SHOP"
         kind="videoAutoplay"
         videoUrl="/figma/sample-video.webm"
       />

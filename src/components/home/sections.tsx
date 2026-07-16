@@ -1,5 +1,6 @@
 import { AnimatedMedia } from "@/components/home/AnimatedMedia";
 import { ArrowLink, ArrowSwap } from "@/components/home/ArrowHover";
+import { CampaignOverlay } from "@/components/home/CampaignOverlay";
 import {
   AutoplayVideo,
   ShopTheLook,
@@ -112,47 +113,35 @@ function Media({
 
 export interface HeroProps {
   mode?: Mode;
+  /* three overlay texts: left / center / right (right hover-underlines) */
   eyebrow?: string;
   headline?: string;
-  align?: "left" | "center";
   primaryCta?: string;
-  secondaryCta?: string;
   image?: string;
 }
 
 export function Hero({
   mode = "dark",
-  eyebrow = "JUST ARRIVED",
+  eyebrow = "Now Arriving",
   headline = "Spring Traditions",
-  align = "left",
-  primaryCta = "SHOP SPRING TRADITIONS",
-  secondaryCta = "Secondary Button",
+  primaryCta = "Shop Collection",
   image = "/figma/campaign.png",
 }: HeroProps) {
-  const centered = align === "center";
   return (
     <section data-mode={mode} className="relative w-full bg-surface text-ink">
-      <Media aspect="aspect-[1/2] sm:aspect-[3/2]" image={image} overlay pill parallax />
-      <div
-        className={`absolute inset-0 flex flex-col justify-end gap-6 p-6 ${
-          centered ? "items-center text-center" : "items-start"
-        }`}
-      >
-        <div className={`flex flex-col gap-6 ${centered ? "items-center" : "items-start"}`}>
-          {eyebrow && <p className="label font-medium">{eyebrow}</p>}
-          {headline && (
-            <h1 className="font-display text-headline-lg">{headline}</h1>
-          )}
-        </div>
-        <div
-          className={`flex ${
-            centered ? "flex-col items-center gap-4" : "flex-wrap items-center gap-6"
-          }`}
-        >
-          {primaryCta && <PrimaryButton label={primaryCta} />}
-          {secondaryCta && <SecondaryTextButton label={secondaryCta} />}
-        </div>
-      </div>
+      {/* the whole hero is the link and the hover parent: image scales,
+          the right text's underline draws in */}
+      <a href="#" aria-label={headline} className="group block w-full">
+        <Media
+          aspect="aspect-[1/2] sm:aspect-[3/2]"
+          image={image}
+          overlay
+          pill
+          hoverScale
+          parallax
+        />
+        <CampaignOverlay left={eyebrow} center={headline} right={primaryCta} />
+      </a>
     </section>
   );
 }
@@ -161,35 +150,32 @@ export function Hero({
 
 export interface FullWidthProps extends MediaBlockProps {
   mode?: Mode;
+  /* three overlay texts: left / center / right (right hover-underlines) */
   eyebrow?: string;
   headline?: string;
-  align?: "left" | "center";
   primaryCta?: string;
-  secondaryCta?: string;
   image?: string;
 }
 
 export function FullWidth({
   mode = "dark",
-  eyebrow = "JUST ARRIVED",
+  eyebrow = "Now Arriving",
   headline = "Spring Traditions",
-  align = "center",
-  primaryCta = "SHOP SPRING TRADITIONS",
-  secondaryCta,
+  primaryCta = "Shop Collection",
   image = "/figma/campaign.png",
   kind = "image",
   videoUrl,
   lookProducts,
 }: FullWidthProps) {
-  const centered = align === "center";
-  return (
-    <section data-mode={mode} className="relative w-full bg-white text-ink">
+  const media = (
+    <>
       <Media
         aspect="aspect-[2/3] sm:aspect-[16/9]"
         image={image}
         overlay
         pill
         position="bottom"
+        hoverScale={kind === "image"}
         parallax
         kind={kind}
         videoUrl={videoUrl}
@@ -197,26 +183,20 @@ export function FullWidth({
       />
       {/* pointer-events pass through the text overlay so the media's
           own controls (bag, play, pause) stay hoverable beneath it */}
-      <div
-        className={`pointer-events-none absolute inset-0 flex flex-col justify-end gap-6 p-6 ${
-          centered ? "items-center pb-12 text-center" : "items-start"
-        }`}
-      >
-        <div className={`flex flex-col gap-6 ${centered ? "items-center" : "items-start"}`}>
-          {eyebrow && <p className="label font-medium">{eyebrow}</p>}
-          {headline && (
-            <h2 className="font-display text-headline-lg">{headline}</h2>
-          )}
-        </div>
-        <div
-          className={`pointer-events-auto flex ${
-            centered ? "flex-col items-center gap-4" : "items-center gap-6"
-          }`}
-        >
-          {primaryCta && <PrimaryButton label={primaryCta} />}
-          {secondaryCta && <SecondaryTextButton label={secondaryCta} />}
-        </div>
-      </div>
+      <CampaignOverlay left={eyebrow} center={headline} right={primaryCta} />
+    </>
+  );
+  return (
+    /* plain-image sections are one big link; interactive media keeps
+       its own controls clickable instead */
+    <section data-mode={mode} className="group relative w-full bg-white text-ink">
+      {kind === "image" ? (
+        <a href="#" aria-label={headline} className="block w-full">
+          {media}
+        </a>
+      ) : (
+        media
+      )}
     </section>
   );
 }

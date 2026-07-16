@@ -31,12 +31,12 @@ export default async function Home() {
         <>
           <Hero />
           <InfoSlider />
-          <FullWidth secondaryCta="Secondary Button" />
+          <FullWidth />
           <Carousel />
           <FiftyFifty />
           <ProductSlider title="Best Sellers" />
           <ProductSlider title="Best Sellers" />
-          <FullWidth headline="TW Performance" primaryCta="shop tw performance" align="left" />
+          <FullWidth headline="TW Performance" />
           <ProductSlider />
         </>
       )}

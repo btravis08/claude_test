@@ -108,31 +108,28 @@ const mediaBlockFields = () => [
   }),
 ];
 
-/* Shared fields for hero / full-width campaign sections */
-const campaignFields = (align: "left" | "center") => [
-  defineField({ name: "eyebrow", type: "string", initialValue: "SAMPLE BROW" }),
-  defineField({ name: "headline", type: "string", initialValue: "Lorem Ipsum Dolor" }),
+/* Shared fields for hero / full-width campaign sections: three texts
+   sit on the media's vertical center — they load clustered in the
+   middle and spread to left / center / right. The right text carries
+   the nav-style hover underline. */
+const campaignFields = () => [
   defineField({
-    name: "align",
+    name: "eyebrow",
+    title: "Left text",
     type: "string",
-    options: {
-      list: ["left", "center"],
-      layout: "radio",
-      direction: "horizontal",
-    },
-    initialValue: align,
+    initialValue: "Now Arriving",
+  }),
+  defineField({
+    name: "headline",
+    title: "Center text",
+    type: "string",
+    initialValue: "Lorem Ipsum Dolor",
   }),
   defineField({
     name: "primaryCta",
-    title: "Primary button label",
+    title: "Right link text",
     type: "string",
-    initialValue: "Button 1",
-  }),
-  defineField({
-    name: "secondaryCta",
-    title: "Secondary button label",
-    type: "string",
-    initialValue: "Button 2",
+    initialValue: "Shop Collection",
   }),
   image(),
 ];
@@ -141,7 +138,7 @@ export const sectionHero = defineType({
   name: "sectionHero",
   title: "Hero",
   type: "object",
-  fields: [colorMode("dark"), ...campaignFields("left")],
+  fields: [colorMode("dark"), ...campaignFields()],
   preview: {
     select: { title: "headline", media: "image" },
     prepare: ({ title, media }) => ({ title: title || "Hero", subtitle: "Hero", media }),
@@ -152,7 +149,7 @@ export const sectionFullWidth = defineType({
   name: "sectionFullWidth",
   title: "Full Width",
   type: "object",
-  fields: [colorMode("dark"), ...campaignFields("center"), ...mediaBlockFields()],
+  fields: [colorMode("dark"), ...campaignFields(), ...mediaBlockFields()],
   preview: {
     select: { title: "headline", media: "image" },
     prepare: ({ title, media }) => ({ title: title || "Full Width", subtitle: "Full Width", media }),

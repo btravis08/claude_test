@@ -49,26 +49,42 @@ export function CampaignOverlay({
       ref={ref}
       className="pointer-events-none absolute inset-0 flex items-center"
     >
+      {/* end state is a 1fr/auto/1fr grid so the center text centers on
+          the container regardless of the side texts' widths */}
       <motion.div
-        className={`flex w-full items-center px-6 font-display text-title-sm ${
-          spread ? "justify-between" : "justify-center gap-4"
+        className={`w-full items-center px-6 font-display text-title-sm ${
+          spread
+            ? "grid grid-cols-[1fr_auto_1fr]"
+            : "flex justify-center gap-4"
         }`}
         initial={{ opacity: 0 }}
         animate={{ opacity: shown ? 1 : 0 }}
         transition={{ duration: 0.45, ease: [...MEDIA_EASE] }}
       >
         {left !== undefined && (
-          <motion.span layout transition={SPREAD}>
+          <motion.span
+            layout="position"
+            transition={SPREAD}
+            className="col-start-1 justify-self-start"
+          >
             {left}
           </motion.span>
         )}
         {center !== undefined && (
-          <motion.span layout transition={SPREAD}>
+          <motion.span
+            layout="position"
+            transition={SPREAD}
+            className="col-start-2 justify-self-center"
+          >
             {center}
           </motion.span>
         )}
         {right !== undefined && (
-          <motion.span layout transition={SPREAD} className="relative">
+          <motion.span
+            layout="position"
+            transition={SPREAD}
+            className="relative col-start-3 justify-self-end"
+          >
             {right}
             {/* nav-style underline, driven by hovering the whole section */}
             <span className="absolute inset-x-0 -bottom-1 h-px origin-right scale-x-0 bg-current transition-transform duration-300 group-hover:origin-left group-hover:scale-x-100" />

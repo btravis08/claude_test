@@ -67,7 +67,7 @@ export function Carousel({
                   i === active ? "text-ink" : "text-ink-2 hover:text-ink"
                 }`}
               >
-                {item.title}
+                {(item.title ?? "").replace(/→+$/, "")}
                 {i === active && "→"}
               </a>
             ))}
@@ -88,7 +88,9 @@ export function Carousel({
           </AnimatePresence>
         </div>
       </div>
-      <div className="relative aspect-[4/5] overflow-hidden bg-surface-2 sm:aspect-[16/10] lg:aspect-auto">
+      {/* The module's height is driven by this image: 4:5 portrait at
+          half the section width */}
+      <div className="relative aspect-[4/5] overflow-hidden bg-surface-2">
         <AnimatePresence initial={false}>
           <motion.div
             key={active}

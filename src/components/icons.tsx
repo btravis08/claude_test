@@ -117,3 +117,20 @@ export function Close({ size = 14, className }: { size?: number; className?: str
     </Base>
   );
 }
+
+export function Menu({ size = 16, className }: { size?: number; className?: string }) {
+  return (
+    <svg
+      style={{ width: `${size / 16}rem`, height: `${size / 16}rem` }}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="square"
+      className={className}
+      aria-hidden
+    >
+      <path d="M3 9h18M3 15h18" />
+    </svg>
+  );
+}

@@ -6,12 +6,12 @@ import { useState } from "react";
 
 import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
 
-/* Swatches stagger-fade up, right to left, when the card is hovered */
+/* Swatches stagger-fade in from the right, right to left, on card hover */
 const swatchVariants: Variants = {
-  rest: { opacity: 0, y: 8, transition: { duration: 0.15 } },
+  rest: { opacity: 0, x: 8, transition: { duration: 0.15 } },
   hover: (order: number) => ({
     opacity: 1,
-    y: 0,
+    x: 0,
     transition: { duration: 0.3, ease: [...MEDIA_EASE], delay: order * 0.06 },
   }),
 };

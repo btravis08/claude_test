@@ -48,7 +48,7 @@ function img(source: SanityImageSource | undefined, width = 2000): string | unde
    that colorway but keeps every sibling variant switchable via the
    swatches. Products without variants yield a single card. Prices run
    through the store settings + active automatic discounts. */
-function toCards(
+export function toCards(
   product: SliderProduct,
   discounts: Discount[] = [],
   settings?: StoreSettings | null,
@@ -100,7 +100,7 @@ function toCards(
   }));
 }
 
-const activeOnly = (products: Array<SliderProduct | null>) =>
+export const activeOnly = (products: Array<SliderProduct | null>) =>
   products.filter(
     (product): product is SliderProduct =>
       Boolean(product?._id) && (!product?.status || product.status === "active"),
@@ -127,17 +127,18 @@ function sortProducts(products: SliderProduct[], sort?: string): SliderProduct[]
   }
 }
 
-async function collectionProducts(
-  section: SectionProductSlider,
+export async function productsForCollection(
+  collection: { _id?: string; type?: string; match?: "all" | "any"; rules?: import("@/sanity/types").CollectionRule[]; sortOrder?: string } | null | undefined,
 ): Promise<SliderProduct[]> {
-  const collection = section.collection;
   if (!collection?._id) return [];
   if (collection.type === "smart") {
     const { filter, params } = buildRulesFilter(
       collection.rules ?? [],
       collection.match ?? "all",
     );
-    const order = COLLECTION_ORDER[collection.sortOrder ?? "newest"];
+    const order =
+      COLLECTION_ORDER[(collection.sortOrder ?? "newest") as keyof typeof COLLECTION_ORDER] ??
+      COLLECTION_ORDER.newest;
     return sanityFetch<SliderProduct[]>(
       smartCollectionProductsQuery(filter, order),
       params,
@@ -184,7 +185,7 @@ async function ProductSliderSection({ section }: { section: SectionProductSlider
   if (section.source === "manual") {
     products = activeOnly(section.products ?? []);
   } else if (section.source === "collection") {
-    products = await collectionProducts(section);
+    products = await productsForCollection(section.collection);
   }
   if (products.length === 0 && section.source !== "collection") {
     products = await sanityFetch<SliderProduct[]>(

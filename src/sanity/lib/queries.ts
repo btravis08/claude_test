@@ -131,20 +131,38 @@ export const automaticDiscountsQuery = groq`
   }
 `;
 
+/* Collection page: the document with its story cards; products resolve
+   separately (smart rules or the manual reference list) */
+export const collectionBySlugQuery = groq`
+  *[_type == "collection" && slug.current == $slug][0] {
+    _id, title, "slug": slug.current, description, image,
+    type, match, rules, sortOrder,
+    storyCards[] { _key, title, body, ctaLabel, url, image, align }
+  }
+`;
+
+/* Chip row: every collection, Shop All first */
+export const collectionsListQuery = groq`
+  *[_type == "collection" && defined(slug.current)]
+    | order(slug.current == "shop-all" desc, title asc) {
+    _id, title, "slug": slug.current
+  }
+`;
+
 export const navigationQuery = groq`
   *[_type == "navigation"][0] {
     items[] {
       _key, title, layout,
       columns[] {
         _key, title,
-        links[] { _key, label, url, collection->{ title } }
+        links[] { _key, label, url, collection->{ title, "slug": slug.current } }
       },
       products[]->{ _id, title, "thumb": images[0], "hoverImage": images[1] },
       cards[] { _key, title, image, url },
       imageCollection->{ title, image },
       imageTitle, image
     },
-    companyLinks[] { _key, label, url, collection->{ title } }
+    companyLinks[] { _key, label, url, collection->{ title, "slug": slug.current } }
   }
 `;
 

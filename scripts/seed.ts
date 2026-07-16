@@ -256,6 +256,19 @@ async function run() {
     asset: { _type: "reference" as const, _ref: id },
   });
   const ruleKey = () => ({ _type: "collectionRule", _key: key() });
+  /* story cards: editorial tiles interleaved (and sticky) in the
+     collection page grid */
+  const storyCard = (imageId: string, align?: string) => ({
+    _type: "storyCard",
+    _key: key(),
+    title: "Lorem Ipsum Dolor",
+    body:
+      "Cras erat viverra quam adipiscing eget, a ut sed molestie sollicitudin. Ac condimentum nunc lorem, at ullamcorper congue sed morbi odio in blandit adipiscing.",
+    ctaLabel: "Explore the Collection",
+    url: "#",
+    image: image(imageId),
+    ...(align ? { align } : {}),
+  });
   const smartCollections = [
     { id: "collection-footwear", title: "Footwear", field: "tag", value: "footwear" },
     { id: "collection-polos", title: "Polos", field: "tag", value: "polos" },
@@ -274,8 +287,24 @@ async function run() {
       match: "all",
       rules: [{ ...ruleKey(), field, operator: "eq", value }],
       sortOrder: "newest",
+      // a couple of sticky editorial tiles on every collection page
+      storyCards: [storyCard(campaign), storyCard(portrait, "right")],
     });
   }
+  await client.createOrReplace({
+    _id: "collection-shop-all",
+    _type: "collection",
+    title: "Shop All",
+    slug: { _type: "slug", current: "shop-all" },
+    description:
+      "Facilisis non aliquet morbi ultrices neque ac tempus, enim et vitae scelerisque risus integer ipsum sed sequat duis lectus. Rhoncus ut mauris id hendrerit mauris magna, nulla sagittis pulvinar risus elementum diam duis lectus, tuin turpis odio, facilisis ut proin vitae aliquam ac viverra.",
+    image: image(campaign),
+    type: "smart",
+    match: "all",
+    rules: [], // no conditions = every active product
+    sortOrder: "newest",
+    storyCards: [storyCard(campaign), storyCard(portrait, "right")],
+  });
   await client.createOrReplace({
     _id: "collection-summer-picks",
     _type: "collection",

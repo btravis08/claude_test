@@ -131,14 +131,28 @@ export interface CollectionRule {
 
 export type CollectionSort = "newest" | "priceAsc" | "priceDesc" | "titleAsc" | "manual";
 
+export interface StoryCard {
+  _key?: string;
+  title?: string;
+  body?: string;
+  ctaLabel?: string;
+  url?: string;
+  image?: SanityImageSource;
+  align?: "left" | "right";
+}
+
 export interface CollectionDoc {
   _id: string;
   title?: string;
+  slug?: string;
+  description?: string;
+  image?: SanityImageSource;
   type?: "manual" | "smart";
   match?: "all" | "any";
   rules?: CollectionRule[];
   sortOrder?: CollectionSort;
   products?: Array<SliderProduct | null>;
+  storyCards?: StoryCard[];
   /* light form used inside discounts */
   productIds?: string[];
 }
@@ -229,7 +243,7 @@ export interface NavLinkDoc {
   _key?: string;
   label?: string;
   url?: string;
-  collection?: { title?: string } | null;
+  collection?: { title?: string; slug?: string } | null;
 }
 
 export interface NavColumnDoc {

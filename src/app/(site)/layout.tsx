@@ -16,11 +16,15 @@ function img(source: SanityImageSource | undefined | null, width = 1400) {
   }
 }
 
-/* Resolve CMS links: a linked collection supplies the label fallback */
+/* Resolve CMS links: a linked collection supplies the label fallback
+   and routes to its collection page */
 function toLink(link: NavLinkDoc): NavLink {
+  const collectionUrl = link.collection?.slug
+    ? `/collections/${link.collection.slug}`
+    : undefined;
   return {
     label: link.label ?? link.collection?.title ?? "",
-    url: link.url || "#",
+    url: (link.url && link.url !== "#" ? link.url : undefined) ?? collectionUrl ?? "#",
   };
 }
 

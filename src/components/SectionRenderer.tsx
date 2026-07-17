@@ -247,7 +247,7 @@ export function SectionRenderer({ sections }: { sections: PageSection[] }) {
             return (
               <FullWidth
                 key={section._key}
-                mode="dark"
+                mode={section.colorMode}
                 eyebrow={section.eyebrow}
                 headline={section.headline}
                 primaryCta={section.primaryCta}
@@ -303,7 +303,7 @@ export function SectionRenderer({ sections }: { sections: PageSection[] }) {
             return (
               <FiftyFifty
                 key={section._key}
-                mode="dark"
+                mode={section.colorMode}
                 ratio={section.ratio}
                 panels={section.panels?.map((panel) => ({
                   _key: panel._key,
@@ -385,9 +385,12 @@ export function SectionRenderer({ sections }: { sections: PageSection[] }) {
         const pb = section.paddingBottom && section.paddingBottom !== "none" ? PAD_BOTTOM[section.paddingBottom] : "";
         if (!pt && !pb) return node;
         const shellMode =
-          section._type === "sectionFullWidth" || section._type === "sectionFiftyFifty"
+          section.colorMode ??
+          (section._type === "sectionFullWidth" ||
+          section._type === "sectionFiftyFifty" ||
+          section._type === "sectionHero"
             ? "dark"
-            : (section.colorMode ?? "light");
+            : "light");
         return (
           <div
             key={section._key}

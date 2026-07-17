@@ -109,7 +109,7 @@ function QuickAddView() {
                 key={option}
                 type="button"
                 onClick={() => setFit(option)}
-                className={`label flex h-10 flex-1 items-center justify-center px-3 font-medium transition-colors ${
+                className={`label flex h-[2.875rem] flex-1 items-center justify-center px-3 font-medium transition-colors md:h-10 ${
                   fit === option
                     ? "bg-btn text-btn-fg"
                     : "bg-surface-2 text-ink hover:bg-[#cacbc8]"
@@ -149,7 +149,7 @@ function QuickAddView() {
         <button
           type="button"
           onClick={add}
-          className={`label flex h-10 w-full items-center justify-center rounded-xs bg-btn font-medium text-btn-fg transition-opacity ${
+          className={`label flex h-[2.875rem] w-full items-center justify-center rounded-xs bg-btn font-medium text-btn-fg transition-opacity md:h-10 ${
             ready ? "" : "cursor-not-allowed opacity-40"
           }`}
         >
@@ -299,7 +299,7 @@ function CartView() {
         <div className="flex flex-col gap-3">
           <button
             type="button"
-            className="label flex h-10 w-full items-center justify-center rounded-xs bg-btn font-medium text-btn-fg"
+            className="label flex h-[2.875rem] w-full items-center justify-center rounded-xs bg-btn font-medium text-btn-fg md:h-10"
           >
             Checkout
           </button>
@@ -325,7 +325,7 @@ function EmptyView() {
         <a
           href="#"
           onClick={close}
-          className="label flex h-10 w-full items-center justify-center rounded-xs bg-btn font-medium text-btn-fg"
+          className="label flex h-[2.875rem] w-full items-center justify-center rounded-xs bg-btn font-medium text-btn-fg md:h-10"
         >
           Shop all
         </a>

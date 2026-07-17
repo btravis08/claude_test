@@ -41,7 +41,7 @@ export function VariantPanel({
       {/* color chip + swatch tiles */}
       <div className="flex items-start gap-1.5">
         <div
-          className={`label flex h-10 min-w-0 flex-1 items-center rounded-xs px-3 font-medium text-ink ${chip}`}
+          className={`label flex h-[2.875rem] min-w-0 flex-1 items-center rounded-xs px-3 font-medium text-ink md:h-10 ${chip}`}
         >
           <span className="truncate">
             COLOR: {(active?.name ?? "").toUpperCase()}
@@ -55,7 +55,7 @@ export function VariantPanel({
                 type="button"
                 aria-label={variant.name ?? `Colorway ${i + 1}`}
                 onClick={() => setSelected(i)}
-                className={`flex size-10 items-end justify-center overflow-hidden border-b-2 bg-wash ${
+                className={`flex size-[2.875rem] items-end justify-center overflow-hidden border-b-2 bg-wash md:size-10 ${
                   i === selected ? "border-ink" : "border-transparent"
                 }`}
               >
@@ -83,7 +83,7 @@ export function VariantPanel({
         <button
           type="button"
           onClick={open}
-          className={`relative flex h-10 w-full items-center rounded-xs ${chip}`}
+          className={`relative flex h-[2.875rem] w-full items-center rounded-xs md:h-10 ${chip}`}
         >
           <span className="label flex flex-1 items-center gap-2 px-3 font-medium text-ink">
             SIZE:
@@ -108,7 +108,7 @@ export function VariantPanel({
       <button
         type="button"
         onClick={open}
-        className="label flex h-10 w-full items-center justify-center rounded-xs bg-btn font-medium text-btn-fg"
+        className="label flex h-[2.875rem] w-full items-center justify-center rounded-xs bg-btn font-medium text-btn-fg md:h-10"
       >
         Select size
       </button>

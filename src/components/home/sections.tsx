@@ -27,7 +27,7 @@ export function PrimaryButton({ label }: { label: string }) {
   return (
     <a
       href="#"
-      className="label flex h-10 min-w-[9.375rem] items-center justify-center rounded-xs bg-btn px-3.5 font-medium text-btn-fg transition-opacity hover:opacity-80"
+      className="label flex h-[2.875rem] min-w-[9.375rem] items-center justify-center rounded-xs bg-btn px-3.5 font-medium text-btn-fg transition-opacity hover:opacity-80 md:h-10"
     >
       {label}
     </a>

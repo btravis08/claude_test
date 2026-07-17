@@ -12,9 +12,10 @@ embedded at /studio, with Motion (framer-motion) for interactions.
 
 ## Working agreements
 
-- All work happens on branch `claude/sanity-github-app-setup-x49xa8`
-  (repo btravis08/claude_test). Push to the same branch; never open a PR
-  unless asked.
+- Work happens on the session's `claude/*` branch (repo
+  btravis08/claude_test); push there. `main` is the deploy branch —
+  Vercel builds it to the staging site — and only receives merges
+  when the user asks. Never open a PR unless asked.
 - Match the Figma design exactly — don't adapt or reinterpret it.
 - Verify changes with `npm run build`, then drive the real page (in
   Claude's remote sandbox, Playwright with

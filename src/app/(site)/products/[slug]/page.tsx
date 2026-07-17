@@ -254,8 +254,11 @@ export default async function ProductPage({
         </>
       )}
 
-      {/* required: the shopping module (untitled gender slider) */}
-      <ProductSlider products={shopCards.length ? shopCards : undefined} />
+      {/* required: the shopping module (untitled gender slider); the
+          marker tells the hero's fixed purchase dock when to retire */}
+      <div data-shop-module>
+        <ProductSlider products={shopCards.length ? shopCards : undefined} />
+      </div>
     </div>
   );
 }

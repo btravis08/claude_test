@@ -479,7 +479,7 @@ export function Navigation({ data }: { data?: NavData | null }) {
               ? "border-line-2 bg-transparent"
               : engaged
                 ? "border-transparent bg-surface-2"
-                : "border-transparent bg-white"
+                : "border-transparent bg-surface"
           }`}
         >
           <div className="hidden flex-1 items-center gap-8 md:flex">

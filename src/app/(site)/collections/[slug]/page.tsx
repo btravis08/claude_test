@@ -40,6 +40,15 @@ interface StoryData {
   placement?: "auto" | "center";
 }
 
+/* Gender-scoped collections are titled uniquely ("Mens Polos") so the
+   Studio list has no duplicates; on the page the parent prefix comes
+   off — breadcrumb MENS / POLOS, title Polos, chips POLOS. */
+function leaf(title: string, parentTitle?: string | null) {
+  return parentTitle && title.toLowerCase().startsWith(`${parentTitle.toLowerCase()} `)
+    ? title.slice(parentTitle.length + 1)
+    : title;
+}
+
 function img(source: SanityImageSource | undefined, width = 1600) {
   if (!source) return undefined;
   try {
@@ -235,7 +244,7 @@ export default async function CollectionPage({
     );
   }
 
-  const title = collection?.title ?? "Shop All";
+  const title = leaf(collection?.title ?? "Shop All", collection?.parent?.title);
   /* one card per product on the PLP (swatches still switch colorways) */
   const cards = products
     .map((product) => toCards(product, discounts, settings)[0])
@@ -290,7 +299,7 @@ export default async function CollectionPage({
           {chips.map((sub) => (
             <Chip
               key={sub!._id}
-              label={sub!.title ?? ""}
+              label={leaf(sub!.title ?? "", collection?.title)}
               href={sub!.slug ? `/collections/${sub!.slug}` : "#"}
             />
           ))}

@@ -309,7 +309,9 @@ async function run() {
   for (const gender of ["mens", "womens"] as const) {
     const label = gender === "mens" ? "Mens" : "Womens";
     for (const [tag, catLabel] of CATEGORIES) {
-      await smartCol(`collection-${gender}-${tag}`, catLabel, [
+      /* titled "Mens Polos" so the Studio list has no same-named
+         triples; the PLP strips the parent prefix for display */
+      await smartCol(`collection-${gender}-${tag}`, `${label} ${catLabel}`, [
         ["gender", gender],
         ["tag", tag],
       ], { parent: ref(`collection-${gender}`) });

@@ -158,10 +158,15 @@ export const collection = defineType({
     }),
   ],
   preview: {
-    select: { title: "title", type: "type", media: "image" },
-    prepare: ({ title, type, media }) => ({
+    select: { title: "title", type: "type", parent: "parent.title", media: "image" },
+    prepare: ({ title, type, parent, media }) => ({
       title,
-      subtitle: type === "smart" ? "Smart collection" : "Manual collection",
+      subtitle: [
+        type === "smart" ? "Smart collection" : "Manual collection",
+        parent ? `in ${parent}` : null,
+      ]
+        .filter(Boolean)
+        .join(" · "),
       media,
     }),
   },

@@ -64,9 +64,18 @@ export function ProductCard({ product }: { product: ProductCardData }) {
   const variants = product.variants ?? [];
   const [selected, setSelected] = useState(product.defaultVariant ?? 0);
   const [cardHover, setCardHover] = useState(false);
-  const [, setWellHover] = useState(false);
-  /* swatches are always visible (was hover-revealed) */
-  const showSwatches = variants.length > 1;
+  const [wellHover, setWellHover] = useState(false);
+  /* touch devices can't hover — swatches stay visible there; desktop
+     keeps the hover reveal */
+  const [touch, setTouch] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(hover: none), (pointer: coarse)");
+    const update = () => setTouch(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+  const showSwatches = touch || (cardHover && !wellHover);
   const active = variants[selected];
 
   /* Warm the browser cache for every colorway's images on first hover

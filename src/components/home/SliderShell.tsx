@@ -41,6 +41,7 @@ export function SliderShell({
   variable = false,
   bordered = true,
   cols = "auto-cols-[85%] sm:auto-cols-[45%] lg:auto-cols-[31%] xl:auto-cols-[23.75%]",
+  progress: showProgress = true,
 }: {
   title?: string;
   /* override for label-style headers (e.g. PAIRS WELL WITH) */
@@ -54,6 +55,8 @@ export function SliderShell({
   /* responsive auto-cols widths for the track (e.g. wider cards for
      the half-width pairs-well-with rail) */
   cols?: string;
+  /* the eased progress line under the track */
+  progress?: boolean;
 }) {
   const genders = useMemo(
     () => Array.from(new Set(items.map((i) => i.gender).filter(Boolean))) as string[],
@@ -275,14 +278,16 @@ export function SliderShell({
       {/* Custom scroll progress: eased fill, full width at the end.
           Sits on top of the cards' bottom hairline (-mt) with no track
           background of its own. */}
-      <div className="relative z-10 -mt-0.5 h-0.5 w-full">
-        <motion.div
-          className="h-full bg-ink"
-          initial={false}
-          animate={{ width: `${Math.min(progress, 1) * 100}%` }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-        />
-      </div>
+      {showProgress && (
+        <div className="relative z-10 -mt-0.5 h-0.5 w-full">
+          <motion.div
+            className="h-full bg-ink"
+            initial={false}
+            animate={{ width: `${Math.min(progress, 1) * 100}%` }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+          />
+        </div>
+      )}
     </div>
   );
 }

@@ -518,26 +518,32 @@ export function TechSpecs({
       <div className="mx-6 h-1 bg-ink" />
       <div className="grid w-full grid-cols-1 gap-10 p-6 pb-28 pt-14 md:grid-cols-2 md:pb-44 md:pt-24">
         <p className="max-w-sm font-display text-headline-lg">{title}</p>
-        <div className="flex flex-col gap-8">
-          {rows.map((row, i) => (
-            <div key={row._key ?? i} className="grid grid-cols-[1fr_2fr] gap-6">
-              <p className="label pt-1 font-medium text-ink-2">
-                {(row.label ?? "").toUpperCase()}
-              </p>
-              <div className="flex flex-col">
-                {(row.value ?? "")
-                  .split("\n")
-                  .filter(Boolean)
-                  .map((line, j) => (
-                    <p key={j} className="label border-b border-line pb-2 pt-3 first:pt-0 font-medium">
+        <div className="flex flex-col gap-10">
+          {/* each group opens with a full-width top border; child value
+              lines carry their own top border spanning only the value
+              column, with a trailing line under multi-value groups */}
+          {rows.map((row, i) => {
+            const lines = (row.value ?? "").split("\n").filter(Boolean);
+            return (
+              <div key={row._key ?? i} className="grid grid-cols-[1fr_2fr] gap-6 border-t border-line">
+                <p className="label pt-4 font-medium text-ink-2">
+                  {(row.label ?? "").toUpperCase()}
+                </p>
+                <div className={`flex flex-col ${lines.length > 1 ? "border-b border-line" : ""}`}>
+                  {lines.map((line, j) => (
+                    <p
+                      key={j}
+                      className={`label py-4 font-medium ${j > 0 ? "border-t border-line" : ""}`}
+                    >
                       {line.toUpperCase()}
                     </p>
                   ))}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
           {description && (
-            <div className="grid grid-cols-[1fr_2fr] gap-6">
+            <div className="grid grid-cols-[1fr_2fr] gap-6 border-t border-line pt-4">
               <span />
               <p className="label max-w-sm font-medium leading-relaxed">
                 {description.toUpperCase()}

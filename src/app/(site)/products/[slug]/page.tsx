@@ -199,7 +199,7 @@ export default async function ProductPage({
         data-mode="light"
         className="grid w-full grid-cols-1 bg-surface text-ink md:min-h-[80svh] md:grid-cols-2"
       >
-        <div className="flex flex-col gap-9 p-6">
+        <div className="flex flex-col gap-9 p-6 md:pt-12">
           <p className="label font-medium text-ink-2">
             ABOUT {(product?.title ?? "Presidio").toUpperCase()}
           </p>
@@ -211,12 +211,14 @@ export default async function ProductPage({
             )}
           </div>
         </div>
-        <div className="min-w-0">
+        {/* 48px above the module: 24px wrapper + the header's own 24px */}
+        <div className="min-w-0 md:pt-6">
           <SliderShell
             title="PAIRS WELL WITH"
             titleClassName="label font-medium text-ink-2"
             bordered={false}
-            cols="auto-cols-[85%] sm:auto-cols-[45%]"
+            progress={false}
+            cols="auto-cols-[68%] sm:auto-cols-[36%]"
             items={pairs.map((item, i) => ({
               key: item._key ?? String(i),
               card: <MiniProductCard card={item} />,

@@ -2,84 +2,94 @@
 @plugin "@tailwindcss/typography";
 
 /*
-  Design tokens from Figma "[i] Design Library — SDR".
+  Design tokens from the Figma "[i] Design Library — SDR" variable
+  collection (exports in design/figma-tokens/). The collection has six
+  modes; the four neutral ones map to the site's section color modes:
 
-  Every section in the page designs carries its own color mode: sections
-  are wrapped in data-mode="light" or data-mode="dark" and the semantic
-  variables below resolve per section, exactly like Figma variable modes.
+    Light mode        → data-mode="light"
+    Medium Light Mode → data-mode="light-mid"   (export pending)
+    Medium Dark Mode  → data-mode="dark-mid"
+    Dark mode         → data-mode="dark"
 
-  Light values come from the library's light mode; dark values from its
-  dark mode (bg #000 / text #fff / inverted buttons / white-alpha lines).
-*/
-:root,
-[data-mode="light"] {
-  /* Colors/Background */
-  --surface: #f7f8f4;
-  --surface-2: #e1e1de;
-  /* Colors/Text + Foreground */
-  --ink: #161716;
-  --ink-2: rgba(0, 0, 0, 0.5);
-  --ink-3: #70716f;
-  --ink-disabled: #878785;
-  /* Colors/Border + Component colors/Alpha */
-  --line: #dbdbd7;
-  --line-2: rgba(0, 0, 0, 0.14);
-  --wash: rgba(0, 0, 0, 0.06);
-  /* Component colors/Buttons/Primary */
-  --btn: #000000;
-  --btn-fg: #ffffff;
-  /* Component colors/Buttons/Secondary Color */
-  --btn-2-fg: #9d9e9b;
-}
+  (Brand Mode Light / Brand Mode Dark exist in the exports but aren't
+  wired as section modes yet.)
 
-/*
-  Mid modes: the background steps one tone toward the tile color while
-  text and buttons keep their parent mode's treatment. PROVISIONAL
-  values derived from the light/dark palettes — swap in the exact hex
-  values from the Figma library's variable modes when available.
+  Semantic mapping per mode:
+    --surface   ← Colors/Background/bg-primary
+    --surface-2 ← Colors/Background/bg-secondary
+    --ink       ← Colors/Text/text-primary
+    --ink-2     ← Colors/Text/text-secondary
+    --ink-3     ← Colors/Text/text-quaternary
+    --ink-disabled ← Colors/Text/text-disabled
+    --line      ← Colors/Border/border-primary
+    --line-2    ← Component colors/Alpha/alpha-black-20
+    --wash      ← Component colors/Alpha/alpha-black-10
+    --btn / --btn-fg ← Buttons/Primary bg + fg
+    --btn-2-fg  ← Buttons/Secondary Color fg
+
   Every block defines the full set so a nested section can't inherit a
   stray variable from a differently-moded ancestor.
 */
-[data-mode="light-mid"] {
-  --surface: #e1e1de;
-  --surface-2: #d3d4d0;
+:root,
+[data-mode="light"] {
+  --surface: #f7f8f4;
+  --surface-2: #e1e1de;
   --ink: #161716;
   --ink-2: rgba(0, 0, 0, 0.5);
   --ink-3: #70716f;
-  --ink-disabled: #878785;
-  --line: #c9cac6;
+  --ink-disabled: #70716f;
+  --line: #dbdbd7;
   --line-2: rgba(0, 0, 0, 0.14);
   --wash: rgba(0, 0, 0, 0.06);
   --btn: #000000;
   --btn-fg: #ffffff;
-  --btn-2-fg: #70716f;
+  --btn-2-fg: #c65541;
 }
 
+/* PROVISIONAL — the Medium Light Mode export is missing; these follow
+   the Medium Dark pattern one step lighter (bg = gray-50, everything
+   else light-mode treatment). Replace when the export lands. */
+[data-mode="light-mid"] {
+  --surface: #e1e1de;
+  --surface-2: #f7f8f4;
+  --ink: #161716;
+  --ink-2: rgba(0, 0, 0, 0.5);
+  --ink-3: #70716f;
+  --ink-disabled: #70716f;
+  --line: rgba(0, 0, 0, 0.14);
+  --line-2: rgba(0, 0, 0, 0.14);
+  --wash: rgba(0, 0, 0, 0.06);
+  --btn: #000000;
+  --btn-fg: #ffffff;
+  --btn-2-fg: #c65541;
+}
+
+/* Medium Dark Mode: mid gray canvas, light-mode content treatment */
 [data-mode="dark-mid"] {
-  --surface: #1b1c1a;
-  --surface-2: #2a2b28;
-  --ink: #ffffff;
-  --ink-2: rgba(255, 255, 255, 0.55);
-  --ink-3: #9d9e9b;
-  --ink-disabled: #878785;
-  --line: rgba(255, 255, 255, 0.16);
-  --line-2: rgba(255, 255, 255, 0.15);
-  --wash: rgba(255, 255, 255, 0.08);
-  --btn: #ffffff;
-  --btn-fg: #000000;
-  --btn-2-fg: #9d9e9b;
+  --surface: #cacbc8;
+  --surface-2: #e1e1de;
+  --ink: #161716;
+  --ink-2: rgba(0, 0, 0, 0.5);
+  --ink-3: #70716f;
+  --ink-disabled: #70716f;
+  --line: rgba(0, 0, 0, 0.14);
+  --line-2: rgba(0, 0, 0, 0.14);
+  --wash: rgba(0, 0, 0, 0.06);
+  --btn: #000000;
+  --btn-fg: #ffffff;
+  --btn-2-fg: #c65541;
 }
 
 [data-mode="dark"] {
   --surface: #000000;
-  --surface-2: #1b1c1a;
+  --surface-2: #161716;
   --ink: #ffffff;
-  --ink-2: rgba(255, 255, 255, 0.55);
-  --ink-3: #9d9e9b;
-  --ink-disabled: #878785;
-  --line: rgba(255, 255, 255, 0.18);
+  --ink-2: rgba(255, 255, 255, 0.5);
+  --ink-3: #878785;
+  --ink-disabled: #70716f;
+  --line: #2d2d2c;
   --line-2: rgba(255, 255, 255, 0.15);
-  --wash: rgba(255, 255, 255, 0.08);
+  --wash: rgba(255, 255, 255, 0.1);
   --btn: #ffffff;
   --btn-fg: #000000;
   --btn-2-fg: #9d9e9b;

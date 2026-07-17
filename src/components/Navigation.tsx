@@ -402,8 +402,9 @@ export function Navigation({ data }: { data?: NavData | null }) {
       for (const el of stack) {
         if (el.closest("[data-navbar]") || el.closest("header")) continue;
         const section = el.closest<HTMLElement>("[data-mode]");
-        /* mid modes resolve to their parent treatment for the bar */
-        if (section) return section.dataset.mode?.startsWith("dark") ? "dark" : "light";
+        /* only true dark inverts the bar — the mid modes carry
+           light-mode content treatment per the Figma variables */
+        if (section) return section.dataset.mode === "dark" ? "dark" : "light";
       }
       return "light";
     };

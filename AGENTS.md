@@ -32,15 +32,16 @@ embedded at /studio, with Motion (framer-motion) for interactions.
   `fetch-figma-assets` GitHub Actions workflow (mint fresh URLs via the
   MCP `download_assets` tool, update `scripts/fetch-figma-assets.sh`,
   push — the workflow commits the files back).
-- TODO — sync color variables from Figma: the `light-mid` / `dark-mid`
-  blocks in `src/app/globals.css` are PROVISIONAL (derived, not read
-  from the library). When a session has the Figma MCP connector (or
-  the user uploads a variable CSV export: variable name + value per
-  mode for the whole collection), replace all four mode blocks with
-  the real values, wire up the unused tokens (`--btn-2-fg`,
-  `--ink-disabled`), tokenize the hardcoded on-media UI colors
-  (MediaBlock, meganav image card), and make the FullWidth/50-50 gap
-  color (`bg-white`) mode-aware.
+- Color variables: the Figma variable collection (6 modes) is exported
+  to `design/figma-tokens/*.tokens.json`; `src/app/globals.css` maps
+  them to the site's section modes (light / light-mid / dark-mid /
+  dark — see the mapping comment there). TODO: the Medium Light Mode
+  export is missing, so the `light-mid` block is PROVISIONAL — replace
+  it when the user exports that mode. Brand Mode Light/Dark exist in
+  the exports but aren't wired as section modes. Still to wire:
+  `--btn-2-fg`/`--ink-disabled` consumers, tokenize hardcoded on-media
+  UI colors (MediaBlock, meganav image card), mode-aware
+  FullWidth/50-50 gap color (`bg-white`).
 
 ## Sanity CMS
 

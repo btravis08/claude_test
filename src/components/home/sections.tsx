@@ -331,6 +331,7 @@ export function ProductSlider({
     <section data-mode={mode} className="flex w-full flex-col bg-surface text-ink">
       <SliderShell
         title={title}
+        bordered={false}
         items={products.map((product, i) => ({
           key: product._key ?? String(i),
           gender: product.gender,
@@ -461,7 +462,7 @@ export function FiftyFifty({
               {media}
               <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between p-6">
                 <p className="font-display text-title-md">{panel.title}</p>
-                <span className="flex size-10 items-center justify-center rounded-xs bg-btn text-btn-fg">
+                <span className="flex size-10 items-center justify-center rounded-xs bg-white text-[#161716]">
                   <ArrowSwap dx={1} dy={-1}>
                     <ArrowUpRight />
                   </ArrowSwap>

@@ -242,14 +242,19 @@ export function InfoSlider({
   return (
     <section
       data-mode={mode}
-      className={`flex w-full flex-col bg-surface text-ink ${framed ? "pb-20" : ""}`}
+      className={`flex w-full flex-col bg-surface text-ink ${framed ? "py-9xl" : ""}`}
     >
       <SliderShell
         title={title}
+        titleClassName={
+          framed ? "font-display text-title-md text-ink" : undefined
+        }
+        bordered={!framed}
+        headerClassName={framed ? "border-b border-line px-6 pb-12 pt-6" : undefined}
         items={cards.map((card, i) => {
           const media = (
             <Media
-              aspect={card.body ? "aspect-square" : "aspect-[3/4]"}
+              aspect="aspect-[3/4]"
               image={card.image ?? "/figma/media-portrait.png"}
               hoverScale={card.kind !== "videoAutoplay"}
               kind={card.kind === "videoAutoplay" ? "videoAutoplay" : "image"}
@@ -264,10 +269,10 @@ export function InfoSlider({
             card: card.body ? (
               <a
                 href="#"
-                className="group flex w-full flex-col gap-4 border-y border-r border-line bg-surface p-6 pb-16"
+                className="group flex w-full flex-col gap-[1.125rem] border-y border-r border-line bg-surface p-6 pb-16"
               >
                 {media}
-                <p className="font-display text-[1.125rem] leading-snug text-ink">{card.title}</p>
+                <p className="font-display text-title-xs text-ink">{card.title}</p>
                 <p className="text-body-sm text-ink-2">{card.body}</p>
               </a>
             ) : (

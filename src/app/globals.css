@@ -158,6 +158,9 @@
   /* 15 → 16 */
   --text-body-md: clamp(0.9375rem, 0.9111rem + 0.0988vw, 1rem);
   --text-body-md--line-height: 1.5;
+  /* Title XSmall/Regular — fixed 18 (the scale's smallest serif) */
+  --text-title-xs: 1.125rem;
+  --text-title-xs--line-height: 1.1;
   /* 18 → 20 */
   --text-title-sm: clamp(1.125rem, 1.0721rem + 0.1976vw, 1.25rem);
   --text-title-sm--line-height: 1.1;

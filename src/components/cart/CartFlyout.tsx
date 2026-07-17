@@ -110,7 +110,9 @@ function QuickAddView() {
                 type="button"
                 onClick={() => setFit(option)}
                 className={`label flex h-10 flex-1 items-center justify-center px-3 font-medium transition-colors ${
-                  fit === option ? "bg-btn text-btn-fg" : "bg-wash text-ink"
+                  fit === option
+                    ? "bg-btn text-btn-fg"
+                    : "bg-surface-2 text-ink hover:bg-[#cacbc8]"
                 }`}
               >
                 {option}
@@ -130,7 +132,9 @@ function QuickAddView() {
                   type="button"
                   onClick={() => setSize(option)}
                   className={`flex items-center justify-center py-4 font-mono text-[0.875rem] uppercase leading-none transition-colors ${
-                    size === option ? "bg-btn text-btn-fg" : "bg-wash text-ink"
+                    size === option
+                      ? "bg-btn text-btn-fg"
+                      : "bg-surface-2 text-ink hover:bg-[#cacbc8]"
                   }`}
                 >
                   {option}

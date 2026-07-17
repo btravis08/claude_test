@@ -1,4 +1,5 @@
 import { ArrowLink, ArrowSwap } from "@/components/home/ArrowHover";
+import { NavTextLink } from "@/components/NavTextLink";
 import { ProductCard } from "@/components/home/ProductCard";
 import type { ProductCardData } from "@/components/home/ProductCard";
 import { activeOnly, productsForCollection, toCards } from "@/components/SectionRenderer";
@@ -248,7 +249,7 @@ export default async function CollectionPage({
     image: "/figma/products/presidio-white.png",
     hoverImage: "/figma/products/presidio-white-hover.png",
   }));
-  const gridCards = cards.length ? cards : fallbackCards;
+  const gridCards = collection ? cards : cards.length ? cards : fallbackCards;
   const stories: StoryData[] = storyDocs.length
     ? storyDocs.map((story) => ({
         title: story.title,
@@ -265,21 +266,21 @@ export default async function CollectionPage({
 
   return (
     <div data-mode="light" className="flex w-full flex-col bg-surface text-ink">
-      {/* breadcrumb + centered serif title */}
-      <div className="flex flex-col items-center gap-4 px-6 pb-10 pt-12">
-        <p className="label text-ink-2">
+      {/* breadcrumb + centered serif title; crumbs use the nav link
+          style, the current page keeps its underline drawn */}
+      <div className="flex flex-col items-center gap-4 px-6 pb-10 pt-36">
+        <div className="flex items-center gap-3">
           {collection?.parent?.slug ? (
-            <a href={`/collections/${collection.parent.slug}`} className="hover:opacity-70">
-              {(collection.parent.title ?? "").toUpperCase()}
-            </a>
+            <NavTextLink
+              href={`/collections/${collection.parent.slug}`}
+              label={(collection.parent.title ?? "").toUpperCase()}
+            />
           ) : (
-            <a href="/" className="hover:opacity-70">
-              SHOP
-            </a>
+            <NavTextLink href="/" label="SHOP" />
           )}
-          {" / "}
-          {title.toUpperCase()}
-        </p>
+          <span className="label text-ink-2">/</span>
+          <NavTextLink label={title.toUpperCase()} active />
+        </div>
         <h1 className="font-display text-headline-lg">{title}</h1>
       </div>
 

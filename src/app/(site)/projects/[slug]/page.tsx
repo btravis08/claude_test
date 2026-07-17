@@ -85,7 +85,7 @@ export default async function ProjectPage({
       )}
 
       {stats.length > 0 && (
-        <dl className="grid grid-cols-2 border-t-[1.5px] border-line sm:grid-cols-3 lg:grid-cols-6">
+        <dl className="grid grid-cols-2 border-t border-line sm:grid-cols-3 lg:grid-cols-6">
           {stats.map((stat, i) => (
             <div
               key={stat.label}
@@ -112,7 +112,7 @@ export default async function ProjectPage({
 
       {project.gallery && project.gallery.length > 0 && (
         <section>
-          <div className="flex h-[5.5rem] items-center border-y-[1.5px] border-line px-6">
+          <div className="flex h-[5.5rem] items-center border-y border-line px-6">
             <h2 className="label font-medium text-ink">Gallery</h2>
           </div>
           <div className="grid gap-px bg-line sm:grid-cols-2">

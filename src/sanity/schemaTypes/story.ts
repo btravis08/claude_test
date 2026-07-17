@@ -16,6 +16,10 @@ export const STORY_TAGS = [
   { title: "Polos", value: "polos" },
   { title: "Headwear", value: "headwear" },
   { title: "T-Shirts", value: "tshirts" },
+  { title: "Sweaters", value: "sweaters" },
+  { title: "Hoodies & Pullovers", value: "hoodies" },
+  { title: "Outerwear", value: "outerwear" },
+  { title: "Shorts", value: "shorts" },
 ];
 
 export const story = defineType({

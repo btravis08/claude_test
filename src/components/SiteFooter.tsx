@@ -1,4 +1,5 @@
 import { Logo } from "@/components/Logo";
+import { NavTextLink } from "@/components/NavTextLink";
 
 const columns: { heading: string; links: string[] }[] = [
   {
@@ -62,18 +63,16 @@ export function SiteFooter() {
       </div>
 
       {/* link columns */}
-      <div className="grid w-full grid-cols-1 border-t-[1.5px] border-line sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid w-full grid-cols-1 border-t border-line sm:grid-cols-2 lg:grid-cols-4">
         {columns.map((col) => (
           <div
             key={col.heading}
             className="flex flex-col gap-[1.125rem] border-b border-l border-line px-6 pb-16 pt-6"
           >
             <p className="label font-medium opacity-70">{col.heading}</p>
-            <div className="flex flex-col gap-[0.5625rem]">
+            <div className="flex flex-col items-start gap-[0.5625rem]">
               {col.links.map((link) => (
-                <a key={link} href="#" className="label font-medium hover:opacity-70">
-                  {link}
-                </a>
+                <NavTextLink key={link} label={link.toUpperCase()} />
               ))}
             </div>
           </div>
@@ -112,13 +111,9 @@ export function SiteFooter() {
         </div>
         <div className="flex flex-1 items-center justify-between gap-4">
           {social.map((s) => (
-            <a key={s} href="#" className="label font-medium hover:opacity-70">
-              {s}
-            </a>
+            <NavTextLink key={s} label={s} />
           ))}
-          <a href="#top" className="label font-medium hover:opacity-70">
-            Back to top
-          </a>
+          <NavTextLink href="#top" label="BACK TO TOP" />
         </div>
       </div>
     </footer>

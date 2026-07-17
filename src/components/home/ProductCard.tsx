@@ -100,7 +100,7 @@ export function ProductCard({ product }: { product: ProductCardData }) {
       animate={showSwatches ? "hover" : "rest"}
       onMouseEnter={() => setCardHover(true)}
       onMouseLeave={() => setCardHover(false)}
-      className="flex w-full flex-col justify-center gap-[1.125rem] bg-surface pb-16"
+      className="flex w-full flex-col justify-center gap-[1.125rem] overflow-hidden bg-surface pb-16"
     >
       <motion.div
         onMouseEnter={() => setWellHover(true)}

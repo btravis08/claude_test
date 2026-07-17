@@ -50,7 +50,7 @@ export default async function ProjectsPage({
         </h1>
       </div>
 
-      <div className="flex items-center gap-2 border-b-[1.5px] border-line px-6 pb-6">
+      <div className="flex items-center gap-2 border-b border-line px-6 pb-6">
         {filters.map((filter) => {
           const isActive = filter.value === activeCategory;
           return (

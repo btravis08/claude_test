@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
 import { ArrowLink, ArrowSwap } from "@/components/home/ArrowHover";
 import { Logo } from "@/components/Logo";
+import { NavTextLink } from "@/components/NavTextLink";
 import { ArrowUpRight, Close, Menu, SearchMd } from "@/components/icons";
 
 /*
@@ -150,26 +151,7 @@ const DEFAULT_NAV: NavData = {
 
 const NAV_H = "3.75rem";
 
-function NavButton({
-  label,
-  href = "#",
-  active = false,
-}: {
-  label: string;
-  href?: string;
-  active?: boolean;
-}) {
-  return (
-    <a href={href} className="label group relative text-ink">
-      {label}
-      <span
-        className={`absolute inset-x-0 -bottom-0.5 h-px origin-right bg-ink transition-transform duration-300 group-hover:origin-left group-hover:scale-x-100 ${
-          active ? "origin-left scale-x-100" : "scale-x-0"
-        }`}
-      />
-    </a>
-  );
-}
+const NavButton = NavTextLink;
 
 /* Content fade shared by the panel tiles when the active item swaps */
 const contentFade = {
@@ -461,6 +443,9 @@ export function Navigation({ data }: { data?: NavData | null }) {
      transparent (light mode) until the page starts scrolling. */
   const overlayZone = isHome ? overHero : atTop;
   const transparent = overlayZone && !hovered && active === null && !panelVisible;
+  /* scrolled-in nav is plain white; the gray tile scheme appears only
+     while the nav is hovered or a dropdown is open */
+  const engaged = hovered || active !== null || panelVisible;
   const activeItem = active !== null ? nav.items[active] : null;
   const hasDropdown = (item: MenuItem) => item.layout !== "none";
 
@@ -485,13 +470,16 @@ export function Navigation({ data }: { data?: NavData | null }) {
         }`}
       >
         {/* like the product grid: soft-gray tiles (the product-well
-            tone) separated by 1px of white instead of borders. The
-            hairline only exists in the transparent state. */}
+            tone) separated by 1px of white — but only while engaged
+            (hover / open dropdown); merely scrolled-in it stays white.
+            The hairline only exists in the transparent state. */}
         <div
-          className={`flex h-[3.75rem] items-center border-b-[1.5px] px-6 py-3 transition-colors duration-300 ${
+          className={`flex h-[3.75rem] items-center border-b px-6 py-3 transition-colors duration-300 ${
             transparent
               ? "border-line-2 bg-transparent"
-              : "border-transparent bg-surface-2"
+              : engaged
+                ? "border-transparent bg-surface-2"
+                : "border-transparent bg-white"
           }`}
         >
           <div className="hidden flex-1 items-center gap-8 md:flex">

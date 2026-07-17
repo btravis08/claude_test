@@ -284,14 +284,22 @@ async function run() {
       ...extra,
     });
 
-  /* category collections (parented to Shop All for the breadcrumb) */
+  /* category collections (parented to Shop All for the breadcrumb).
+     Sweaters / hoodies / outerwear / shorts exist as tags + chips even
+     though the lorem catalog doesn't populate them yet. */
   const CATEGORIES: Array<[string, string]> = [
     ["footwear", "Footwear"],
     ["pants", "Pants"],
     ["polos", "Polos"],
     ["headwear", "Headwear"],
     ["tshirts", "T-Shirts"],
+    ["sweaters", "Sweaters"],
+    ["hoodies", "Hoodies & Pullovers"],
+    ["outerwear", "Outerwear"],
+    ["shorts", "Shorts"],
   ];
+  /* chip order on Shop All, per the Figma frame */
+  const SHOP_ALL_CHIPS = ["polos", "tshirts", "sweaters", "hoodies", "outerwear", "pants", "shorts"];
   for (const [tag, label] of CATEGORIES) {
     await smartCol(`collection-${tag}`, label, [["tag", tag]], {
       parent: ref("collection-shop-all"),
@@ -323,7 +331,7 @@ async function run() {
     match: "all",
     rules: [],
     sortOrder: "newest",
-    subcategories: CATEGORIES.map(([tag]) => refk(`collection-${tag}`)),
+    subcategories: SHOP_ALL_CHIPS.map((tag) => refk(`collection-${tag}`)),
   });
   await client.createOrReplace({
     _id: "collection-summer-picks",
@@ -343,7 +351,7 @@ async function run() {
     ].map((id) => refk(id)),
     sortOrder: "manual",
   });
-  console.log("✓ 19 collections (Shop All + categories + gender trees + manual)");
+  console.log("✓ collections: Shop All + 9 categories + gender trees + manual");
 
   /* 2c½ — story cards: tagged editorial tiles for collection grids */
   const storyDoc = (

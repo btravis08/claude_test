@@ -1,7 +1,6 @@
 "use client";
 
 import { ReactLenis } from "lenis/react";
-import "lenis/dist/lenis.css";
 
 /*
   Site-wide scroll easing (Locomotive-style) via Lenis. `root` drives

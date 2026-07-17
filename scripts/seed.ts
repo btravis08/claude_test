@@ -299,7 +299,7 @@ async function run() {
         _key: key(),
         colorMode: "light",
         title: "Features / Technology",
-        cards: [1, 2, 3, 4, 5, 6].map((n) => ({
+        cards: [1, 2, 3, 4, 5, 6, 7].map((n) => ({
           _type: "infoCard",
           _key: key(),
           title: "Lorem Ipsum Dolor Sit®",

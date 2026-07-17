@@ -267,7 +267,7 @@ export function InfoSlider({
                 className="group flex w-full flex-col gap-4 border-y border-r border-line bg-surface p-6 pb-16"
               >
                 {media}
-                <p className="font-display text-title-sm text-ink">{card.title}</p>
+                <p className="font-display text-[1.125rem] leading-snug text-ink">{card.title}</p>
                 <p className="text-body-sm text-ink-2">{card.body}</p>
               </a>
             ) : (
@@ -514,14 +514,17 @@ export function TechSpecs({
 }: TechSpecsProps) {
   return (
     <section data-mode={mode} className="w-full bg-surface text-ink">
-      {/* heavy rule opening the section, per the comp */}
-      <div className="mx-6 h-1 bg-ink" />
+      {/* heavy rule opening the section, per the comp — the margin
+          above keeps the section's own surface at the boundary (flush
+          against a light neighbor, a dark section otherwise peeks up
+          beside the inset rule) */}
+      <div className="mx-6 mt-14 h-1 bg-ink md:mt-20" />
       <div className="grid w-full grid-cols-1 gap-10 p-6 pb-28 pt-14 md:grid-cols-2 md:pb-44 md:pt-24">
         <p className="max-w-sm font-display text-headline-lg">{title}</p>
         <div className="flex flex-col gap-10">
           {/* each group opens with a full-width top border; child value
-              lines carry their own top border spanning only the value
-              column, with a trailing line under multi-value groups */}
+              lines carry borders spanning only the value column, and
+              every group closes with a trailing value-column line */}
           {rows.map((row, i) => {
             const lines = (row.value ?? "").split("\n").filter(Boolean);
             return (
@@ -529,7 +532,7 @@ export function TechSpecs({
                 <p className="label pt-4 font-medium text-ink-2">
                   {(row.label ?? "").toUpperCase()}
                 </p>
-                <div className={`flex flex-col ${lines.length > 1 ? "border-b border-line" : ""}`}>
+                <div className="flex flex-col border-b border-line">
                   {lines.map((line, j) => (
                     <p
                       key={j}

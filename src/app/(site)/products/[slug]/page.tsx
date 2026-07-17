@@ -236,7 +236,7 @@ export default async function ProductPage({
           <TechSpecs />
           <InfoSlider
             title="Features / Technology"
-            cards={[1, 2, 3, 4, 5, 6].map((n) => ({
+            cards={[1, 2, 3, 4, 5, 6, 7].map((n) => ({
               _key: `feature-${n}`,
               title: "Lorem Ipsum Dolor Sit®",
               body: "Torsional Traction Plate for benefit lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod. Learn More",

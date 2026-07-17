@@ -78,6 +78,8 @@ export function SliderShell({
   // Fraction of the track scrolled past + in view: clientWidth/scrollWidth
   // at the start, 1 at the end
   const [progress, setProgress] = useState(0);
+  // a track whose items all fit shows no progress line at all
+  const [scrollable, setScrollable] = useState(false);
 
   const updateArrows = useCallback(() => {
     const el = trackRef.current;
@@ -85,6 +87,7 @@ export function SliderShell({
     setCanPrev(el.scrollLeft > 4);
     setCanNext(el.scrollLeft < el.scrollWidth - el.clientWidth - 4);
     setProgress(el.scrollWidth > 0 ? (el.scrollLeft + el.clientWidth) / el.scrollWidth : 1);
+    setScrollable(el.scrollWidth > el.clientWidth + 4);
   }, []);
 
   useEffect(() => {
@@ -278,7 +281,7 @@ export function SliderShell({
       {/* Custom scroll progress: eased fill, full width at the end.
           Sits on top of the cards' bottom hairline (-mt) with no track
           background of its own. */}
-      {showProgress && (
+      {showProgress && scrollable && (
         <div className="relative z-10 -mt-0.5 h-0.5 w-full">
           <motion.div
             className="h-full bg-ink"

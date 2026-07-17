@@ -514,30 +514,30 @@ export function TechSpecs({
 }: TechSpecsProps) {
   return (
     <section data-mode={mode} className="w-full bg-surface text-ink">
-      {/* heavy rule opening the section, per the comp — the margin
+      {/* heavy 6px rule opening the section, per the comp — the margin
           above keeps the section's own surface at the boundary (flush
           against a light neighbor, a dark section otherwise peeks up
           beside the inset rule) */}
-      <div className="mx-6 mt-14 h-1 bg-ink md:mt-20" />
-      <div className="grid w-full grid-cols-1 gap-10 p-6 pb-28 pt-14 md:grid-cols-2 md:pb-44 md:pt-24">
-        <p className="max-w-sm font-display text-headline-lg">{title}</p>
-        <div className="flex flex-col gap-10">
-          {/* each group opens with a full-width top border; child value
-              lines carry borders spanning only the value column, and
-              every group closes with a trailing value-column line */}
+      <div className="mx-6 mt-14 h-1.5 bg-ink md:mx-8 md:mt-8xl" />
+      <div className="grid w-full grid-cols-1 gap-10 px-6 pb-28 pt-14 md:grid-cols-2 md:px-8 md:pb-10xl md:pt-24">
+        <p className="max-w-[26rem] font-display text-title-lg">{title}</p>
+        <div className="flex flex-col gap-8">
+          {/* each group opens with a 1.5px full-width border; value
+              rows sit on a 12px rhythm with hairlines spanning only
+              the value column */}
           {rows.map((row, i) => {
             const lines = (row.value ?? "").split("\n").filter(Boolean);
             return (
-              <div key={row._key ?? i} className="grid grid-cols-[1fr_2fr] gap-6 border-t border-line">
-                <p className="label pt-4 font-medium text-ink-2">
+              <div
+                key={row._key ?? i}
+                className="grid grid-cols-2 border-t-[1.5px] border-line"
+              >
+                <p className="label py-3 font-medium text-ink-2">
                   {(row.label ?? "").toUpperCase()}
                 </p>
-                <div className="flex flex-col border-b border-line">
+                <div className="flex flex-col">
                   {lines.map((line, j) => (
-                    <p
-                      key={j}
-                      className={`label py-4 font-medium ${j > 0 ? "border-t border-line" : ""}`}
-                    >
+                    <p key={j} className="label border-b border-line py-3 font-medium">
                       {line.toUpperCase()}
                     </p>
                   ))}
@@ -546,9 +546,9 @@ export function TechSpecs({
             );
           })}
           {description && (
-            <div className="grid grid-cols-[1fr_2fr] gap-6 border-t border-line pt-4">
+            <div className="grid grid-cols-2 border-t-[1.5px] border-line pt-3">
               <span />
-              <p className="label max-w-sm font-medium leading-relaxed">
+              <p className="label font-medium leading-relaxed">
                 {description.toUpperCase()}
               </p>
             </div>

@@ -42,6 +42,8 @@ export function SliderShell({
   bordered = true,
   cols = "auto-cols-[85%] sm:auto-cols-[45%] lg:auto-cols-[31%] xl:auto-cols-[23.75%]",
   progress: showProgress = true,
+  headerClassName = "p-6",
+  trackClassName = "",
 }: {
   title?: string;
   /* override for label-style headers (e.g. PAIRS WELL WITH) */
@@ -57,6 +59,10 @@ export function SliderShell({
   cols?: string;
   /* the eased progress line under the track */
   progress?: boolean;
+  /* header padding override (flush rails inside padded sections) */
+  headerClassName?: string;
+  /* extra classes on the track (e.g. the comp's 1.5px top rule) */
+  trackClassName?: string;
 }) {
   const genders = useMemo(
     () => Array.from(new Set(items.map((i) => i.gender).filter(Boolean))) as string[],
@@ -184,7 +190,7 @@ export function SliderShell({
   return (
     <div className="flex w-full flex-col">
       <div
-        className={`flex w-full items-center justify-between gap-4 bg-surface p-6 ${
+        className={`flex w-full items-center justify-between gap-4 bg-surface ${headerClassName} ${
           bordered ? "border-t border-line" : ""
         }`}
       >
@@ -242,7 +248,7 @@ export function SliderShell({
         onPointerCancel={endDrag}
         onClickCapture={onClickCapture}
         onDragStart={(e) => e.preventDefault()}
-        className={`no-scrollbar w-full gap-px overflow-x-auto ${
+        className={`no-scrollbar w-full gap-px overflow-x-auto ${trackClassName} ${
           variable ? "flex" : `grid grid-flow-col ${cols}`
         } ${
           dragging

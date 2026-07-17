@@ -23,10 +23,17 @@ embedded at /studio, with Motion (framer-motion) for interactions.
 ## Design source (Figma)
 
 - File: `CMeh0gCtTQAnIRc9iXjGbr` ("[i] Design Library — SDR"), desktop
-  homepage design node `33296:15687` (`device=desktop`, 1440px wide) on
+  PDP design node `33296:15687` (`device=desktop`, 1440 × ~12700) on
   the "❖ DESIGN" page. (Supersedes the old file
   `0IzKylxJcpsuACWsXu7gnu`, which the current Figma account cannot
   access; old node IDs in git history refer to that file.)
+- The PDP node is too large for one `get_design_context` call (the
+  response truncates at ~100KB) — pull child sections individually
+  (known ids: hero `33298:30429`, about/pairs `33298:29697`, tech
+  specs `33298:30224`). Resolved tokens the PDP consumes are saved in
+  `design/figma-tokens/pdp-desktop.resolved.tokens.json`; the spacing
+  scale + Title Large live in `globals.css` (`--spacing-*`,
+  `--text-title-lg`).
 - Read it through the official Figma MCP connector (claude.ai
   connectors), authorized as bryce@weareenvoy.com (Envoy Group org
   seat). The account needs edit access on a Pro-or-better seat

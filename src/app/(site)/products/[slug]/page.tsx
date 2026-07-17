@@ -88,27 +88,27 @@ function MiniProductCard({ card }: { card: ProductCardData }) {
   return (
     <a
       href={card.href ?? "#"}
-      className="group flex w-full flex-col gap-4 border-y border-r border-line bg-surface p-6 pb-16"
+      className="group flex w-full flex-col gap-[1.125rem] border-b border-r border-line bg-surface p-6 pb-16"
     >
-      <div className="relative aspect-[4/5] w-full overflow-hidden rounded-xs bg-surface-2">
+      <div className="relative aspect-[236/301] w-full overflow-hidden rounded-xs bg-surface-2">
         <div
           role="img"
           aria-label={card.title}
-          className="absolute inset-x-[24%] top-1/2 aspect-square -translate-y-1/2 bg-contain bg-center bg-no-repeat transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
+          className="absolute inset-x-[17.77%] top-1/2 aspect-square -translate-y-1/2 bg-contain bg-center bg-no-repeat transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
           style={card.image ? { backgroundImage: `url(${card.image})` } : undefined}
         />
       </div>
       <div className="flex w-full flex-col gap-1.5">
         <div className="label flex w-full items-center justify-between font-medium text-ink">
           <p>{(card.title ?? "").toUpperCase()}</p>
-          <p className="flex items-baseline gap-1.5">
+          <p className="flex items-baseline gap-3">
             {card.compareAtPrice && (
               <s className="text-ink-3 line-through">{card.compareAtPrice}</s>
             )}
             <span>{card.price}</span>
           </p>
         </div>
-        <div className="flex w-full items-center justify-between font-mono text-[0.6875rem] uppercase leading-none tracking-wide text-ink-2">
+        <div className="flex w-full items-center justify-between font-mono text-label-sm uppercase leading-none text-ink-2">
           <p>{card.colorway}</p>
           {extraLabel && <p>{extraLabel}</p>}
         </div>
@@ -195,15 +195,17 @@ export default async function ProductPage({
 
       {/* required: about + pairs well with (arrowed mini-card slider);
           the halves split the section and it runs tall per the comp */}
+      {/* comp: pt-6xl/pb-8xl section frame on 32px gutters; the left
+          column runs Title Large over a 96px inset from the divide */}
       <section
         data-mode="light"
-        className="grid w-full grid-cols-1 bg-surface text-ink md:min-h-[80svh] md:grid-cols-2"
+        className="grid w-full grid-cols-1 gap-y-9 bg-surface px-6 pb-8xl pt-6xl text-ink md:min-h-[80svh] md:grid-cols-2 md:px-8"
       >
-        <div className="flex flex-col gap-9 p-6 md:pt-12">
-          <p className="label font-medium text-ink-2">
+        <div className="flex flex-col gap-9 pt-[0.875rem] md:gap-16 md:pr-24">
+          <p className="label font-medium">
             ABOUT {(product?.title ?? "Presidio").toUpperCase()}
           </p>
-          <div className="max-w-xl font-display text-title-md leading-snug">
+          <div className="font-display text-title-lg">
             {product?.description ? (
               <PortableText value={product.description} />
             ) : (
@@ -211,14 +213,15 @@ export default async function ProductPage({
             )}
           </div>
         </div>
-        {/* 48px above the module: 24px wrapper + the header's own 24px */}
-        <div className="min-w-0 md:pt-6">
+        <div className="min-w-0">
           <SliderShell
             title="PAIRS WELL WITH"
-            titleClassName="label font-medium text-ink-2"
+            titleClassName="label font-medium"
             bordered={false}
             progress={false}
-            cols="auto-cols-[68%] sm:auto-cols-[36%]"
+            headerClassName="pb-7"
+            trackClassName="border-t-[1.5px] border-line"
+            cols="auto-cols-[68%] sm:auto-cols-[41%]"
             items={pairs.map((item, i) => ({
               key: item._key ?? String(i),
               card: <MiniProductCard card={item} />,

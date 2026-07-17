@@ -125,9 +125,11 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
      dock; docked chips get an opaque blurred surface for legibility
      over arbitrary page content */
   const controls = (docked: boolean) => {
-    const chip = docked ? "bg-surface/85 backdrop-blur-md" : "bg-wash";
+    const chip = docked
+      ? "bg-surface/85 backdrop-blur-md"
+      : "bg-wash backdrop-blur-md";
     return (
-      <div className="flex w-full flex-wrap items-stretch gap-2">
+      <div className="flex w-full flex-wrap items-stretch gap-3">
         <div
           className={`label flex h-10 min-w-[16rem] flex-1 items-center justify-between gap-6 rounded-xs px-4 font-medium text-ink sm:max-w-md ${chip}`}
         >
@@ -175,7 +177,7 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
         )}
         <button
           type="button"
-          className="label flex h-10 min-w-[16rem] flex-1 items-center justify-center rounded-xs bg-btn px-4 font-medium text-btn-fg transition-opacity hover:opacity-80"
+          className="label flex h-10 min-w-[9.375rem] flex-1 items-center justify-center rounded-xs bg-btn px-3.5 font-medium text-btn-fg transition-opacity hover:opacity-80"
         >
           SELECT SIZE
         </button>
@@ -212,8 +214,9 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
         ))}
       </div>
 
-      {/* purchase controls floating over the images */}
-      <div className="absolute inset-x-0 bottom-0 p-6">{controls(false)}</div>
+      {/* purchase controls floating over the images (24px gutters,
+          32px stand-off per the comp) */}
+      <div className="absolute inset-x-0 bottom-0 px-6 py-8">{controls(false)}</div>
 
       {/* eased scroll progress along the very bottom */}
       <div className="absolute inset-x-0 bottom-0 z-10 h-0.5">

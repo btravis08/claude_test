@@ -120,6 +120,20 @@ embedded at /studio, with Motion (framer-motion) for interactions.
   Medium 500 (Medium carries the label style), Maison Neue Mono
   (unused by default; available through the `font-mono` utility).
 
+## Deployment (Vercel staging)
+
+- The repo deploys on Vercel via the GitHub integration: pushes to
+  `main` build automatically and go live on the project's
+  `*.vercel.app` domain (the staging site); every other branch gets a
+  preview deployment URL on push.
+- No env vars are required — the Sanity project id/dataset default in
+  `src/sanity/env.ts` (`NEXT_PUBLIC_SANITY_PROJECT_ID` /
+  `NEXT_PUBLIC_SANITY_DATASET` override them if ever needed). Node is
+  pinned to 22.x via package.json engines.
+- The embedded Studio (/studio) on the deployed domain needs that
+  domain added to the Sanity project's CORS origins (with
+  credentials) at manage.sanity.io → API.
+
 ## Local dev (user's machine)
 
 Two terminals: one runs `npm run dev` (localhost:3000), the other runs

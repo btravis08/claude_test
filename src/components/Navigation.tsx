@@ -609,7 +609,7 @@ export function Navigation({ data }: { data?: NavData | null }) {
       >
         <div
           className={`label flex h-12 items-center justify-between rounded-xs px-6 text-ink transition-colors duration-300 ${
-            mobileOpen ? "bg-surface" : "bg-wash backdrop-blur-md"
+            mobileOpen ? "bg-surface-2" : "bg-wash backdrop-blur-md"
           }`}
         >
           <a href="#">SEARCH</a>

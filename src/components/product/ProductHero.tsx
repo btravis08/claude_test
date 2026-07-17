@@ -166,14 +166,22 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
      color dropdown split the flexible space, SIZE is a fixed 120px
      dropdown chip (desktop only), the button a fixed 350px column
      (flexible on tablet, where SIZE drops out). Mobile is name/price
-     + button + a 40px menu button. Chips are the library's Quaternary
-     button (bg alpha-black-10, fg primary, transparent border) with a
-     12px backdrop blur; bg-wash/text-ink alias those tokens and
+     + button + a 40px menu button. Chips and swatch tiles are the
+     library's Quaternary button (bg alpha-black-10, fg primary) with
+     a 12px backdrop blur; bg-wash/text-ink alias those tokens and
      invert with the data-mode the dock samples from the section
-     below it */
+     below it. The fixed container carries bg-primary at 8px padding
+     with the comp's soft drop shadow on md+ (transparent on mobile
+     and in the hero) */
   const chip = "bg-wash backdrop-blur-md";
-  const controls = () => (
-    <div className="flex w-full items-center gap-3 p-4">
+  const controls = (docked: boolean) => (
+    <div
+      className={`flex w-full items-center gap-3 transition-colors duration-300 ${
+        docked
+          ? "p-4 md:bg-surface md:p-2 md:shadow-[0_20px_10px_rgba(16,24,40,0.02),0_8px_4px_rgba(16,24,40,0.02)]"
+          : "p-4"
+      }`}
+    >
       <div
         className={`label flex h-10 min-w-0 flex-1 items-center justify-between gap-6 rounded-xs px-3 font-medium text-ink ${chip}`}
       >
@@ -202,7 +210,7 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
                 type="button"
                 aria-label={variant.name ?? `Colorway ${i + 1}`}
                 onClick={() => setSelected(i)}
-                className={`flex size-10 items-end justify-center overflow-hidden border-b-2 bg-surface-2 ${
+                className={`flex size-10 items-end justify-center overflow-hidden border-b-2 bg-wash ${
                   i === selected ? "border-ink" : "border-transparent"
                 }`}
               >
@@ -297,7 +305,7 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
 
       {/* purchase controls floating over the images (16px wrapper
           padding per the comp; the inner container adds its own 16px) */}
-      <div className="absolute inset-x-0 bottom-0 p-4">{controls()}</div>
+      <div className="absolute inset-x-0 bottom-0 p-4">{controls(false)}</div>
 
       {/* eased scroll progress along the very bottom */}
       <div className="absolute inset-x-0 bottom-0 z-10 h-0.5">
@@ -325,7 +333,7 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
             transition={{ duration: 0.45, ease: [...MEDIA_EASE] }}
             className="fixed inset-x-0 bottom-0 z-40 p-4 text-ink transition-colors duration-300 max-md:bottom-[4.5rem]"
           >
-            {controls()}
+            {controls(true)}
           </motion.div>
         )}
       </AnimatePresence>

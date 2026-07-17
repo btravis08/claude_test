@@ -38,9 +38,11 @@ export interface ProductHeroData {
 export function ProductHero({ product }: { product: ProductHeroData }) {
   const heroRef = useRef<HTMLDivElement>(null);
   const [selected, setSelected] = useState(0);
-  /* dock: hero fully gone AND the bottom shopping module not yet visible */
+  /* dock: hero fully gone AND the bottom shopping module not yet
+     reached — once the module (or anything below it) is on screen the
+     dock stays away */
   const [heroGone, setHeroGone] = useState(false);
-  const [shopVisible, setShopVisible] = useState(false);
+  const [shopReached, setShopReached] = useState(false);
   const variants = product.variants ?? [];
   const active = variants[selected];
   const sizes = product.sizes ?? [];
@@ -85,8 +87,14 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
     }
     const shop = document.querySelector("[data-shop-module]");
     if (shop) {
+      /* "reached" rather than "visible": below the module (footer),
+         it leaves the viewport upward — the dock must not return */
       const obs = new IntersectionObserver(
-        ([entry]) => setShopVisible(entry.isIntersecting),
+        ([entry]) =>
+          setShopReached(
+            entry.isIntersecting ||
+              entry.boundingClientRect.top < window.innerHeight,
+          ),
         { threshold: 0 },
       );
       obs.observe(shop);
@@ -131,13 +139,10 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
      dropdown chip (desktop only), the button a fixed 350px column
      (flexible on tablet, where SIZE drops out). Mobile is name/price
      + button + a 40px menu button. Chips sit on alpha-black-10 with a
-     12px backdrop blur; the docked container carries bg-primary on
-     tablet and up */
+     12px backdrop blur in both the floating and docked states */
   const chip = "bg-wash backdrop-blur-md";
-  const controls = (docked: boolean) => (
-    <div
-      className={`flex w-full items-center gap-3 p-4 ${docked ? "md:bg-surface" : ""}`}
-    >
+  const controls = () => (
+    <div className="flex w-full items-center gap-3 p-4">
       <div
         className={`label flex h-10 min-w-0 flex-1 items-center justify-between gap-6 rounded-xs px-3 font-medium text-ink ${chip}`}
       >
@@ -261,7 +266,7 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
 
       {/* purchase controls floating over the images (16px wrapper
           padding per the comp; the inner container adds its own 16px) */}
-      <div className="absolute inset-x-0 bottom-0 p-4">{controls(false)}</div>
+      <div className="absolute inset-x-0 bottom-0 p-4">{controls()}</div>
 
       {/* eased scroll progress along the very bottom */}
       <div className="absolute inset-x-0 bottom-0 z-10 h-0.5">
@@ -278,7 +283,7 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
           bottom shopping module comes into view (sits above the mobile
           control bar on small screens) */}
       <AnimatePresence>
-        {heroGone && !shopVisible && (
+        {heroGone && !shopReached && (
           <motion.div
             key="purchase-dock"
             initial={{ y: "120%" }}
@@ -287,7 +292,7 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
             transition={{ duration: 0.45, ease: [...MEDIA_EASE] }}
             className="fixed inset-x-0 bottom-0 z-40 p-4 max-md:bottom-[4.5rem]"
           >
-            {controls(true)}
+            {controls()}
           </motion.div>
         )}
       </AnimatePresence>

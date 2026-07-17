@@ -85,7 +85,7 @@ function CtaPill({ label, href, down = false }: { label: string; href: string; d
   return (
     <ArrowLink
       href={href}
-      className="label flex h-10 w-fit items-center gap-3 rounded-xs bg-btn px-3.5 font-medium text-btn-fg"
+      className="label flex h-10 w-fit shrink-0 items-center gap-3 whitespace-nowrap rounded-xs bg-btn px-3.5 font-medium text-btn-fg"
     >
       {label.toUpperCase()}
       <ArrowSwap dx={down ? 0 : 1} dy={down ? 1 : 0}>
@@ -95,12 +95,12 @@ function CtaPill({ label, href, down = false }: { label: string; href: string; d
   );
 }
 
-/* Two-column editorial tile; the inner block is sticky while the
-   neighboring products scroll past */
+/* Editorial tile spanning 2 columns × 2 rows; the inner block is
+   sticky while the neighboring products scroll past */
 function StoryTile({ story, align }: { story: StoryData; align: "left" | "right" }) {
   return (
     <div
-      className={`col-span-2 md:row-span-2 ${align === "right" ? "md:col-start-2" : ""}`}
+      className={`col-span-2 lg:row-span-2 ${align === "right" ? "lg:col-start-3" : ""}`}
     >
       <div className="sticky top-[4.75rem] flex flex-col bg-surface">
         <a href={story.url ?? "#"} className="group block overflow-hidden">
@@ -122,9 +122,12 @@ function StoryTile({ story, align }: { story: StoryData; align: "left" | "right"
   );
 }
 
-/* Grid pattern from the frames: rows of three products, with a story
-   row (story spans 2 cols × 2 rows, two products stack beside it)
-   after each, alternating sides, until the stories run out */
+/* Grid pattern: rows of four products, then a story row — the story
+   spans 2 cols × 2 rows (so it can stick while products scroll past)
+   and four products fill the 2×2 beside it — alternating sides until
+   the stories run out. overflow-x-clip contains the cards' entrance
+   scale (below-fold cards wait at 1.05x) without creating a scroll
+   container, so the sticky tiles keep working. */
 function CollectionGrid({
   cards,
   stories,
@@ -136,22 +139,24 @@ function CollectionGrid({
   let p = 0;
   let s = 0;
   while (p < cards.length) {
-    for (const card of cards.slice(p, p + 3)) {
+    for (const card of cards.slice(p, p + 4)) {
       cells.push(<ProductCard key={card._key} product={card} />);
     }
-    p += 3;
+    p += 4;
     if (s < stories.length && p < cards.length) {
       const story = stories[s];
       const align = story.align ?? (s % 2 === 1 ? "right" : "left");
       cells.push(<StoryTile key={`story-${s}`} story={story} align={align} />);
-      for (const card of cards.slice(p, p + 2)) {
+      for (const card of cards.slice(p, p + 4)) {
         cells.push(<ProductCard key={card._key} product={card} />);
       }
-      p += 2;
+      p += 4;
       s += 1;
     }
   }
-  return <div className="grid grid-cols-2 gap-px md:grid-cols-3">{cells}</div>;
+  return (
+    <div className="grid grid-cols-2 gap-px overflow-x-clip lg:grid-cols-4">{cells}</div>
+  );
 }
 
 export default async function CollectionPage({

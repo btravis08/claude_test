@@ -67,7 +67,7 @@ const FALLBACK_PRODUCT = {
     { name: "Black / White", color: "#161716", image: "/figma/products/presidio-black.png" },
     { name: "White / Blue", color: "#4b74ad", image: "/figma/products/presidio-blue.png" },
   ],
-  sizes: undefined,
+  sizes: ["7", "8", "9", "10", "11", "12"],
 };
 
 const FALLBACK_PAIRS: ProductCardData[] = [1, 2, 3, 4, 5].map((n) => ({

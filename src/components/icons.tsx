@@ -57,6 +57,14 @@ export function ChevronRight({ size, className }: { size?: number; className?: s
   );
 }
 
+export function ChevronDown({ size, className }: { size?: number; className?: string }) {
+  return (
+    <Base size={size} className={className}>
+      <path d="M6 9l6 6 6-6" />
+    </Base>
+  );
+}
+
 export function SearchMd({ size = 20, className }: { size?: number; className?: string }) {
   return (
     <svg

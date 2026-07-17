@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
+import { ChevronDown, Menu } from "@/components/icons";
 
 /*
   PDP hero: required on every product page. Matches the comp:
@@ -42,6 +43,8 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
   const [shopVisible, setShopVisible] = useState(false);
   const variants = product.variants ?? [];
   const active = variants[selected];
+  const sizes = product.sizes ?? [];
+  const [size, setSize] = useState("");
   /* the selected colorway leads the carousel; the product's remaining
      shots follow */
   const slides = [
@@ -122,16 +125,23 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
   };
 
   /* the purchase module, shared by the in-hero overlay and the fixed
-     dock. Per the comp: three equal columns (name/price · variant ·
-     button), chips on alpha-black-10 with a 12px backdrop blur in
-     both states */
+     dock. Per the comp (Product Details 33298:29150): a 16px-padded
+     inner container inside a 16px-padded wrapper; name/price and the
+     color dropdown split the flexible space, SIZE is a fixed 120px
+     dropdown chip (desktop only), the button a fixed 350px column
+     (flexible on tablet, where SIZE drops out). Mobile is name/price
+     + button + a 40px menu button. Chips sit on alpha-black-10 with a
+     12px backdrop blur; the docked container carries bg-primary on
+     tablet and up */
   const chip = "bg-wash backdrop-blur-md";
-  const controls = () => (
-    <div className="flex w-full flex-wrap items-stretch gap-3 lg:grid lg:grid-cols-3">
+  const controls = (docked: boolean) => (
+    <div
+      className={`flex w-full items-center gap-3 p-4 ${docked ? "md:bg-surface" : ""}`}
+    >
       <div
-        className={`label flex h-10 min-w-[16rem] flex-1 items-center justify-between gap-6 rounded-xs px-3 font-medium text-ink ${chip}`}
+        className={`label flex h-10 min-w-0 flex-1 items-center justify-between gap-6 rounded-xs px-3 font-medium text-ink ${chip}`}
       >
-        <span>{(product.title ?? "").toUpperCase()}</span>
+        <span className="truncate">{(product.title ?? "").toUpperCase()}</span>
         <span className="flex items-baseline gap-1.5">
           {product.compareAtPrice && (
             <s className="text-ink-3 line-through">{product.compareAtPrice}</s>
@@ -139,8 +149,8 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
           {product.price}
         </span>
       </div>
-      {/* variant column: the color chip fills what the swatches leave */}
-      <div className="flex min-w-[18rem] flex-1 items-stretch gap-1.5">
+      {/* color dropdown: the chip fills what the swatch tiles leave */}
+      <div className="hidden min-w-0 flex-1 items-center gap-1.5 md:flex">
         <div
           className={`label flex h-10 min-w-0 flex-1 items-center rounded-xs px-3 font-medium text-ink ${chip}`}
         >
@@ -149,27 +159,27 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
           </span>
         </div>
         {variants.length > 1 && (
-          <div className="flex items-stretch gap-[0.3125rem]">
+          <div className="flex items-center gap-[0.3125rem]">
             {variants.map((variant, i) => (
               <button
                 key={i}
                 type="button"
                 aria-label={variant.name ?? `Colorway ${i + 1}`}
                 onClick={() => setSelected(i)}
-                className={`flex size-10 items-center justify-center rounded-xs border bg-surface ${
+                className={`flex size-10 items-end justify-center overflow-hidden border-b-2 bg-surface-2 ${
                   i === selected ? "border-ink" : "border-transparent"
                 }`}
               >
                 {variant.image ? (
                   <span
                     aria-hidden
-                    className="block size-7 bg-contain bg-center bg-no-repeat"
+                    className="block size-full bg-contain bg-center bg-no-repeat opacity-90"
                     style={{ backgroundImage: `url(${variant.image})` }}
                   />
                 ) : (
                   <span
                     aria-hidden
-                    className="block size-4 rounded-xs"
+                    className="block size-full"
                     style={{ backgroundColor: variant.color ?? "#c8c8c4" }}
                   />
                 )}
@@ -178,11 +188,44 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
           </div>
         )}
       </div>
+      {/* SIZE dropdown — desktop only; tablet and below drop it */}
+      {sizes.length > 0 && (
+        <div
+          className={`relative hidden h-10 w-[7.5rem] shrink-0 items-center rounded-xs xl:flex ${chip}`}
+        >
+          <span className="label flex flex-1 items-center gap-2 px-3 font-medium text-ink">
+            SIZE: <span>{size}</span>
+          </span>
+          <ChevronDown size={20} className="pointer-events-none absolute right-3 text-ink" />
+          <select
+            aria-label="Size"
+            value={size}
+            onChange={(e) => setSize(e.target.value)}
+            className="absolute inset-0 cursor-pointer opacity-0"
+          >
+            <option value="" disabled>
+              SIZE
+            </option>
+            {sizes.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
       <button
         type="button"
-        className="label flex h-10 min-w-[9.375rem] flex-1 items-center justify-center rounded-xs bg-btn px-3.5 font-medium text-btn-fg"
+        className="label flex h-10 min-w-[9.375rem] flex-1 items-center justify-center rounded-xs bg-btn px-3.5 font-medium text-btn-fg xl:w-[21.875rem] xl:flex-none"
       >
         SELECT SIZE
+      </button>
+      <button
+        type="button"
+        aria-label="Product menu"
+        className="flex size-10 shrink-0 items-center justify-center rounded-xs bg-wash backdrop-blur-md md:hidden"
+      >
+        <Menu size={10} />
       </button>
     </div>
   );
@@ -216,9 +259,9 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
         ))}
       </div>
 
-      {/* purchase controls floating over the images (24px gutters,
-          32px stand-off per the comp) */}
-      <div className="absolute inset-x-0 bottom-0 px-6 py-8">{controls()}</div>
+      {/* purchase controls floating over the images (16px wrapper
+          padding per the comp; the inner container adds its own 16px) */}
+      <div className="absolute inset-x-0 bottom-0 p-4">{controls(false)}</div>
 
       {/* eased scroll progress along the very bottom */}
       <div className="absolute inset-x-0 bottom-0 z-10 h-0.5">
@@ -242,9 +285,9 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
             animate={{ y: "0%" }}
             exit={{ y: "120%" }}
             transition={{ duration: 0.45, ease: [...MEDIA_EASE] }}
-            className="fixed inset-x-0 bottom-0 z-40 p-6 max-md:bottom-[4.5rem] md:bg-surface md:p-8"
+            className="fixed inset-x-0 bottom-0 z-40 p-4 max-md:bottom-[4.5rem]"
           >
-            {controls()}
+            {controls(true)}
           </motion.div>
         )}
       </AnimatePresence>

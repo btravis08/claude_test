@@ -40,7 +40,7 @@ export interface SectionHero extends SectionBase {
   videoUrl?: string;
 }
 
-export type MediaKind = "image" | "look" | "videoPlayer" | "videoAutoplay";
+export type MediaKind = "image" | "look" | "videoPlayer" | "videoAutoplay" | "text";
 
 /* Shared media-block fields: a media slot is an image or a video with
    a behavior (static / shop the look / click to play / autoplay) */
@@ -63,7 +63,14 @@ export interface SectionFullWidth extends SectionBase, MediaBlockFields {
 export interface SectionInfoSlider extends SectionBase {
   _type: "sectionInfoSlider";
   title?: string;
-  cards?: Array<{ _key: string; title?: string; image?: SanityImageSource }>;
+  cards?: Array<{
+    _key: string;
+    title?: string;
+    body?: string;
+    image?: SanityImageSource;
+    mediaKind?: MediaKind;
+    videoUrl?: string;
+  }>;
 }
 
 export type ProductGender = "mens" | "womens";
@@ -98,6 +105,7 @@ export interface ProductVariant {
 export interface SliderProduct {
   _id: string;
   title?: string;
+  slug?: string;
   /* legacy display string from the first content model */
   price?: string;
   pricing?: ProductPricing;
@@ -112,6 +120,16 @@ export interface SliderProduct {
   hoverImage?: SanityImageSource;
   /* manual collections this product belongs to (reverse lookup) */
   collectionIds?: string[];
+}
+
+/* Full product for the PDP: the slider shape plus page content */
+export interface ProductFull extends SliderProduct {
+  description?: PortableTextBlock[];
+  images?: SanityImageSource[];
+  options?: Array<{ name?: string; values?: string[] }>;
+  showFooterTagline?: boolean;
+  pairsWellWith?: Array<SliderProduct | null>;
+  sections?: PageSection[];
 }
 
 export type CollectionRuleField =
@@ -213,8 +231,46 @@ export interface SectionFiftyFifty extends SectionBase {
   _type: "sectionFiftyFifty";
   ratio?: "5:4" | "1:1" | "flex";
   panels?: Array<
-    { _key: string; title?: string; image?: SanityImageSource } & MediaBlockFields
+    {
+      _key: string;
+      title?: string;
+      /* text-module columns */
+      eyebrow?: string;
+      body?: string;
+      image?: SanityImageSource;
+    } & MediaBlockFields
   >;
+}
+
+export interface SectionTechSpecs extends SectionBase {
+  _type: "sectionTechSpecs";
+  title?: string;
+  rows?: Array<{ _key: string; label?: string; value?: string }>;
+  stats?: Array<{ _key: string; value?: number; label?: string }>;
+}
+
+export interface SectionGallery extends SectionBase {
+  _type: "sectionGallery";
+  title?: string;
+  slides?: Array<
+    {
+      _key: string;
+      image?: SanityImageSource;
+      /* natural aspect ratio of the image asset (w / h) */
+      aspect?: number;
+    } & MediaBlockFields
+  >;
+}
+
+export interface SectionReviews extends SectionBase {
+  _type: "sectionReviews";
+  title?: string;
+}
+
+export interface SectionThreeD extends SectionBase {
+  _type: "sectionThreeD";
+  title?: string;
+  image?: SanityImageSource;
 }
 
 export interface SectionRichText extends SectionBase {
@@ -229,7 +285,11 @@ export type PageSection =
   | SectionProductSlider
   | SectionCarousel
   | SectionFiftyFifty
-  | SectionRichText;
+  | SectionRichText
+  | SectionTechSpecs
+  | SectionGallery
+  | SectionReviews
+  | SectionThreeD;
 
 export interface Page {
   _id: string;

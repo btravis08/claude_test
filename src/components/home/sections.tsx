@@ -43,8 +43,9 @@ export function SecondaryTextButton({ label }: { label: string }) {
   );
 }
 
-/* Media-block behaviors shared by Full Width and 50/50 columns */
-export type MediaKind = "image" | "look" | "videoPlayer" | "videoAutoplay";
+/* Media-block behaviors shared by Full Width and 50/50 columns;
+   "text" is a 50/50-only column kind handled before media renders */
+export type MediaKind = "image" | "look" | "videoPlayer" | "videoAutoplay" | "text";
 
 export interface MediaBlockProps {
   kind?: MediaKind;
@@ -205,16 +206,29 @@ export function FullWidth({
 
 /* ---------- Info Card Slider ---------- */
 
+export interface InfoCardData {
+  _key?: string;
+  title?: string;
+  /* optional body copy (feature / technology cards) */
+  body?: string;
+  image?: string;
+  /* info cards allow a static image or an autoplay video */
+  kind?: MediaKind;
+  videoUrl?: string;
+}
+
 export interface InfoSliderProps {
   mode?: Mode;
   title?: string;
-  cards?: Array<{ _key?: string; title?: string; image?: string }>;
+  cards?: InfoCardData[];
 }
 
-const defaultInfoCards = ["Footwear", "Polos", "Headwear", "T-Shirts"].map((title) => ({
-  title,
-  image: "/figma/media-portrait.png",
-}));
+const defaultInfoCards: InfoCardData[] = ["Footwear", "Polos", "Headwear", "T-Shirts"].map(
+  (title) => ({
+    title,
+    image: "/figma/media-portrait.png",
+  }),
+);
 
 export function InfoSlider({
   mode = "light",
@@ -235,9 +249,14 @@ export function InfoSlider({
               <Media
                 aspect="aspect-[3/4]"
                 image={card.image ?? "/figma/media-portrait.png"}
-                hoverScale
+                hoverScale={card.kind !== "videoAutoplay"}
+                kind={card.kind === "videoAutoplay" ? "videoAutoplay" : "image"}
+                videoUrl={card.videoUrl}
               />
-              <p className="px-4 text-body-md font-medium text-ink sm:px-6">{card.title}</p>
+              <div className="flex flex-col gap-2 px-4 sm:px-6">
+                <p className="text-body-md font-medium text-ink">{card.title}</p>
+                {card.body && <p className="text-body-sm text-ink-2">{card.body}</p>}
+              </div>
             </a>
           ),
         }))}
@@ -305,6 +324,9 @@ export interface FiftyPanelData extends MediaBlockProps {
   _key?: string;
   title?: string;
   image?: string;
+  /* text-module columns (kind === "text") */
+  eyebrow?: string;
+  body?: string;
 }
 
 export type FiftyRatio = "5:4" | "1:1" | "flex";
@@ -346,6 +368,22 @@ export function FiftyFifty({
     >
       {panels.map((panel, i) => {
         const kind = panel.kind ?? "image";
+        /* text module: eyebrow + body centered in the column, no media */
+        if (kind === "text") {
+          return (
+            <div
+              key={panel._key ?? i}
+              className={`flex flex-col items-center justify-center gap-6 bg-surface px-6 py-16 text-center sm:px-16 ${aspect}`}
+            >
+              {panel.eyebrow && (
+                <p className="label font-medium text-ink-2">{panel.eyebrow.toUpperCase()}</p>
+              )}
+              {panel.body && (
+                <p className="max-w-md text-body-md font-medium text-ink">{panel.body}</p>
+              )}
+            </div>
+          );
+        }
         const media = (
           <Media
             aspect={aspect}
@@ -391,6 +429,197 @@ export function FiftyFifty({
           </div>
         );
       })}
+    </section>
+  );
+}
+
+/* ---------- Technical Specifications ---------- */
+
+export interface TechSpecsProps {
+  mode?: Mode;
+  title?: string;
+  rows?: Array<{ _key?: string; label?: string; value?: string }>;
+  stats?: Array<{ _key?: string; value?: number; label?: string }>;
+}
+
+const defaultSpecRows = [
+  { label: "Lorem Label", value: "Lorem ipsum dolor sit amet" },
+  { label: "Ipsum Label", value: "Consectetur adipiscing elit" },
+  { label: "Dolor Label", value: "Sed do eiusmod tempor" },
+  { label: "Sit Label", value: "Incididunt ut labore et dolore" },
+];
+
+const defaultSpecStats = [
+  { value: 82, label: "Lorem Stat" },
+  { value: 64, label: "Ipsum Stat" },
+  { value: 91, label: "Dolor Stat" },
+];
+
+/* Circular percentage dial (SVG stroke) */
+function StatDial({ value = 0, label }: { value?: number; label?: string }) {
+  const r = 26;
+  const c = 2 * Math.PI * r;
+  const pct = Math.max(0, Math.min(100, value));
+  return (
+    <div className="flex items-center gap-4">
+      <svg viewBox="0 0 64 64" className="size-16 -rotate-90">
+        <circle cx="32" cy="32" r={r} fill="none" strokeWidth="3" className="stroke-line" />
+        <circle
+          cx="32"
+          cy="32"
+          r={r}
+          fill="none"
+          strokeWidth="3"
+          strokeDasharray={`${(pct / 100) * c} ${c}`}
+          strokeLinecap="butt"
+          className="stroke-ink"
+        />
+      </svg>
+      <div className="flex flex-col gap-1">
+        <p className="text-body-md font-medium text-ink">{pct}%</p>
+        {label && <p className="label text-ink-2">{label.toUpperCase()}</p>}
+      </div>
+    </div>
+  );
+}
+
+export function TechSpecs({
+  mode = "light",
+  title = "Technical Specifications",
+  rows = defaultSpecRows,
+  stats = defaultSpecStats,
+}: TechSpecsProps) {
+  return (
+    <section data-mode={mode} className="w-full border-t border-line bg-surface text-ink">
+      <div className="grid w-full grid-cols-1 gap-10 p-6 md:grid-cols-2 md:py-16">
+        <p className="max-w-xs font-display text-title-md">{title}</p>
+        <div className="flex flex-col">
+          {rows.map((row, i) => (
+            <div
+              key={row._key ?? i}
+              className="grid grid-cols-2 gap-6 border-b border-line py-4 first:border-t"
+            >
+              <p className="label font-medium text-ink-2">{(row.label ?? "").toUpperCase()}</p>
+              <p className="label whitespace-pre-line text-ink">{row.value}</p>
+            </div>
+          ))}
+          {stats.length > 0 && (
+            <div className="flex flex-wrap gap-x-12 gap-y-8 pt-10">
+              {stats.map((stat, i) => (
+                <StatDial key={stat._key ?? i} value={stat.value} label={stat.label} />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------- Gallery (variable-aspect media slider) ---------- */
+
+export interface GallerySlideData extends MediaBlockProps {
+  _key?: string;
+  image?: string;
+  /* natural aspect ratio (w / h); slides fill the track height */
+  aspect?: number;
+}
+
+export interface GalleryProps {
+  mode?: Mode;
+  title?: string;
+  slides?: GallerySlideData[];
+}
+
+const defaultGallerySlides: GallerySlideData[] = [
+  { image: "/figma/products/presidio-white-hover.png", aspect: 4 / 3 },
+  { image: "/figma/media-portrait.png", aspect: 3 / 4 },
+  { image: "/figma/campaign.png", aspect: 16 / 9 },
+  { image: "/figma/products/presidio-black-hover.png", aspect: 1 },
+];
+
+export function Gallery({ mode = "light", title = "Gallery", slides = defaultGallerySlides }: GalleryProps) {
+  return (
+    <section data-mode={mode} className="flex w-full flex-col bg-surface text-ink">
+      <SliderShell
+        title={title}
+        variable
+        items={slides.map((slide, i) => ({
+          key: slide._key ?? String(i),
+          card: (
+            <div
+              className="relative h-[60vh] max-w-[92vw] overflow-hidden bg-surface-2 sm:h-[70vh]"
+              style={{ aspectRatio: slide.aspect ?? 4 / 3 }}
+            >
+              {slide.kind === "videoAutoplay" && slide.videoUrl ? (
+                <AutoplayVideo src={slide.videoUrl} poster={slide.image} />
+              ) : (
+                slide.image && <AnimatedMedia image={slide.image} />
+              )}
+              {slide.kind === "videoPlayer" && slide.videoUrl && (
+                <VideoPlayerBlock src={slide.videoUrl} />
+              )}
+              {slide.kind === "look" && slide.lookProducts && (
+                <ShopTheLook products={slide.lookProducts} />
+              )}
+            </div>
+          ),
+        }))}
+      />
+    </section>
+  );
+}
+
+/* ---------- Reviews (Yotpo placeholder) ---------- */
+
+export function Reviews({ mode = "light", title = "Reviews" }: { mode?: Mode; title?: string }) {
+  return (
+    <section data-mode={mode} className="w-full border-t border-line bg-surface text-ink">
+      <div className="flex flex-col items-center gap-6 px-6 py-20 text-center">
+        <p className="font-display text-title-md">{title}</p>
+        <p className="label text-ink-2">4.8 ★★★★★ · 3 REVIEWS</p>
+        {/* Yotpo main widget mounts here once the integration lands */}
+        <div
+          id="yotpo-reviews"
+          className="yotpo yotpo-main-widget flex w-full max-w-3xl items-center justify-center rounded-xs border border-dashed border-line py-16"
+        >
+          <p className="label text-ink-3">YOTPO REVIEWS PLACEHOLDER</p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------- 3D Viewer (FIBL placeholder) ---------- */
+
+export function ThreeDViewer({
+  mode = "light",
+  title = "Explore in 3D",
+  image,
+}: {
+  mode?: Mode;
+  title?: string;
+  image?: string;
+}) {
+  return (
+    <section data-mode={mode} className="relative w-full bg-surface text-ink">
+      {/* FIBL interactive viewer mounts here once the integration lands */}
+      <div
+        data-fibl-viewer
+        className="relative flex aspect-[2/3] w-full items-center justify-center overflow-hidden bg-surface-2 sm:aspect-[16/9]"
+      >
+        {image && (
+          <div
+            aria-hidden
+            className="absolute inset-[12%] bg-contain bg-center bg-no-repeat"
+            style={{ backgroundImage: `url(${image})` }}
+          />
+        )}
+        <div className="absolute bottom-6 left-6 flex flex-col gap-1 rounded-xs bg-surface/85 p-4 backdrop-blur-md">
+          <p className="text-body-md font-medium text-ink">{title}</p>
+          <p className="label text-ink-2">FIBL 3D VIEWER PLACEHOLDER</p>
+        </div>
+      </div>
     </section>
   );
 }

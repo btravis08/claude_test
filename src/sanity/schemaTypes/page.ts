@@ -42,6 +42,10 @@ export const page = defineType({
         defineArrayMember({ type: "sectionFiftyFifty" }),
         defineArrayMember({ type: "sectionProductSlider" }),
         defineArrayMember({ type: "sectionRichText" }),
+        defineArrayMember({ type: "sectionTechSpecs" }),
+        defineArrayMember({ type: "sectionGallery" }),
+        defineArrayMember({ type: "sectionReviews" }),
+        defineArrayMember({ type: "sectionThreeD" }),
       ],
     }),
     // Legacy fields, kept so pre-section documents still render

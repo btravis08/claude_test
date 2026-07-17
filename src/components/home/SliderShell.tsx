@@ -34,7 +34,17 @@ function hash01(s: string) {
     set fades in (Motion AnimatePresence)
   - the track stays natively swipeable on touch
 */
-export function SliderShell({ title, items }: { title?: string; items: SliderItem[] }) {
+export function SliderShell({
+  title,
+  items,
+  variable = false,
+}: {
+  title?: string;
+  items: SliderItem[];
+  /* variable: slides size themselves (gallery — natural aspect ratios)
+     instead of the uniform card-width grid */
+  variable?: boolean;
+}) {
   const genders = useMemo(
     () => Array.from(new Set(items.map((i) => i.gender).filter(Boolean))) as string[],
     [items],
@@ -212,7 +222,11 @@ export function SliderShell({ title, items }: { title?: string; items: SliderIte
         onPointerCancel={endDrag}
         onClickCapture={onClickCapture}
         onDragStart={(e) => e.preventDefault()}
-        className={`no-scrollbar grid w-full auto-cols-[85%] grid-flow-col gap-px overflow-x-auto sm:auto-cols-[45%] lg:auto-cols-[31%] xl:auto-cols-[23.75%] ${
+        className={`no-scrollbar w-full gap-px overflow-x-auto ${
+          variable
+            ? "flex"
+            : "grid auto-cols-[85%] grid-flow-col sm:auto-cols-[45%] lg:auto-cols-[31%] xl:auto-cols-[23.75%]"
+        } ${
           dragging
             ? "cursor-grabbing select-none"
             : "cursor-grab snap-x snap-mandatory"
@@ -223,7 +237,7 @@ export function SliderShell({ title, items }: { title?: string; items: SliderIte
             <motion.div
               key={item.key}
               data-slide
-              className="flex min-w-0 snap-start"
+              className={`flex snap-start ${variable ? "shrink-0" : "min-w-0"}`}
               initial={{ opacity: 0 }}
               animate={{
                 opacity: 1,

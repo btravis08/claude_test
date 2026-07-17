@@ -51,7 +51,7 @@ const activeFilter = groq`(!defined(status) || status == "active")`;
    collectionIds reverse-looks-up manual collection membership so
    collection-scoped discounts can resolve on the card. */
 const sliderProductFields = groq`
-  _id, title, price, pricing, status, gender, tags, vendor, productType, postedAt,
+  _id, title, "slug": slug.current, price, pricing, status, gender, tags, vendor, productType, postedAt,
   variants[] {
     name, color, image, hoverImage, price, compareAtPrice, sku, inventory
   },
@@ -86,11 +86,22 @@ const sectionFields = groq`
   mediaKind,
   "videoUrl": video.asset->url,
   lookProducts[]->{ ${lookProductFields} },
-  cards[] { _key, title, image },
+  cards[] {
+    _key, title, body, image, mediaKind,
+    "videoUrl": video.asset->url
+  },
   collection->{ _id, title, type, match, rules, sortOrder },
   products[]->{ ${sliderProductFields} },
   panels[] {
-    _key, title, image, mediaKind,
+    _key, title, eyebrow, body, image, mediaKind,
+    "videoUrl": video.asset->url,
+    lookProducts[]->{ ${lookProductFields} }
+  },
+  rows[] { _key, label, value },
+  stats[] { _key, value, label },
+  slides[] {
+    _key, image, mediaKind,
+    "aspect": image.asset->metadata.dimensions.aspectRatio,
     "videoUrl": video.asset->url,
     lookProducts[]->{ ${lookProductFields} }
   }
@@ -128,6 +139,20 @@ export const automaticDiscountsQuery = groq`
     _id, title, status, method, type, value, appliesTo, startsAt, endsAt,
     "productIds": products[]._ref,
     collections[]->{ _id, type, match, rules, "productIds": products[]._ref }
+  }
+`;
+
+/* Product page (PDP): the full product plus its page-builder sections
+   and the pairs-well-with references */
+export const productBySlugQuery = groq`
+  *[_type == "product" && slug.current == $slug && ${activeFilter}][0] {
+    ${sliderProductFields},
+    description,
+    images,
+    options[] { name, values },
+    showFooterTagline,
+    pairsWellWith[]->{ ${sliderProductFields} },
+    sections[] { ${sectionFields} }
   }
 `;
 

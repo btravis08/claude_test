@@ -78,6 +78,7 @@ const MEDIA_KIND_OPTIONS = [
   { title: "Image — Shop the look", value: "look" },
   { title: "Video — click to play", value: "videoPlayer" },
   { title: "Video — autoplay", value: "videoAutoplay" },
+  { title: "Text module", value: "text" },
 ];
 
 const mediaBlockFields = (
@@ -189,7 +190,15 @@ export const sectionInfoSlider = defineType({
           name: "infoCard",
           fields: [
             defineField({ name: "title", type: "string", initialValue: "Lorem Card" }),
+            defineField({
+              name: "body",
+              title: "Body",
+              description: "Optional — used by info cards (e.g. Features / Technology).",
+              type: "text",
+              rows: 3,
+            }),
             image(),
+            ...mediaBlockFields(["image", "videoAutoplay"]),
           ],
           preview: { select: { title: "title", media: "image" } },
         }),
@@ -363,7 +372,22 @@ export const sectionFiftyFifty = defineType({
               initialValue: "Lorem Panel",
             }),
             image(),
-            ...mediaBlockFields(),
+            ...mediaBlockFields(["image", "look", "videoPlayer", "videoAutoplay", "text"]),
+            defineField({
+              name: "eyebrow",
+              title: "Text — eyebrow",
+              type: "string",
+              initialValue: "Sample Brow",
+              hidden: ({ parent }) => parent?.mediaKind !== "text",
+            }),
+            defineField({
+              name: "body",
+              title: "Text — body",
+              type: "text",
+              rows: 4,
+              initialValue: LOREM,
+              hidden: ({ parent }) => parent?.mediaKind !== "text",
+            }),
           ],
           preview: { select: { title: "title", media: "image" } },
         }),
@@ -411,6 +435,156 @@ export const sectionRichText = defineType({
   },
 });
 
+/* Label/value rows + circular stat dials (PDP "Technical
+   Specifications", usable on any page) */
+export const sectionTechSpecs = defineType({
+  name: "sectionTechSpecs",
+  title: "Technical Specifications",
+  type: "object",
+  fields: [
+    colorMode("light"),
+    defineField({ name: "title", type: "string", initialValue: "Technical Specifications" }),
+    defineField({
+      name: "rows",
+      title: "Specification rows",
+      type: "array",
+      of: [
+        defineArrayMember({
+          type: "object",
+          name: "specRow",
+          options: { columns: 2 },
+          fields: [
+            defineField({ name: "label", type: "string", initialValue: "Lorem Label" }),
+            defineField({ name: "value", type: "text", rows: 2, initialValue: "Lorem ipsum dolor" }),
+          ],
+          preview: { select: { title: "label", subtitle: "value" } },
+        }),
+      ],
+      initialValue: () =>
+        ["Lorem Label", "Ipsum Label", "Dolor Label", "Sit Label"].map((label) => ({
+          _type: "specRow",
+          _key: key(),
+          label,
+          value: "Lorem ipsum dolor sit amet",
+        })),
+    }),
+    defineField({
+      name: "stats",
+      title: "Stat dials",
+      description: "Circular percentage dials shown under the rows.",
+      type: "array",
+      of: [
+        defineArrayMember({
+          type: "object",
+          name: "specStat",
+          options: { columns: 2 },
+          fields: [
+            defineField({
+              name: "value",
+              title: "Percent (0–100)",
+              type: "number",
+              initialValue: 75,
+              validation: (rule) => rule.min(0).max(100),
+            }),
+            defineField({ name: "label", type: "string", initialValue: "Lorem Stat" }),
+          ],
+          preview: {
+            select: { title: "label", value: "value" },
+            prepare: ({ title, value }) => ({ title, subtitle: `${value ?? 0}%` }),
+          },
+        }),
+      ],
+      initialValue: () =>
+        [82, 64, 91].map((value, i) => ({
+          _type: "specStat",
+          _key: key(),
+          value,
+          label: `Lorem Stat ${i + 1}`,
+        })),
+    }),
+  ],
+  preview: {
+    select: { title: "title" },
+    prepare: ({ title }) => ({
+      title: title || "Technical Specifications",
+      subtitle: "Technical Specifications",
+    }),
+  },
+});
+
+/* Media slider where slides keep their natural aspect ratio and fill
+   the carousel height; every slide is a full media block. */
+export const sectionGallery = defineType({
+  name: "sectionGallery",
+  title: "Gallery",
+  type: "object",
+  fields: [
+    colorMode("light"),
+    defineField({ name: "title", type: "string", initialValue: "Gallery" }),
+    defineField({
+      name: "slides",
+      title: "Slides",
+      description:
+        "Any image dimension works — slides fill the carousel height at their natural aspect ratio.",
+      type: "array",
+      of: [
+        defineArrayMember({
+          type: "object",
+          name: "gallerySlide",
+          fields: [image(), ...mediaBlockFields()],
+          preview: {
+            select: { media: "image", kind: "mediaKind" },
+            prepare: ({ media, kind }) => ({ title: kind ?? "image", media }),
+          },
+        }),
+      ],
+      initialValue: async (_, { getClient }) => {
+        const img = await placeholderImage(getClient);
+        return [1, 2, 3, 4].map(() => ({
+          _type: "gallerySlide",
+          _key: key(),
+          mediaKind: "image",
+          ...(img ? { image: img } : {}),
+        }));
+      },
+    }),
+  ],
+  preview: {
+    select: { title: "title" },
+    prepare: ({ title }) => ({ title: title || "Gallery", subtitle: "Gallery" }),
+  },
+});
+
+/* Yotpo reviews — placeholder until the widget is wired up */
+export const sectionReviews = defineType({
+  name: "sectionReviews",
+  title: "Reviews (Yotpo)",
+  type: "object",
+  fields: [
+    colorMode("light"),
+    defineField({ name: "title", type: "string", initialValue: "Reviews" }),
+  ],
+  preview: {
+    prepare: () => ({ title: "Reviews", subtitle: "Yotpo placeholder" }),
+  },
+});
+
+/* FIBL interactive 3D viewer — placeholder until the integration */
+export const sectionThreeD = defineType({
+  name: "sectionThreeD",
+  title: "3D Viewer (FIBL)",
+  type: "object",
+  fields: [
+    colorMode("light"),
+    defineField({ name: "title", type: "string", initialValue: "Explore in 3D" }),
+    image("Poster image"),
+  ],
+  preview: {
+    select: { media: "image" },
+    prepare: ({ media }) => ({ title: "3D Viewer", subtitle: "FIBL placeholder", media }),
+  },
+});
+
 export const sectionTypes = [
   sectionHero,
   sectionFullWidth,
@@ -419,4 +593,8 @@ export const sectionTypes = [
   sectionCarousel,
   sectionFiftyFifty,
   sectionRichText,
+  sectionTechSpecs,
+  sectionGallery,
+  sectionReviews,
+  sectionThreeD,
 ];

@@ -246,9 +246,106 @@ async function run() {
     images: [
       imageRef(presidioImages[0] ?? placeholder),
       imageRef(presidioHovers[0] ?? campaign),
+      imageRef(presidioImages[2] ?? placeholder),
+      imageRef(presidioHovers[2] ?? campaign),
+    ],
+    /* ---------- product page (PDP) ---------- */
+    description: [
+      {
+        _type: "block",
+        _key: key(),
+        style: "normal",
+        markDefs: [],
+        children: [
+          {
+            _type: "span",
+            _key: key(),
+            marks: [],
+            text: "The Presidio sets a new benchmark in spikeless performance, connecting you to the course like never before. The mesh-reinforced upper with strategic foam padding provides breathability and comfort for long days on the course.",
+          },
+        ],
+      },
+    ],
+    pairsWellWith: ["product-seed-003", "product-seed-007", "product-seed-011"].map(
+      (id) => ({ _type: "reference" as const, _key: key(), _ref: id }),
+    ),
+    showFooterTagline: true,
+    sections: [
+      {
+        _type: "sectionTechSpecs",
+        _key: key(),
+        colorMode: "light",
+        title: "Technical Specifications",
+        rows: [
+          ["Upper", "Mesh-reinforced knit with strategic foam padding"],
+          ["Outsole", "Spikeless traction rubber, 8mm lugs"],
+          ["Drop", "8.5mm heel-to-toe"],
+          ["Weight", "380g (size 10)"],
+        ].map(([label, value]) => ({ _type: "specRow", _key: key(), label, value })),
+        stats: [
+          { value: 82, label: "Traction" },
+          { value: 64, label: "Cushioning" },
+          { value: 91, label: "Breathability" },
+        ].map((stat) => ({ _type: "specStat", _key: key(), ...stat })),
+      },
+      {
+        _type: "sectionInfoSlider",
+        _key: key(),
+        colorMode: "light",
+        title: "Features / Technology",
+        cards: [1, 2, 3, 4].map((n) => ({
+          _type: "infoCard",
+          _key: key(),
+          title: `Lorem Ipsum Dolor Sit ${n}`,
+          body: "Cras erat viverra quam adipiscing eget. A ut sed molestie sollicitudin ac condimentum nunc lorem.",
+          image: imageRef(presidioHovers[n % PRESIDIO_VARIANTS.length] ?? campaign),
+          mediaKind: "image",
+        })),
+      },
+      {
+        _type: "sectionThreeD",
+        _key: key(),
+        colorMode: "light",
+        title: "Explore in 3D",
+        image: imageRef(presidioImages[0] ?? placeholder),
+      },
+      {
+        _type: "sectionFiftyFifty",
+        _key: key(),
+        colorMode: "light",
+        ratio: "5:4",
+        panels: [
+          {
+            _type: "panel",
+            _key: key(),
+            image: imageRef(presidioHovers[0] ?? campaign),
+            mediaKind: "image",
+          },
+          {
+            _type: "panel",
+            _key: key(),
+            mediaKind: "text",
+            eyebrow: "Sample Testimonial",
+            body: "“I’m really excited for the Presidio. It has the stability and control to perform on the golf course; it satisfies everything a golfer wants in a spikeless shoe.”",
+          },
+        ],
+      },
+      {
+        _type: "sectionGallery",
+        _key: key(),
+        colorMode: "light",
+        title: "Gallery",
+        slides: [0, 1, 2, 3].map((n) => ({
+          _type: "gallerySlide",
+          _key: key(),
+          image: imageRef(presidioHovers[n % PRESIDIO_VARIANTS.length] ?? campaign),
+          mediaKind: "image",
+        })),
+      },
+      { _type: "sectionReviews", _key: key(), colorMode: "light", title: "Reviews" },
     ],
   });
-  console.log("✓ product-presidio (5 colorways)");
+  console.log("✓ product-presidio (5 colorways + PDP sections)");
 
   /* 2c — collections: smart (rule-driven) + a manual example */
   const image = (id: string) => ({

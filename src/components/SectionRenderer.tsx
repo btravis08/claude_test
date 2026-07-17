@@ -4,9 +4,13 @@ import {
   Carousel,
   FiftyFifty,
   FullWidth,
+  Gallery,
   Hero,
   InfoSlider,
   ProductSlider,
+  Reviews,
+  TechSpecs,
+  ThreeDViewer,
 } from "@/components/home/sections";
 import type { LookProductData } from "@/components/home/MediaBlock";
 import type { ProductCardData } from "@/components/home/ProductCard";
@@ -84,6 +88,7 @@ export function toCards(
     });
   const base: ProductCardData = {
     title: product.title,
+    href: product.slug ? `/products/${product.slug}` : undefined,
     price: displayed.price ?? formatPrice(product.price, settings),
     compareAtPrice: displayed.compareAt,
     gender: product.gender,
@@ -247,7 +252,10 @@ export function SectionRenderer({ sections }: { sections: PageSection[] }) {
                 cards={section.cards?.map((card) => ({
                   _key: card._key,
                   title: card.title,
+                  body: card.body,
                   image: img(card.image, 800),
+                  kind: card.mediaKind,
+                  videoUrl: card.videoUrl,
                 }))}
               />
             );
@@ -286,11 +294,52 @@ export function SectionRenderer({ sections }: { sections: PageSection[] }) {
                 panels={section.panels?.map((panel) => ({
                   _key: panel._key,
                   title: panel.title,
+                  eyebrow: panel.eyebrow,
+                  body: panel.body,
                   image: img(panel.image, 1400),
                   kind: panel.mediaKind,
                   videoUrl: panel.videoUrl,
                   lookProducts: toLookCards(panel.lookProducts),
                 }))}
+              />
+            );
+          case "sectionTechSpecs":
+            return (
+              <TechSpecs
+                key={section._key}
+                mode={section.colorMode}
+                title={section.title}
+                rows={section.rows}
+                stats={section.stats}
+              />
+            );
+          case "sectionGallery":
+            return (
+              <Gallery
+                key={section._key}
+                mode={section.colorMode}
+                title={section.title}
+                slides={section.slides?.map((slide) => ({
+                  _key: slide._key,
+                  image: img(slide.image, 1600),
+                  aspect: slide.aspect,
+                  kind: slide.mediaKind,
+                  videoUrl: slide.videoUrl,
+                  lookProducts: toLookCards(slide.lookProducts),
+                }))}
+              />
+            );
+          case "sectionReviews":
+            return (
+              <Reviews key={section._key} mode={section.colorMode} title={section.title} />
+            );
+          case "sectionThreeD":
+            return (
+              <ThreeDViewer
+                key={section._key}
+                mode={section.colorMode}
+                title={section.title}
+                image={img(section.image, 1600)}
               />
             );
           case "sectionRichText":

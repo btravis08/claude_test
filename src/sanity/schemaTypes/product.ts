@@ -37,6 +37,7 @@ export const product = defineType({
     { name: "content", title: "Product", default: true },
     { name: "pricing", title: "Pricing" },
     { name: "variants", title: "Variants" },
+    { name: "page", title: "Product page" },
     { name: "shipping", title: "Shipping" },
     { name: "seo", title: "SEO" },
   ],
@@ -147,6 +148,47 @@ export const product = defineType({
       type: "datetime",
       group: "content",
       initialValue: () => new Date().toISOString(),
+    }),
+
+    /* ---------- product page (PDP) ---------- */
+    defineField({
+      name: "pairsWellWith",
+      title: "Pairs well with",
+      description:
+        "Products shown beside the description on the product page. Falls back to products sharing this product's first tag.",
+      type: "array",
+      group: "page",
+      of: [defineArrayMember({ type: "reference", to: [{ type: "product" }] })],
+      validation: (rule) => rule.max(3),
+    }),
+    defineField({
+      name: "sections",
+      title: "Page sections",
+      description:
+        "The adjustable middle of the product page. The hero carousel, description + pairs-well-with, and the bottom shopping module are always rendered around these.",
+      type: "array",
+      group: "page",
+      of: [
+        defineArrayMember({ type: "sectionFullWidth" }),
+        defineArrayMember({ type: "sectionInfoSlider" }),
+        defineArrayMember({ type: "sectionCarousel" }),
+        defineArrayMember({ type: "sectionFiftyFifty" }),
+        defineArrayMember({ type: "sectionProductSlider" }),
+        defineArrayMember({ type: "sectionRichText" }),
+        defineArrayMember({ type: "sectionTechSpecs" }),
+        defineArrayMember({ type: "sectionGallery" }),
+        defineArrayMember({ type: "sectionReviews" }),
+        defineArrayMember({ type: "sectionThreeD" }),
+      ],
+    }),
+    defineField({
+      name: "showFooterTagline",
+      title: "Show footer tagline",
+      description:
+        "Shows the “Earned Never Given” art above the footer links on this product's page. Off by default.",
+      type: "boolean",
+      group: "page",
+      initialValue: false,
     }),
 
     /* ---------- pricing ---------- */

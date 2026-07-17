@@ -35,6 +35,8 @@ export interface ProductVariantData {
 export interface ProductCardData {
   _key?: string;
   title?: string;
+  /* product page URL (/products/<handle>) */
+  href?: string;
   price?: string;
   /* formatted original price to strike through (sale) */
   compareAtPrice?: string;
@@ -95,7 +97,7 @@ export function ProductCard({ product }: { product: ProductCardData }) {
 
   return (
     <motion.a
-      href="#"
+      href={product.href ?? "#"}
       initial="rest"
       animate={showSwatches ? "hover" : "rest"}
       onMouseEnter={() => setCardHover(true)}

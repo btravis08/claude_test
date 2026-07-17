@@ -122,32 +122,34 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
   };
 
   /* the purchase module, shared by the in-hero overlay and the fixed
-     dock; docked chips get an opaque blurred surface for legibility
-     over arbitrary page content */
-  const controls = (docked: boolean) => {
-    const chip = docked
-      ? "bg-surface/85 backdrop-blur-md"
-      : "bg-wash backdrop-blur-md";
-    return (
-      <div className="flex w-full flex-wrap items-stretch gap-3">
+     dock. Per the comp: three equal columns (name/price · variant ·
+     button), chips on alpha-black-10 with a 12px backdrop blur in
+     both states */
+  const chip = "bg-wash backdrop-blur-md";
+  const controls = () => (
+    <div className="flex w-full flex-wrap items-stretch gap-3 lg:grid lg:grid-cols-3">
+      <div
+        className={`label flex h-10 min-w-[16rem] flex-1 items-center justify-between gap-6 rounded-xs px-3 font-medium text-ink ${chip}`}
+      >
+        <span>{(product.title ?? "").toUpperCase()}</span>
+        <span className="flex items-baseline gap-1.5">
+          {product.compareAtPrice && (
+            <s className="text-ink-3 line-through">{product.compareAtPrice}</s>
+          )}
+          {product.price}
+        </span>
+      </div>
+      {/* variant column: the color chip fills what the swatches leave */}
+      <div className="flex min-w-[18rem] flex-1 items-stretch gap-1.5">
         <div
-          className={`label flex h-10 min-w-[16rem] flex-1 items-center justify-between gap-6 rounded-xs px-4 font-medium text-ink sm:max-w-md ${chip}`}
+          className={`label flex h-10 min-w-0 flex-1 items-center rounded-xs px-3 font-medium text-ink ${chip}`}
         >
-          <span>{(product.title ?? "").toUpperCase()}</span>
-          <span className="flex items-baseline gap-1.5">
-            {product.compareAtPrice && (
-              <s className="text-ink-3 line-through">{product.compareAtPrice}</s>
-            )}
-            {product.price}
+          <span className="truncate">
+            COLOR: {(active?.name ?? "").toUpperCase()}
           </span>
         </div>
-        <div
-          className={`label flex h-10 min-w-[13rem] items-center rounded-xs px-4 font-medium text-ink ${chip}`}
-        >
-          COLOR: {(active?.name ?? "").toUpperCase()}
-        </div>
         {variants.length > 1 && (
-          <div className="flex items-stretch gap-2">
+          <div className="flex items-stretch gap-[0.3125rem]">
             {variants.map((variant, i) => (
               <button
                 key={i}
@@ -175,15 +177,15 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
             ))}
           </div>
         )}
-        <button
-          type="button"
-          className="label flex h-10 min-w-[9.375rem] flex-1 items-center justify-center rounded-xs bg-btn px-3.5 font-medium text-btn-fg transition-opacity hover:opacity-80"
-        >
-          SELECT SIZE
-        </button>
       </div>
-    );
-  };
+      <button
+        type="button"
+        className="label flex h-10 min-w-[9.375rem] flex-1 items-center justify-center rounded-xs bg-btn px-3.5 font-medium text-btn-fg"
+      >
+        SELECT SIZE
+      </button>
+    </div>
+  );
 
   return (
     <div ref={heroRef} className="relative h-svh w-full bg-surface-2">
@@ -216,7 +218,7 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
 
       {/* purchase controls floating over the images (24px gutters,
           32px stand-off per the comp) */}
-      <div className="absolute inset-x-0 bottom-0 px-6 py-8">{controls(false)}</div>
+      <div className="absolute inset-x-0 bottom-0 px-6 py-8">{controls()}</div>
 
       {/* eased scroll progress along the very bottom */}
       <div className="absolute inset-x-0 bottom-0 z-10 h-0.5">
@@ -240,9 +242,9 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
             animate={{ y: "0%" }}
             exit={{ y: "120%" }}
             transition={{ duration: 0.45, ease: [...MEDIA_EASE] }}
-            className="fixed inset-x-0 bottom-0 z-40 p-6 max-md:bottom-[4.5rem]"
+            className="fixed inset-x-0 bottom-0 z-40 p-6 max-md:bottom-[4.5rem] md:bg-surface md:p-8"
           >
-            {controls(true)}
+            {controls()}
           </motion.div>
         )}
       </AnimatePresence>

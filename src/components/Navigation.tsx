@@ -478,11 +478,14 @@ export function Navigation({ data }: { data?: NavData | null }) {
         className="fixed top-0 z-50 flex w-full flex-col text-ink"
       >
         {/* bar: transparent over the hero / at top, bg-primary once
-            scrolled back in or engaged (hover / open dropdown); the
-            hairline is border-primary in every state per the comp */}
+            scrolled back in or engaged (hover / open dropdown). The
+            hairline is the alpha border while transparent (white 15%
+            over a dark hero) and border-primary once opaque */}
         <div
-          className={`flex h-[3.75rem] items-center border-b border-line px-6 py-3 transition-colors duration-300 ${
-            transparent ? "bg-transparent" : "bg-surface"
+          className={`flex h-[3.75rem] items-center border-b px-6 py-3 transition-colors duration-300 ${
+            transparent
+              ? "border-line-2 bg-transparent"
+              : "border-line bg-surface"
           }`}
         >
           <div className="hidden flex-1 items-center gap-8 md:flex">

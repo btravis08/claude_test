@@ -81,6 +81,14 @@ export function Minus({ size, className }: { size?: number; className?: string }
   );
 }
 
+export function Ruler({ size, className }: { size?: number; className?: string }) {
+  return (
+    <Base size={size} className={className}>
+      <path d="M3 21L21 3M7 17l1.5 1.5M10.5 13.5L12 15M14 10l1.5 1.5M17.5 6.5L19 8" />
+    </Base>
+  );
+}
+
 export function SearchMd({ size = 20, className }: { size?: number; className?: string }) {
   return (
     <svg

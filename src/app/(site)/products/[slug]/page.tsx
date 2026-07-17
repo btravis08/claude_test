@@ -5,6 +5,7 @@ import { FooterTagline } from "@/components/FooterTagline";
 import { RegisterCartRecommendations } from "@/components/cart/CartContext";
 import { CardAddButton, DetailLinks } from "@/components/product/DetailLinks";
 import { ProductHero } from "@/components/product/ProductHero";
+import { VariantPanel } from "@/components/product/VariantPanel";
 import type { ProductCardData } from "@/components/home/ProductCard";
 import {
   Carousel,
@@ -271,6 +272,16 @@ export default async function ProductPage({
             links={
               product?.detailLinks?.length ? product.detailLinks : FALLBACK_DETAIL_LINKS
             }
+          />
+          {/* tablet/mobile: variant selectors live here; the mobile
+              purchase bar minimizes while this panel is on screen */}
+          <VariantPanel
+            className="xl:hidden"
+            title={hero.title ?? "Presidio"}
+            price={hero.price}
+            image={hero.images[0]}
+            variants={hero.variants}
+            sizes={hero.sizes}
           />
         </div>
         {/* the rail bleeds off the right page edge (comp): the column

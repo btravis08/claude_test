@@ -47,6 +47,9 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
   /* color mode of the section under the fixed dock — the quaternary
      chips/button flip with it (dark section → light controls) */
   const [barMode, setBarMode] = useState<"light" | "dark">("light");
+  /* mobile: the fixed bar collapses to the menu chip while the
+     description section's variant panel is on screen */
+  const [panelInView, setPanelInView] = useState(false);
   const variants = product.variants ?? [];
   const active = variants[selected];
   const sizes = product.sizes ?? [];
@@ -102,6 +105,15 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
         { threshold: 0 },
       );
       obs.observe(shop);
+      observers.push(obs);
+    }
+    const panel = document.querySelector("[data-variant-panel]");
+    if (panel) {
+      const obs = new IntersectionObserver(
+        ([entry]) => setPanelInView(entry.isIntersecting),
+        { threshold: 0.2 },
+      );
+      obs.observe(panel);
       observers.push(obs);
     }
     return () => observers.forEach((obs) => obs.disconnect());
@@ -248,14 +260,6 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
       >
         SELECT SIZE
       </button>
-      <button
-        type="button"
-        aria-label="Open menu"
-        onClick={() => window.dispatchEvent(new CustomEvent("sdr:open-menu"))}
-        className="flex size-10 shrink-0 items-center justify-center rounded-xs bg-wash backdrop-blur-md md:hidden"
-      >
-        <Menu size={10} />
-      </button>
     </div>
   );
 
@@ -289,8 +293,11 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
       </div>
 
       {/* purchase controls floating over the images (16px wrapper
-          padding per the comp; the inner container adds its own 16px) */}
-      <div className="absolute inset-x-0 bottom-0 p-4">{controls(false)}</div>
+          padding per the comp; the inner container adds its own 16px).
+          Mobile uses the always-fixed bar below instead */}
+      <div className="absolute inset-x-0 bottom-0 hidden p-4 md:block">
+        {controls(false)}
+      </div>
 
       {/* eased scroll progress along the very bottom */}
       <div className="absolute inset-x-0 bottom-0 z-10 h-0.5">
@@ -316,12 +323,69 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
             animate={{ y: "0%" }}
             exit={{ y: "120%" }}
             transition={{ duration: 0.45, ease: [...MEDIA_EASE] }}
-            className="fixed inset-x-0 bottom-0 z-40 p-4 text-ink transition-colors duration-300"
+            className="fixed inset-x-0 bottom-0 z-40 hidden p-4 text-ink transition-colors duration-300 md:block"
           >
             {controls(true)}
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* mobile: the purchase bar IS the bottom nav, fixed from load
+          (bottom of the svh hero). While the description's variant
+          panel is on screen it minimizes to just the menu chip on
+          the right, then returns once the panel passes */}
+      <div
+        data-purchase-dock
+        data-mode={barMode}
+        className="fixed inset-x-0 bottom-0 z-40 p-4 text-ink md:hidden"
+      >
+        <div className="flex w-full items-center justify-end gap-3">
+          <AnimatePresence initial={false}>
+            {!panelInView && (
+              <motion.div
+                key="mobile-controls"
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 16 }}
+                transition={{ duration: 0.4, ease: [...MEDIA_EASE] }}
+                className="flex min-w-0 flex-1 items-center gap-3"
+              >
+                <div
+                  className={`label flex h-10 min-w-0 flex-1 items-center justify-between gap-4 rounded-xs px-3 font-medium text-ink ${chip}`}
+                >
+                  <span className="truncate">
+                    {(product.title ?? "").toUpperCase()}
+                  </span>
+                  <span>{product.price}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() =>
+                    openQuickAdd({
+                      title: product.title ?? "",
+                      price: product.price,
+                      image: slides[0],
+                      variants,
+                      sizes,
+                    })
+                  }
+                  className="label flex h-10 min-w-[9.375rem] flex-1 items-center justify-center rounded-xs bg-btn px-3.5 font-medium text-btn-fg"
+                >
+                  SELECT SIZE
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+          <button
+            type="button"
+            aria-label="Open menu"
+            onClick={() => window.dispatchEvent(new CustomEvent("sdr:open-menu"))}
+            className="flex size-10 shrink-0 items-center justify-center rounded-xs bg-wash backdrop-blur-md"
+          >
+            <Menu size={10} />
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

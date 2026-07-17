@@ -53,7 +53,9 @@ export function Carousel({
       data-mode={mode}
       className="grid w-full grid-cols-1 bg-surface text-ink lg:grid-cols-2"
     >
-      <div className="flex min-w-0 flex-col justify-between gap-12 px-8 py-12 lg:px-32 lg:py-24">
+      {/* the deep bottom padding (spacing-11xl on desktop) keeps the
+          body copy clear of the sticky purchase bar */}
+      <div className="flex min-w-0 flex-col justify-between gap-12 px-8 pb-28 pt-12 lg:px-32 lg:pb-11xl lg:pt-24">
         <div className="flex flex-col gap-8">
           {eyebrow && <p className="label font-medium text-ink">{eyebrow}</p>}
           <div className="flex flex-col items-start font-display text-headline-sm">

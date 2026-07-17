@@ -12,6 +12,7 @@
     "spacing-8xl": 80,
     "spacing-9xl": 96,
     "spacing-10xl": 128,
+    "spacing-11xl": 160,
     "space/small": 24
   },
   "radius": {

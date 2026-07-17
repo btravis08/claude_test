@@ -131,6 +131,7 @@
   --spacing-8xl: 5rem; /* 80 */
   --spacing-9xl: 6rem; /* 96 */
   --spacing-10xl: 8rem; /* 128 */
+  --spacing-11xl: 10rem; /* 160 */
 
   /*
     Fluid type scale from the Figma text styles.

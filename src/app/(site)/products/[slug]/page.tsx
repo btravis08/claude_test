@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { PortableText } from "next-sanity";
 
 import { FooterTagline } from "@/components/FooterTagline";
+import { CardAddButton, DetailLinks } from "@/components/product/DetailLinks";
 import { ProductHero } from "@/components/product/ProductHero";
 import type { ProductCardData } from "@/components/home/ProductCard";
 import {
@@ -70,6 +71,27 @@ const FALLBACK_PRODUCT = {
   sizes: ["7", "8", "9", "10", "11", "12"],
 };
 
+const FALLBACK_DETAIL_LINKS = [
+  {
+    label: "The Details",
+    text: [
+      "Engineered spikeless outsole with torsional traction plate. Mesh-reinforced upper with strategic foam padding for breathability and comfort across long days on the course.",
+    ],
+  },
+  {
+    label: "Fabric & Tech",
+    text: [
+      "Upper: 89% polyamide, 11% elastane. Dermacare breathability lining with moisture wicking throughout. 140 grams.",
+    ],
+  },
+  {
+    label: "Product Care",
+    text: [
+      "Spot clean with a soft brush and mild soap. Air dry away from direct heat. Do not machine wash.",
+    ],
+  },
+];
+
 const FALLBACK_PAIRS: ProductCardData[] = [1, 2, 3, 4, 5].map((n) => ({
   _key: `pair-${n}`,
   title: "Presidio",
@@ -99,6 +121,7 @@ function MiniProductCard({ card, first }: { card: ProductCardData; first?: boole
           className="absolute inset-x-[17.77%] top-1/2 aspect-square -translate-y-1/2 bg-contain bg-center bg-no-repeat transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
           style={card.image ? { backgroundImage: `url(${card.image})` } : undefined}
         />
+        <CardAddButton />
       </div>
       <div className="flex w-full flex-col gap-1.5">
         <div className="label flex w-full items-center justify-between font-medium text-ink">
@@ -228,6 +251,11 @@ export default async function ProductPage({
               <p>{FALLBACK_DESCRIPTION}</p>
             )}
           </div>
+          <DetailLinks
+            links={
+              product?.detailLinks?.length ? product.detailLinks : FALLBACK_DETAIL_LINKS
+            }
+          />
         </div>
         {/* the rail bleeds off the right page edge (comp): the column
             swallows the section gutter, the header row restores it */}

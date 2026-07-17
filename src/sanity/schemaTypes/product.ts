@@ -81,6 +81,24 @@ export const product = defineType({
       group: "content",
     }),
     defineField({
+      name: "detailLinks",
+      title: "Detail links",
+      description:
+        "Links under the product description (e.g. The Details, Fabric & Tech, Product Care); each opens a drawer with its content.",
+      type: "array",
+      group: "content",
+      of: [
+        defineArrayMember({
+          type: "object",
+          fields: [
+            defineField({ name: "label", title: "Label", type: "string" }),
+            defineField({ name: "body", title: "Drawer content", type: "blockContent" }),
+          ],
+          preview: { select: { title: "label" } },
+        }),
+      ],
+    }),
+    defineField({
       name: "images",
       title: "Media",
       description: "Up to 6. The first image is the card thumbnail.",

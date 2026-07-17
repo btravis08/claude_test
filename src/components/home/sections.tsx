@@ -251,6 +251,11 @@ export function InfoSlider({
         }
         bordered={!framed}
         headerClassName={framed ? "border-b border-line px-6 pb-12 pt-6" : undefined}
+        cols={
+          framed
+            ? "auto-cols-[85%] sm:auto-cols-[45%] lg:auto-cols-[28.75%]"
+            : undefined
+        }
         items={cards.map((card, i) => {
           const media = (
             <Media
@@ -524,7 +529,9 @@ export function TechSpecs({
           against a light neighbor, a dark section otherwise peeks up
           beside the inset rule) */}
       <div className="mx-6 mt-14 h-1.5 bg-ink md:mx-8 md:mt-8xl" />
-      <div className="grid w-full grid-cols-1 gap-10 px-6 pb-28 pt-14 md:grid-cols-2 md:px-8 md:pb-10xl md:pt-24">
+      {/* no column gap: the right column starts on the same centerline
+          as the description section's pairs rail above */}
+      <div className="grid w-full grid-cols-1 gap-y-10 px-6 pb-28 pt-14 md:grid-cols-2 md:px-8 md:pb-10xl md:pt-24">
         <p className="max-w-[26rem] font-display text-title-lg">{title}</p>
         <div className="flex flex-col gap-8">
           {/* each group opens with a 1.5px full-width border; value

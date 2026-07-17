@@ -148,6 +148,7 @@ export const productBySlugQuery = groq`
   *[_type == "product" && slug.current == $slug && ${activeFilter}][0] {
     ${sliderProductFields},
     description,
+    detailLinks[] { _key, label, body },
     images,
     options[] { name, values },
     showFooterTagline,

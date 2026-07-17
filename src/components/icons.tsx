@@ -65,6 +65,14 @@ export function ChevronDown({ size, className }: { size?: number; className?: st
   );
 }
 
+export function Plus({ size, className }: { size?: number; className?: string }) {
+  return (
+    <Base size={size} className={className}>
+      <path d="M12 4v16M4 12h16" />
+    </Base>
+  );
+}
+
 export function SearchMd({ size = 20, className }: { size?: number; className?: string }) {
   return (
     <svg

@@ -125,6 +125,8 @@ export interface SliderProduct {
 /* Full product for the PDP: the slider shape plus page content */
 export interface ProductFull extends SliderProduct {
   description?: PortableTextBlock[];
+  /* links under the description; each opens the specifications drawer */
+  detailLinks?: Array<{ _key?: string; label?: string; body?: PortableTextBlock[] }>;
   images?: SanityImageSource[];
   options?: Array<{ name?: string; values?: string[] }>;
   showFooterTagline?: boolean;

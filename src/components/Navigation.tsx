@@ -164,17 +164,17 @@ const contentFade = {
 
 function ColumnsPanel({ item }: { item: MenuItem }) {
   return (
-    <div className="flex w-full items-stretch gap-px">
+    <div className="flex w-full items-stretch gap-px border-b border-line bg-line">
       <div className="grid flex-1 grid-cols-2 gap-px lg:grid-cols-4">
         {(item.columns ?? []).map((column, i) => (
-          <div key={i} className="bg-surface-2 px-6 pb-16 pt-8">
+          <div key={i} className="bg-surface p-6 pb-16">
             <motion.div
               key={`${item.title}-${column.title}`}
               {...contentFade}
-              className="flex flex-col items-start gap-5"
+              className="flex flex-col items-start gap-8"
             >
               <p className="label text-ink-2">{column.title.toUpperCase()}</p>
-              <div className="flex flex-col items-start gap-4">
+              <div className="flex flex-col items-start gap-6">
                 {column.links.map((link) => (
                   <NavButton key={link.label} label={link.label.toUpperCase()} href={link.url} />
                 ))}
@@ -184,7 +184,7 @@ function ColumnsPanel({ item }: { item: MenuItem }) {
         ))}
       </div>
       {item.image && (
-        <div className="relative hidden aspect-[5/6] w-1/3 shrink-0 overflow-hidden bg-surface-2 lg:block">
+        <div className="relative hidden aspect-[5/6] w-1/3 shrink-0 overflow-hidden bg-surface lg:block">
           {/* image card, hover-identical to a 50/50 panel: image
               scales, the arrow swaps */}
           <motion.div key={item.title} {...contentFade} className="absolute inset-0">
@@ -220,12 +220,16 @@ function ColumnsPanel({ item }: { item: MenuItem }) {
 function ProductsPanel({ item }: { item: MenuItem }) {
   const column = item.columns?.[0];
   return (
-    <motion.div key={item.title} {...contentFade} className="flex w-full items-stretch gap-px">
+    <motion.div
+      key={item.title}
+      {...contentFade}
+      className="flex w-full items-stretch gap-px border-b border-line bg-line"
+    >
       {column && (
-        <div className="w-1/4 shrink-0 bg-surface-2 px-6 pb-16 pt-8">
-          <div className="flex flex-col items-start gap-5">
+        <div className="w-1/4 shrink-0 bg-surface p-6 pb-16">
+          <div className="flex flex-col items-start gap-8">
             <p className="label text-ink-2">{column.title.toUpperCase()}</p>
-            <div className="flex flex-col items-start gap-4">
+            <div className="flex flex-col items-start gap-6">
               {column.links.map((link) => (
                 <NavButton key={link.label} label={link.label.toUpperCase()} href={link.url} />
               ))}
@@ -235,7 +239,7 @@ function ProductsPanel({ item }: { item: MenuItem }) {
       )}
       <div className="grid flex-1 grid-cols-2 gap-px lg:grid-cols-3">
         {(item.products ?? []).map((product, i) => (
-          <div key={i} className="flex flex-col bg-surface-2 pb-10">
+          <div key={i} className="flex flex-col bg-surface pb-10">
             <a href="#" className="group block w-full overflow-hidden">
               <div
                 aria-hidden
@@ -265,9 +269,13 @@ function ProductsPanel({ item }: { item: MenuItem }) {
 
 function CardsPanel({ item }: { item: MenuItem }) {
   return (
-    <motion.div key={item.title} {...contentFade} className="grid w-full grid-cols-3 gap-px">
+    <motion.div
+      key={item.title}
+      {...contentFade}
+      className="grid w-full grid-cols-3 gap-px border-b border-line bg-line"
+    >
       {(item.cards ?? []).map((card, i) => (
-        <a key={i} href={card.url} className="group block bg-surface-2 pb-16">
+        <a key={i} href={card.url} className="group block bg-surface pb-16">
           <div className="w-full overflow-hidden">
             <div
               aria-hidden
@@ -448,9 +456,6 @@ export function Navigation({ data }: { data?: NavData | null }) {
      transparent (light mode) until the page starts scrolling. */
   const overlayZone = hasFullHero ? overHero : atTop;
   const transparent = overlayZone && !hovered && active === null && !panelVisible;
-  /* scrolled-in nav is plain white; the gray tile scheme appears only
-     while the nav is hovered or a dropdown is open */
-  const engaged = hovered || active !== null || panelVisible;
   const activeItem = active !== null ? nav.items[active] : null;
   const hasDropdown = (item: MenuItem) => item.layout !== "none";
 
@@ -470,21 +475,14 @@ export function Navigation({ data }: { data?: NavData | null }) {
           setHovered(false);
           setActive(null);
         }}
-        className={`fixed top-0 z-50 flex w-full flex-col gap-px text-ink transition-colors duration-300 ${
-          transparent ? "bg-transparent" : "bg-white"
-        }`}
+        className="fixed top-0 z-50 flex w-full flex-col text-ink"
       >
-        {/* like the product grid: soft-gray tiles (the product-well
-            tone) separated by 1px of white — but only while engaged
-            (hover / open dropdown); merely scrolled-in it stays white.
-            The hairline only exists in the transparent state. */}
+        {/* bar: transparent over the hero / at top, bg-primary once
+            scrolled back in or engaged (hover / open dropdown); the
+            hairline is border-primary in every state per the comp */}
         <div
-          className={`flex h-[3.75rem] items-center border-b px-6 py-3 transition-colors duration-300 ${
-            transparent
-              ? "border-line-2 bg-transparent"
-              : engaged
-                ? "border-transparent bg-surface-2"
-                : "border-transparent bg-surface"
+          className={`flex h-[3.75rem] items-center border-b border-line px-6 py-3 transition-colors duration-300 ${
+            transparent ? "bg-transparent" : "bg-surface"
           }`}
         >
           <div className="hidden flex-1 items-center gap-8 md:flex">
@@ -595,7 +593,7 @@ export function Navigation({ data }: { data?: NavData | null }) {
       >
         <div
           className={`label flex h-12 items-center justify-between rounded-xs px-6 text-ink transition-colors duration-300 ${
-            mobileOpen ? "bg-surface-2" : "bg-surface/85 backdrop-blur-md"
+            mobileOpen ? "bg-surface" : "bg-surface/85 backdrop-blur-md"
           }`}
         >
           <a href="#">SEARCH</a>

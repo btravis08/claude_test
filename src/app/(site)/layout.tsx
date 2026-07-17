@@ -1,5 +1,6 @@
 import { Navigation } from "@/components/Navigation";
 import type { MenuItem, NavData, NavLink } from "@/components/Navigation";
+import { FooterTaglineProvider } from "@/components/FooterTagline";
 import { LegacyBand, SiteFooter } from "@/components/SiteFooter";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { sanityFetch } from "@/sanity/lib/fetch";
@@ -66,6 +67,7 @@ export default async function SiteLayout({
 
   return (
     <SmoothScroll>
+      <FooterTaglineProvider>
       {/* raised page wrapper; its bottom margin (--footer-h, published
           by SiteFooter) is the reveal window for the fixed footer
           pinned underneath — a margin, so the footer stays clickable */}
@@ -78,6 +80,7 @@ export default async function SiteLayout({
         <LegacyBand />
       </div>
       <SiteFooter />
+      </FooterTaglineProvider>
     </SmoothScroll>
   );
 }

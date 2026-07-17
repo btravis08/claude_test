@@ -21,6 +21,14 @@ export const page = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: "showFooterTagline",
+      title: "Show footer tagline",
+      description:
+        "Shows the “Earned Never Given” art above the footer links on this page. Off by default.",
+      type: "boolean",
+      initialValue: false,
+    }),
+    defineField({
       name: "sections",
       title: "Sections",
       description:

@@ -2,6 +2,7 @@
 
 import { useLayoutEffect, useRef } from "react";
 
+import { useFooterTagline } from "@/components/FooterTagline";
 import { Logo } from "@/components/Logo";
 import { NavTextLink } from "@/components/NavTextLink";
 
@@ -47,6 +48,8 @@ export function LegacyBand() {
 
 export function SiteFooter() {
   const ref = useRef<HTMLElement>(null);
+  /* "Earned Never Given" art — per-page CMS toggle, off by default */
+  const showTagline = useFooterTagline();
 
   /* publish the footer's height as --footer-h; the page wrapper uses
      it as margin-bottom so exactly one footer-height gets revealed */
@@ -71,7 +74,8 @@ export function SiteFooter() {
       className="fixed inset-x-0 bottom-0 bg-surface text-ink"
     >
       {/* Earned Never Given wordmark art */}
-      <div className="flex h-[32.875rem] w-full items-center justify-center overflow-hidden p-2.5">
+      {showTagline && (
+        <div className="flex h-[32.875rem] w-full items-center justify-center overflow-hidden p-2.5">
         <div className="relative h-[9.4375rem] w-[30.375rem] shrink-0 scale-75 sm:scale-100">
           <p className="absolute left-[8.25rem] top-0 whitespace-nowrap font-display text-display-xl">
             Earned
@@ -98,8 +102,9 @@ export function SiteFooter() {
           <p className="label absolute left-[8.9375rem] top-[8.46875rem] font-medium">EST</p>
           <p className="label absolute left-[17.9375rem] top-[8.46875rem] font-medium">2024</p>
           <p className="label absolute right-0 top-[8.46875rem] font-medium">RED</p>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* link columns */}
       <div className="grid w-full grid-cols-1 border-t border-line sm:grid-cols-2 lg:grid-cols-4">

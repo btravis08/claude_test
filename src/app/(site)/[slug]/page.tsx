@@ -3,6 +3,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { PortableText } from "next-sanity";
 
+import { FooterTagline } from "@/components/FooterTagline";
 import { SectionRenderer } from "@/components/SectionRenderer";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { urlFor } from "@/sanity/lib/image";
@@ -34,6 +35,7 @@ export default async function CmsPage({
   if (page.sections?.length) {
     return (
       <div data-mode="light" className="flex flex-col items-start bg-surface">
+        {page.showFooterTagline && <FooterTagline />}
         <SectionRenderer sections={page.sections} />
       </div>
     );

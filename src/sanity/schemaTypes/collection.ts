@@ -142,6 +142,14 @@ export const collection = defineType({
       of: [defineArrayMember({ type: "reference", to: [{ type: "collection" }] })],
     }),
     defineField({
+      name: "showFooterTagline",
+      title: "Show footer tagline",
+      description:
+        "Shows the “Earned Never Given” art above the footer links on this collection page. Off by default.",
+      type: "boolean",
+      initialValue: false,
+    }),
+    defineField({
       name: "sortOrder",
       title: "Sort order",
       type: "string",

@@ -136,7 +136,7 @@ export const automaticDiscountsQuery = groq`
 export const collectionBySlugQuery = groq`
   *[_type == "collection" && slug.current == $slug][0] {
     _id, title, "slug": slug.current, description, image,
-    type, match, rules, sortOrder,
+    type, match, rules, sortOrder, showFooterTagline,
     "parent": parent->{ title, "slug": slug.current },
     subcategories[]->{ _id, title, "slug": slug.current }
   }
@@ -188,6 +188,7 @@ export const pageBySlugQuery = groq`
     _id,
     title,
     "slug": slug.current,
+    showFooterTagline,
     sections[] { ${sectionFields} },
     heroImage,
     body

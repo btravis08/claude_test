@@ -1,3 +1,4 @@
+import { FooterTagline } from "@/components/FooterTagline";
 import { SectionRenderer } from "@/components/SectionRenderer";
 import {
   Carousel,
@@ -25,6 +26,7 @@ export default async function Home() {
 
   return (
     <div data-mode="light" className="flex flex-col items-start bg-surface">
+      {page?.showFooterTagline && <FooterTagline />}
       {page?.sections?.length ? (
         <SectionRenderer sections={page.sections} />
       ) : (

@@ -1,3 +1,4 @@
+import { FooterTagline } from "@/components/FooterTagline";
 import { ArrowLink, ArrowSwap } from "@/components/home/ArrowHover";
 import { NavTextLink } from "@/components/NavTextLink";
 import { ProductCard } from "@/components/home/ProductCard";
@@ -275,6 +276,7 @@ export default async function CollectionPage({
 
   return (
     <div data-mode="light" className="flex w-full flex-col bg-surface text-ink">
+      {collection?.showFooterTagline && <FooterTagline />}
       {/* breadcrumb + centered serif title; crumbs use the nav link
           style, the current page keeps its underline drawn */}
       <div className="flex flex-col items-center gap-4 px-6 pb-10 pt-36">

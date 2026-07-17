@@ -152,6 +152,7 @@ export interface CollectionDoc {
   match?: "all" | "any";
   rules?: CollectionRule[];
   sortOrder?: CollectionSort;
+  showFooterTagline?: boolean;
   products?: Array<SliderProduct | null>;
   parent?: { title?: string; slug?: string } | null;
   subcategories?: Array<{ _id: string; title?: string; slug?: string } | null>;
@@ -234,6 +235,7 @@ export interface Page {
   _id: string;
   title: string;
   slug: string;
+  showFooterTagline?: boolean;
   sections?: PageSection[];
   heroImage?: SanityImageSource & { alt?: string };
   body?: PortableTextBlock[];

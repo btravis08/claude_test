@@ -138,7 +138,7 @@ export interface StoryDoc {
   ctaLabel?: string;
   url?: string;
   image?: SanityImageSource;
-  align?: "left" | "right";
+  placement?: "auto" | "center";
   tags?: string[];
 }
 

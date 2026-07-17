@@ -148,7 +148,7 @@ export const collectionBySlugQuery = groq`
 export const storiesForCollectionQuery = groq`
   *[_type == "story" && (count(tags[@ in $keys]) > 0 || "all" in tags)]
     | order(_createdAt asc) {
-    _id, title, body, ctaLabel, url, image, align
+    _id, title, body, ctaLabel, url, image, placement
   }
 `;
 

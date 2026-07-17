@@ -350,7 +350,7 @@ async function run() {
     id: string,
     tags: string[],
     imageId: string,
-    align?: string,
+    placement?: string,
   ) =>
     client.createOrReplace({
       _id: id,
@@ -362,12 +362,12 @@ async function run() {
       url: "#",
       image: image(imageId),
       tags,
-      ...(align ? { align } : {}),
+      ...(placement ? { placement } : {}),
     });
   await storyDoc("story-all-1", ["all"], campaign);
-  await storyDoc("story-all-2", ["all"], portrait, "right");
+  await storyDoc("story-all-2", ["all"], portrait, "center");
   await storyDoc("story-footwear", ["footwear"], shoe);
-  await storyDoc("story-mens", ["mens"], campaign, "right");
+  await storyDoc("story-mens", ["mens"], campaign);
   console.log("✓ 4 story cards (all ×2, footwear, mens)");
 
   /* 2d — discounts: one of each Shopify type */

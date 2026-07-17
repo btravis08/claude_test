@@ -49,18 +49,18 @@ export const story = defineType({
       validation: (rule) => rule.min(1),
     }),
     defineField({
-      name: "align",
-      title: "Grid side",
+      name: "placement",
+      title: "Desktop placement",
       type: "string",
       options: {
         list: [
-          { title: "Left", value: "left" },
-          { title: "Right", value: "right" },
+          { title: "Auto — sides alternate", value: "auto" },
+          { title: "Center — middle two columns", value: "center" },
         ],
         layout: "radio",
         direction: "horizontal",
       },
-      description: "Empty = alternate automatically.",
+      initialValue: "auto",
     }),
   ],
   preview: {

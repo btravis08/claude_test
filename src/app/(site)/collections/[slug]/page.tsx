@@ -36,7 +36,7 @@ interface StoryData {
   ctaLabel?: string;
   url?: string;
   image?: string;
-  align?: "left" | "right";
+  placement?: "auto" | "center";
 }
 
 function img(source: SanityImageSource | undefined, width = 1600) {
@@ -63,6 +63,7 @@ const FALLBACK_STORIES: StoryData[] = [
     ctaLabel: "Explore the Collection",
     url: "#",
     image: "/figma/products/presidio-black-hover.png",
+    placement: "center",
   },
 ];
 
@@ -125,12 +126,20 @@ function CtaPill({
 }
 
 /* Editorial tile spanning 2 columns × 3 rows; the inner block sticks
-   to the top of the screen while the products beside it scroll */
-function StoryTile({ story, align }: { story: StoryData; align: "left" | "right" }) {
+   to the top of the screen while the products beside it scroll. Sides
+   alternate programmatically; "center" takes the middle two columns
+   with products flowing down both outer columns. */
+function StoryTile({
+  story,
+  position,
+}: {
+  story: StoryData;
+  position: "left" | "right" | "center";
+}) {
+  const columnStart =
+    position === "right" ? "lg:col-start-3" : position === "center" ? "lg:col-start-2" : "";
   return (
-    <div
-      className={`col-span-2 lg:row-span-3 ${align === "right" ? "lg:col-start-3" : ""}`}
-    >
+    <div className={`col-span-2 lg:row-span-3 ${columnStart}`}>
       <div className="sticky top-0 flex flex-col bg-surface">
         <a href={story.url ?? "#"} className="group block overflow-hidden">
           <div
@@ -170,6 +179,7 @@ function CollectionGrid({
   const cells: React.ReactNode[] = [];
   let p = 0;
   let s = 0;
+  let side = 0; // alternation counter for auto-placed stories
   const pushProducts = (count: number) => {
     for (const card of cards.slice(p, p + count)) {
       cells.push(<ProductCard key={card._key} product={card} />);
@@ -179,9 +189,12 @@ function CollectionGrid({
   pushProducts(4); // opening row
   while (s < stories.length && cards.length - p >= 6) {
     const story = stories[s];
-    const align = story.align ?? (s % 2 === 1 ? "right" : "left");
-    cells.push(<StoryTile key={`story-${s}`} story={story} align={align} />);
-    pushProducts(6); // the 2×3 column beside the story
+    const position =
+      story.placement === "center"
+        ? "center"
+        : ((side++ % 2 === 1 ? "right" : "left") as "left" | "right");
+    cells.push(<StoryTile key={`story-${s}`} story={story} position={position} />);
+    pushProducts(6); // the 2×3 beside (or around) the story
     s += 1;
     if (s < stories.length) pushProducts(8); // ≥2 rows between stories
   }
@@ -243,7 +256,7 @@ export default async function CollectionPage({
         ctaLabel: story.ctaLabel,
         url: story.url,
         image: img(story.image),
-        align: story.align,
+        placement: story.placement,
       }))
     : FALLBACK_STORIES;
   const chips = collection

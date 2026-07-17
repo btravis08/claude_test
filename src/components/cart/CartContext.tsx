@@ -50,6 +50,10 @@ interface CartState {
   isOpen: boolean;
   view: CartView;
   quickAdd: QuickAddProduct | null;
+  /* the size chosen in the quick-add flyout; populates the SIZE
+     inputs ("SELECT" until chosen) */
+  quickAddSize: string | null;
+  setQuickAddSize: (size: string | null) => void;
   recommended: CartRecommendation[];
   openQuickAdd: (product: QuickAddProduct) => void;
   openCart: () => void;
@@ -76,10 +80,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [view, setView] = useState<CartView>("cart");
   const [quickAdd, setQuickAdd] = useState<QuickAddProduct | null>(null);
+  const [quickAddSize, setQuickAddSize] = useState<string | null>(null);
   const [recommended, setRecommended] = useState<CartRecommendation[]>([]);
 
   const openQuickAdd = useCallback((product: QuickAddProduct) => {
-    setQuickAdd(product);
+    setQuickAdd((prev) => {
+      if (prev?.title !== product.title) setQuickAddSize(null);
+      return product;
+    });
     setView("quickAdd");
     setIsOpen(true);
   }, []);
@@ -127,6 +135,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       isOpen,
       view,
       quickAdd,
+      quickAddSize,
+      setQuickAddSize,
       recommended,
       openQuickAdd,
       openCart,
@@ -141,6 +151,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     isOpen,
     view,
     quickAdd,
+    quickAddSize,
     recommended,
     openQuickAdd,
     openCart,
@@ -163,6 +174,8 @@ const FALLBACK: CartState = {
   isOpen: false,
   view: "cart",
   quickAdd: null,
+  quickAddSize: null,
+  setQuickAddSize: noop,
   recommended: [],
   openQuickAdd: noop,
   openCart: noop,

@@ -36,10 +36,10 @@ function PanelHeader({ title, onClose }: { title: string; onClose: () => void })
 }
 
 function QuickAddView() {
-  const { quickAdd, addItem, openCart } = useCart();
+  const { quickAdd, addItem, openCart, quickAddSize: size, setQuickAddSize: setSize } =
+    useCart();
   const [variantIdx, setVariantIdx] = useState(0);
   const [fit, setFit] = useState("Normal");
-  const [size, setSize] = useState<string | null>(null);
 
   if (!quickAdd) return null;
   const variants = quickAdd.variants ?? [];
@@ -65,9 +65,9 @@ function QuickAddView() {
         {/* colorway */}
         {variants.length > 0 && (
           <div className="flex flex-col gap-[1.375rem] border-t border-line p-6">
-            <p className="flex items-center gap-2.5 font-mono text-[0.875rem] uppercase leading-5">
-              <span className="text-ink">Color</span>
-              <span className="text-ink-2">{active?.name}</span>
+            <p className="flex items-baseline gap-2.5 text-body-md font-medium text-ink">
+              Color
+              <span className="font-normal text-ink-2">{active?.name}</span>
             </p>
             <div className="flex gap-px">
               {variants.map((variant, i) => (
@@ -103,14 +103,14 @@ function QuickAddView() {
         {/* fit toggle */}
         <div className="flex flex-col gap-6 border-t border-line p-6">
           <p className="text-body-md font-medium text-ink">Fit</p>
-          <div className="flex w-full items-stretch bg-surface-2 p-1.5">
+          <div className="flex w-full items-stretch gap-2">
             {["Normal", "Wide"].map((option) => (
               <button
                 key={option}
                 type="button"
                 onClick={() => setFit(option)}
-                className={`label flex h-9 flex-1 items-center justify-center px-3 font-medium text-ink transition-colors ${
-                  fit === option ? "bg-[#cacbc8]" : ""
+                className={`label flex h-10 flex-1 items-center justify-center px-3 font-medium transition-colors ${
+                  fit === option ? "bg-btn text-btn-fg" : "bg-wash text-ink"
                 }`}
               >
                 {option}
@@ -129,8 +129,8 @@ function QuickAddView() {
                   key={option}
                   type="button"
                   onClick={() => setSize(option)}
-                  className={`flex items-center justify-center py-4 font-mono text-[0.875rem] uppercase leading-none text-ink transition-colors ${
-                    size === option ? "bg-[#cacbc8]" : "bg-surface-2"
+                  className={`flex items-center justify-center py-4 font-mono text-[0.875rem] uppercase leading-none transition-colors ${
+                    size === option ? "bg-btn text-btn-fg" : "bg-wash text-ink"
                   }`}
                 >
                   {option}

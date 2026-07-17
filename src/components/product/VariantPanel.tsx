@@ -30,7 +30,7 @@ export function VariantPanel({
   sizes?: string[];
   className?: string;
 }) {
-  const { openQuickAdd } = useCart();
+  const { openQuickAdd, quickAddSize } = useCart();
   const [selected, setSelected] = useState(0);
   const active = variants[selected];
   const chip = "bg-wash backdrop-blur-md";
@@ -87,6 +87,9 @@ export function VariantPanel({
         >
           <span className="label flex flex-1 items-center gap-2 px-3 font-medium text-ink">
             SIZE:
+            <span className={quickAddSize ? "" : "text-ink-3"}>
+              {quickAddSize ?? "SELECT"}
+            </span>
           </span>
           <ChevronDown size={20} className="absolute right-3 text-ink" />
         </button>

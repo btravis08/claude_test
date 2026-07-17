@@ -70,10 +70,12 @@ const FALLBACK_PRODUCT = {
   sizes: undefined,
 };
 
-const FALLBACK_PAIRS: ProductCardData[] = [1, 2, 3].map((n) => ({
+const FALLBACK_PAIRS: ProductCardData[] = [1, 2, 3, 4, 5].map((n) => ({
   _key: `pair-${n}`,
   title: "Presidio",
   price: "$198.00",
+  colorway: "Gray / Navy",
+  colorCount: "+4 colors",
   image: "/figma/products/presidio-white.png",
 }));
 
@@ -84,7 +86,10 @@ function MiniProductCard({ card }: { card: ProductCardData }) {
   const extraLabel =
     extra !== undefined ? (extra > 0 ? `+${extra} colors` : undefined) : card.colorCount;
   return (
-    <a href={card.href ?? "#"} className="group flex w-full flex-col gap-4 bg-surface p-6 pb-10">
+    <a
+      href={card.href ?? "#"}
+      className="group flex w-full flex-col gap-4 border-y border-r border-line bg-surface p-6 pb-16"
+    >
       <div className="relative aspect-[4/5] w-full overflow-hidden rounded-xs bg-surface-2">
         <div
           role="img"
@@ -157,24 +162,22 @@ export default async function ProductPage({
     );
   }
 
-  /* pairs well with: explicit references, else products sharing the
-     first tag (excluding this product) */
-  let pairs: ProductCardData[] = activeOnly(product?.pairsWellWith ?? [])
-    .map((item) => toCards(item, discounts, settings)[0])
-    .filter((item): item is ProductCardData => Boolean(item));
+  /* pairs well with: explicit references first, topped up to at least
+     four cards with products sharing the first tag (excluding self) */
   const tag = product?.tags?.[0] ?? "all";
-  let related: SliderProduct[] = [];
-  if (product || pairs.length < 3) {
-    related = activeOnly(
-      await sanityFetch<SliderProduct[]>(productsByTagQuery, { productTag: tag }, []),
-    ).filter((item) => item._id !== product?._id);
+  const related: SliderProduct[] = activeOnly(
+    await sanityFetch<SliderProduct[]>(productsByTagQuery, { productTag: tag }, []),
+  ).filter((item) => item._id !== product?._id);
+  const pairDocs = activeOnly(product?.pairsWellWith ?? []);
+  if (pairDocs.length < 4) {
+    const have = new Set(pairDocs.map((doc) => doc._id));
+    pairDocs.push(
+      ...related.filter((doc) => !have.has(doc._id)).slice(0, 6 - pairDocs.length),
+    );
   }
-  if (pairs.length === 0) {
-    pairs = related
-      .slice(0, 3)
-      .map((item) => toCards(item, discounts, settings)[0])
-      .filter((item): item is ProductCardData => Boolean(item));
-  }
+  let pairs: ProductCardData[] = pairDocs
+    .map((doc) => toCards(doc, discounts, settings)[0])
+    .filter((item): item is ProductCardData => Boolean(item));
   if (pairs.length === 0) pairs = FALLBACK_PAIRS;
 
   /* bottom shopping module: gender-filterable slider of related
@@ -190,10 +193,11 @@ export default async function ProductPage({
       {/* required: hero carousel + affixed purchase bar */}
       <ProductHero product={hero} />
 
-      {/* required: about + pairs well with (arrowed mini-card slider) */}
+      {/* required: about + pairs well with (arrowed mini-card slider);
+          the halves split the section and it runs tall per the comp */}
       <section
         data-mode="light"
-        className="grid w-full grid-cols-1 bg-surface text-ink md:grid-cols-2"
+        className="grid w-full grid-cols-1 bg-surface text-ink md:min-h-[80svh] md:grid-cols-2"
       >
         <div className="flex flex-col gap-9 p-6">
           <p className="label font-medium text-ink-2">
@@ -207,15 +211,18 @@ export default async function ProductPage({
             )}
           </div>
         </div>
-        <SliderShell
-          title="PAIRS WELL WITH"
-          titleClassName="label font-medium text-ink-2"
-          bordered={false}
-          items={pairs.map((item, i) => ({
-            key: item._key ?? String(i),
-            card: <MiniProductCard card={item} />,
-          }))}
-        />
+        <div className="min-w-0">
+          <SliderShell
+            title="PAIRS WELL WITH"
+            titleClassName="label font-medium text-ink-2"
+            bordered={false}
+            cols="auto-cols-[85%] sm:auto-cols-[45%]"
+            items={pairs.map((item, i) => ({
+              key: item._key ?? String(i),
+              card: <MiniProductCard card={item} />,
+            }))}
+          />
+        </div>
       </section>
 
       {/* adjustable middle: the product's CMS sections; the template
@@ -227,7 +234,7 @@ export default async function ProductPage({
           <TechSpecs />
           <InfoSlider
             title="Features / Technology"
-            cards={[1, 2, 3, 4].map((n) => ({
+            cards={[1, 2, 3, 4, 5, 6].map((n) => ({
               _key: `feature-${n}`,
               title: "Lorem Ipsum Dolor Sit®",
               body: "Torsional Traction Plate for benefit lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod. Learn More",

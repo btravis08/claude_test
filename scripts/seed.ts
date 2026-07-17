@@ -266,9 +266,13 @@ async function run() {
         ],
       },
     ],
-    pairsWellWith: ["product-seed-003", "product-seed-007", "product-seed-011"].map(
-      (id) => ({ _type: "reference" as const, _key: key(), _ref: id }),
-    ),
+    pairsWellWith: [
+      "product-seed-003",
+      "product-seed-007",
+      "product-seed-011",
+      "product-seed-015",
+      "product-seed-019",
+    ].map((id) => ({ _type: "reference" as const, _key: key(), _ref: id })),
     showFooterTagline: true,
     sections: [
       {
@@ -295,7 +299,7 @@ async function run() {
         _key: key(),
         colorMode: "light",
         title: "Features / Technology",
-        cards: [1, 2, 3, 4].map((n) => ({
+        cards: [1, 2, 3, 4, 5, 6].map((n) => ({
           _type: "infoCard",
           _key: key(),
           title: "Lorem Ipsum Dolor Sit®",

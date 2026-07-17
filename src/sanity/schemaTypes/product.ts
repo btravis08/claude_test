@@ -155,11 +155,11 @@ export const product = defineType({
       name: "pairsWellWith",
       title: "Pairs well with",
       description:
-        "Products shown beside the description on the product page. Falls back to products sharing this product's first tag.",
+        "Products shown in the carousel beside the description on the product page. Topped up to at least four with products sharing this product's first tag.",
       type: "array",
       group: "page",
       of: [defineArrayMember({ type: "reference", to: [{ type: "product" }] })],
-      validation: (rule) => rule.max(3),
+      validation: (rule) => rule.max(6),
     }),
     defineField({
       name: "sections",

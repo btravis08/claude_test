@@ -235,8 +235,15 @@ export function InfoSlider({
   title = "Explore Sun Day Red",
   cards = defaultInfoCards,
 }: InfoSliderProps) {
+  /* card bodies mark the bordered info-card variant (Features /
+     Technology): hairlines between and around the cards plus generous
+     space under the slider; category sliders keep the open look */
+  const framed = cards.some((card) => card.body);
   return (
-    <section data-mode={mode} className="flex w-full flex-col bg-surface text-ink">
+    <section
+      data-mode={mode}
+      className={`flex w-full flex-col bg-surface text-ink ${framed ? "pb-20" : ""}`}
+    >
       <SliderShell
         title={title}
         items={cards.map((card, i) => {
@@ -255,7 +262,10 @@ export function InfoSlider({
           return {
             key: card._key ?? String(i),
             card: card.body ? (
-              <a href="#" className="group flex w-full flex-col gap-4 bg-surface p-6 pb-16">
+              <a
+                href="#"
+                className="group flex w-full flex-col gap-4 border-y border-r border-line bg-surface p-6 pb-16"
+              >
                 {media}
                 <p className="font-display text-title-sm text-ink">{card.title}</p>
                 <p className="text-body-sm text-ink-2">{card.body}</p>
@@ -506,8 +516,8 @@ export function TechSpecs({
     <section data-mode={mode} className="w-full bg-surface text-ink">
       {/* heavy rule opening the section, per the comp */}
       <div className="mx-6 h-1 bg-ink" />
-      <div className="grid w-full grid-cols-1 gap-10 p-6 py-14 md:grid-cols-2 md:py-24">
-        <p className="max-w-xs font-display text-title-lg">{title}</p>
+      <div className="grid w-full grid-cols-1 gap-10 p-6 pb-28 pt-14 md:grid-cols-2 md:pb-44 md:pt-24">
+        <p className="max-w-sm font-display text-headline-lg">{title}</p>
         <div className="flex flex-col gap-8">
           {rows.map((row, i) => (
             <div key={row._key ?? i} className="grid grid-cols-[1fr_2fr] gap-6">

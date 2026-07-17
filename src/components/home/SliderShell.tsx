@@ -40,6 +40,7 @@ export function SliderShell({
   items,
   variable = false,
   bordered = true,
+  cols = "auto-cols-[85%] sm:auto-cols-[45%] lg:auto-cols-[31%] xl:auto-cols-[23.75%]",
 }: {
   title?: string;
   /* override for label-style headers (e.g. PAIRS WELL WITH) */
@@ -50,6 +51,9 @@ export function SliderShell({
   variable?: boolean;
   /* the hairline above the header (off when the parent draws its own) */
   bordered?: boolean;
+  /* responsive auto-cols widths for the track (e.g. wider cards for
+     the half-width pairs-well-with rail) */
+  cols?: string;
 }) {
   const genders = useMemo(
     () => Array.from(new Set(items.map((i) => i.gender).filter(Boolean))) as string[],
@@ -233,9 +237,7 @@ export function SliderShell({
         onClickCapture={onClickCapture}
         onDragStart={(e) => e.preventDefault()}
         className={`no-scrollbar w-full gap-px overflow-x-auto ${
-          variable
-            ? "flex"
-            : "grid auto-cols-[85%] grid-flow-col sm:auto-cols-[45%] lg:auto-cols-[31%] xl:auto-cols-[23.75%]"
+          variable ? "flex" : `grid grid-flow-col ${cols}`
         } ${
           dragging
             ? "cursor-grabbing select-none"

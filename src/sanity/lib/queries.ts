@@ -94,6 +94,7 @@ const sectionFields = groq`
   products[]->{ ${sliderProductFields} },
   panels[] {
     _key, title, eyebrow, body, image, mediaKind,
+    showEyebrow, showButton, ctaLabel,
     "videoUrl": video.asset->url,
     lookProducts[]->{ ${lookProductFields} }
   },

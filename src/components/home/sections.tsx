@@ -355,6 +355,10 @@ export interface FiftyPanelData extends MediaBlockProps {
   /* text-module columns (kind === "text") */
   eyebrow?: string;
   body?: string;
+  /* CMS toggles for the eyebrow and CTA (default on when content exists) */
+  showEyebrow?: boolean;
+  showButton?: boolean;
+  ctaLabel?: string;
 }
 
 export type FiftyRatio = "5:4" | "1:1" | "flex";
@@ -396,19 +400,35 @@ export function FiftyFifty({
     >
       {panels.map((panel, i) => {
         const kind = panel.kind ?? "image";
-        /* text module: eyebrow + body centered in the column, no media */
+        /* text module (comp 33321:30688): a left-aligned 460px stack
+           centered in the column — label eyebrow, Title Large body,
+           and the 46px Secondary CTA; eyebrow and button carry CMS
+           toggles. Mobile runs top-left on a 64px rhythm. */
         if (kind === "text") {
+          const showEyebrow = panel.showEyebrow !== false && panel.eyebrow;
+          const showButton = panel.showButton !== false && panel.ctaLabel;
           return (
             <div
               key={panel._key ?? i}
-              className={`flex flex-col items-center justify-center gap-6 bg-surface px-6 py-16 text-center sm:px-16 ${aspect}`}
+              className={`flex flex-col items-start bg-surface px-4 py-8 md:items-center md:justify-center md:px-16 md:py-[4.5rem] ${aspect}`}
             >
-              {panel.eyebrow && (
-                <p className="label font-medium text-ink-2">{panel.eyebrow.toUpperCase()}</p>
-              )}
-              {panel.body && (
-                <p className="max-w-md text-body-md font-medium text-ink">{panel.body}</p>
-              )}
+              <div className="flex w-full flex-col items-start gap-16 md:max-w-[28.75rem] md:gap-12">
+                {showEyebrow && (
+                  <p className="label font-medium text-ink">{panel.eyebrow!.toUpperCase()}</p>
+                )}
+                {panel.body && (
+                  <p className="font-display text-title-lg text-ink">{panel.body}</p>
+                )}
+                {showButton && (
+                  <a
+                    href="#"
+                    className="label flex h-[2.875rem] min-w-[7.5rem] items-center justify-center gap-1.5 rounded-xs bg-surface-2 px-4 font-medium text-ink transition-colors hover:bg-[#cacbc8]"
+                  >
+                    {panel.ctaLabel!.toUpperCase()}
+                    <ArrowUpRight size={10} />
+                  </a>
+                )}
+              </div>
             </div>
           );
         }

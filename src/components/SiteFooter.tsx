@@ -1,3 +1,7 @@
+"use client";
+
+import { useLayoutEffect, useRef } from "react";
+
 import { Logo } from "@/components/Logo";
 import { NavTextLink } from "@/components/NavTextLink";
 
@@ -18,19 +22,54 @@ const columns: { heading: string; links: string[] }[] = [
 
 const social = ["FB", "TT", "IG", "X", "TW"];
 
-export function SiteFooter() {
-  return (
-    <footer data-mode="light" className="mt-auto bg-surface text-ink">
-      {/* legacy video band — a dark region for the mobile bar detection */}
-      <div data-mode="dark" className="relative h-[26.75rem] w-full overflow-hidden">
-        <div
-          aria-hidden
-          className="absolute inset-0 bg-surface-2 bg-cover bg-center"
-          style={{ backgroundImage: "url(/figma/legacy-video.jpg)" }}
-        />
-        <div className="absolute inset-0 bg-black/20" />
-      </div>
+/*
+  Fixed-reveal footer. The page scrolls inside a raised (z-10) wrapper
+  whose bottom margin is --footer-h; the footer sits fixed at the
+  viewport bottom underneath it, so scrolling past the legacy band
+  "reveals" it. The reveal gap is a margin, not an element — margins
+  aren't hit targets, so the footer stays clickable once uncovered.
+*/
 
+/* Last scrolling element of the page — the reveal's curtain edge.
+   Rendered inside the page wrapper, above the fixed footer. */
+export function LegacyBand() {
+  return (
+    <div data-mode="dark" className="relative h-[26.75rem] w-full overflow-hidden bg-black">
+      <div
+        aria-hidden
+        className="absolute inset-0 bg-surface-2 bg-cover bg-center"
+        style={{ backgroundImage: "url(/figma/legacy-video.jpg)" }}
+      />
+      <div className="absolute inset-0 bg-black/20" />
+    </div>
+  );
+}
+
+export function SiteFooter() {
+  const ref = useRef<HTMLElement>(null);
+
+  /* publish the footer's height as --footer-h; the page wrapper uses
+     it as margin-bottom so exactly one footer-height gets revealed */
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const publish = () =>
+      document.documentElement.style.setProperty("--footer-h", `${el.offsetHeight}px`);
+    publish();
+    const observer = new ResizeObserver(publish);
+    observer.observe(el);
+    return () => {
+      observer.disconnect();
+      document.documentElement.style.removeProperty("--footer-h");
+    };
+  }, []);
+
+  return (
+    <footer
+      ref={ref}
+      data-mode="light"
+      className="fixed inset-x-0 bottom-0 bg-surface text-ink"
+    >
       {/* Earned Never Given wordmark art */}
       <div className="flex h-[32.875rem] w-full items-center justify-center overflow-hidden p-2.5">
         <div className="relative h-[9.4375rem] w-[30.375rem] shrink-0 scale-75 sm:scale-100">

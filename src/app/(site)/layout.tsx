@@ -1,6 +1,7 @@
 import { Navigation } from "@/components/Navigation";
 import type { MenuItem, NavData, NavLink } from "@/components/Navigation";
-import { SiteFooter } from "@/components/SiteFooter";
+import { LegacyBand, SiteFooter } from "@/components/SiteFooter";
+import { SmoothScroll } from "@/components/SmoothScroll";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { urlFor } from "@/sanity/lib/image";
 import { navigationQuery } from "@/sanity/lib/queries";
@@ -64,10 +65,19 @@ export default async function SiteLayout({
   const navDoc = await sanityFetch<NavigationDoc | null>(navigationQuery, {}, null);
 
   return (
-    <div className="relative flex min-h-svh flex-col">
-      <Navigation data={toNavData(navDoc)} />
-      <main className="flex-1">{children}</main>
+    <SmoothScroll>
+      {/* raised page wrapper; its bottom margin (--footer-h, published
+          by SiteFooter) is the reveal window for the fixed footer
+          pinned underneath — a margin, so the footer stays clickable */}
+      <div
+        id="top"
+        className="relative z-10 mb-[var(--footer-h,0px)] flex min-h-svh flex-col bg-surface"
+      >
+        <Navigation data={toNavData(navDoc)} />
+        <main className="flex-1">{children}</main>
+        <LegacyBand />
+      </div>
       <SiteFooter />
-    </div>
+    </SmoothScroll>
   );
 }

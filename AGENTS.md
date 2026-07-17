@@ -22,10 +22,14 @@ embedded at /studio, with Motion (framer-motion) for interactions.
 
 ## Design source (Figma)
 
-- File: `0IzKylxJcpsuACWsXu7gnu` ("[i] Design Library — SDR"), homepage
-  design node `33581:41491` on the "↳ UI Page Designs" canvas.
+- File: `CMeh0gCtTQAnIRc9iXjGbr` ("[i] Design Library — SDR"), desktop
+  homepage design node `33296:15687` (`device=desktop`, 1440px wide) on
+  the "❖ DESIGN" page. (Supersedes the old file
+  `0IzKylxJcpsuACWsXu7gnu`, which the current Figma account cannot
+  access; old node IDs in git history refer to that file.)
 - Read it through the official Figma MCP connector (claude.ai
-  connectors). The account needs edit access on a Pro-or-better seat
+  connectors), authorized as bryce@weareenvoy.com (Envoy Group org
+  seat). The account needs edit access on a Pro-or-better seat
   (rate limit ~200 tool calls/day, 15/min).
 - Exported imagery lives in `public/figma/`. Claude's sandbox egress
   policy blocks figma.com, so new assets are fetched by the

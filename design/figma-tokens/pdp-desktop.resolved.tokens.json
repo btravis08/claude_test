@@ -34,7 +34,11 @@
     "Component colors/Components/Buttons/Secondary/button-secondary-bg": "#0000000f",
     "Component colors/Components/Buttons/Secondary/button-secondary-fg": "#000000",
     "Component colors/Components/Buttons/Secondary Color/button-secondary-color-fg": "#9d9e9b",
-    "Component colors/Components/Buttons/Tertiary/button-tertiary-fg": "#000000"
+    "Component colors/Components/Buttons/Tertiary/button-tertiary-fg": "#000000",
+    "Component colors/Components/Buttons/Quaternary/button-quaternary-bg": "#0000000f",
+    "Component colors/Components/Buttons/Quaternary/button-quaternary-fg": "#000000",
+    "Component colors/Components/Buttons/Quaternary/button-quaternary-fg-hover": "#000000",
+    "Component colors/Components/Buttons/Quaternary/button-quaternary-border": "#ffffff00"
   },
   "typography": {
     "Font family/font-family-display": "Feature Deck Trial",

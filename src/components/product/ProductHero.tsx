@@ -43,6 +43,9 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
      dock stays away */
   const [heroGone, setHeroGone] = useState(false);
   const [shopReached, setShopReached] = useState(false);
+  /* color mode of the section under the fixed dock — the quaternary
+     chips/button flip with it (dark section → light controls) */
+  const [barMode, setBarMode] = useState<"light" | "dark">("light");
   const variants = product.variants ?? [];
   const active = variants[selected];
   const sizes = product.sizes ?? [];
@@ -103,6 +106,31 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
     return () => observers.forEach((obs) => obs.disconnect());
   }, []);
 
+  /* sample the section under the dock on scroll — like the mobile nav
+     bar, only true dark inverts (the mid modes keep light treatment) */
+  useEffect(() => {
+    const modeUnderDock = (): "light" | "dark" => {
+      const stack = document.elementsFromPoint(
+        window.innerWidth / 2,
+        window.innerHeight - 52,
+      );
+      for (const el of stack) {
+        if (el.closest("[data-purchase-dock]") || el.closest("[data-navbar]")) continue;
+        const section = el.closest<HTMLElement>("[data-mode]");
+        if (section) return section.dataset.mode === "dark" ? "dark" : "light";
+      }
+      return "light";
+    };
+    const onScroll = () => setBarMode(modeUnderDock());
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+
   /* mouse drag for the track (touch swipes natively) */
   const drag = useRef({ active: false, startX: 0, startScroll: 0, moved: false });
   const [dragging, setDragging] = useState(false);
@@ -138,8 +166,11 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
      color dropdown split the flexible space, SIZE is a fixed 120px
      dropdown chip (desktop only), the button a fixed 350px column
      (flexible on tablet, where SIZE drops out). Mobile is name/price
-     + button + a 40px menu button. Chips sit on alpha-black-10 with a
-     12px backdrop blur in both the floating and docked states */
+     + button + a 40px menu button. Chips are the library's Quaternary
+     button (bg alpha-black-10, fg primary, transparent border) with a
+     12px backdrop blur; bg-wash/text-ink alias those tokens and
+     invert with the data-mode the dock samples from the section
+     below it */
   const chip = "bg-wash backdrop-blur-md";
   const controls = () => (
     <div className="flex w-full items-center gap-3 p-4">
@@ -286,11 +317,13 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
         {heroGone && !shopReached && (
           <motion.div
             key="purchase-dock"
+            data-purchase-dock
+            data-mode={barMode}
             initial={{ y: "120%" }}
             animate={{ y: "0%" }}
             exit={{ y: "120%" }}
             transition={{ duration: 0.45, ease: [...MEDIA_EASE] }}
-            className="fixed inset-x-0 bottom-0 z-40 p-4 max-md:bottom-[4.5rem]"
+            className="fixed inset-x-0 bottom-0 z-40 p-4 text-ink transition-colors duration-300 max-md:bottom-[4.5rem]"
           >
             {controls()}
           </motion.div>

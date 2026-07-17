@@ -6,6 +6,7 @@ import type { PortableTextBlock } from "next-sanity";
 import { useEffect, useState } from "react";
 
 import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
+import { parsePrice, useCart } from "@/components/cart/CartContext";
 import { Close, Plus } from "@/components/icons";
 
 /*
@@ -107,9 +108,20 @@ export function DetailLinks({ links }: { links: DetailLinkData[] }) {
 /*
   The pairs-well-with add-to-cart plus (36px, white on the media
   well, 16px inset). The card itself links to the product; the plus
-  intercepts the click for the (future) cart.
+  intercepts the click, adds the product, and opens the bag.
 */
-export function CardAddButton() {
+export function CardAddButton({
+  title,
+  price,
+  image,
+  color,
+}: {
+  title?: string;
+  price?: string;
+  image?: string;
+  color?: string;
+}) {
+  const { addItem, openCart } = useCart();
   return (
     <button
       type="button"
@@ -117,6 +129,8 @@ export function CardAddButton() {
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
+        addItem({ title: title ?? "", price: parsePrice(price), image, color });
+        openCart();
       }}
       className="absolute bottom-4 right-4 flex size-9 items-center justify-center rounded-xs bg-white text-[#161716] transition-transform duration-300 hover:scale-105"
     >

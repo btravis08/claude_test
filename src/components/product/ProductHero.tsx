@@ -4,7 +4,8 @@ import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
-import { ChevronDown, Menu } from "@/components/icons";
+import { useCart } from "@/components/cart/CartContext";
+import { Menu } from "@/components/icons";
 
 /*
   PDP hero: required on every product page. Matches the comp:
@@ -49,7 +50,7 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
   const variants = product.variants ?? [];
   const active = variants[selected];
   const sizes = product.sizes ?? [];
-  const [size, setSize] = useState("");
+  const { openQuickAdd } = useCart();
   /* the selected colorway leads the carousel; the product's remaining
      shots follow */
   const slides = [
@@ -163,9 +164,9 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
   /* the purchase module, shared by the in-hero overlay and the fixed
      dock. Per the comp (Product Details 33298:29150): a 16px-padded
      inner container inside a 16px-padded wrapper; name/price and the
-     color dropdown split the flexible space, SIZE is a fixed 120px
-     dropdown chip (desktop only), the button a fixed 350px column
-     (flexible on tablet, where SIZE drops out). Mobile is name/price
+     color dropdown split the flexible space, the button is a fixed
+     350px column (flexible below xl). SELECT SIZE opens the quick-add
+     flyout (size selection there). Mobile is name/price
      + button + a 40px menu button. Chips and swatch tiles are the
      library's Quaternary button (bg alpha-black-10, fg primary) with
      a 12px backdrop blur; bg-wash/text-ink alias those tokens and
@@ -232,34 +233,17 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
           </div>
         )}
       </div>
-      {/* SIZE dropdown — desktop only; tablet and below drop it */}
-      {sizes.length > 0 && (
-        <div
-          className={`relative hidden h-10 w-[7.5rem] shrink-0 items-center rounded-xs xl:flex ${chip}`}
-        >
-          <span className="label flex flex-1 items-center gap-2 px-3 font-medium text-ink">
-            SIZE: <span>{size}</span>
-          </span>
-          <ChevronDown size={20} className="pointer-events-none absolute right-3 text-ink" />
-          <select
-            aria-label="Size"
-            value={size}
-            onChange={(e) => setSize(e.target.value)}
-            className="absolute inset-0 cursor-pointer opacity-0"
-          >
-            <option value="" disabled>
-              SIZE
-            </option>
-            {sizes.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
       <button
         type="button"
+        onClick={() =>
+          openQuickAdd({
+            title: product.title ?? "",
+            price: product.price,
+            image: slides[0],
+            variants,
+            sizes,
+          })
+        }
         className="label flex h-10 min-w-[9.375rem] flex-1 items-center justify-center rounded-xs bg-btn px-3.5 font-medium text-btn-fg xl:w-[21.875rem] xl:flex-none"
       >
         SELECT SIZE

@@ -1,3 +1,5 @@
+import { CartProvider } from "@/components/cart/CartContext";
+import { CartFlyout } from "@/components/cart/CartFlyout";
 import { Navigation } from "@/components/Navigation";
 import type { MenuItem, NavData, NavLink } from "@/components/Navigation";
 import { FooterTaglineProvider } from "@/components/FooterTagline";
@@ -67,6 +69,7 @@ export default async function SiteLayout({
 
   return (
     <SmoothScroll>
+      <CartProvider>
       <FooterTaglineProvider>
       {/* raised page wrapper; its bottom margin (--footer-h, published
           by SiteFooter) is the reveal window for the fixed footer
@@ -80,7 +83,9 @@ export default async function SiteLayout({
         <LegacyBand />
       </div>
       <SiteFooter />
+      <CartFlyout />
       </FooterTaglineProvider>
+      </CartProvider>
     </SmoothScroll>
   );
 }

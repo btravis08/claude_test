@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { PortableText } from "next-sanity";
 
 import { FooterTagline } from "@/components/FooterTagline";
+import { RegisterCartRecommendations } from "@/components/cart/CartContext";
 import { CardAddButton, DetailLinks } from "@/components/product/DetailLinks";
 import { ProductHero } from "@/components/product/ProductHero";
 import type { ProductCardData } from "@/components/home/ProductCard";
@@ -121,7 +122,12 @@ function MiniProductCard({ card, first }: { card: ProductCardData; first?: boole
           className="absolute inset-x-[17.77%] top-1/2 aspect-square -translate-y-1/2 bg-contain bg-center bg-no-repeat transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
           style={card.image ? { backgroundImage: `url(${card.image})` } : undefined}
         />
-        <CardAddButton />
+        <CardAddButton
+          title={card.title}
+          price={card.price}
+          image={card.image}
+          color={card.colorway}
+        />
       </div>
       <div className="flex w-full flex-col gap-1.5">
         <div className="label flex w-full items-center justify-between font-medium text-ink">
@@ -211,12 +217,22 @@ export default async function ProductPage({
     .flatMap((item) => toCards(item, discounts, settings))
     .slice(0, 24);
 
+  const pairsForCart = pairs.slice(0, 4).map((item) => ({
+    title: item.title ?? "",
+    price: item.price,
+    image: item.image,
+    color: item.colorway,
+  }));
+
   return (
     <div data-mode="light" className="flex w-full flex-col bg-surface text-ink">
       {product?.showFooterTagline && <FooterTagline />}
 
       {/* required: hero carousel + affixed purchase bar */}
       <ProductHero product={hero} />
+      <RegisterCartRecommendations
+        items={pairsForCart}
+      />
 
       {/* required: about + pairs well with (arrowed mini-card slider);
           the halves split the section and it runs tall per the comp */}

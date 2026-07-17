@@ -73,6 +73,14 @@ export function Plus({ size, className }: { size?: number; className?: string })
   );
 }
 
+export function Minus({ size, className }: { size?: number; className?: string }) {
+  return (
+    <Base size={size} className={className}>
+      <path d="M4 12h16" />
+    </Base>
+  );
+}
+
 export function SearchMd({ size = 20, className }: { size?: number; className?: string }) {
   return (
     <svg

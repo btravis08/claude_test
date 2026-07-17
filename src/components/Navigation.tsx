@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
 import { ArrowLink, ArrowSwap } from "@/components/home/ArrowHover";
 import { Logo } from "@/components/Logo";
+import { useCart } from "@/components/cart/CartContext";
 import { NavTextLink } from "@/components/NavTextLink";
 import { ArrowUpRight, Close, Menu, SearchMd } from "@/components/icons";
 
@@ -399,6 +400,7 @@ export function Navigation({ data }: { data?: NavData | null }) {
   /* keeps the light presentation while the meganav exit-animates */
   const [panelVisible, setPanelVisible] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { count: bagCount, openCart } = useCart();
   /* color mode of the section under the mobile bottom bar */
   const [barMode, setBarMode] = useState<"light" | "dark">("light");
   const lastY = useRef(0);
@@ -510,7 +512,9 @@ export function Navigation({ data }: { data?: NavData | null }) {
               <SearchMd />
             </a>
             <NavButton label="ACCOUNT" />
-            <NavButton label="BAG [1]" />
+            <button type="button" onClick={openCart}>
+              <NavButton label={`BAG [${bagCount}]`} />
+            </button>
           </div>
           <div className="flex-1 md:hidden" />
         </div>
@@ -601,7 +605,9 @@ export function Navigation({ data }: { data?: NavData | null }) {
         >
           <a href="#">SEARCH</a>
           <a href="#">ACCOUNT</a>
-          <a href="#">BAG [1]</a>
+          <button type="button" onClick={openCart} className="uppercase">
+            BAG [{bagCount}]
+          </button>
           <button
             type="button"
             aria-label={mobileOpen ? "Close menu" : "Open menu"}

@@ -392,6 +392,14 @@ export const sectionFiftyFifty = defineType({
               hidden: ({ parent }) => parent?.mediaKind !== "text",
             }),
             defineField({
+              name: "url",
+              title: "Link",
+              type: "string",
+              description:
+                "Image columns with a link render the arrow button and hover state; without one the image is static.",
+              hidden: ({ parent }) => parent?.mediaKind !== "image",
+            }),
+            defineField({
               name: "showEyebrow",
               title: "Text — show eyebrow",
               type: "boolean",

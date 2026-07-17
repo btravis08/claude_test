@@ -352,6 +352,8 @@ export interface FiftyPanelData extends MediaBlockProps {
   _key?: string;
   title?: string;
   image?: string;
+  /* image columns: a link turns on the arrow button + hover state */
+  url?: string;
   /* text-module columns (kind === "text") */
   eyebrow?: string;
   body?: string;
@@ -437,20 +439,22 @@ export function FiftyFifty({
             aspect={aspect}
             image={panel.image ?? "/figma/campaign.png"}
             overlay
-            hoverScale={kind === "image"}
+            hoverScale={kind === "image" && Boolean(panel.url)}
             parallax={kind !== "videoAutoplay"}
             kind={kind}
             videoUrl={panel.videoUrl}
             lookProducts={panel.lookProducts}
           />
         );
-        /* Plain image columns keep the clickable panel with the arrow
-           swap; interactive media owns its own controls instead */
-        if (kind === "image") {
+        /* Image columns with a link are the clickable panel with the
+           arrow swap + hover zoom; without a link they fall through
+           to the static render. Interactive media owns its own
+           controls instead. */
+        if (kind === "image" && panel.url) {
           return (
             <ArrowLink
               key={panel._key ?? i}
-              href="#"
+              href={panel.url}
               aria-label={panel.title}
               className="group relative block overflow-hidden"
             >

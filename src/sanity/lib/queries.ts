@@ -93,7 +93,7 @@ const sectionFields = groq`
   collection->{ _id, title, type, match, rules, sortOrder },
   products[]->{ ${sliderProductFields} },
   panels[] {
-    _key, title, eyebrow, body, image, mediaKind,
+    _key, title, eyebrow, body, image, mediaKind, url,
     showEyebrow, showButton, ctaLabel,
     "videoUrl": video.asset->url,
     lookProducts[]->{ ${lookProductFields} }

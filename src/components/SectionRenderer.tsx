@@ -294,6 +294,7 @@ export function SectionRenderer({ sections }: { sections: PageSection[] }) {
                 panels={section.panels?.map((panel) => ({
                   _key: panel._key,
                   title: panel.title,
+                  url: panel.url,
                   eyebrow: panel.eyebrow,
                   body: panel.body,
                   image: img(panel.image, 1400),

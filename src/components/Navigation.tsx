@@ -402,7 +402,8 @@ export function Navigation({ data }: { data?: NavData | null }) {
       for (const el of stack) {
         if (el.closest("[data-navbar]") || el.closest("header")) continue;
         const section = el.closest<HTMLElement>("[data-mode]");
-        if (section) return section.dataset.mode === "dark" ? "dark" : "light";
+        /* mid modes resolve to their parent treatment for the bar */
+        if (section) return section.dataset.mode?.startsWith("dark") ? "dark" : "light";
       }
       return "light";
     };

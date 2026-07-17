@@ -49,6 +49,8 @@ const colorMode = (initialValue: "light" | "dark") =>
     options: {
       list: [
         { title: "Light", value: "light" },
+        { title: "Light Mid", value: "light-mid" },
+        { title: "Dark Mid", value: "dark-mid" },
         { title: "Dark", value: "dark" },
       ],
       layout: "radio",

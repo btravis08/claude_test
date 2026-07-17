@@ -19,7 +19,7 @@ import { ArrowUpRight } from "@/components/icons";
   desktop/tablet/mobile variants in the library.
 */
 
-type Mode = "light" | "dark";
+type Mode = "light" | "light-mid" | "dark-mid" | "dark";
 
 /* ---------- shared primitives ---------- */
 

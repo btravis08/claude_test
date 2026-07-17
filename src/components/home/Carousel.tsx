@@ -14,7 +14,7 @@ export interface CarouselItemData {
 }
 
 export interface CarouselProps {
-  mode?: "light" | "dark";
+  mode?: "light" | "light-mid" | "dark-mid" | "dark";
   eyebrow?: string;
   items?: CarouselItemData[];
 }

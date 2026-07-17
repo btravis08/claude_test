@@ -20,7 +20,7 @@ export interface Project {
   body?: PortableTextBlock[];
 }
 
-export type ColorMode = "light" | "dark";
+export type ColorMode = "light" | "light-mid" | "dark-mid" | "dark";
 
 interface SectionBase {
   _key: string;

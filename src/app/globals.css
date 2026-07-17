@@ -32,6 +32,44 @@
   --btn-2-fg: #9d9e9b;
 }
 
+/*
+  Mid modes: the background steps one tone toward the tile color while
+  text and buttons keep their parent mode's treatment. PROVISIONAL
+  values derived from the light/dark palettes — swap in the exact hex
+  values from the Figma library's variable modes when available.
+  Every block defines the full set so a nested section can't inherit a
+  stray variable from a differently-moded ancestor.
+*/
+[data-mode="light-mid"] {
+  --surface: #e1e1de;
+  --surface-2: #d3d4d0;
+  --ink: #161716;
+  --ink-2: rgba(0, 0, 0, 0.5);
+  --ink-3: #70716f;
+  --ink-disabled: #878785;
+  --line: #c9cac6;
+  --line-2: rgba(0, 0, 0, 0.14);
+  --wash: rgba(0, 0, 0, 0.06);
+  --btn: #000000;
+  --btn-fg: #ffffff;
+  --btn-2-fg: #70716f;
+}
+
+[data-mode="dark-mid"] {
+  --surface: #1b1c1a;
+  --surface-2: #2a2b28;
+  --ink: #ffffff;
+  --ink-2: rgba(255, 255, 255, 0.55);
+  --ink-3: #9d9e9b;
+  --ink-disabled: #878785;
+  --line: rgba(255, 255, 255, 0.16);
+  --line-2: rgba(255, 255, 255, 0.15);
+  --wash: rgba(255, 255, 255, 0.08);
+  --btn: #ffffff;
+  --btn-fg: #000000;
+  --btn-2-fg: #9d9e9b;
+}
+
 [data-mode="dark"] {
   --surface: #000000;
   --surface-2: #1b1c1a;

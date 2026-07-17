@@ -179,8 +179,8 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
     <div
       className={`flex w-full items-center gap-3 transition-colors duration-300 ${
         docked
-          ? "p-4 md:bg-surface md:p-2 md:shadow-[0_20px_10px_rgba(16,24,40,0.02),0_8px_4px_rgba(16,24,40,0.02)]"
-          : "p-4"
+          ? "p-0 md:bg-surface md:p-2 md:shadow-[0_20px_10px_rgba(16,24,40,0.02),0_8px_4px_rgba(16,24,40,0.02)]"
+          : "p-0 md:p-4"
       }`}
     >
       <div
@@ -250,7 +250,8 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
       </button>
       <button
         type="button"
-        aria-label="Product menu"
+        aria-label="Open menu"
+        onClick={() => window.dispatchEvent(new CustomEvent("sdr:open-menu"))}
         className="flex size-10 shrink-0 items-center justify-center rounded-xs bg-wash backdrop-blur-md md:hidden"
       >
         <Menu size={10} />
@@ -315,7 +316,7 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
             animate={{ y: "0%" }}
             exit={{ y: "120%" }}
             transition={{ duration: 0.45, ease: [...MEDIA_EASE] }}
-            className="fixed inset-x-0 bottom-0 z-40 p-4 text-ink transition-colors duration-300 max-md:bottom-[4.5rem]"
+            className="fixed inset-x-0 bottom-0 z-40 p-4 text-ink transition-colors duration-300"
           >
             {controls(true)}
           </motion.div>

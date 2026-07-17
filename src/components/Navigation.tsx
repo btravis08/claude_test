@@ -444,6 +444,13 @@ export function Navigation({ data }: { data?: NavData | null }) {
     };
   }, [hasFullHero]);
 
+  /* the PDP purchase bar's menu chip opens the standard sheet */
+  useEffect(() => {
+    const onOpen = () => setMobileOpen(true);
+    window.addEventListener("sdr:open-menu", onOpen);
+    return () => window.removeEventListener("sdr:open-menu", onOpen);
+  }, []);
+
   // lock page scroll behind the mobile sheet
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
@@ -596,7 +603,9 @@ export function Navigation({ data }: { data?: NavData | null }) {
       <div
         data-navbar
         data-mode={mobileOpen ? "light" : barMode}
-        className="fixed inset-x-4 bottom-4 z-[70] md:hidden"
+        className={`fixed inset-x-4 bottom-4 z-[70] md:hidden ${
+          hasFullHero && !isHome && !mobileOpen ? "hidden" : ""
+        }`}
       >
         <div
           className={`label flex h-12 items-center justify-between rounded-xs px-6 text-ink transition-colors duration-300 ${

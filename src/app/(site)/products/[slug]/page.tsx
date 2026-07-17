@@ -240,7 +240,7 @@ export default async function ProductPage({
           column runs Title Large over a 96px inset from the divide */}
       <section
         data-mode="light"
-        className="grid w-full grid-cols-1 gap-y-9 bg-surface px-6 pb-8xl pt-6xl text-ink md:min-h-[80svh] md:grid-cols-2 md:px-8"
+        className="grid w-full grid-cols-1 gap-y-9 bg-surface px-4 pb-8xl pt-6xl text-ink md:min-h-[80svh] md:grid-cols-2 md:px-8"
       >
         <div className="flex flex-col gap-9 pt-[0.875rem] md:gap-16 md:pr-24">
           <nav aria-label="Breadcrumb" className="label flex items-center gap-1.5 font-medium">
@@ -275,13 +275,13 @@ export default async function ProductPage({
         </div>
         {/* the rail bleeds off the right page edge (comp): the column
             swallows the section gutter, the header row restores it */}
-        <div className="-mr-6 min-w-0 md:-mr-8">
+        <div className="-mr-4 min-w-0 md:-mr-8">
           <SliderShell
             title="PAIRS WELL WITH"
             titleClassName="label font-medium"
             bordered={false}
             progress={false}
-            headerClassName="pb-7 pr-6 md:pr-8"
+            headerClassName="pb-7 pr-4 md:pr-8"
             trackClassName="border-t-[1.5px] border-line"
             /* the flush first card gives up its 24px left padding, so
                its column is 24px narrower — keeps every media well

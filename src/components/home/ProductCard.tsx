@@ -64,8 +64,9 @@ export function ProductCard({ product }: { product: ProductCardData }) {
   const variants = product.variants ?? [];
   const [selected, setSelected] = useState(product.defaultVariant ?? 0);
   const [cardHover, setCardHover] = useState(false);
-  const [wellHover, setWellHover] = useState(false);
-  const showSwatches = cardHover && !wellHover;
+  const [, setWellHover] = useState(false);
+  /* swatches are always visible (was hover-revealed) */
+  const showSwatches = variants.length > 1;
   const active = variants[selected];
 
   /* Warm the browser cache for every colorway's images on first hover

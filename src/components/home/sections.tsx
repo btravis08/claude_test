@@ -136,7 +136,7 @@ export function Hero({
       <a href="#" aria-label={headline} className="group block w-full">
         {/* slower entrance (2x) and no hover zoom on the hero image */}
         <Media
-          aspect="h-screen"
+          aspect="h-svh"
           image={image}
           overlay="flat"
           parallax
@@ -391,7 +391,7 @@ export function FiftyFifty({
     <section
       data-mode={mode}
       className={`grid w-full grid-cols-1 gap-y-0.5 bg-white text-ink sm:grid-cols-2 ${
-        ratio === "flex" ? "sm:h-screen" : ""
+        ratio === "flex" ? "sm:h-svh" : ""
       }`}
     >
       {panels.map((panel, i) => {
@@ -528,10 +528,10 @@ export function TechSpecs({
           above keeps the section's own surface at the boundary (flush
           against a light neighbor, a dark section otherwise peeks up
           beside the inset rule) */}
-      <div className="mx-6 mt-14 h-1.5 bg-ink md:mx-8 md:mt-8xl" />
+      <div className="mx-4 mt-14 h-1.5 bg-ink md:mx-8 md:mt-8xl" />
       {/* no column gap: the right column starts on the same centerline
           as the description section's pairs rail above */}
-      <div className="grid w-full grid-cols-1 gap-y-10 px-6 pb-28 pt-14 md:grid-cols-2 md:px-8 md:pb-10xl md:pt-24">
+      <div className="grid w-full grid-cols-1 gap-y-10 px-4 pb-28 pt-14 md:grid-cols-2 md:px-8 md:pb-10xl md:pt-24">
         <p className="max-w-[26rem] font-display text-title-lg">{title}</p>
         <div className="flex flex-col gap-8">
           {/* each group opens with a 1.5px full-width border; value

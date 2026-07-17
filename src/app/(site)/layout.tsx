@@ -76,7 +76,7 @@ export default async function SiteLayout({
           pinned underneath — a margin, so the footer stays clickable */}
       <div
         id="top"
-        className="relative z-10 mb-[var(--footer-h,0px)] flex min-h-svh flex-col bg-surface"
+        className="relative z-10 flex min-h-svh flex-col bg-surface md:mb-[var(--footer-h,0px)]"
       >
         <Navigation data={toNavData(navDoc)} />
         <main className="flex-1">{children}</main>

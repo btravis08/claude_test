@@ -137,7 +137,18 @@ export const collectionBySlugQuery = groq`
   *[_type == "collection" && slug.current == $slug][0] {
     _id, title, "slug": slug.current, description, image,
     type, match, rules, sortOrder,
-    storyCards[] { _key, title, body, ctaLabel, url, image, align }
+    "parent": parent->{ title, "slug": slug.current },
+    subcategories[]->{ _id, title, "slug": slug.current }
+  }
+`;
+
+/* Story cards tagged for a collection: $keys carries the slug plus its
+   parts (mens-pants matches both "mens" and "pants"); "all" matches
+   everywhere */
+export const storiesForCollectionQuery = groq`
+  *[_type == "story" && (count(tags[@ in $keys]) > 0 || "all" in tags)]
+    | order(_createdAt asc) {
+    _id, title, body, ctaLabel, url, image, align
   }
 `;
 

@@ -7,6 +7,7 @@ import { product } from "./product";
 import { project } from "./project";
 import { sectionTypes } from "./sections";
 import { siteSettings } from "./siteSettings";
+import { story } from "./story";
 import { storeSettings } from "./storeSettings";
 
 export const schemaTypes = [
@@ -14,6 +15,7 @@ export const schemaTypes = [
   product,
   collection,
   discount,
+  story,
   page,
   navigation,
   siteSettings,

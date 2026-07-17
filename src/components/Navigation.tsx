@@ -399,6 +399,8 @@ export function Navigation({ data }: { data?: NavData | null }) {
 
   const [hidden, setHidden] = useState(false);
   const [overHero, setOverHero] = useState(isHome);
+  /* non-home pages: transparent (light mode) until scrolling starts */
+  const [atTop, setAtTop] = useState(true);
   const [hovered, setHovered] = useState(false);
   const [active, setActive] = useState<number | null>(null);
   /* keeps the light presentation while the meganav exit-animates */
@@ -433,6 +435,7 @@ export function Navigation({ data }: { data?: NavData | null }) {
       lastY.current = y;
       // the hero fills the viewport; past it the nav needs its surface
       setOverHero(isHome && y < window.innerHeight - 60);
+      setAtTop(y < 10);
       setBarMode(modeUnderBar());
     };
     onScroll();
@@ -453,8 +456,11 @@ export function Navigation({ data }: { data?: NavData | null }) {
   }, [mobileOpen]);
 
   /* the transparent flip waits for the meganav's exit animation, so
-     the bar fades white → transparent instead of snapping dark */
-  const transparent = overHero && !hovered && active === null && !panelVisible;
+     the bar fades white → transparent instead of snapping dark.
+     Home: transparent (dark mode) over the hero. Elsewhere:
+     transparent (light mode) until the page starts scrolling. */
+  const overlayZone = isHome ? overHero : atTop;
+  const transparent = overlayZone && !hovered && active === null && !panelVisible;
   const activeItem = active !== null ? nav.items[active] : null;
   const hasDropdown = (item: MenuItem) => item.layout !== "none";
 
@@ -465,7 +471,7 @@ export function Navigation({ data }: { data?: NavData | null }) {
   return (
     <>
       <motion.header
-        data-mode={transparent ? "dark" : "light"}
+        data-mode={transparent && isHome ? "dark" : "light"}
         initial={false}
         animate={{ y: hidden && !mobileOpen ? "-100%" : "0%" }}
         transition={{ duration: 0.45, ease: [...MEDIA_EASE] }}

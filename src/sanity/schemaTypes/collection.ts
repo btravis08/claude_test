@@ -127,48 +127,19 @@ export const collection = defineType({
       ],
     }),
     defineField({
-      name: "storyCards",
-      title: "Story cards",
+      name: "parent",
+      title: "Parent collection",
+      description: "Used for the breadcrumb (e.g. Mens / Pants).",
+      type: "reference",
+      to: [{ type: "collection" }],
+    }),
+    defineField({
+      name: "subcategories",
+      title: "Subcategory chips",
       description:
-        "Editorial tiles interleaved in the collection grid. They span two columns and stick while the neighboring products scroll past.",
+        "Collections shown as chips under the title, linking one level deeper. Leave empty on leaf pages.",
       type: "array",
-      of: [
-        defineArrayMember({
-          type: "object",
-          name: "storyCard",
-          fields: [
-            defineField({ name: "title", type: "string", initialValue: "Lorem Ipsum Dolor" }),
-            defineField({ name: "body", type: "text", rows: 4 }),
-            defineField({
-              name: "ctaLabel",
-              title: "Button label",
-              type: "string",
-              initialValue: "Explore the Collection",
-            }),
-            defineField({ name: "url", title: "URL", type: "string", initialValue: "#" }),
-            defineField({
-              name: "image",
-              type: "image",
-              options: { hotspot: true },
-            }),
-            defineField({
-              name: "align",
-              title: "Grid side",
-              type: "string",
-              options: {
-                list: [
-                  { title: "Left", value: "left" },
-                  { title: "Right", value: "right" },
-                ],
-                layout: "radio",
-                direction: "horizontal",
-              },
-              description: "Empty = alternate automatically.",
-            }),
-          ],
-          preview: { select: { title: "title", media: "image" } },
-        }),
-      ],
+      of: [defineArrayMember({ type: "reference", to: [{ type: "collection" }] })],
     }),
     defineField({
       name: "sortOrder",

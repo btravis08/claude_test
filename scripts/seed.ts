@@ -256,41 +256,61 @@ async function run() {
     asset: { _type: "reference" as const, _ref: id },
   });
   const ruleKey = () => ({ _type: "collectionRule", _key: key() });
-  /* story cards: editorial tiles interleaved (and sticky) in the
-     collection page grid */
-  const storyCard = (imageId: string, align?: string) => ({
-    _type: "storyCard",
-    _key: key(),
-    title: "Lorem Ipsum Dolor",
-    body:
-      "Cras erat viverra quam adipiscing eget, a ut sed molestie sollicitudin. Ac condimentum nunc lorem, at ullamcorper congue sed morbi odio in blandit adipiscing.",
-    ctaLabel: "Explore the Collection",
-    url: "#",
-    image: image(imageId),
-    ...(align ? { align } : {}),
+  const ref = (id: string) => ({ _type: "reference" as const, _ref: id });
+  const refk = (id: string) => ({ _type: "reference" as const, _key: key(), _ref: id });
+  const rule = (field: string, value: string) => ({
+    ...ruleKey(),
+    field,
+    operator: "eq",
+    value,
   });
-  const smartCollections = [
-    { id: "collection-footwear", title: "Footwear", field: "tag", value: "footwear" },
-    { id: "collection-polos", title: "Polos", field: "tag", value: "polos" },
-    { id: "collection-mens", title: "Mens", field: "gender", value: "mens" },
-    { id: "collection-womens", title: "Womens", field: "gender", value: "womens" },
-  ];
-  for (const { id, title, field, value } of smartCollections) {
-    await client.createOrReplace({
+  const smartCol = (
+    id: string,
+    title: string,
+    rules: Array<[string, string]>,
+    extra: Record<string, unknown> = {},
+  ) =>
+    client.createOrReplace({
       _id: id,
       _type: "collection",
       title,
-      slug: { _type: "slug", current: title.toLowerCase() },
+      slug: { _type: "slug", current: id.replace("collection-", "") },
       description: `All ${title.toLowerCase()} — pulled in automatically.`,
       image: image(campaign),
       type: "smart",
       match: "all",
-      rules: [{ ...ruleKey(), field, operator: "eq", value }],
+      rules: rules.map(([field, value]) => rule(field, value)),
       sortOrder: "newest",
-      // a couple of sticky editorial tiles on every collection page
-      storyCards: [storyCard(campaign), storyCard(portrait, "right")],
+      ...extra,
+    });
+
+  /* category collections (parented to Shop All for the breadcrumb) */
+  const CATEGORIES: Array<[string, string]> = [
+    ["footwear", "Footwear"],
+    ["pants", "Pants"],
+    ["polos", "Polos"],
+    ["headwear", "Headwear"],
+    ["tshirts", "T-Shirts"],
+  ];
+  for (const [tag, label] of CATEGORIES) {
+    await smartCol(`collection-${tag}`, label, [["tag", tag]], {
+      parent: ref("collection-shop-all"),
     });
   }
+  /* gender landing pages with category chips one level deeper */
+  for (const gender of ["mens", "womens"] as const) {
+    const label = gender === "mens" ? "Mens" : "Womens";
+    for (const [tag, catLabel] of CATEGORIES) {
+      await smartCol(`collection-${gender}-${tag}`, catLabel, [
+        ["gender", gender],
+        ["tag", tag],
+      ], { parent: ref(`collection-${gender}`) });
+    }
+    await smartCol(`collection-${gender}`, label, [["gender", gender]], {
+      subcategories: CATEGORIES.map(([tag]) => refk(`collection-${gender}-${tag}`)),
+    });
+  }
+  /* Shop All: no conditions = the whole catalog, chips to categories */
   await client.createOrReplace({
     _id: "collection-shop-all",
     _type: "collection",
@@ -301,9 +321,9 @@ async function run() {
     image: image(campaign),
     type: "smart",
     match: "all",
-    rules: [], // no conditions = every active product
+    rules: [],
     sortOrder: "newest",
-    storyCards: [storyCard(campaign), storyCard(portrait, "right")],
+    subcategories: CATEGORIES.map(([tag]) => refk(`collection-${tag}`)),
   });
   await client.createOrReplace({
     _id: "collection-summer-picks",
@@ -320,10 +340,35 @@ async function run() {
       "product-seed-004",
       "product-seed-005",
       "product-seed-002",
-    ].map((ref) => ({ _type: "reference", _key: key(), _ref: ref })),
+    ].map((id) => refk(id)),
     sortOrder: "manual",
   });
-  console.log("✓ 4 collections (3 smart, 1 manual)");
+  console.log("✓ 19 collections (Shop All + categories + gender trees + manual)");
+
+  /* 2c½ — story cards: tagged editorial tiles for collection grids */
+  const storyDoc = (
+    id: string,
+    tags: string[],
+    imageId: string,
+    align?: string,
+  ) =>
+    client.createOrReplace({
+      _id: id,
+      _type: "story",
+      title: "Lorem Ipsum Dolor",
+      body:
+        "Cras erat viverra quam adipiscing eget. A ut sed molestie sollicitudin ac condimentum nunc lorem. At ullamcorper congue sed morbi odio in blandit adipiscing.",
+      ctaLabel: "Explore the Collection",
+      url: "#",
+      image: image(imageId),
+      tags,
+      ...(align ? { align } : {}),
+    });
+  await storyDoc("story-all-1", ["all"], campaign);
+  await storyDoc("story-all-2", ["all"], portrait, "right");
+  await storyDoc("story-footwear", ["footwear"], shoe);
+  await storyDoc("story-mens", ["mens"], campaign, "right");
+  console.log("✓ 4 story cards (all ×2, footwear, mens)");
 
   /* 2d — discounts: one of each Shopify type */
   const discounts: Array<{ _id: string; _type: string } & Record<string, unknown>> = [

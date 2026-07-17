@@ -64,7 +64,9 @@ embedded at /studio, with Motion (framer-motion) for interactions.
   render fallbacks during remote builds, and dataset writes must run on
   the user's machine: `npx sanity exec scripts/seed.ts --with-user-token`
   (idempotent: uploads imagery, creates 120 tagged products, rebuilds
-  the "home" page).
+  the "home" page). WARNING: re-seeding OVERWRITES the home page and
+  seeded products — never suggest re-running it after the user has
+  edited content in the Studio.
 - Content model: `page` documents are built from a reorderable
   `sections[]` array (hero, info slider, full width, carousel, 50/50,
   product slider, rich text). Every section has a `colorMode`

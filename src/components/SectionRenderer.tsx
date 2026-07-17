@@ -233,7 +233,7 @@ export function SectionRenderer({ sections }: { sections: PageSection[] }) {
             return (
               <FullWidth
                 key={section._key}
-                mode={section.colorMode}
+                mode="dark"
                 eyebrow={section.eyebrow}
                 headline={section.headline}
                 primaryCta={section.primaryCta}
@@ -289,7 +289,7 @@ export function SectionRenderer({ sections }: { sections: PageSection[] }) {
             return (
               <FiftyFifty
                 key={section._key}
-                mode={section.colorMode}
+                mode="dark"
                 ratio={section.ratio}
                 panels={section.panels?.map((panel) => ({
                   _key: panel._key,

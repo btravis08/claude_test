@@ -13,6 +13,11 @@
  *
  * Idempotent: fixed document ids and a seeded RNG, so re-running
  * resets everything to the same state.
+ *
+ * WARNING: re-running OVERWRITES the documents it manages — the
+ * "home" page and the 120 seeded products. If content has been
+ * edited in the Studio since the last seed, those edits are lost.
+ * Do not re-run after manual CMS work without checking first.
  */
 import { createReadStream, existsSync } from "node:fs";
 import path from "node:path";

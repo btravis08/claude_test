@@ -169,7 +169,8 @@ export const sectionFullWidth = defineType({
   name: "sectionFullWidth",
   title: "Full Width",
   type: "object",
-  fields: [colorMode("dark"), ...campaignFields(), ...mediaBlockFields()],
+  // media sections are always dark mode — no color setting
+  fields: [...campaignFields(), ...mediaBlockFields()],
   preview: {
     select: { title: "headline", media: "image" },
     prepare: ({ title, media }) => ({ title: title || "Full Width", subtitle: "Full Width", media }),
@@ -339,8 +340,8 @@ export const sectionFiftyFifty = defineType({
   name: "sectionFiftyFifty",
   title: "50/50",
   type: "object",
+  // media sections are always dark mode — no color setting
   fields: [
-    colorMode("dark"),
     defineField({
       name: "ratio",
       title: "Column ratio",

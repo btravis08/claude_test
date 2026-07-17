@@ -239,7 +239,11 @@ export default async function ProductPage({
             progress={false}
             headerClassName="pb-7 pr-6 md:pr-8"
             trackClassName="border-t-[1.5px] border-line"
-            cols="auto-cols-[68%] sm:auto-cols-[41%]"
+            /* the flush first card gives up its 24px left padding, so
+               its column is 24px narrower — keeps every media well
+               (and thus card height) identical, per the comp's
+               260/284px rhythm */
+            cols="auto-cols-[68%] [grid-template-columns:calc(68%-1.5rem)] sm:auto-cols-[41%] sm:[grid-template-columns:calc(41%-1.5rem)]"
             items={pairs.map((item, i) => ({
               key: item._key ?? String(i),
               card: <MiniProductCard card={item} first={i === 0} />,

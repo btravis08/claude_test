@@ -81,14 +81,16 @@ const FALLBACK_PAIRS: ProductCardData[] = [1, 2, 3, 4, 5].map((n) => ({
 
 /* Compact product card for the "pairs well with" rail: gray well with
    the small product shot, then the standard two info rows */
-function MiniProductCard({ card }: { card: ProductCardData }) {
+function MiniProductCard({ card, first }: { card: ProductCardData; first?: boolean }) {
   const extra = card.variants?.length ? card.variants.length - 1 : undefined;
   const extraLabel =
     extra !== undefined ? (extra > 0 ? `+${extra} colors` : undefined) : card.colorCount;
   return (
     <a
       href={card.href ?? "#"}
-      className="group flex w-full flex-col gap-[1.125rem] border-b border-r border-line bg-surface p-6 pb-16"
+      className={`group flex w-full flex-col gap-[1.125rem] border-b border-r border-line bg-surface p-6 pb-16 ${
+        first ? "pl-0" : ""
+      }`}
     >
       <div className="relative aspect-[236/301] w-full overflow-hidden rounded-xs bg-surface-2">
         <div
@@ -202,9 +204,23 @@ export default async function ProductPage({
         className="grid w-full grid-cols-1 gap-y-9 bg-surface px-6 pb-8xl pt-6xl text-ink md:min-h-[80svh] md:grid-cols-2 md:px-8"
       >
         <div className="flex flex-col gap-9 pt-[0.875rem] md:gap-16 md:pr-24">
-          <p className="label font-medium">
-            ABOUT {(product?.title ?? "Presidio").toUpperCase()}
-          </p>
+          <nav aria-label="Breadcrumb" className="label flex items-center gap-1.5 font-medium">
+            {[product?.gender ?? "Men", product?.productType ?? "Footwear"].map(
+              (crumb) => (
+                <span key={crumb} className="flex items-center gap-1.5">
+                  <a href="#" className="transition-opacity hover:opacity-70">
+                    {crumb.toUpperCase()}
+                  </a>
+                  <span aria-hidden className="mr-1.5">
+                    /
+                  </span>
+                </span>
+              ),
+            )}
+            <span className="underline decoration-1 underline-offset-4">
+              {(product?.title ?? "Presidio").toUpperCase()}
+            </span>
+          </nav>
           <div className="font-display text-title-lg">
             {product?.description ? (
               <PortableText value={product.description} />
@@ -213,18 +229,20 @@ export default async function ProductPage({
             )}
           </div>
         </div>
-        <div className="min-w-0">
+        {/* the rail bleeds off the right page edge (comp): the column
+            swallows the section gutter, the header row restores it */}
+        <div className="-mr-6 min-w-0 md:-mr-8">
           <SliderShell
             title="PAIRS WELL WITH"
             titleClassName="label font-medium"
             bordered={false}
             progress={false}
-            headerClassName="pb-7"
+            headerClassName="pb-7 pr-6 md:pr-8"
             trackClassName="border-t-[1.5px] border-line"
             cols="auto-cols-[68%] sm:auto-cols-[41%]"
             items={pairs.map((item, i) => ({
               key: item._key ?? String(i),
-              card: <MiniProductCard card={item} />,
+              card: <MiniProductCard card={item} first={i === 0} />,
             }))}
           />
         </div>

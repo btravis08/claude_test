@@ -41,9 +41,9 @@ async function placeholderImage(getClient: GetClient) {
     : { _type: "image" as const };
 }
 
-/* Section padding: none / S / M / L = 0 / 32 / 48 / 96 (the 4xl /
-   6xl / 9xl spacing tokens). Top and bottom set independently;
-   default none. */
+/* Section padding: none / S / M / L, fluid between the mobile and
+   desktop frames (S 16→32, M 24→64, L 48→96; ~24/48/72 at tablet).
+   Top and bottom set independently; default none. */
 const paddingField = (name: string, title: string) =>
   defineField({
     name,
@@ -52,9 +52,9 @@ const paddingField = (name: string, title: string) =>
     options: {
       list: [
         { title: "None", value: "none" },
-        { title: "S (32)", value: "s" },
-        { title: "M (48)", value: "m" },
-        { title: "L (96)", value: "l" },
+        { title: "S (16–32)", value: "s" },
+        { title: "M (24–64)", value: "m" },
+        { title: "L (48–96)", value: "l" },
       ],
       layout: "radio",
       direction: "horizontal",

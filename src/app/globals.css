@@ -134,6 +134,15 @@
   --spacing-11xl: 10rem; /* 160 */
 
   /*
+    Fluid section padding (CMS S/M/L): interpolates 428px -> 1440px
+    like the type scale — S 16→32, M 24→64, L 48→96 (~24/48/72 at
+    the 1024 tablet frame).
+  */
+  --spacing-section-s: clamp(1rem, 0.5771rem + 1.581vw, 2rem);
+  --spacing-section-m: clamp(1.5rem, 0.4427rem + 3.9526vw, 4rem);
+  --spacing-section-l: clamp(3rem, 1.7312rem + 4.7431vw, 6rem);
+
+  /*
     Fluid type scale from the Figma text styles.
 
     Sizes interpolate linearly between the library's device frames —

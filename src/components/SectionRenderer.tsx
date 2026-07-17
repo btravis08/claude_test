@@ -211,9 +211,18 @@ async function ProductSliderSection({ section }: { section: SectionProductSlider
   );
 }
 
-/* CMS padding sizes -> spacing tokens (32 / 48 / 96) */
-const PAD_TOP = { s: "pt-4xl", m: "pt-6xl", l: "pt-9xl" } as const;
-const PAD_BOTTOM = { s: "pb-4xl", m: "pb-6xl", l: "pb-9xl" } as const;
+/* CMS padding sizes -> fluid tokens (S 16→32, M 24→64, L 48→96
+   across the 428→1440 frames) */
+const PAD_TOP = {
+  s: "pt-section-s",
+  m: "pt-section-m",
+  l: "pt-section-l",
+} as const;
+const PAD_BOTTOM = {
+  s: "pb-section-s",
+  m: "pb-section-m",
+  l: "pb-section-l",
+} as const;
 
 export function SectionRenderer({ sections }: { sections: PageSection[] }) {
   return (

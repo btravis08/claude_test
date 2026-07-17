@@ -236,9 +236,14 @@ export interface SectionFiftyFifty extends SectionBase {
     {
       _key: string;
       title?: string;
+      /* image columns: link gates the arrow button + hover */
+      url?: string;
       /* text-module columns */
       eyebrow?: string;
       body?: string;
+      showEyebrow?: boolean;
+      showButton?: boolean;
+      ctaLabel?: string;
       image?: SanityImageSource;
     } & MediaBlockFields
   >;

@@ -211,10 +211,15 @@ async function ProductSliderSection({ section }: { section: SectionProductSlider
   );
 }
 
+/* CMS padding sizes -> spacing tokens (32 / 48 / 96) */
+const PAD_TOP = { s: "pt-4xl", m: "pt-6xl", l: "pt-9xl" } as const;
+const PAD_BOTTOM = { s: "pb-4xl", m: "pb-6xl", l: "pb-9xl" } as const;
+
 export function SectionRenderer({ sections }: { sections: PageSection[] }) {
   return (
     <>
       {sections.map((section) => {
+        const node = (() => {
         switch (section._type) {
           case "sectionHero":
             return (
@@ -364,6 +369,25 @@ export function SectionRenderer({ sections }: { sections: PageSection[] }) {
           default:
             return null;
         }
+        })();
+        /* optional vertical padding shell; it carries the section's
+           color mode so the padded strip matches its surface */
+        const pt = section.paddingTop && section.paddingTop !== "none" ? PAD_TOP[section.paddingTop] : "";
+        const pb = section.paddingBottom && section.paddingBottom !== "none" ? PAD_BOTTOM[section.paddingBottom] : "";
+        if (!pt && !pb) return node;
+        const shellMode =
+          section._type === "sectionFullWidth" || section._type === "sectionFiftyFifty"
+            ? "dark"
+            : (section.colorMode ?? "light");
+        return (
+          <div
+            key={section._key}
+            data-mode={shellMode}
+            className={`w-full bg-surface ${pt} ${pb}`}
+          >
+            {node}
+          </div>
+        );
       })}
     </>
   );

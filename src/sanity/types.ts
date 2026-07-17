@@ -22,9 +22,14 @@ export interface Project {
 
 export type ColorMode = "light" | "light-mid" | "dark-mid" | "dark";
 
+export type SectionPad = "none" | "s" | "m" | "l";
+
 interface SectionBase {
   _key: string;
   colorMode?: ColorMode;
+  /* vertical spacing around the section: 0 / 32 / 48 / 96 */
+  paddingTop?: SectionPad;
+  paddingBottom?: SectionPad;
 }
 
 export interface SectionHero extends SectionBase {

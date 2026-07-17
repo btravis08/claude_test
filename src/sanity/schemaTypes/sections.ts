@@ -41,6 +41,31 @@ async function placeholderImage(getClient: GetClient) {
     : { _type: "image" as const };
 }
 
+/* Section padding: none / S / M / L = 0 / 32 / 48 / 96 (the 4xl /
+   6xl / 9xl spacing tokens). Top and bottom set independently;
+   default none. */
+const paddingField = (name: string, title: string) =>
+  defineField({
+    name,
+    title,
+    type: "string",
+    options: {
+      list: [
+        { title: "None", value: "none" },
+        { title: "S (32)", value: "s" },
+        { title: "M (48)", value: "m" },
+        { title: "L (96)", value: "l" },
+      ],
+      layout: "radio",
+      direction: "horizontal",
+    },
+    initialValue: "none",
+  });
+const paddingFields = () => [
+  paddingField("paddingTop", "Padding top"),
+  paddingField("paddingBottom", "Padding bottom"),
+];
+
 const colorMode = (initialValue: "light" | "dark") =>
   defineField({
     name: "colorMode",
@@ -155,6 +180,7 @@ export const sectionHero = defineType({
   title: "Hero",
   type: "object",
   fields: [
+    ...paddingFields(),
     colorMode("dark"),
     ...campaignFields(),
     ...mediaBlockFields(["image", "videoAutoplay"]),
@@ -170,7 +196,8 @@ export const sectionFullWidth = defineType({
   title: "Full Width",
   type: "object",
   // media sections are always dark mode — no color setting
-  fields: [...campaignFields(), ...mediaBlockFields()],
+  fields: [
+    ...paddingFields(),...campaignFields(), ...mediaBlockFields()],
   preview: {
     select: { title: "headline", media: "image" },
     prepare: ({ title, media }) => ({ title: title || "Full Width", subtitle: "Full Width", media }),
@@ -182,6 +209,7 @@ export const sectionInfoSlider = defineType({
   title: "Info Card Slider",
   type: "object",
   fields: [
+    ...paddingFields(),
     colorMode("light"),
     defineField({ name: "title", type: "string", initialValue: "Lorem Ipsum Slider" }),
     defineField({
@@ -229,6 +257,7 @@ export const sectionProductSlider = defineType({
   title: "Product Slider",
   type: "object",
   fields: [
+    ...paddingFields(),
     colorMode("light"),
     defineField({
       name: "title",
@@ -297,6 +326,7 @@ export const sectionCarousel = defineType({
   title: "Carousel",
   type: "object",
   fields: [
+    ...paddingFields(),
     colorMode("light"),
     defineField({ name: "eyebrow", type: "string", initialValue: "SAMPLE BROW" }),
     defineField({
@@ -342,6 +372,7 @@ export const sectionFiftyFifty = defineType({
   type: "object",
   // media sections are always dark mode — no color setting
   fields: [
+    ...paddingFields(),
     defineField({
       name: "ratio",
       title: "Column ratio",
@@ -447,6 +478,7 @@ export const sectionRichText = defineType({
   title: "Rich Text",
   type: "object",
   fields: [
+    ...paddingFields(),
     colorMode("light"),
     defineField({
       name: "body",
@@ -474,6 +506,7 @@ export const sectionTechSpecs = defineType({
   title: "Technical Specifications",
   type: "object",
   fields: [
+    ...paddingFields(),
     colorMode("light"),
     defineField({ name: "title", type: "string", initialValue: "Technical Specifications" }),
     defineField({
@@ -559,6 +592,7 @@ export const sectionGallery = defineType({
   title: "Gallery",
   type: "object",
   fields: [
+    ...paddingFields(),
     colorMode("light"),
     defineField({ name: "title", type: "string", initialValue: "Gallery" }),
     defineField({
@@ -601,6 +635,7 @@ export const sectionReviews = defineType({
   title: "Reviews (Yotpo)",
   type: "object",
   fields: [
+    ...paddingFields(),
     colorMode("light"),
     defineField({ name: "title", type: "string", initialValue: "Reviews" }),
   ],
@@ -615,6 +650,7 @@ export const sectionThreeD = defineType({
   title: "3D Viewer (FIBL)",
   type: "object",
   fields: [
+    ...paddingFields(),
     colorMode("light"),
     defineField({ name: "title", type: "string", initialValue: "Explore in 3D" }),
     image("Poster image"),

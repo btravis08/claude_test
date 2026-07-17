@@ -70,6 +70,8 @@ const sectionFields = groq`
   _key,
   _type,
   colorMode,
+  paddingTop,
+  paddingBottom,
   eyebrow,
   headline,
   align,

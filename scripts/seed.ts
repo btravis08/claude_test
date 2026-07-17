@@ -275,17 +275,19 @@ async function run() {
         _type: "sectionTechSpecs",
         _key: key(),
         colorMode: "light",
-        title: "Technical Specifications",
+        title: "Technical Specfications",
         rows: [
-          ["Upper", "Mesh-reinforced knit with strategic foam padding"],
-          ["Outsole", "Spikeless traction rubber, 8mm lugs"],
-          ["Drop", "8.5mm heel-to-toe"],
-          ["Weight", "380g (size 10)"],
+          ["First Light Collection", "140 grams"],
+          ["First Light Collection", "89% Polyamide 11% Elastane"],
+          ["Temperature Range", "8-20 deg C\n8-20 deg C\n8-20 deg C"],
+          ["Features", "Torsion Control\nMoisture Wicking\nDermacare Breathability"],
         ].map(([label, value]) => ({ _type: "specRow", _key: key(), label, value })),
+        description:
+          "Maecenas suspendisse ultrices pellentesque et ornare dui nisl. Eget convallis lorem faucibus tortor in. Cursus feugiat feugiat a quam vestibulum dignissim sem ullamcorper.",
         stats: [
-          { value: 82, label: "Traction" },
-          { value: 64, label: "Cushioning" },
-          { value: 91, label: "Breathability" },
+          { value: 66, label: "Breathability" },
+          { value: 80, label: "Weathers Resistance" },
+          { value: 91, label: "Mobility" },
         ].map((stat) => ({ _type: "specStat", _key: key(), ...stat })),
       },
       {
@@ -296,11 +298,27 @@ async function run() {
         cards: [1, 2, 3, 4].map((n) => ({
           _type: "infoCard",
           _key: key(),
-          title: `Lorem Ipsum Dolor Sit ${n}`,
-          body: "Cras erat viverra quam adipiscing eget. A ut sed molestie sollicitudin ac condimentum nunc lorem.",
+          title: "Lorem Ipsum Dolor Sit®",
+          body: "Torsional Traction Plate for benefit lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod. Learn More",
           image: imageRef(presidioHovers[n % PRESIDIO_VARIANTS.length] ?? campaign),
           mediaKind: "image",
         })),
+      },
+      {
+        _type: "sectionCarousel",
+        _key: key(),
+        colorMode: "light",
+        eyebrow: "DESIGN DETAILS",
+        items: ["Engineered to Move", "Lorem Ipsum", "Dolor Sit Amet", "Non Sqwuit", "Microsuede Tongue"].map(
+          (title) => ({
+            _type: "carouselItem",
+            _key: key(),
+            title,
+            description:
+              "Maecenas suspendisse ultrices pellentesque et ornare dui nisl. Eget convallis lorem faucibus tortor in. Cursus feugiat feugiat a quam vestibulum dignissim sem ullamcorper.",
+            image: imageRef(presidioHovers[0] ?? campaign),
+          }),
+        ),
       },
       {
         _type: "sectionThreeD",

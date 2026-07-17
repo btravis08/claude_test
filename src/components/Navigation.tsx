@@ -378,9 +378,12 @@ export function Navigation({ data }: { data?: NavData | null }) {
   const nav = data ?? DEFAULT_NAV;
   const pathname = usePathname();
   const isHome = pathname === "/";
+  /* pages with a full-viewport hero the nav floats transparently over:
+     the homepage (dark imagery) and product pages (light gray canvas) */
+  const hasFullHero = isHome || pathname.startsWith("/products/");
 
   const [hidden, setHidden] = useState(false);
-  const [overHero, setOverHero] = useState(isHome);
+  const [overHero, setOverHero] = useState(hasFullHero);
   /* non-home pages: transparent (light mode) until scrolling starts */
   const [atTop, setAtTop] = useState(true);
   const [hovered, setHovered] = useState(false);
@@ -418,7 +421,7 @@ export function Navigation({ data }: { data?: NavData | null }) {
       } else if (delta < -2) setHidden(false);
       lastY.current = y;
       // the hero fills the viewport; past it the nav needs its surface
-      setOverHero(isHome && y < window.innerHeight - 60);
+      setOverHero(hasFullHero && y < window.innerHeight - 60);
       setAtTop(y < 10);
       setBarMode(modeUnderBar());
     };
@@ -429,7 +432,7 @@ export function Navigation({ data }: { data?: NavData | null }) {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
-  }, [isHome]);
+  }, [hasFullHero]);
 
   // lock page scroll behind the mobile sheet
   useEffect(() => {
@@ -443,7 +446,7 @@ export function Navigation({ data }: { data?: NavData | null }) {
      the bar fades white → transparent instead of snapping dark.
      Home: transparent (dark mode) over the hero. Elsewhere:
      transparent (light mode) until the page starts scrolling. */
-  const overlayZone = isHome ? overHero : atTop;
+  const overlayZone = hasFullHero ? overHero : atTop;
   const transparent = overlayZone && !hovered && active === null && !panelVisible;
   /* scrolled-in nav is plain white; the gray tile scheme appears only
      while the nav is hovered or a dropdown is open */
@@ -545,7 +548,7 @@ export function Navigation({ data }: { data?: NavData | null }) {
       </AnimatePresence>
 
       {/* content offset on pages without a full-bleed hero */}
-      {!isHome && <div style={{ height: NAV_H }} />}
+      {!hasFullHero && <div style={{ height: NAV_H }} />}
 
       {/* mobile sheet */}
       <AnimatePresence>

@@ -239,27 +239,35 @@ export function InfoSlider({
     <section data-mode={mode} className="flex w-full flex-col bg-surface text-ink">
       <SliderShell
         title={title}
-        items={cards.map((card, i) => ({
-          key: card._key ?? String(i),
-          card: (
-            <a
-              href="#"
-              className="group flex w-full flex-col gap-[1.125rem] bg-surface pb-16"
-            >
-              <Media
-                aspect="aspect-[3/4]"
-                image={card.image ?? "/figma/media-portrait.png"}
-                hoverScale={card.kind !== "videoAutoplay"}
-                kind={card.kind === "videoAutoplay" ? "videoAutoplay" : "image"}
-                videoUrl={card.videoUrl}
-              />
-              <div className="flex flex-col gap-2 px-4 sm:px-6">
-                <p className="text-body-md font-medium text-ink">{card.title}</p>
-                {card.body && <p className="text-body-sm text-ink-2">{card.body}</p>}
-              </div>
-            </a>
-          ),
-        }))}
+        items={cards.map((card, i) => {
+          const media = (
+            <Media
+              aspect={card.body ? "aspect-square" : "aspect-[3/4]"}
+              image={card.image ?? "/figma/media-portrait.png"}
+              hoverScale={card.kind !== "videoAutoplay"}
+              kind={card.kind === "videoAutoplay" ? "videoAutoplay" : "image"}
+              videoUrl={card.videoUrl}
+            />
+          );
+          /* info cards (with body copy — Features / Technology) frame
+             the image with padding and use the serif title; category
+             cards keep the full-bleed portrait look */
+          return {
+            key: card._key ?? String(i),
+            card: card.body ? (
+              <a href="#" className="group flex w-full flex-col gap-4 bg-surface p-6 pb-16">
+                {media}
+                <p className="font-display text-title-sm text-ink">{card.title}</p>
+                <p className="text-body-sm text-ink-2">{card.body}</p>
+              </a>
+            ) : (
+              <a href="#" className="group flex w-full flex-col gap-[1.125rem] bg-surface pb-16">
+                {media}
+                <p className="px-4 text-body-md font-medium text-ink sm:px-6">{card.title}</p>
+              </a>
+            ),
+          };
+        })}
       />
     </section>
   );
@@ -439,45 +447,49 @@ export interface TechSpecsProps {
   mode?: Mode;
   title?: string;
   rows?: Array<{ _key?: string; label?: string; value?: string }>;
+  /* closing paragraph under the rows */
+  description?: string;
   stats?: Array<{ _key?: string; value?: number; label?: string }>;
 }
 
 const defaultSpecRows = [
-  { label: "Lorem Label", value: "Lorem ipsum dolor sit amet" },
-  { label: "Ipsum Label", value: "Consectetur adipiscing elit" },
-  { label: "Dolor Label", value: "Sed do eiusmod tempor" },
-  { label: "Sit Label", value: "Incididunt ut labore et dolore" },
+  { label: "First Light Collection", value: "140 grams" },
+  { label: "First Light Collection", value: "89% Polyamide 11% Elastane" },
+  { label: "Temperature Range", value: "8-20 deg C\n8-20 deg C\n8-20 deg C" },
+  { label: "Features", value: "Torsion Control\nMoisture Wicking\nDermacare Breathability" },
 ];
+
+const defaultSpecDescription =
+  "Maecenas suspendisse ultrices pellentesque et ornare dui nisl. Eget convallis lorem faucibus tortor in. Cursus feugiat feugiat a quam vestibulum dignissim sem ullamcorper.";
 
 const defaultSpecStats = [
-  { value: 82, label: "Lorem Stat" },
-  { value: 64, label: "Ipsum Stat" },
-  { value: 91, label: "Dolor Stat" },
+  { value: 66, label: "Breathability" },
+  { value: 80, label: "Weathers Resistance" },
+  { value: 91, label: "Mobility" },
 ];
 
-/* Circular percentage dial (SVG stroke) */
+/* Radial tick dial: a ring of ticks where the value's share reads in
+   ink and the remainder in the hairline tone; mono label + NN/100 */
 function StatDial({ value = 0, label }: { value?: number; label?: string }) {
-  const r = 26;
-  const c = 2 * Math.PI * r;
   const pct = Math.max(0, Math.min(100, value));
   return (
-    <div className="flex items-center gap-4">
-      <svg viewBox="0 0 64 64" className="size-16 -rotate-90">
-        <circle cx="32" cy="32" r={r} fill="none" strokeWidth="3" className="stroke-line" />
-        <circle
-          cx="32"
-          cy="32"
-          r={r}
-          fill="none"
-          strokeWidth="3"
-          strokeDasharray={`${(pct / 100) * c} ${c}`}
-          strokeLinecap="butt"
-          className="stroke-ink"
-        />
-      </svg>
-      <div className="flex flex-col gap-1">
-        <p className="text-body-md font-medium text-ink">{pct}%</p>
-        {label && <p className="label text-ink-2">{label.toUpperCase()}</p>}
+    <div className="flex shrink-0 items-center gap-3">
+      <div
+        aria-hidden
+        className="size-16 rounded-full"
+        style={{
+          background: `conic-gradient(var(--ink) ${pct}%, var(--line) ${pct}%)`,
+          maskImage:
+            "repeating-conic-gradient(#000 0deg 3deg, transparent 3deg 8deg), radial-gradient(closest-side, transparent 62%, #000 63%)",
+          maskComposite: "intersect",
+          WebkitMaskImage:
+            "repeating-conic-gradient(#000 0deg 3deg, transparent 3deg 8deg), radial-gradient(closest-side, transparent 62%, #000 63%)",
+          WebkitMaskComposite: "source-in",
+        }}
+      />
+      <div className="flex flex-col gap-0.5 font-mono text-[0.6875rem] uppercase leading-tight tracking-wide">
+        <p className="max-w-32 text-ink">{label}</p>
+        <p className="text-ink-3">{pct}/100</p>
       </div>
     </div>
   );
@@ -487,24 +499,43 @@ export function TechSpecs({
   mode = "light",
   title = "Technical Specifications",
   rows = defaultSpecRows,
+  description = defaultSpecDescription,
   stats = defaultSpecStats,
 }: TechSpecsProps) {
   return (
-    <section data-mode={mode} className="w-full border-t border-line bg-surface text-ink">
-      <div className="grid w-full grid-cols-1 gap-10 p-6 md:grid-cols-2 md:py-16">
-        <p className="max-w-xs font-display text-title-md">{title}</p>
-        <div className="flex flex-col">
+    <section data-mode={mode} className="w-full bg-surface text-ink">
+      {/* heavy rule opening the section, per the comp */}
+      <div className="mx-6 h-1 bg-ink" />
+      <div className="grid w-full grid-cols-1 gap-10 p-6 py-14 md:grid-cols-2 md:py-24">
+        <p className="max-w-xs font-display text-title-lg">{title}</p>
+        <div className="flex flex-col gap-8">
           {rows.map((row, i) => (
-            <div
-              key={row._key ?? i}
-              className="grid grid-cols-2 gap-6 border-b border-line py-4 first:border-t"
-            >
-              <p className="label font-medium text-ink-2">{(row.label ?? "").toUpperCase()}</p>
-              <p className="label whitespace-pre-line text-ink">{row.value}</p>
+            <div key={row._key ?? i} className="grid grid-cols-[1fr_2fr] gap-6">
+              <p className="label pt-1 font-medium text-ink-2">
+                {(row.label ?? "").toUpperCase()}
+              </p>
+              <div className="flex flex-col">
+                {(row.value ?? "")
+                  .split("\n")
+                  .filter(Boolean)
+                  .map((line, j) => (
+                    <p key={j} className="label border-b border-line pb-2 pt-3 first:pt-0 font-medium">
+                      {line.toUpperCase()}
+                    </p>
+                  ))}
+              </div>
             </div>
           ))}
+          {description && (
+            <div className="grid grid-cols-[1fr_2fr] gap-6">
+              <span />
+              <p className="label max-w-sm font-medium leading-relaxed">
+                {description.toUpperCase()}
+              </p>
+            </div>
+          )}
           {stats.length > 0 && (
-            <div className="flex flex-wrap gap-x-12 gap-y-8 pt-10">
+            <div className="flex flex-wrap gap-x-10 gap-y-8 pt-4">
               {stats.map((stat, i) => (
                 <StatDial key={stat._key ?? i} value={stat.value} label={stat.label} />
               ))}

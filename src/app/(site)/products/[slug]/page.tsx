@@ -5,6 +5,7 @@ import { FooterTagline } from "@/components/FooterTagline";
 import { ProductHero } from "@/components/product/ProductHero";
 import type { ProductCardData } from "@/components/home/ProductCard";
 import {
+  Carousel,
   FiftyFifty,
   Gallery,
   InfoSlider,
@@ -13,6 +14,7 @@ import {
   TechSpecs,
   ThreeDViewer,
 } from "@/components/home/sections";
+import { SliderShell } from "@/components/home/SliderShell";
 import { SectionRenderer, activeOnly, toCards } from "@/components/SectionRenderer";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { urlFor } from "@/sanity/lib/image";
@@ -75,24 +77,36 @@ const FALLBACK_PAIRS: ProductCardData[] = [1, 2, 3].map((n) => ({
   image: "/figma/products/presidio-white.png",
 }));
 
-/* Compact product card for the "pairs well with" rail */
+/* Compact product card for the "pairs well with" rail: gray well with
+   the small product shot, then the standard two info rows */
 function MiniProductCard({ card }: { card: ProductCardData }) {
+  const extra = card.variants?.length ? card.variants.length - 1 : undefined;
+  const extraLabel =
+    extra !== undefined ? (extra > 0 ? `+${extra} colors` : undefined) : card.colorCount;
   return (
-    <a href={card.href ?? "#"} className="group flex w-full flex-col gap-3">
-      <div className="relative aspect-square w-full overflow-hidden rounded-xs bg-surface-2">
+    <a href={card.href ?? "#"} className="group flex w-full flex-col gap-4 bg-surface p-6 pb-10">
+      <div className="relative aspect-[4/5] w-full overflow-hidden rounded-xs bg-surface-2">
         <div
           role="img"
           aria-label={card.title}
-          className="absolute inset-[16%] bg-contain bg-center bg-no-repeat transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
+          className="absolute inset-x-[24%] top-1/2 aspect-square -translate-y-1/2 bg-contain bg-center bg-no-repeat transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
           style={card.image ? { backgroundImage: `url(${card.image})` } : undefined}
         />
       </div>
-      <div className="label flex w-full items-center justify-between font-medium text-ink">
-        <p>{card.title}</p>
-        <p className="flex items-baseline gap-1.5">
-          {card.compareAtPrice && <s className="text-ink-3 line-through">{card.compareAtPrice}</s>}
-          <span>{card.price}</span>
-        </p>
+      <div className="flex w-full flex-col gap-1.5">
+        <div className="label flex w-full items-center justify-between font-medium text-ink">
+          <p>{(card.title ?? "").toUpperCase()}</p>
+          <p className="flex items-baseline gap-1.5">
+            {card.compareAtPrice && (
+              <s className="text-ink-3 line-through">{card.compareAtPrice}</s>
+            )}
+            <span>{card.price}</span>
+          </p>
+        </div>
+        <div className="flex w-full items-center justify-between font-mono text-[0.6875rem] uppercase leading-none tracking-wide text-ink-2">
+          <p>{card.colorway}</p>
+          {extraLabel && <p>{extraLabel}</p>}
+        </div>
       </div>
     </a>
   );
@@ -176,26 +190,32 @@ export default async function ProductPage({
       {/* required: hero carousel + affixed purchase bar */}
       <ProductHero product={hero} />
 
-      {/* required: description + pairs well with */}
+      {/* required: about + pairs well with (arrowed mini-card slider) */}
       <section
         data-mode="light"
-        className="grid w-full grid-cols-1 gap-10 bg-surface p-6 text-ink md:grid-cols-2 md:py-16"
+        className="grid w-full grid-cols-1 bg-surface text-ink md:grid-cols-2"
       >
-        <div className="max-w-xl text-body-md font-medium">
-          {product?.description ? (
-            <PortableText value={product.description} />
-          ) : (
-            <p>{FALLBACK_DESCRIPTION}</p>
-          )}
-        </div>
-        <div className="flex flex-col gap-5">
-          <p className="label font-medium text-ink-2">PAIRS WELL WITH</p>
-          <div className="grid grid-cols-3 gap-4">
-            {pairs.slice(0, 3).map((item) => (
-              <MiniProductCard key={item._key} card={item} />
-            ))}
+        <div className="flex flex-col gap-9 p-6">
+          <p className="label font-medium text-ink-2">
+            ABOUT {(product?.title ?? "Presidio").toUpperCase()}
+          </p>
+          <div className="max-w-xl font-display text-title-md leading-snug">
+            {product?.description ? (
+              <PortableText value={product.description} />
+            ) : (
+              <p>{FALLBACK_DESCRIPTION}</p>
+            )}
           </div>
         </div>
+        <SliderShell
+          title="PAIRS WELL WITH"
+          titleClassName="label font-medium text-ink-2"
+          bordered={false}
+          items={pairs.map((item, i) => ({
+            key: item._key ?? String(i),
+            card: <MiniProductCard card={item} />,
+          }))}
+        />
       </section>
 
       {/* adjustable middle: the product's CMS sections; the template
@@ -209,11 +229,13 @@ export default async function ProductPage({
             title="Features / Technology"
             cards={[1, 2, 3, 4].map((n) => ({
               _key: `feature-${n}`,
-              title: `Lorem Ipsum Dolor Sit ${n}`,
-              body: "Cras erat viverra quam adipiscing eget. A ut sed molestie sollicitudin ac condimentum nunc lorem.",
+              title: "Lorem Ipsum Dolor Sit®",
+              body: "Torsional Traction Plate for benefit lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod. Learn More",
               image: "/figma/products/presidio-white-hover.png",
             }))}
           />
+          {/* Design Details — the homepage carousel component */}
+          <Carousel eyebrow="DESIGN DETAILS" />
           <ThreeDViewer image="/figma/products/presidio-white.png" />
           <FiftyFifty
             mode="light"

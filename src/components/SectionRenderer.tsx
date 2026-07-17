@@ -310,6 +310,7 @@ export function SectionRenderer({ sections }: { sections: PageSection[] }) {
                 mode={section.colorMode}
                 title={section.title}
                 rows={section.rows}
+                description={section.description}
                 stats={section.stats}
               />
             );

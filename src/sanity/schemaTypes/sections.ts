@@ -471,6 +471,14 @@ export const sectionTechSpecs = defineType({
         })),
     }),
     defineField({
+      name: "description",
+      title: "Closing paragraph",
+      description: "Shown under the rows, above the stat dials.",
+      type: "text",
+      rows: 3,
+      initialValue: LOREM,
+    }),
+    defineField({
       name: "stats",
       title: "Stat dials",
       description: "Circular percentage dials shown under the rows.",

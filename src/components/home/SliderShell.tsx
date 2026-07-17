@@ -36,14 +36,20 @@ function hash01(s: string) {
 */
 export function SliderShell({
   title,
+  titleClassName = "font-display text-title-sm text-ink",
   items,
   variable = false,
+  bordered = true,
 }: {
   title?: string;
+  /* override for label-style headers (e.g. PAIRS WELL WITH) */
+  titleClassName?: string;
   items: SliderItem[];
   /* variable: slides size themselves (gallery — natural aspect ratios)
      instead of the uniform card-width grid */
   variable?: boolean;
+  /* the hairline above the header (off when the parent draws its own) */
+  bordered?: boolean;
 }) {
   const genders = useMemo(
     () => Array.from(new Set(items.map((i) => i.gender).filter(Boolean))) as string[],
@@ -167,11 +173,15 @@ export function SliderShell({
 
   return (
     <div className="flex w-full flex-col">
-      <div className="flex w-full items-center justify-between gap-4 border-t border-line bg-surface p-6">
+      <div
+        className={`flex w-full items-center justify-between gap-4 bg-surface p-6 ${
+          bordered ? "border-t border-line" : ""
+        }`}
+      >
         {/* no title (undefined, null, or empty) → the gender toggles
             take the left side and the arrows stay right */}
         {Boolean(title) && (
-          <p className="min-w-0 flex-1 font-display text-title-sm text-ink">{title}</p>
+          <p className={`min-w-0 flex-1 ${titleClassName}`}>{title}</p>
         )}
         {filterable && (
           <div className="hidden items-center gap-3 sm:flex">

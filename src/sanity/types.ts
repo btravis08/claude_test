@@ -246,6 +246,7 @@ export interface SectionTechSpecs extends SectionBase {
   _type: "sectionTechSpecs";
   title?: string;
   rows?: Array<{ _key: string; label?: string; value?: string }>;
+  description?: string;
   stats?: Array<{ _key: string; value?: number; label?: string }>;
 }
 

@@ -112,7 +112,7 @@ export function ProductCard({ product }: { product: ProductCardData }) {
       animate={showSwatches ? "hover" : "rest"}
       onMouseEnter={() => setCardHover(true)}
       onMouseLeave={() => setCardHover(false)}
-      className="flex w-full flex-col justify-center gap-[1.125rem] overflow-hidden bg-surface pb-16"
+      className="flex w-full flex-col gap-[1.125rem] overflow-hidden bg-surface pb-16"
     >
       <motion.div
         onMouseEnter={() => setWellHover(true)}
@@ -160,10 +160,13 @@ export function ProductCard({ product }: { product: ProductCardData }) {
           </div>
         )}
       </motion.div>
-      <div className="flex w-full flex-col gap-1.5 px-4 md:px-6">
-        <div className="label flex w-full items-center justify-between font-medium text-ink">
-          <p>{product.title}</p>
-          <p className="flex items-baseline gap-1.5">
+      {/* fixed-height text zone: it always reserves room for a
+          two-line title, so a wrapping name grows inside it without
+          changing the card height — the image grid never shifts */}
+      <div className="flex h-[3.325rem] w-full flex-col gap-1.5 overflow-hidden px-4 md:px-6">
+        <div className="label flex w-full items-start justify-between gap-3 font-medium text-ink">
+          <p className="line-clamp-2 min-w-0">{product.title}</p>
+          <p className="flex shrink-0 items-baseline gap-1.5 whitespace-nowrap">
             {compareAtLabel && (
               <s className="text-ink-3 line-through">{compareAtLabel}</s>
             )}

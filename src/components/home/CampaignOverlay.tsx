@@ -4,6 +4,8 @@ import { motion, useInView } from "motion/react";
 import type { Transition } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
+import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
+
 /*
   Hero / Full Width text treatment: nav-style label texts on the sides,
   display type in the middle, sitting on the media's vertical center.
@@ -38,6 +40,10 @@ export function CampaignOverlay({
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.2 });
   const [go, setGo] = useState(false);
+  /* stacked text link: the underline draws itself in once the link
+     rises above the bottom 20% of the screen (no hover on touch) */
+  const linkRef = useRef<HTMLSpanElement>(null);
+  const linkInView = useInView(linkRef, { once: true, margin: "0px 0px -20% 0px" });
 
 
   useEffect(() => {
@@ -92,10 +98,17 @@ export function CampaignOverlay({
                     {right}
                   </motion.span>
                 ) : (
-                  <motion.span {...fade} className="label relative font-medium">
+                  <motion.span {...fade} ref={linkRef} className="label relative font-medium">
                     {right}
-                    {/* nav-style underline, driven by hovering the section */}
-                    <span className="absolute inset-x-0 -bottom-0.5 h-px origin-right scale-x-0 bg-current transition-transform duration-300 group-hover:origin-left group-hover:scale-x-100" />
+                    {/* nav-style underline, drawn in from the left when
+                        the link clears the bottom 20% of the screen */}
+                    <motion.span
+                      aria-hidden
+                      className="absolute inset-x-0 -bottom-0.5 h-px origin-left bg-current"
+                      initial={{ scaleX: 0 }}
+                      animate={{ scaleX: linkInView ? 1 : 0 }}
+                      transition={{ duration: 0.6, ease: [...MEDIA_EASE], delay: 0.1 }}
+                    />
                   </motion.span>
                 ))}
             </div>

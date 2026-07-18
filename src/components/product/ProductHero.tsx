@@ -75,15 +75,38 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
     ...(active?.image ? [active.image] : []),
     ...product.images.filter((src) => src !== active?.image),
   ];
+  /* infinite loop: clone the last slide before the first and the
+     first after the last; the track starts one slide in, and any
+     motion that settles on a clone teleports (instantly, invisibly)
+     to its real twin — so left always slides the previous image in
+     from the left */
+  const loop = slides.length > 1;
+  const renderSlides = loop
+    ? [slides[slides.length - 1], ...slides, slides[0]]
+    : slides;
 
   const trackRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
 
+  const slideWidth = (el: HTMLDivElement) => {
+    const slideEls = el.querySelectorAll<HTMLElement>("[data-slide]");
+    return slideEls.length > 1
+      ? slideEls[1].offsetLeft - slideEls[0].offsetLeft
+      : el.clientWidth;
+  };
+
   const updateProgress = useCallback(() => {
     const el = trackRef.current;
     if (!el) return;
-    setProgress(el.scrollWidth > 0 ? (el.scrollLeft + el.clientWidth) / el.scrollWidth : 1);
-  }, []);
+    /* measure against the real slides — the edge clones don't count */
+    const w = loop ? slideWidth(el) : 0;
+    const realWidth = el.scrollWidth - 2 * w;
+    setProgress(
+      realWidth > 0
+        ? Math.min(1, Math.max(0, (el.scrollLeft - w + el.clientWidth) / realWidth))
+        : 1,
+    );
+  }, [loop]);
 
   useEffect(() => {
     updateProgress();
@@ -96,6 +119,40 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
       window.removeEventListener("resize", updateProgress);
     };
   }, [updateProgress]);
+
+  /* looping track opens on the first REAL slide (one slide in) */
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el || !loop) return;
+    el.scrollTo({ left: slideWidth(el), behavior: "instant" });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selected, loop]);
+
+  /* once motion settles on a clone, swap to its real twin */
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el || !loop) return;
+    let settle: ReturnType<typeof setTimeout>;
+    const onScroll = () => {
+      clearTimeout(settle);
+      settle = setTimeout(() => {
+        const w = slideWidth(el);
+        if (w <= 0) return;
+        const span = slides.length * w;
+        const max = el.scrollWidth - el.clientWidth;
+        if (el.scrollLeft < w * 0.5) {
+          el.scrollTo({ left: el.scrollLeft + span, behavior: "instant" });
+        } else if (el.scrollLeft > max - w * 0.5) {
+          el.scrollTo({ left: el.scrollLeft - span, behavior: "instant" });
+        }
+      }, 90);
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      clearTimeout(settle);
+      el.removeEventListener("scroll", onScroll);
+    };
+  }, [selected, loop, slides.length]);
 
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
@@ -159,27 +216,12 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
     };
   }, []);
 
-  /* arrows step one slide (consecutive slide offsets include any
-     gap) and loop: left from the first slide lands on the last,
-     right from the last returns to the first */
+  /* arrows step one slide; the edge clones + settle-teleport make
+     the direction seamless at both ends */
   const step = (dir: number) => {
     const el = trackRef.current;
     if (!el) return;
-    const max = el.scrollWidth - el.clientWidth;
-    if (dir > 0 && el.scrollLeft >= max - 2) {
-      el.scrollTo({ left: 0, behavior: "smooth" });
-      return;
-    }
-    if (dir < 0 && el.scrollLeft <= 2) {
-      el.scrollTo({ left: max, behavior: "smooth" });
-      return;
-    }
-    const slideEls = el.querySelectorAll<HTMLElement>("[data-slide]");
-    const width =
-      slideEls.length > 1
-        ? slideEls[1].offsetLeft - slideEls[0].offsetLeft
-        : el.clientWidth;
-    el.scrollBy({ left: dir * width, behavior: "smooth" });
+    el.scrollBy({ left: dir * slideWidth(el), behavior: "smooth" });
   };
 
   /* mouse drag for the track (touch swipes natively) */
@@ -318,7 +360,7 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
           dragging ? "cursor-grabbing select-none" : "cursor-grab snap-x snap-mandatory"
         }`}
       >
-        {slides.map((src, i) => (
+        {renderSlides.map((src, i) => (
           <div key={`${selected}-${i}`} data-slide className="relative h-full snap-start">
             <motion.div
               role="img"

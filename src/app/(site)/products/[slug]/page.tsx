@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { PortableText } from "next-sanity";
 
 import { FooterTagline } from "@/components/FooterTagline";
 import { RegisterCartRecommendations } from "@/components/cart/CartContext";
 import { CardAddButton, DetailLinks } from "@/components/product/DetailLinks";
+import { DescriptionReveal } from "@/components/product/DescriptionReveal";
 import { ProductHero } from "@/components/product/ProductHero";
 import { SmartLink } from "@/components/SmartLink";
 import { VariantPanel } from "@/components/product/VariantPanel";
@@ -55,6 +55,18 @@ function img(source: SanityImageSource | undefined, width = 1600) {
     return undefined;
   }
 }
+
+/* flatten portable text to plain paragraphs for the fill reveal */
+const portableTextParagraphs = (blocks: unknown): string[] =>
+  (Array.isArray(blocks) ? blocks : [])
+    .filter(
+      (b): b is { children?: Array<{ text?: string }> } =>
+        typeof b === "object" &&
+        b !== null &&
+        (b as { _type?: string })._type === "block",
+    )
+    .map((b) => (b.children ?? []).map((c) => c.text ?? "").join(""))
+    .filter((t) => t.trim().length > 0);
 
 /* Template fallback (CMS unreachable / unseeded): the Presidio */
 const FALLBACK_DESCRIPTION =
@@ -287,13 +299,15 @@ export default async function ProductPage({
               {(product?.title ?? "Presidio").toUpperCase()}
             </span>
           </nav>
-          <div className="font-display text-title-lg">
-            {product?.description ? (
-              <PortableText value={product.description} />
-            ) : (
-              <p>{FALLBACK_DESCRIPTION}</p>
-            )}
-          </div>
+          <DescriptionReveal
+            className="font-display text-title-lg"
+            name={product?.title ?? "Presidio"}
+            paragraphs={
+              product?.description
+                ? portableTextParagraphs(product.description)
+                : [FALLBACK_DESCRIPTION]
+            }
+          />
           <DetailLinks
             links={
               product?.detailLinks?.length ? product.detailLinks : FALLBACK_DETAIL_LINKS

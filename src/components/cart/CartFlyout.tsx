@@ -65,9 +65,9 @@ function QuickAddView() {
         {/* colorway */}
         {variants.length > 0 && (
           <div className="flex flex-col gap-[1.375rem] border-t border-line p-4 md:p-6">
-            <p className="flex items-baseline gap-2.5 text-body-md font-medium text-ink">
+            <p className="flex items-baseline gap-2.5 font-mono text-[0.875rem] uppercase leading-snug text-ink">
               Color
-              <span className="font-normal text-ink-2">{active?.name}</span>
+              <span className="text-ink-2">{active?.name}</span>
             </p>
             <div className="flex gap-px">
               {variants.map((variant, i) => (
@@ -103,16 +103,16 @@ function QuickAddView() {
         {/* fit toggle */}
         <div className="flex flex-col gap-6 border-t border-line p-4 md:p-6">
           <p className="text-body-md font-medium text-ink">Fit</p>
-          <div className="flex w-full items-stretch gap-2">
+          {/* segmented toggle per Figma: selected segment fills with the
+              secondary-hover gray, text stays ink in both states */}
+          <div className="flex w-full items-center bg-surface-2 p-1.5">
             {["Normal", "Wide"].map((option) => (
               <button
                 key={option}
                 type="button"
                 onClick={() => setFit(option)}
-                className={`label flex h-[2.875rem] flex-1 items-center justify-center px-3 font-medium transition-colors md:h-10 ${
-                  fit === option
-                    ? "bg-btn text-btn-fg"
-                    : "bg-surface-2 text-ink hover:bg-[#cacbc8]"
+                className={`label flex h-9 flex-1 items-center justify-center px-3 font-medium text-ink transition-colors ${
+                  fit === option ? "bg-[#cacbc8]" : ""
                 }`}
               >
                 {option}

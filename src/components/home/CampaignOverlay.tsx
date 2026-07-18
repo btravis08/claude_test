@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useInView, useScroll, useTransform } from "motion/react";
+import { motion, useInView } from "motion/react";
 import type { Transition } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
@@ -37,13 +37,6 @@ export function CampaignOverlay({
   const inView = useInView(ref, { once: true, amount: 0.2 });
   const [go, setGo] = useState(false);
 
-  /* mobile stack: on load the CTA rests 16px above the fixed control
-     bar (16 offset + 48 bar + 16 gap = 80px pad). The pad shrinks 1:1
-     with scroll to a 16px floor, so the button holds its 16px gap to
-     the bar while the bar still covers the hero, then anchors 16px
-     from the hero's bottom edge and scrolls away with it. */
-  const { scrollY } = useScroll();
-  const stackPad = useTransform(scrollY, [0, 64], [80, 16]);
 
   useEffect(() => {
     if (!inView) return;
@@ -62,33 +55,39 @@ export function CampaignOverlay({
 
   return (
     <div ref={ref} className="pointer-events-none absolute inset-0">
-      {/* mobile hero: bottom-aligned centered stack + full-width CTA */}
+      {/* mobile hero: bottom-aligned centered stack + full-width CTA.
+          The stack's flow position is 16px above the hero's bottom
+          edge (pb-4); sticky bottom-20 holds it 80px above the
+          viewport bottom — 16px clear of the fixed control bar —
+          until the hero's edge catches up, when it anchors and rides
+          away with the section. Pure CSS, compositor-smooth. */}
       {stack && (
-        <motion.div
-          style={{ paddingBottom: stackPad }}
-          className="absolute inset-0 flex flex-col items-center justify-end gap-6 px-4 md:hidden"
-        >
-          <div className="flex flex-col items-center gap-4 text-center">
-            {left !== undefined && (
-              <motion.span {...fade} className="label font-medium">
-                {left}
-              </motion.span>
-            )}
-            {center !== undefined && (
-              <motion.span {...fade} className="font-display text-headline-lg">
-                {center}
-              </motion.span>
-            )}
+        <div className="absolute inset-0 md:hidden">
+          <div className="flex h-full flex-col justify-end px-4 pb-4">
+            <div className="sticky bottom-20 flex w-full flex-col items-center gap-6">
+              <div className="flex flex-col items-center gap-4 text-center">
+                {left !== undefined && (
+                  <motion.span {...fade} className="label font-medium">
+                    {left}
+                  </motion.span>
+                )}
+                {center !== undefined && (
+                  <motion.span {...fade} className="font-display text-headline-lg">
+                    {center}
+                  </motion.span>
+                )}
+              </div>
+              {right !== undefined && (
+                <motion.span
+                  {...fade}
+                  className="label flex h-[2.875rem] w-full items-center justify-center rounded-xs bg-btn font-medium text-btn-fg"
+                >
+                  {right}
+                </motion.span>
+              )}
+            </div>
           </div>
-          {right !== undefined && (
-            <motion.span
-              {...fade}
-              className="label flex h-[2.875rem] w-full items-center justify-center rounded-xs bg-btn font-medium text-btn-fg"
-            >
-              {right}
-            </motion.span>
-          )}
-        </motion.div>
+        </div>
       )}
 
       {/* desktop (and non-stacked mobile): the centered 3-column row */}

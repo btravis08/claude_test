@@ -64,7 +64,7 @@ export function CampaignOverlay({
       {stack && (
         <div className="absolute inset-0 md:hidden">
           <div className="flex h-full flex-col justify-end px-4 pb-4">
-            <div className="sticky bottom-20 flex w-full flex-col items-center gap-6">
+            <div className="hero-cta sticky flex w-full flex-col items-center gap-6">
               <div className="flex flex-col items-center gap-4 text-center">
                 {left !== undefined && (
                   <motion.span {...fade} className="label font-medium">

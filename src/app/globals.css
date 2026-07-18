@@ -276,6 +276,23 @@ body {
   }
 }
 
+/*
+  Homepage hero CTA hold line: the stack sticks 80px above the
+  viewport bottom (16px clear of the mobile control bar). When the
+  bar slides away on scroll down (the nav sets html[data-bar-down])
+  the line drops to 16px with the SAME 64px travel, duration, and
+  ease as the bar's exit, so the pair moves in lockstep — until the
+  button lands 16px from the hero's bottom edge, where the sticky
+  flow position takes over and it rides away with the section.
+*/
+.hero-cta {
+  bottom: 5rem;
+  transition: bottom 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+html[data-bar-down] .hero-cta {
+  bottom: 1rem;
+}
+
 /* Media overlay: 20% scrim + bottom gradient (Figma content-overlay mask) */
 @utility media-overlay {
   position: absolute;

@@ -393,6 +393,9 @@ export function Navigation({ data }: { data?: NavData | null }) {
   const hasFullHero = isHome || pathname.startsWith("/products/");
 
   const [hidden, setHidden] = useState(false);
+  /* mobile control bar slides down and away on scroll down, back on
+     scroll up — mirrored by the hero CTA via html[data-bar-down] */
+  const [barDown, setBarDown] = useState(false);
   const [overHero, setOverHero] = useState(hasFullHero);
   /* non-home pages: transparent (light mode) until scrolling starts */
   const [atTop, setAtTop] = useState(true);
@@ -430,6 +433,10 @@ export function Navigation({ data }: { data?: NavData | null }) {
         setHidden(true);
         setActive(null);
       } else if (delta < -2) setHidden(false);
+      /* the bottom bar reacts immediately (no 80px grace) so the hero
+         CTA and the bar travel together from the first scroll */
+      if (delta > 2 && y > 10) setBarDown(true);
+      else if (delta < -2 || y < 10) setBarDown(false);
       lastY.current = y;
       // the hero fills the viewport; past it the nav needs its surface
       setOverHero(hasFullHero && y < window.innerHeight - 60);
@@ -477,7 +484,17 @@ export function Navigation({ data }: { data?: NavData | null }) {
     setActive(null);
     setMobileOpen(false);
     setHovered(false);
+    setBarDown(false);
   }, [pathname]);
+
+  /* publish the bar's position for the hero CTA's hold line (CSS
+     reads html[data-bar-down] and mirrors the bar's travel) */
+  useEffect(() => {
+    const root = document.documentElement;
+    if (barDown && !mobileOpen) root.setAttribute("data-bar-down", "");
+    else root.removeAttribute("data-bar-down");
+    return () => root.removeAttribute("data-bar-down");
+  }, [barDown, mobileOpen]);
 
   // lock page scroll behind the mobile sheet
   useEffect(() => {
@@ -629,9 +646,15 @@ export function Navigation({ data }: { data?: NavData | null }) {
       {/* mobile control bar: fixed to the bottom, always present.
           Blurred light surface normally; inverts over dark sections.
           Always light while the menu sheet is open. */}
-      <div
+      <motion.div
         data-navbar
         data-mode={mobileOpen ? "light" : barMode}
+        initial={false}
+        /* 64px = bar height + bottom offset: fully clears the screen.
+           Same duration/ease as the hero CTA's hold-line drop, so the
+           pair moves in lockstep */
+        animate={{ y: barDown && !mobileOpen ? 64 : 0 }}
+        transition={{ duration: 0.45, ease: [...MEDIA_EASE] }}
         className={`fixed inset-x-4 bottom-4 z-[70] md:hidden ${
           hasFullHero && !isHome && !mobileOpen ? "hidden" : ""
         }`}
@@ -664,7 +687,7 @@ export function Navigation({ data }: { data?: NavData | null }) {
             {mobileOpen ? <Close className="text-ink" /> : <Menu className="text-ink" />}
           </button>
         </div>
-      </div>
+      </motion.div>
     </>
   );
 }

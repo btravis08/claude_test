@@ -8,6 +8,7 @@ import { ArrowButton, ArrowLink, ArrowSwap } from "@/components/home/ArrowHover"
 import { ProductCard } from "@/components/home/ProductCard";
 import type { ProductCardData } from "@/components/home/ProductCard";
 import { ArrowRight, ArrowUpRight, Close, FilterLines, Plus } from "@/components/icons";
+import { SmartLink } from "@/components/SmartLink";
 
 /*
   Client half of the PLP: the FILTER & SORT row (comp 33416:33779),
@@ -201,7 +202,7 @@ function StoryTile({
   return (
     <div className={`col-span-2 lg:row-span-3 ${columnStart}`}>
       <div className="sticky top-0 flex flex-col bg-surface pb-16 lg:pb-0">
-        <a
+        <SmartLink
           href={story.url ?? "#"}
           data-mode="dark"
           className="group block overflow-hidden"
@@ -211,7 +212,7 @@ function StoryTile({
             className="aspect-square w-full bg-surface-2 bg-cover bg-center transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105 lg:aspect-[4/3]"
             style={story.image ? { backgroundImage: `url(${story.image})` } : undefined}
           />
-        </a>
+        </SmartLink>
         {/* mobile: stacked, full-width text, CTA right-aligned below;
             desktop: text left, button top-aligned right */}
         <div className="flex flex-col gap-16 p-4 lg:flex-row lg:items-start lg:justify-between lg:gap-16 lg:p-6">

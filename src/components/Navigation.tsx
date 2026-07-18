@@ -10,6 +10,7 @@ import { ArrowLink, ArrowSwap } from "@/components/home/ArrowHover";
 import { Logo } from "@/components/Logo";
 import { useCart } from "@/components/cart/CartContext";
 import { NavTextLink } from "@/components/NavTextLink";
+import { SmartLink } from "@/components/SmartLink";
 import { ArrowUpRight, Close, Menu, SearchMd } from "@/components/icons";
 
 /*
@@ -276,7 +277,7 @@ function CardsPanel({ item }: { item: MenuItem }) {
       className="grid w-full grid-cols-3 gap-px border-b border-line bg-line"
     >
       {(item.cards ?? []).map((card, i) => (
-        <a key={i} href={card.url} className="group block bg-surface pb-16">
+        <SmartLink key={i} href={card.url} className="group block bg-surface pb-16">
           <div className="w-full overflow-hidden">
             <div
               aria-hidden
@@ -285,7 +286,7 @@ function CardsPanel({ item }: { item: MenuItem }) {
             />
           </div>
           <p className="px-6 pt-6 font-display text-title-md text-ink">{card.title}</p>
-        </a>
+        </SmartLink>
       ))}
     </motion.div>
   );
@@ -358,9 +359,9 @@ function MobileSection({ item }: { item: MenuItem }) {
                       >
                         <div className="flex flex-col gap-3 py-2 pl-4">
                           {featured.links.map((link) => (
-                            <a key={link.label} href={link.url} className="label text-ink-2">
+                            <SmartLink key={link.label} href={link.url} className="label text-ink-2">
                               {link.label.toUpperCase()}
-                            </a>
+                            </SmartLink>
                           ))}
                         </div>
                       </motion.div>
@@ -369,9 +370,9 @@ function MobileSection({ item }: { item: MenuItem }) {
                 </>
               )}
               {flat.map((link) => (
-                <a key={link.label} href={link.url} className="label py-2 text-ink">
+                <SmartLink key={link.label} href={link.url} className="label py-2 text-ink">
                   {link.label.toUpperCase()}
-                </a>
+                </SmartLink>
               ))}
             </div>
           </motion.div>
@@ -451,6 +452,13 @@ export function Navigation({ data }: { data?: NavData | null }) {
     return () => window.removeEventListener("sdr:open-menu", onOpen);
   }, []);
 
+  /* SPA navigation keeps this component mounted — close the meganav
+     and the mobile sheet whenever the route changes */
+  useEffect(() => {
+    setActive(null);
+    setMobileOpen(false);
+  }, [pathname]);
+
   // lock page scroll behind the mobile sheet
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
@@ -476,6 +484,8 @@ export function Navigation({ data }: { data?: NavData | null }) {
     <>
       <motion.header
         data-mode={transparent && isHome ? "dark" : "light"}
+        /* named so route view-transitions leave the nav untouched */
+        style={{ viewTransitionName: "site-header" } as React.CSSProperties}
         initial={false}
         animate={{ y: hidden && !mobileOpen ? "-100%" : "0%" }}
         transition={{ duration: 0.45, ease: [...MEDIA_EASE] }}
@@ -588,9 +598,9 @@ export function Navigation({ data }: { data?: NavData | null }) {
             <div className="mt-auto flex flex-col gap-3 px-6 pb-32 pt-16">
               <p className="label text-ink-3">COMPANY</p>
               {nav.company.map((link) => (
-                <a key={link.label} href={link.url} className="label text-ink">
+                <SmartLink key={link.label} href={link.url} className="label text-ink">
                   {link.label.toUpperCase()}
-                </a>
+                </SmartLink>
               ))}
             </div>
           </motion.div>

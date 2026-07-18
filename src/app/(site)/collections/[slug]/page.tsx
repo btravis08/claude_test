@@ -2,6 +2,7 @@ import { CollectionExplorer } from "@/components/collection/CollectionExplorer";
 import type { CardMeta, ExplorerItem, StoryData } from "@/components/collection/CollectionExplorer";
 import { FooterTagline } from "@/components/FooterTagline";
 import { NavTextLink } from "@/components/NavTextLink";
+import { SmartLink } from "@/components/SmartLink";
 import type { ProductCardData } from "@/components/home/ProductCard";
 import { activeOnly, productsForCollection, toCards } from "@/components/SectionRenderer";
 import { sanityFetch } from "@/sanity/lib/fetch";
@@ -109,12 +110,12 @@ const FALLBACK_DESCRIPTION =
 
 function Chip({ label, href }: { label: string; href: string }) {
   return (
-    <a
+    <SmartLink
       href={href}
       className="label flex h-10 shrink-0 items-center justify-center whitespace-nowrap rounded-xs bg-wash px-3.5 font-medium text-ink transition-colors hover:opacity-80"
     >
       {label.toUpperCase()}
-    </a>
+    </SmartLink>
   );
 }
 

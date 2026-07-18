@@ -2,9 +2,13 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import type { Variants } from "motion/react";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
+
+/* product links navigate client-side so the chrome stays put */
+const MotionLink = motion.create(Link);
 
 /* Swatches stagger-fade in from the right, right to left, when the
    pointer is over the card but outside the image well */
@@ -105,8 +109,12 @@ export function ProductCard({ product }: { product: ProductCardData }) {
         : undefined
       : product.colorCount;
 
+  const CardShell = (
+    product.href?.startsWith("/") ? MotionLink : motion.a
+  ) as typeof motion.a;
+
   return (
-    <motion.a
+    <CardShell
       href={product.href ?? "#"}
       initial="rest"
       animate={showSwatches ? "hover" : "rest"}
@@ -210,6 +218,6 @@ export function ProductCard({ product }: { product: ProductCardData }) {
           </span>
         </div>
       </div>
-    </motion.a>
+    </CardShell>
   );
 }

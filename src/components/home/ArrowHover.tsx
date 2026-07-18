@@ -2,6 +2,7 @@
 
 import { motion } from "motion/react";
 import type { Variants } from "motion/react";
+import Link from "next/link";
 
 /*
   Arrow-swap hover from the design storyboard: on hover the arrow
@@ -62,6 +63,12 @@ export function ArrowButton({
   );
 }
 
-export function ArrowLink(props: React.ComponentProps<typeof motion.a>) {
-  return <motion.a initial="rest" whileHover="hover" animate="rest" {...props} />;
+/* internal hrefs ride next/link so the arrow CTAs navigate client-side */
+const MotionLink = motion.create(Link);
+
+export function ArrowLink({ href, ...props }: React.ComponentProps<typeof motion.a>) {
+  const Comp = (
+    typeof href === "string" && href.startsWith("/") ? MotionLink : motion.a
+  ) as typeof motion.a;
+  return <Comp href={href} initial="rest" whileHover="hover" animate="rest" {...props} />;
 }

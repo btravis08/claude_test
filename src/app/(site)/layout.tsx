@@ -3,6 +3,7 @@ import { CartFlyout } from "@/components/cart/CartFlyout";
 import { Navigation } from "@/components/Navigation";
 import type { MenuItem, NavData, NavLink } from "@/components/Navigation";
 import { FooterTaglineProvider } from "@/components/FooterTagline";
+import { PageTransition } from "@/components/PageTransition";
 import { LegacyBand, SiteFooter } from "@/components/SiteFooter";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { sanityFetch } from "@/sanity/lib/fetch";
@@ -79,7 +80,9 @@ export default async function SiteLayout({
         className="relative z-10 flex min-h-svh flex-col bg-surface md:mb-[var(--footer-h,0px)]"
       >
         <Navigation data={toNavData(navDoc)} />
-        <main className="flex-1">{children}</main>
+        <main className="flex-1">
+          <PageTransition>{children}</PageTransition>
+        </main>
         <LegacyBand />
       </div>
       <SiteFooter />

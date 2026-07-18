@@ -5,6 +5,7 @@ import { FooterTagline } from "@/components/FooterTagline";
 import { RegisterCartRecommendations } from "@/components/cart/CartContext";
 import { CardAddButton, DetailLinks } from "@/components/product/DetailLinks";
 import { ProductHero } from "@/components/product/ProductHero";
+import { SmartLink } from "@/components/SmartLink";
 import { VariantPanel } from "@/components/product/VariantPanel";
 import type { ProductCardData } from "@/components/home/ProductCard";
 import {
@@ -110,7 +111,7 @@ function MiniProductCard({ card, first }: { card: ProductCardData; first?: boole
   const extraLabel =
     extra !== undefined ? (extra > 0 ? `+${extra} colors` : undefined) : card.colorCount;
   return (
-    <a
+    <SmartLink
       href={card.href ?? "#"}
       className={`group flex w-full flex-col gap-[1.125rem] border-b border-r border-line bg-surface p-6 pb-16 ${
         first ? "pl-0" : ""
@@ -145,7 +146,7 @@ function MiniProductCard({ card, first }: { card: ProductCardData; first?: boole
           {extraLabel && <p>{extraLabel}</p>}
         </div>
       </div>
-    </a>
+    </SmartLink>
   );
 }
 

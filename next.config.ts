@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  experimental: {
+    /* React ViewTransition integration — SPA page cross-fades */
+    viewTransition: true,
+  },
   images: {
     remotePatterns: [
       {

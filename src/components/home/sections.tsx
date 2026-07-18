@@ -9,6 +9,7 @@ import {
 import type { LookProductData } from "@/components/home/MediaBlock";
 import { ProductCard } from "@/components/home/ProductCard";
 import type { ProductCardData } from "@/components/home/ProductCard";
+import { SectionReveal, RevealLine, RevealText } from "@/components/home/SectionReveal";
 import { SliderShell } from "@/components/home/SliderShell";
 import { StatDials } from "@/components/home/StatDial";
 import { ArrowUpRight } from "@/components/icons";
@@ -543,43 +544,66 @@ export function TechSpecs({
       <div className="mx-4 mt-14 h-1.5 bg-ink md:mx-8 md:mt-8xl" />
       {/* no column gap: the right column starts on the same centerline
           as the description section's pairs rail above */}
-      <div className="grid w-full grid-cols-1 gap-y-10 px-4 pb-28 pt-14 md:grid-cols-2 md:px-8 md:pb-10xl md:pt-24">
+      <SectionReveal className="grid w-full grid-cols-1 gap-y-10 px-4 pb-28 pt-14 md:grid-cols-2 md:px-8 md:pb-10xl md:pt-24">
         <p className="max-w-[26rem] font-display text-title-lg">{title}</p>
         <div className="flex flex-col gap-8">
-          {/* each group opens with a 1.5px full-width border; value
-              rows sit on a 12px rhythm with hairlines spanning only
-              the value column */}
-          {rows.map((row, i) => {
-            const lines = (row.value ?? "").split("\n").filter(Boolean);
-            return (
-              <div
-                key={row._key ?? i}
-                className="grid grid-cols-2 border-t-[1.5px] border-line"
-              >
-                <p className="label py-3 font-medium text-ink-2">
-                  {(row.label ?? "").toUpperCase()}
-                </p>
-                <div className="flex flex-col">
-                  {lines.map((line, j) => (
-                    <p key={j} className="label border-b border-line py-3 font-medium">
-                      {line.toUpperCase()}
+          {/* each group opens with a 1.5px full-width rule; value rows
+              sit on a 12px rhythm with hairlines spanning only the
+              value column. The rules and text share one timeline: a
+              group's opener draws left→right while its title fades
+              up, its value rows follow one after another, and each
+              group starts on the tail of the one before */}
+          {(() => {
+            const STEP = 0.15;
+            let t = 0;
+            const groups = rows.map((row, i) => {
+              const lines = (row.value ?? "").split("\n").filter(Boolean);
+              const d0 = t;
+              t += STEP * (lines.length + 1);
+              return (
+                <div key={row._key ?? i} className="grid grid-cols-2">
+                  <RevealLine delay={d0} className="col-span-2 h-[1.5px] w-full bg-line" />
+                  <RevealText delay={d0}>
+                    <p className="label py-3 font-medium text-ink-2">
+                      {(row.label ?? "").toUpperCase()}
                     </p>
-                  ))}
+                  </RevealText>
+                  <div className="flex flex-col">
+                    {lines.map((line, j) => (
+                      <div key={j} className="flex flex-col">
+                        <RevealText delay={d0 + STEP * (j + 1)}>
+                          <p className="label py-3 font-medium">{line.toUpperCase()}</p>
+                        </RevealText>
+                        <RevealLine
+                          delay={d0 + STEP * (j + 1)}
+                          className="h-px w-full bg-line"
+                        />
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              );
+            });
+            return (
+              <>
+                {groups}
+                {description && (
+                  <div className="grid grid-cols-2 gap-y-3">
+                    <RevealLine delay={t} className="col-span-2 h-[1.5px] w-full bg-line" />
+                    <span />
+                    <RevealText delay={t}>
+                      <p className="label font-medium leading-relaxed">
+                        {description.toUpperCase()}
+                      </p>
+                    </RevealText>
+                  </div>
+                )}
+              </>
             );
-          })}
-          {description && (
-            <div className="grid grid-cols-2 border-t-[1.5px] border-line pt-3">
-              <span />
-              <p className="label font-medium leading-relaxed">
-                {description.toUpperCase()}
-              </p>
-            </div>
-          )}
+          })()}
           {stats.length > 0 && <StatDials stats={stats} />}
         </div>
-      </div>
+      </SectionReveal>
     </section>
   );
 }

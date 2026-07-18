@@ -10,6 +10,7 @@ import type { LookProductData } from "@/components/home/MediaBlock";
 import { ProductCard } from "@/components/home/ProductCard";
 import type { ProductCardData } from "@/components/home/ProductCard";
 import { SliderShell } from "@/components/home/SliderShell";
+import { StatDial } from "@/components/home/StatDial";
 import { ArrowUpRight } from "@/components/icons";
 
 /*
@@ -525,32 +526,6 @@ const defaultSpecStats = [
   { value: 91, label: "Mobility" },
 ];
 
-/* Radial tick dial: a ring of ticks where the value's share reads in
-   ink and the remainder in the hairline tone; mono label + NN/100 */
-function StatDial({ value = 0, label }: { value?: number; label?: string }) {
-  const pct = Math.max(0, Math.min(100, value));
-  return (
-    <div className="flex shrink-0 items-center gap-3">
-      <div
-        aria-hidden
-        className="size-16 rounded-full"
-        style={{
-          background: `conic-gradient(var(--ink) ${pct}%, var(--line) ${pct}%)`,
-          maskImage:
-            "repeating-conic-gradient(#000 0deg 3deg, transparent 3deg 8deg), radial-gradient(closest-side, transparent 62%, #000 63%)",
-          maskComposite: "intersect",
-          WebkitMaskImage:
-            "repeating-conic-gradient(#000 0deg 3deg, transparent 3deg 8deg), radial-gradient(closest-side, transparent 62%, #000 63%)",
-          WebkitMaskComposite: "source-in",
-        }}
-      />
-      <div className="flex flex-col gap-0.5 font-mono text-[0.6875rem] uppercase leading-tight tracking-wide">
-        <p className="max-w-32 text-ink">{label}</p>
-        <p className="text-ink-3">{pct}/100</p>
-      </div>
-    </div>
-  );
-}
 
 export function TechSpecs({
   mode = "light",

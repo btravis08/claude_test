@@ -116,7 +116,7 @@ function MiniProductCard({ card, first }: { card: ProductCardData; first?: boole
   return (
     <SmartLink
       href={card.href ?? "#"}
-      className={`group flex w-full flex-col gap-[1.125rem] border-b border-r border-line bg-surface p-6 pb-16 ${
+      className={`group flex w-full flex-col gap-[1.125rem] border-b border-r border-line bg-surface p-4 pb-16 md:p-6 md:pb-16 ${
         first ? "pl-0" : ""
       }`}
     >
@@ -315,11 +315,11 @@ export default async function ProductPage({
             progress={false}
             headerClassName="pb-7 pr-4 md:pr-8"
             trackClassName="border-t-[1.5px] border-line"
-            /* the flush first card gives up its 24px left padding, so
-               its column is 24px narrower — keeps every media well
-               (and thus card height) identical, per the comp's
-               260/284px rhythm */
-            cols="auto-cols-[68%] [grid-template-columns:calc(68%-1.5rem)] sm:auto-cols-[41%] sm:[grid-template-columns:calc(41%-1.5rem)]"
+            /* the flush first card gives up its left padding (16px
+               mobile / 24px md+), so its column is that much narrower
+               — keeps every media well (and thus card height)
+               identical, per the comp's 260/284px rhythm */
+            cols="auto-cols-[68%] [grid-template-columns:calc(68%-1rem)] sm:auto-cols-[41%] sm:[grid-template-columns:calc(41%-1rem)] md:[grid-template-columns:calc(41%-1.5rem)]"
             items={pairs.map((item, i) => ({
               key: item._key ?? String(i),
               card: <MiniProductCard card={item} first={i === 0} />,

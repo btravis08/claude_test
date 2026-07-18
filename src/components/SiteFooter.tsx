@@ -132,7 +132,10 @@ export function SiteFooter() {
 
       {/* newsletter */}
       <form className="flex w-full flex-col items-stretch gap-3 p-4 sm:flex-row sm:gap-0 md:p-6">
-        <label className="flex h-[2.875rem] flex-1 items-center rounded-xs bg-wash pl-4 pr-3 backdrop-blur-[12px] md:h-10">
+        {/* flex-1 only in the sm+ row layout — in the stacked mobile
+            column it would become the vertical basis and squash the
+            46px heights */}
+        <label className="flex h-[2.875rem] items-center rounded-xs bg-wash pl-4 pr-3 backdrop-blur-[12px] sm:flex-1 md:h-10">
           <span className="sr-only">Email address</span>
           <input
             type="email"
@@ -142,7 +145,7 @@ export function SiteFooter() {
         </label>
         <button
           type="submit"
-          className="label flex h-[2.875rem] min-w-[9.375rem] flex-1 items-center justify-center rounded-xs bg-btn px-3.5 font-medium text-btn-fg transition-opacity hover:opacity-80 md:h-10"
+          className="label flex h-[2.875rem] items-center justify-center rounded-xs bg-btn px-3.5 font-medium text-btn-fg transition-opacity hover:opacity-80 sm:min-w-[9.375rem] sm:flex-1 md:h-10"
         >
           Submit
         </button>

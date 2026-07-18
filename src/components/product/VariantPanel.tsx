@@ -3,14 +3,14 @@
 import { useState } from "react";
 
 import { useCart } from "@/components/cart/CartContext";
-import { ChevronDown, Ruler } from "@/components/icons";
+import { ChevronDown } from "@/components/icons";
 import type { HeroVariantData } from "@/components/product/ProductHero";
 
 /*
   Tablet/mobile variant selectors inside the description section (the
   comp's 33298:29696 tablet/mobile variants): color chip + swatch
-  tiles, the SIZE dropdown chip, FIND MY SIZE, and the SELECT SIZE
-  CTA. Size selection happens in the quick-add flyout; the marker
+  tiles, the SIZE dropdown chip, and the SELECT SIZE CTA. Size
+  selection (and FIND MY SIZE) lives in the quick-add flyout; the marker
   attribute lets the mobile purchase bar minimize while this panel
   is on screen.
 */
@@ -94,16 +94,6 @@ export function VariantPanel({
           <ChevronDown size={20} className="absolute right-3 text-ink" />
         </button>
       )}
-
-      <div className="flex w-full items-center justify-center py-1.5">
-        <a
-          href="#"
-          className="label flex items-center gap-1.5 font-medium text-ink transition-opacity hover:opacity-70"
-        >
-          Find my size
-          <Ruler size={10} />
-        </a>
-      </div>
 
       <button
         type="button"

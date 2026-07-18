@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 
 import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
-import { Close, Minus, Plus } from "@/components/icons";
+import { Close, Minus, Plus, Ruler } from "@/components/icons";
 import {
   formatPrice,
   parsePrice,
@@ -140,6 +140,15 @@ function QuickAddView() {
                   {option}
                 </button>
               ))}
+            </div>
+            <div className="flex w-full items-center justify-center py-1.5">
+              <a
+                href="#"
+                className="label flex items-center gap-1.5 font-medium text-ink transition-opacity hover:opacity-70"
+              >
+                Find my size
+                <Ruler size={10} />
+              </a>
             </div>
           </div>
         )}

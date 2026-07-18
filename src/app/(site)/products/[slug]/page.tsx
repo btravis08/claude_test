@@ -24,13 +24,16 @@ import { sanityFetch } from "@/sanity/lib/fetch";
 import { urlFor } from "@/sanity/lib/image";
 import {
   automaticDiscountsQuery,
+  pageBySlugQuery,
   productBySlugQuery,
   productsByTagQuery,
   storeSettingsQuery,
 } from "@/sanity/lib/queries";
 import type {
   Discount,
+  Page,
   ProductFull,
+  SectionHero,
   SliderProduct,
   StoreSettings,
 } from "@/sanity/types";
@@ -195,6 +198,23 @@ export default async function ProductPage({
     );
   }
 
+  /* CONTENT OVERRIDE — the Presidio's second carousel slide mirrors
+     whatever image the homepage hero currently uses, fetched live
+     from the CMS at render time (this sandbox can't write to the
+     dataset). To make it a real product image instead: add it to the
+     Presidio's images in the Studio and delete this block. */
+  let heroImages = hero.images;
+  if (slug === "the-presidio" || !product) {
+    const home = await sanityFetch<Page | null>(pageBySlugQuery, { slug: "home" }, null);
+    const homeHero = home?.sections?.find(
+      (section): section is SectionHero => section._type === "sectionHero",
+    );
+    const homeHeroImage = img(homeHero?.image) ?? "/figma/campaign.png";
+    heroImages = [heroImages[0], homeHeroImage, ...heroImages.slice(2)].filter(
+      (src): src is string => Boolean(src),
+    );
+  }
+
   /* pairs well with: explicit references first, topped up to at least
      four cards with products sharing the first tag (excluding self) */
   const tag = product?.tags?.[0] ?? "all";
@@ -231,7 +251,7 @@ export default async function ProductPage({
       {product?.showFooterTagline && <FooterTagline />}
 
       {/* required: hero carousel + affixed purchase bar */}
-      <ProductHero product={hero} />
+      <ProductHero product={{ ...hero, images: heroImages }} />
       <RegisterCartRecommendations
         items={pairsForCart}
       />

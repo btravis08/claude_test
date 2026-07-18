@@ -10,7 +10,7 @@ import type { LookProductData } from "@/components/home/MediaBlock";
 import { ProductCard } from "@/components/home/ProductCard";
 import type { ProductCardData } from "@/components/home/ProductCard";
 import { SliderShell } from "@/components/home/SliderShell";
-import { StatDial } from "@/components/home/StatDial";
+import { StatDials } from "@/components/home/StatDial";
 import { ArrowUpRight } from "@/components/icons";
 
 /*
@@ -577,13 +577,7 @@ export function TechSpecs({
               </p>
             </div>
           )}
-          {stats.length > 0 && (
-            <div className="flex flex-wrap gap-x-10 gap-y-8 pt-4">
-              {stats.map((stat, i) => (
-                <StatDial key={stat._key ?? i} value={stat.value} label={stat.label} />
-              ))}
-            </div>
-          )}
+          {stats.length > 0 && <StatDials stats={stats} />}
         </div>
       </div>
     </section>

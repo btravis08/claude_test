@@ -4,20 +4,23 @@ import { useRef } from "react";
 import { motion, useInView } from "motion/react";
 
 /*
-  Radial tick dial for the tech-specs stats. The ring is 45 ticks on an
-  8° rhythm (3° tick / 5° gap, matching the old conic-gradient mask);
-  the value's share reads in ink over a static hairline-tone ring.
+  Radial tick dials for the tech-specs stats. Each ring is 45 ticks on
+  an 8° rhythm (3° tick / 5° gap); the full ring renders in the
+  hairline tone and the value's share draws over it in ink.
 
-  On first scroll into view the ink ticks draw in clockwise from
-  12 o'clock: each tick strokes outward from its inner end
-  (pathLength 0 → 1) on an ease-out curve, staggered tightly enough
-  that neighbors overlap mid-draw.
+  The dials stack vertically and share one timeline: when the group
+  first scrolls into view every dial starts animating, each offset by
+  its index, and within a dial the ink ticks draw outward from their
+  inner end (pathLength 0 → 1, ease-out) staggered tightly enough that
+  neighbors overlap as the fill sweeps clockwise from 12 o'clock.
 */
 
 const TICKS = 45;
 const STEP = 360 / TICKS;
 const R_OUT = 32;
 const R_IN = 20;
+/* start-time offset between consecutive dials on the shared timeline */
+const DIAL_STAGGER = 0.3;
 
 /* inner→outer path so pathLength draws the tick outward */
 const tickPath = (i: number) => {
@@ -29,46 +32,69 @@ const tickPath = (i: number) => {
   return `M ${x1.toFixed(3)} ${y1.toFixed(3)} L ${x2.toFixed(3)} ${y2.toFixed(3)}`;
 };
 
-export function StatDial({ value = 0, label }: { value?: number; label?: string }) {
+function StatDial({
+  value = 0,
+  label,
+  active,
+  delay = 0,
+}: {
+  value?: number;
+  label?: string;
+  active: boolean;
+  delay?: number;
+}) {
   const pct = Math.max(0, Math.min(100, value));
   const filled = Math.round((pct / 100) * TICKS);
-  const ref = useRef<SVGSVGElement>(null);
-  const inView = useInView(ref, { once: true, margin: "0px 0px -15% 0px" });
 
   return (
     <div className="flex shrink-0 items-center gap-3">
-      <svg
-        ref={ref}
-        aria-hidden
-        viewBox="0 0 64 64"
-        className="size-16 overflow-visible"
-        strokeWidth={1.6}
-      >
+      <svg aria-hidden viewBox="0 0 64 64" className="size-16 overflow-visible" strokeWidth={1.6}>
         {/* full hairline ring underneath; the value's ticks draw over it */}
         {Array.from({ length: TICKS }, (_, i) => (
           <path key={i} d={tickPath(i)} className="stroke-[var(--line)]" />
         ))}
-        {Array.from({ length: filled }, (_, i) => {
-          return (
-            <motion.path
-              key={i}
-              d={tickPath(i)}
-              className="stroke-[var(--ink)]"
-              initial={{ pathLength: 0 }}
-              animate={{ pathLength: inView ? 1 : 0 }}
-              transition={{
-                duration: 0.45,
-                delay: i * 0.035,
-                ease: [0.33, 1, 0.68, 1],
-              }}
-            />
-          );
-        })}
+        {Array.from({ length: filled }, (_, i) => (
+          <motion.path
+            key={i}
+            d={tickPath(i)}
+            className="stroke-[var(--ink)]"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: active ? 1 : 0 }}
+            transition={{
+              duration: 0.45,
+              delay: delay + i * 0.035,
+              ease: [0.33, 1, 0.68, 1],
+            }}
+          />
+        ))}
       </svg>
       <div className="flex flex-col gap-0.5 font-mono text-[0.6875rem] uppercase leading-tight tracking-wide">
         <p className="max-w-32 text-ink">{label}</p>
         <p className="text-ink-3">{pct}/100</p>
       </div>
+    </div>
+  );
+}
+
+export function StatDials({
+  stats,
+}: {
+  stats: Array<{ _key?: string; value?: number; label?: string }>;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: "0px 0px -15% 0px" });
+
+  return (
+    <div ref={ref} className="flex flex-col gap-8 pt-4">
+      {stats.map((stat, i) => (
+        <StatDial
+          key={stat._key ?? i}
+          value={stat.value}
+          label={stat.label}
+          active={inView}
+          delay={i * DIAL_STAGGER}
+        />
+      ))}
     </div>
   );
 }

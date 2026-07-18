@@ -12,7 +12,8 @@ import { motion, useInView } from "motion/react";
   element tripping independently.
 
   Leaves:
-  - RevealText — fades and rises into place
+  - RevealText — the text holds still while a mask wipes down over
+    it (clip-path inset), uncovering it top to bottom
   - RevealLine — a rule that draws in from the left (scaleX)
 */
 
@@ -50,8 +51,8 @@ export function RevealText({
   return (
     <motion.div
       className={className}
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: on ? 1 : 0, y: on ? 0 : 12 }}
+      initial={{ clipPath: "inset(0 0 100% 0)" }}
+      animate={{ clipPath: on ? "inset(0 0 0% 0)" : "inset(0 0 100% 0)" }}
       transition={{ duration: 0.5, delay, ease: EASE }}
     >
       {children}

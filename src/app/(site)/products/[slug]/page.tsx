@@ -281,7 +281,7 @@ export default async function ProductPage({
         data-mode="light"
         className="grid w-full grid-cols-1 gap-y-9 bg-surface px-4 pb-8xl pt-6xl text-ink md:min-h-[80svh] md:grid-cols-2 md:px-8"
       >
-        <div className="flex flex-col gap-9 pt-[0.875rem] md:gap-16 md:pr-24">
+        <div className="flex flex-col gap-9 md:gap-16 md:pr-24 md:pt-[0.875rem]">
           <nav aria-label="Breadcrumb" className="label flex items-center gap-1.5 font-medium">
             {[product?.gender ?? "Men", product?.productType ?? "Footwear"].map(
               (crumb) => (
@@ -315,8 +315,9 @@ export default async function ProductPage({
           />
           {/* tablet/mobile: variant selectors live here; the mobile
               purchase bar minimizes while this panel is on screen */}
+          {/* mobile: 36px column gap + 28px = 64px above the selectors */}
           <VariantPanel
-            className="xl:hidden"
+            className="max-md:mt-7 xl:hidden"
             title={hero.title ?? "Presidio"}
             price={hero.price}
             image={hero.images[0]}

@@ -144,7 +144,12 @@ export function Hero({
           videoUrl={videoUrl}
           entranceDuration={1.8}
         />
-        <CampaignOverlay left={eyebrow} center={headline} right={primaryCta} stack />
+        <CampaignOverlay
+          left={eyebrow}
+          center={headline}
+          right={primaryCta}
+          stack="button"
+        />
       </a>
     </section>
   );
@@ -186,7 +191,7 @@ export function FullWidth({
       />
       {/* pointer-events pass through the text overlay so the media's
           own controls (bag, play, pause) stay hoverable beneath it */}
-      <CampaignOverlay left={eyebrow} center={headline} right={primaryCta} />
+      <CampaignOverlay left={eyebrow} center={headline} right={primaryCta} stack="link" />
     </>
   );
   return (

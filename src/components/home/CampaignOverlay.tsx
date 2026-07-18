@@ -12,10 +12,12 @@ import { useEffect, useRef, useState } from "react";
   (Motion layout/FLIP, ease-in-out); the center text fades in place,
   centered on the container.
 
-  `stack` (the homepage hero) swaps mobile to a bottom-aligned centered
-  column: eyebrow + headline stacked, and the CTA as a full-width
-  Primary Button Large resting 16px above the fixed mobile control bar
-  on load (bar = bottom-4 + h-12 -> 80px of bottom padding).
+  `stack` swaps mobile to a bottom-aligned centered column: eyebrow +
+  headline stacked, then the CTA. "button" (the homepage hero) renders
+  it as a full-width Primary Button Large riding the hero-cta hold
+  line 16px above the fixed control bar; "link" (Full Width sections)
+  keeps the nav-style text link, resting 16px above the section's
+  bottom edge.
 
   Hovering the whole section animates the right element's underline
   exactly like the nav links (the section provides the `group`).
@@ -26,12 +28,12 @@ export function CampaignOverlay({
   left,
   center,
   right,
-  stack = false,
+  stack,
 }: {
   left?: string;
   center?: string;
   right?: string;
-  stack?: boolean;
+  stack?: "button" | "link";
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.2 });
@@ -55,16 +57,20 @@ export function CampaignOverlay({
 
   return (
     <div ref={ref} className="pointer-events-none absolute inset-0">
-      {/* mobile hero: bottom-aligned centered stack + full-width CTA.
-          The stack's flow position is 16px above the hero's bottom
-          edge (pb-4); sticky bottom-20 holds it 80px above the
-          viewport bottom — 16px clear of the fixed control bar —
-          until the hero's edge catches up, when it anchors and rides
-          away with the section. Pure CSS, compositor-smooth. */}
+      {/* mobile: bottom-aligned centered stack. The hero ("button")
+          rides the hero-cta hold line — flow position 16px above the
+          section's bottom (pb-4), held 16px clear of the fixed
+          control bar until the edge catches up (pure CSS sticky).
+          Full Width ("link") rests statically 16px above the
+          section's bottom and keeps the nav-style text link. */}
       {stack && (
         <div className="absolute inset-0 md:hidden">
           <div className="flex h-full flex-col justify-end px-4 pb-4">
-            <div className="hero-cta sticky flex w-full flex-col items-center gap-6">
+            <div
+              className={`flex w-full flex-col items-center gap-6 ${
+                stack === "button" ? "hero-cta sticky" : ""
+              }`}
+            >
               <div className="flex flex-col items-center gap-4 text-center">
                 {left !== undefined && (
                   <motion.span {...fade} className="label font-medium">
@@ -77,14 +83,21 @@ export function CampaignOverlay({
                   </motion.span>
                 )}
               </div>
-              {right !== undefined && (
-                <motion.span
-                  {...fade}
-                  className="label flex h-[2.875rem] w-full items-center justify-center rounded-xs bg-btn font-medium text-btn-fg"
-                >
-                  {right}
-                </motion.span>
-              )}
+              {right !== undefined &&
+                (stack === "button" ? (
+                  <motion.span
+                    {...fade}
+                    className="label flex h-[2.875rem] w-full items-center justify-center rounded-xs bg-btn font-medium text-btn-fg"
+                  >
+                    {right}
+                  </motion.span>
+                ) : (
+                  <motion.span {...fade} className="label relative font-medium">
+                    {right}
+                    {/* nav-style underline, driven by hovering the section */}
+                    <span className="absolute inset-x-0 -bottom-0.5 h-px origin-right scale-x-0 bg-current transition-transform duration-300 group-hover:origin-left group-hover:scale-x-100" />
+                  </motion.span>
+                ))}
             </div>
           </div>
         </div>

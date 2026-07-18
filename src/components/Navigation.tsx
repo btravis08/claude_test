@@ -439,12 +439,25 @@ export function Navigation({ data }: { data?: NavData | null }) {
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
+    /* SPA route changes swap the page beneath the bar without any
+       scroll event (the reset lands at the same position, often 0) —
+       the point-sample under the bar would keep the OLD page's mode.
+       Resample every frame through the page transition (exit + enter
+       + settle) so the bar tracks whatever fades in beneath it. */
+    let raf = 0;
+    const started = performance.now();
+    const resample = () => {
+      setBarMode(modeUnderBar());
+      if (performance.now() - started < 1300) raf = requestAnimationFrame(resample);
+    };
+    raf = requestAnimationFrame(resample);
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
+      cancelAnimationFrame(raf);
     };
-    /* pathname included so overHero/atTop recompute on every route
-       change, not only when hasFullHero flips — a same-kind
+    /* pathname included so overHero/atTop/barMode recompute on every
+       route change, not only when hasFullHero flips — a same-kind
        navigation (e.g. PDP → home at rest) fires no scroll event */
   }, [hasFullHero, pathname]);
 

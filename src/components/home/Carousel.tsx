@@ -97,8 +97,18 @@ export function Carousel({
       const DUR = 0.6;
       const EASE: [number, number, number, number] = [0.85, 0, 0.15, 1];
       const dist = Math.abs(m.top - prev);
-      /* peak stretch ≈ mid-flight speed × lag; solve lag for +50% */
-      const lag = Math.min(0.15, (0.5 * m.height * DUR) / (2.9 * dist));
+      /* stretch scales with travel: 1.1x for an adjacent hop up to
+         1.5x for a full-rail jump, interpolated by steps travelled */
+      const btns = railRef.current!.querySelectorAll("button");
+      const step =
+        btns.length > 1 ? btns[1].offsetTop - btns[0].offsetTop : m.height;
+      const steps = Math.max(1, Math.round(dist / step));
+      const totalSteps = Math.max(2, btns.length - 1);
+      const stretch = 1.1 + (0.4 * (steps - 1)) / (totalSteps - 1);
+      /* peak stretch ≈ mid-flight speed (≈5.9·dist/DUR for this
+         bezier) × lag; solve lag for the target extra length */
+      const extra = (stretch - 1) * m.height;
+      const lag = Math.min(0.15, (extra * DUR) / (5.9 * dist));
       const down = m.top > prev;
       animate(edgeTop, m.top, { duration: DUR, ease: EASE, delay: down ? lag : 0 });
       animate(edgeBottom, m.top + m.height, {

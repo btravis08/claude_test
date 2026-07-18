@@ -21,6 +21,14 @@ embedded at /studio, with Motion (framer-motion) for interactions.
 - Verify changes with `npm run build`, then drive the real page (in
   Claude's remote sandbox, Playwright with
   `executablePath: '/opt/pw-browsers/chromium'`) before pushing.
+- After every push to `main`, notify the user (PushNotification) once
+  the changes reach production. The sandbox cannot observe Vercel
+  (egress blocks vercel.app; WebFetch gets 403 from Vercel's bot
+  protection; GitHub tools don't expose deploy statuses), so
+  time-base it: schedule a `send_later` check-in ~5 min after the
+  push, then push-notify that the deploy window has elapsed and the
+  changes should be live on sundayred.vercel.app. Batch rapid
+  successive pushes into one notification.
 
 ## Design source (Figma)
 

@@ -241,10 +241,13 @@ export function Carousel({
             className="relative aspect-[4/5] min-w-0 flex-1 overflow-hidden bg-surface-2"
           >
             <AnimatePresence initial={false}>
+              {/* bleeds 32px past the mask top/bottom so the y-slide
+                  travels behind the container edge instead of
+                  revealing the (dark-mode) backdrop */}
               <motion.div
                 key={active}
                 aria-hidden
-                className="absolute inset-0 bg-cover bg-center"
+                className="absolute -inset-y-8 inset-x-0 bg-cover bg-center"
                 style={{
                   backgroundImage: `url(${current?.image ?? "/figma/media-portrait.png"})`,
                 }}

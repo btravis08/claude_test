@@ -554,7 +554,7 @@ export function TechSpecs({
               up, its value rows follow one after another, and each
               group starts on the tail of the one before */}
           {(() => {
-            const STEP = 0.15;
+            const STEP = 0.08;
             let t = 0;
             const groups = rows.map((row, i) => {
               const lines = (row.value ?? "").split("\n").filter(Boolean);

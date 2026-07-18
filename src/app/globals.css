@@ -277,6 +277,23 @@ body {
 }
 
 /*
+  Transparent-nav inversion: while the nav floats over a hero, its
+  content is painted pure white and difference-blended against the
+  page, so every element — logo, links, icons — inverts per pixel
+  against whatever is actually behind it (white over dark imagery,
+  near-black over the light canvas), tracking carousel slides in
+  real time. Only active in the transparent state; the opaque nav
+  uses the normal tokens.
+*/
+.nav-blend {
+  mix-blend-mode: difference;
+}
+.nav-blend,
+.nav-blend [class*="text-ink"] {
+  color: #fff;
+}
+
+/*
   Homepage hero CTA hold line: the stack sticks 80px above the
   viewport bottom — 16px gap + 48px bar + 16px bar offset, above the
   safe area — so it rides 16px clear of the fixed mobile control bar

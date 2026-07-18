@@ -513,7 +513,12 @@ export function Navigation({ data }: { data?: NavData | null }) {
           setHovered(false);
           setActive(null);
         }}
-        className="fixed top-0 z-50 flex w-full flex-col text-ink"
+        /* nav-blend must sit on the header itself: fixed + z-index
+           make it a stacking context, so a blend INSIDE it could
+           never reach the page — the context root blends as a group */
+        className={`fixed top-0 z-50 flex w-full flex-col text-ink ${
+          transparent ? "nav-blend" : ""
+        }`}
       >
         {/* bar: transparent over the hero / at top, bg-primary once
             scrolled back in or engaged (hover / open dropdown). The

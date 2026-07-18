@@ -245,15 +245,29 @@ body {
   }
 
   /* SPA route changes flip the nav's color mode (data-mode) while the
-     chrome stays mounted — ease every color in the header and the
-     mobile control bar so light/dark states cross-fade instead of
-     snapping. In the base layer on purpose: elements carrying their
-     own transition utilities (hover scales, underline draws) override
+     chrome stays mounted — ease the light/dark cross-fade. Only
+     elements that DIRECTLY bind a mode color (text-ink / bg-* /
+     border-*) get the transition: their var flips instantly, so the
+     parallel 300ms eases stay in lockstep. Everything else (icons on
+     currentColor, plain text) inherits the animating value frame by
+     frame — giving descendants their own transition would re-smooth
+     an already-animating color and make deeper elements (like the
+     hamburger icon) visibly lag the text. In the base layer on
+     purpose: elements with their own transition utilities override
      this and keep their behavior. */
   [data-nav-root],
-  [data-nav-root] *,
   [data-navbar],
-  [data-navbar] * {
+  :is([data-nav-root], [data-navbar])
+    :is(
+      [class*="text-ink"],
+      [class*="text-btn"],
+      [class*="bg-surface"],
+      [class*="bg-wash"],
+      [class*="bg-btn"],
+      [class*="bg-line"],
+      [class*="border-line"],
+      [class*="border-ink"]
+    ) {
     transition-property: color, background-color, border-color, fill, stroke;
     transition-duration: 300ms;
     transition-timing-function: ease;

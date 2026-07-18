@@ -74,10 +74,13 @@ export default async function SiteLayout({
       <FooterTaglineProvider>
       {/* raised page wrapper; its bottom margin (--footer-h, published
           by SiteFooter) is the reveal window for the fixed footer
-          pinned underneath — a margin, so the footer stays clickable */}
+          pinned underneath — a margin, so the footer stays clickable.
+          Capped at one viewport: a footer taller than the screen
+          (mobile) reveals its bottom viewport-full with no dead
+          scroll past it */}
       <div
         id="top"
-        className="relative z-10 flex min-h-svh flex-col bg-surface md:mb-[var(--footer-h,0px)]"
+        className="relative z-10 flex min-h-svh flex-col bg-surface mb-[min(var(--footer-h,0px),100svh)]"
       >
         <Navigation data={toNavData(navDoc)} />
         <main className="flex-1">

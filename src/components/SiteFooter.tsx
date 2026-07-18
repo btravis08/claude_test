@@ -71,7 +71,7 @@ export function SiteFooter() {
     <footer
       ref={ref}
       data-mode="light"
-      className="bg-surface text-ink md:fixed md:inset-x-0 md:bottom-0"
+      className="fixed inset-x-0 bottom-0 bg-surface text-ink pb-[calc(5rem+env(safe-area-inset-bottom,0px))] md:pb-0"
     >
       {/* Earned Never Given wordmark art */}
       {showTagline && (

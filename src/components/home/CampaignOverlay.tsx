@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useInView } from "motion/react";
+import { motion, useInView, useScroll, useTransform } from "motion/react";
 import type { Transition } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
@@ -37,6 +37,14 @@ export function CampaignOverlay({
   const inView = useInView(ref, { once: true, amount: 0.2 });
   const [go, setGo] = useState(false);
 
+  /* mobile stack: on load the CTA rests 16px above the fixed control
+     bar (16 offset + 48 bar + 16 gap = 80px pad). The pad shrinks 1:1
+     with scroll to a 16px floor, so the button holds its 16px gap to
+     the bar while the bar still covers the hero, then anchors 16px
+     from the hero's bottom edge and scrolls away with it. */
+  const { scrollY } = useScroll();
+  const stackPad = useTransform(scrollY, [0, 64], [80, 16]);
+
   useEffect(() => {
     if (!inView) return;
     // kick off while the image entrance is still running
@@ -56,7 +64,10 @@ export function CampaignOverlay({
     <div ref={ref} className="pointer-events-none absolute inset-0">
       {/* mobile hero: bottom-aligned centered stack + full-width CTA */}
       {stack && (
-        <div className="absolute inset-0 flex flex-col items-center justify-end gap-6 px-4 pb-20 md:hidden">
+        <motion.div
+          style={{ paddingBottom: stackPad }}
+          className="absolute inset-0 flex flex-col items-center justify-end gap-6 px-4 md:hidden"
+        >
           <div className="flex flex-col items-center gap-4 text-center">
             {left !== undefined && (
               <motion.span {...fade} className="label font-medium">
@@ -77,7 +88,7 @@ export function CampaignOverlay({
               {right}
             </motion.span>
           )}
-        </div>
+        </motion.div>
       )}
 
       {/* desktop (and non-stacked mobile): the centered 3-column row */}

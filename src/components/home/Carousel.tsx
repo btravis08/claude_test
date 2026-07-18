@@ -1,7 +1,14 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
-import { useLayoutEffect, useRef, useState } from "react";
+import {
+  AnimatePresence,
+  animate,
+  motion,
+  useMotionValue,
+  useTransform,
+} from "motion/react";
+import { useLayoutEffect, useRef } from "react";
+import { useState } from "react";
 
 import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
 import { Pause } from "@/components/icons";
@@ -60,40 +67,58 @@ export function Carousel({
   const [active, setActive] = useState(0);
   const current = items[active] ?? items[0];
 
-  /* the thumb rail's travelling edge bar: measure the active thumb's
-     offset within the rail so the bar slides to it. While moving it
-     stretches to 1.5x its length mid-travel (symmetric about the
-     travel path) and settles back to 1x */
+  /* The thumb rail's travelling edge bar. Both edges tween to the
+     active thumb on the SAME bezier in one continuous motion; the
+     trailing edge starts a beat after the leading edge, so the bar
+     stretches while it travels and reabsorbs as it lands — no
+     mid-flight keyframe stall. The lag shrinks with travel distance
+     so the peak stretch stays ~1.5x regardless of how far it jumps */
   const railRef = useRef<HTMLDivElement>(null);
-  const prevBar = useRef<{ top: number; height: number } | null>(null);
-  const [bar, setBar] = useState<{
-    top: number | number[];
-    height: number | number[];
-  }>({ top: 0, height: 0 });
+  const prevTop = useRef<number | null>(null);
+  const edgeTop = useMotionValue(0);
+  const edgeBottom = useMotionValue(0);
+  const barHeight = useTransform(
+    [edgeTop, edgeBottom],
+    ([t, b]: number[]) => b - t,
+  );
   useLayoutEffect(() => {
-    const measure = (stretch: boolean) => {
+    const measure = () => {
       const btn = railRef.current?.querySelectorAll("button")[active];
-      if (!btn) return;
-      const top = btn.offsetTop;
-      const height = btn.offsetHeight;
-      const prev = prevBar.current;
-      if (stretch && prev && prev.top !== top) {
-        const long = height * 1.5;
-        const midCenter = (prev.top + prev.height / 2 + top + height / 2) / 2;
-        setBar({
-          top: [prev.top, midCenter - long / 2, top],
-          height: [prev.height, long, height],
-        });
-      } else {
-        setBar({ top, height });
-      }
-      prevBar.current = { top, height };
+      if (!btn) return null;
+      return { top: btn.offsetTop, height: btn.offsetHeight };
     };
-    measure(true);
-    const onResize = () => measure(false);
+    const m = measure();
+    if (!m) return;
+    const prev = prevTop.current;
+    if (prev === null || prev === m.top) {
+      edgeTop.jump(m.top);
+      edgeBottom.jump(m.top + m.height);
+    } else {
+      const DUR = 0.6;
+      const EASE: [number, number, number, number] = [0.85, 0, 0.15, 1];
+      const dist = Math.abs(m.top - prev);
+      /* peak stretch ≈ mid-flight speed × lag; solve lag for +50% */
+      const lag = Math.min(0.15, (0.5 * m.height * DUR) / (2.9 * dist));
+      const down = m.top > prev;
+      animate(edgeTop, m.top, { duration: DUR, ease: EASE, delay: down ? lag : 0 });
+      animate(edgeBottom, m.top + m.height, {
+        duration: DUR,
+        ease: EASE,
+        delay: down ? 0 : lag,
+      });
+    }
+    prevTop.current = m.top;
+
+    const onResize = () => {
+      const r = measure();
+      if (!r) return;
+      edgeTop.jump(r.top);
+      edgeBottom.jump(r.top + r.height);
+      prevTop.current = r.top;
+    };
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
-  }, [active, items.length]);
+  }, [active, items.length, edgeTop, edgeBottom]);
 
   const description = (
     <AnimatePresence mode="wait" initial={false}>
@@ -239,14 +264,11 @@ export function Carousel({
               </button>
             ))}
             {/* one 2px bar on the rail's right edge travels to the
-                active thumb, stretching mid-flight; dramatic
-                ease-in-out across the keyframes */}
+                active thumb, stretching in flight (edge-lag) */}
             <motion.span
               aria-hidden
               className="absolute right-0 w-0.5 bg-ink"
-              initial={false}
-              animate={{ top: bar.top, height: bar.height }}
-              transition={{ duration: 0.6, ease: [0.85, 0, 0.15, 1] }}
+              style={{ top: edgeTop, height: barHeight }}
             />
           </div>
         </div>

@@ -80,7 +80,10 @@ export default async function SiteLayout({
           scroll past it */}
       <div
         id="top"
-        className="relative z-10 flex min-h-svh flex-col bg-surface mb-[min(var(--footer-h,0px),100svh)]"
+        /* min-h-lvh (not svh): during iOS toolbar transitions the
+           layout viewport is taller than svh — the wrapper must cover
+           it or the fixed footer peeks through on load */
+        className="relative z-10 flex min-h-lvh flex-col bg-surface mb-[min(var(--footer-h,0px),100svh)]"
       >
         <Navigation data={toNavData(navDoc)} />
         <main className="flex-1">

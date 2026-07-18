@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 
 import { useFooterTagline } from "@/components/FooterTagline";
 import { Logo } from "@/components/Logo";
@@ -50,6 +50,10 @@ export function SiteFooter() {
   const ref = useRef<HTMLElement>(null);
   /* "Earned Never Given" art — per-page CMS toggle, off by default */
   const showTagline = useFooterTagline();
+  /* painted only when the scroll position is within reveal range —
+     SSR renders it invisible, so it can never flash on load, during
+     streaming, or mid route-transition while document height shifts */
+  const [inRange, setInRange] = useState(false);
 
   /* publish the footer's height as --footer-h; the page wrapper uses
      it as margin-bottom so exactly one footer-height gets revealed */
@@ -59,10 +63,25 @@ export function SiteFooter() {
     const publish = () =>
       document.documentElement.style.setProperty("--footer-h", `${el.offsetHeight}px`);
     publish();
-    const observer = new ResizeObserver(publish);
+    const check = () => {
+      const remaining =
+        document.documentElement.scrollHeight - (window.scrollY + window.innerHeight);
+      /* flip 100px before the reveal zone could possibly show */
+      setInRange(remaining < el.offsetHeight + 100);
+    };
+    check();
+    const observer = new ResizeObserver(() => {
+      publish();
+      check();
+    });
     observer.observe(el);
+    observer.observe(document.body);
+    window.addEventListener("scroll", check, { passive: true });
+    window.addEventListener("resize", check);
     return () => {
       observer.disconnect();
+      window.removeEventListener("scroll", check);
+      window.removeEventListener("resize", check);
       document.documentElement.style.removeProperty("--footer-h");
     };
   }, []);
@@ -71,7 +90,9 @@ export function SiteFooter() {
     <footer
       ref={ref}
       data-mode="light"
-      className="fixed inset-x-0 bottom-0 bg-surface text-ink pb-[calc(5rem+env(safe-area-inset-bottom,0px))] md:pb-0"
+      className={`fixed inset-x-0 bottom-0 bg-surface text-ink pb-[calc(5rem+env(safe-area-inset-bottom,0px))] md:pb-0 ${
+        inRange ? "" : "invisible"
+      }`}
     >
       {/* Earned Never Given wordmark art */}
       {showTagline && (

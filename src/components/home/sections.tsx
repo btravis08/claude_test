@@ -144,7 +144,7 @@ export function Hero({
           videoUrl={videoUrl}
           entranceDuration={1.8}
         />
-        <CampaignOverlay left={eyebrow} center={headline} right={primaryCta} />
+        <CampaignOverlay left={eyebrow} center={headline} right={primaryCta} stack />
       </a>
     </section>
   );

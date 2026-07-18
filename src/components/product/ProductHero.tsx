@@ -78,16 +78,11 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
 
   const trackRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
-  /* arrow enablement: dead ends disable their arrow */
-  const [canPrev, setCanPrev] = useState(false);
-  const [canNext, setCanNext] = useState(true);
 
   const updateProgress = useCallback(() => {
     const el = trackRef.current;
     if (!el) return;
     setProgress(el.scrollWidth > 0 ? (el.scrollLeft + el.clientWidth) / el.scrollWidth : 1);
-    setCanPrev(el.scrollLeft > 2);
-    setCanNext(el.scrollLeft + el.clientWidth < el.scrollWidth - 2);
   }, []);
 
   useEffect(() => {
@@ -164,16 +159,21 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
     };
   }, []);
 
-  /* colorway changes reorder the slides — re-derive arrow state */
-  useEffect(() => {
-    updateProgress();
-  }, [selected, updateProgress]);
-
-  /* arrows step one slide, measured like the sliders (consecutive
-     slide offsets include any gap) */
+  /* arrows step one slide (consecutive slide offsets include any
+     gap) and loop: left from the first slide lands on the last,
+     right from the last returns to the first */
   const step = (dir: number) => {
     const el = trackRef.current;
     if (!el) return;
+    const max = el.scrollWidth - el.clientWidth;
+    if (dir > 0 && el.scrollLeft >= max - 2) {
+      el.scrollTo({ left: 0, behavior: "smooth" });
+      return;
+    }
+    if (dir < 0 && el.scrollLeft <= 2) {
+      el.scrollTo({ left: max, behavior: "smooth" });
+      return;
+    }
     const slideEls = el.querySelectorAll<HTMLElement>("[data-slide]");
     const width =
       slideEls.length > 1
@@ -353,18 +353,16 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
             <button
               type="button"
               aria-label="Previous image"
-              disabled={!canPrev}
               onClick={() => step(-1)}
-              className="pointer-events-auto flex size-[2.875rem] items-center justify-center rounded-xs bg-wash text-ink backdrop-blur-md transition-all disabled:bg-transparent disabled:opacity-30 disabled:backdrop-blur-none"
+              className="pointer-events-auto flex size-[2.875rem] items-center justify-center rounded-xs bg-wash text-ink backdrop-blur-md"
             >
               <ArrowLeft />
             </button>
             <button
               type="button"
               aria-label="Next image"
-              disabled={!canNext}
               onClick={() => step(1)}
-              className="pointer-events-auto flex size-[2.875rem] items-center justify-center rounded-xs bg-wash text-ink backdrop-blur-md transition-all disabled:bg-transparent disabled:opacity-30 disabled:backdrop-blur-none"
+              className="pointer-events-auto flex size-[2.875rem] items-center justify-center rounded-xs bg-wash text-ink backdrop-blur-md"
             >
               <ArrowRight />
             </button>

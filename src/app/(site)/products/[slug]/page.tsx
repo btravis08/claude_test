@@ -116,13 +116,13 @@ function MiniProductCard({ card, first }: { card: ProductCardData; first?: boole
   return (
     <SmartLink
       href={card.href ?? "#"}
-      /* mobile: every card is flush-left (pl-0) so whichever card
-         snaps to the gutter puts its image exactly on the 16px line;
-         the right padding supplies the 16px between a card's border
-         and the next image. sm+ returns to the padded-card model
-         where only the first card is flush. */
-      className={`group flex w-full flex-col gap-[1.125rem] border-b border-r border-line bg-surface p-4 pl-0 pb-16 md:p-6 md:pb-16 ${
-        first ? "md:pl-0" : "sm:pl-4 md:pl-6"
+      /* every card keeps its 16px (24px md+) padding; on mobile the
+         rail's track starts at the SCREEN edge, so a snapped cell
+         sits at x=0 and its padded image lands exactly on the 16px
+         line. sm+ anchors the track at the gutter with the flush
+         first card instead. */
+      className={`group flex w-full flex-col gap-[1.125rem] border-b border-r border-line bg-surface p-4 pb-16 md:p-6 md:pb-16 ${
+        first ? "sm:pl-0" : ""
       }`}
     >
       <div className="relative aspect-[236/301] w-full overflow-hidden rounded-xs bg-surface-2">
@@ -310,15 +310,17 @@ export default async function ProductPage({
             sizes={hero.sizes}
           />
         </div>
-        {/* the rail bleeds off the right page edge (comp): the column
-            swallows the section gutter, the header row restores it */}
-        <div className="-mr-4 min-w-0 md:-mr-8">
+        {/* the rail bleeds off the right page edge (comp); on mobile
+            it also starts at the LEFT screen edge so snapped cards
+            put their padded images on the 16px line — the header row
+            restores the gutter for the title */}
+        <div className="-mx-4 min-w-0 sm:ml-0 md:-mr-8">
           <SliderShell
             title="PAIRS WELL WITH"
             titleClassName="label font-medium"
             bordered={false}
             progress={false}
-            headerClassName="pb-7 pr-4 md:pr-8"
+            headerClassName="pb-7 px-4 sm:pl-0 md:pr-8"
             trackClassName="border-t-[1.5px] border-line"
             /* mobile columns are uniform (every card is flush-left);
                at sm+ the flush FIRST card gives up its left padding

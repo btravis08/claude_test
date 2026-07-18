@@ -100,14 +100,15 @@ export function CampaignOverlay({
                 ) : (
                   <motion.span {...fade} ref={linkRef} className="label relative font-medium">
                     {right}
-                    {/* nav-style underline, drawn in from the left when
-                        the link clears the bottom 20% of the screen */}
+                    {/* nav-style underline: same 300ms draw as the nav
+                        links' hover, fired when the link clears the
+                        bottom 20% of the screen */}
                     <motion.span
                       aria-hidden
                       className="absolute inset-x-0 -bottom-0.5 h-px origin-left bg-current"
                       initial={{ scaleX: 0 }}
                       animate={{ scaleX: linkInView ? 1 : 0 }}
-                      transition={{ duration: 0.6, ease: [...MEDIA_EASE], delay: 0.1 }}
+                      transition={{ duration: 0.3, ease: "easeInOut", delay: 0.1 }}
                     />
                   </motion.span>
                 ))}

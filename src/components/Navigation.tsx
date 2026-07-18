@@ -407,6 +407,16 @@ export function Navigation({ data }: { data?: NavData | null }) {
   const [barMode, setBarMode] = useState<"light" | "dark">("light");
   const lastY = useRef(0);
   const headerRef = useRef<HTMLElement>(null);
+  /* the hide-on-scroll header animation only applies at md+ — on
+     mobile the bar is absolute and scrolls away naturally */
+  const [mdUp, setMdUp] = useState(true);
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    const update = () => setMdUp(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
   useEffect(() => {
     const modeUnderBar = (): "light" | "dark" => {
@@ -517,7 +527,10 @@ export function Navigation({ data }: { data?: NavData | null }) {
         data-mode={transparent && isHome ? "dark" : "light"}
         data-nav-root
         initial={false}
-        animate={{ y: hidden && !mobileOpen ? "-100%" : "0%" }}
+        /* mobile: the logo bar is absolute at the page top and simply
+           scrolls away (no links to keep around) — the slide-away/
+           return animation is desktop-only */
+        animate={{ y: hidden && !mobileOpen && mdUp ? "-100%" : "0%" }}
         transition={{ duration: 0.45, ease: [...MEDIA_EASE] }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => {
@@ -525,7 +538,7 @@ export function Navigation({ data }: { data?: NavData | null }) {
           setActive(null);
         }}
         ref={headerRef}
-        className="fixed top-0 z-50 flex w-full flex-col text-ink"
+        className="fixed top-0 z-50 flex w-full flex-col text-ink max-md:absolute"
       >
         {/* bar: transparent over the hero / at top, bg-primary once
             scrolled back in or engaged (hover / open dropdown). The
@@ -554,7 +567,7 @@ export function Navigation({ data }: { data?: NavData | null }) {
           <div className="flex-1 md:hidden" />
           <div className="flex flex-1 items-center justify-center">
             <Link href="/" aria-label="Home" data-nav-probe className="text-ink">
-              <Logo className="max-md:scale-125" />
+              <Logo className="max-md:translate-y-1 max-md:scale-125" />
             </Link>
           </div>
           <div className="hidden flex-1 items-center justify-end gap-8 md:flex">

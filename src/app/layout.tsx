@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 
@@ -42,6 +42,15 @@ export const metadata: Metadata = {
     template: "%s | Sun Day Red",
   },
   description: "SDR design library implementation.",
+};
+
+/* viewport-fit=cover exposes env(safe-area-inset-*) on iOS, so
+   bottom-fixed chrome can hold an exact 16px above the home
+   indicator instead of measuring from the physical screen edge */
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({

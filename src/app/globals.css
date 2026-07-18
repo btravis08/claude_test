@@ -286,7 +286,8 @@ body {
   flow position takes over and it rides away with the section.
 */
 .hero-cta {
-  bottom: 5rem;
+  /* 16px gap + 48px bar + 16px bar offset, above the safe area */
+  bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
   transition: bottom 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 html[data-bar-down] .hero-cta {

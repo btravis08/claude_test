@@ -396,6 +396,10 @@ export function Navigation({ data }: { data?: NavData | null }) {
   /* mobile control bar slides down and away on scroll down, back on
      scroll up — mirrored by the hero CTA via html[data-bar-down] */
   const [barDown, setBarDown] = useState(false);
+  /* exit travel = bar height + bottom offset (16px + safe-area
+     inset), measured so the bar fully clears the screen on iPhones */
+  const [barTravel, setBarTravel] = useState(64);
+  const barRef = useRef<HTMLDivElement>(null);
   const [overHero, setOverHero] = useState(hasFullHero);
   /* non-home pages: transparent (light mode) until scrolling starts */
   const [atTop, setAtTop] = useState(true);
@@ -444,8 +448,16 @@ export function Navigation({ data }: { data?: NavData | null }) {
       setBarMode(modeUnderBar());
     };
     onScroll();
+    const measureTravel = () => {
+      const el = barRef.current;
+      if (!el) return;
+      const bottom = parseFloat(getComputedStyle(el).bottom);
+      setBarTravel(Math.ceil(el.offsetHeight + (Number.isNaN(bottom) ? 16 : bottom)));
+    };
+    measureTravel();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
+    window.addEventListener("resize", measureTravel);
     /* SPA route changes swap the page beneath the bar without any
        scroll event (the reset lands at the same position, often 0) —
        the point-sample under the bar would keep the OLD page's mode.
@@ -461,6 +473,7 @@ export function Navigation({ data }: { data?: NavData | null }) {
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
+      window.removeEventListener("resize", measureTravel);
       cancelAnimationFrame(raf);
     };
     /* pathname included so overHero/atTop/barMode recompute on every
@@ -647,15 +660,16 @@ export function Navigation({ data }: { data?: NavData | null }) {
           Blurred light surface normally; inverts over dark sections.
           Always light while the menu sheet is open. */}
       <motion.div
+        ref={barRef}
         data-navbar
         data-mode={mobileOpen ? "light" : barMode}
         initial={false}
-        /* 64px = bar height + bottom offset: fully clears the screen.
+        /* measured travel fully clears the screen (incl. safe area).
            Same duration/ease as the hero CTA's hold-line drop, so the
            pair moves in lockstep */
-        animate={{ y: barDown && !mobileOpen ? 64 : 0 }}
+        animate={{ y: barDown && !mobileOpen ? barTravel : 0 }}
         transition={{ duration: 0.45, ease: [...MEDIA_EASE] }}
-        className={`fixed inset-x-4 bottom-4 z-[70] md:hidden ${
+        className={`fixed inset-x-4 bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] z-[70] md:hidden ${
           hasFullHero && !isHome && !mobileOpen ? "hidden" : ""
         }`}
       >

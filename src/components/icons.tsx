@@ -81,6 +81,14 @@ export function Minus({ size, className }: { size?: number; className?: string }
   );
 }
 
+export function FilterLines({ size, className }: { size?: number; className?: string }) {
+  return (
+    <Base size={size} className={className}>
+      <path d="M3 6h18M7 12h10M10 18h4" />
+    </Base>
+  );
+}
+
 export function Ruler({ size, className }: { size?: number; className?: string }) {
   return (
     <Base size={size} className={className}>

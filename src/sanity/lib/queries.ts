@@ -52,6 +52,7 @@ const activeFilter = groq`(!defined(status) || status == "active")`;
    collection-scoped discounts can resolve on the card. */
 const sliderProductFields = groq`
   _id, title, "slug": slug.current, price, pricing, status, gender, tags, vendor, productType, postedAt,
+  options[] { name, values },
   variants[] {
     name, color, image, hoverImage, price, compareAtPrice, sku, inventory
   },

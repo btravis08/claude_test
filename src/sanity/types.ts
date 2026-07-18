@@ -120,6 +120,7 @@ export interface SliderProduct {
   vendor?: string;
   productType?: string;
   postedAt?: string;
+  options?: Array<{ name?: string; values?: string[] }>;
   variants?: ProductVariant[];
   thumb?: SanityImageSource;
   hoverImage?: SanityImageSource;

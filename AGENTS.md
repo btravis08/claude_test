@@ -36,6 +36,15 @@ embedded at /studio, with Motion (framer-motion) for interactions.
   `design/figma-tokens/pdp-desktop.resolved.tokens.json`; the spacing
   scale + Title Large live in `globals.css` (`--spacing-*`,
   `--text-title-lg`).
+- The "❖ DESIGN" page is an empty sidebar header — real frames live
+  on "↳ UI Design (WIP)" (page `33184:11289`). Remote `get_metadata`
+  doesn't expand children; enumerate via read-only `use_figma`
+  scripts instead. PLP ids: section `33195:4082`, device instances
+  `33592:53549/53550/53551` (1440/1024/428), Story Card V2 set
+  `33795:57807`, Filter+Sort row `33416:33779`, filter modal
+  `33453:76463` (applied state `33454:77058`), Filter group set
+  `33187:6859`, Load More `33416:34482`, collection landing set
+  `33195:4849`.
 - Read it through the official Figma MCP connector (claude.ai
   connectors), authorized as bryce@weareenvoy.com (Envoy Group org
   seat). The account needs edit access on a Pro-or-better seat

@@ -1,10 +1,9 @@
+import { CollectionExplorer } from "@/components/collection/CollectionExplorer";
+import type { CardMeta, ExplorerItem, StoryData } from "@/components/collection/CollectionExplorer";
 import { FooterTagline } from "@/components/FooterTagline";
-import { ArrowLink, ArrowSwap } from "@/components/home/ArrowHover";
 import { NavTextLink } from "@/components/NavTextLink";
-import { ProductCard } from "@/components/home/ProductCard";
 import type { ProductCardData } from "@/components/home/ProductCard";
 import { activeOnly, productsForCollection, toCards } from "@/components/SectionRenderer";
-import { ArrowRight, ArrowUpRight } from "@/components/icons";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { urlFor } from "@/sanity/lib/image";
 import {
@@ -25,21 +24,10 @@ import type { SanityImageSource } from "@sanity/image-url";
 
 /*
   Collection page (PLP): centered breadcrumb + serif title, subcategory
-  chips linking one level deeper (leaf pages show none), FILTER & SORT
-  row, and the borderless 1px-gap product grid with story cards — CMS
-  documents tagged to collections — spanning 2 columns × 3 rows and
-  sticking to the top of the screen while the products beside them
-  scroll past.
+  chips linking one level deeper (leaf pages show none), then the
+  client-side explorer — FILTER & SORT modal, borderless 1px-gap
+  product grid with story cards, and complete-rows-only load more.
 */
-
-interface StoryData {
-  title?: string;
-  body?: string;
-  ctaLabel?: string;
-  url?: string;
-  image?: string;
-  placement?: "auto" | "center";
-}
 
 /* Gender-scoped collections are titled uniquely ("Mens Polos") so the
    Studio list has no duplicates; on the page the parent prefix comes
@@ -57,6 +45,34 @@ function img(source: SanityImageSource | undefined, width = 1600) {
   } catch {
     return undefined;
   }
+}
+
+/* Filterable facets for one product; every colorway card from the
+   product shares them */
+function toMeta(product: SliderProduct): CardMeta {
+  const sizes =
+    product.options?.find((option) => option.name?.toLowerCase() === "size")?.values ??
+    [];
+  const colors = (product.variants ?? [])
+    .filter((variant) => variant.name || variant.color)
+    .map((variant) => ({
+      label: (variant.name ?? "").split("/")[0].trim() || "Color",
+      hex: variant.color,
+    }));
+  const legacyPrice = parseFloat((product.price ?? "").replace(/[^0-9.]/g, ""));
+  return {
+    productType: product.productType,
+    gender: product.gender,
+    price:
+      typeof product.pricing?.price === "number"
+        ? product.pricing.price
+        : Number.isNaN(legacyPrice)
+          ? undefined
+          : legacyPrice,
+    sizes,
+    colors,
+    postedAt: product.postedAt,
+  };
 }
 
 /* Fallback content so the template renders before the first seed */
@@ -102,119 +118,6 @@ function Chip({ label, href }: { label: string; href: string }) {
   );
 }
 
-/* Primary (dark) pill for load-more; the story cards use the secondary
-   wash style with the up-right arrow */
-function CtaPill({
-  label,
-  href,
-  variant = "primary",
-  down = false,
-}: {
-  label: string;
-  href: string;
-  variant?: "primary" | "secondary";
-  down?: boolean;
-}) {
-  return (
-    <ArrowLink
-      href={href}
-      className={`label flex h-10 w-fit shrink-0 items-center gap-3 whitespace-nowrap rounded-xs px-3.5 font-medium ${
-        variant === "secondary" ? "bg-wash text-ink" : "bg-btn text-btn-fg"
-      }`}
-    >
-      {label.toUpperCase()}
-      {variant === "secondary" ? (
-        <ArrowSwap dx={1} dy={-1}>
-          <ArrowUpRight />
-        </ArrowSwap>
-      ) : (
-        <ArrowSwap dx={down ? 0 : 1} dy={down ? 1 : 0}>
-          <ArrowRight className={down ? "rotate-90" : undefined} />
-        </ArrowSwap>
-      )}
-    </ArrowLink>
-  );
-}
-
-/* Editorial tile spanning 2 columns × 3 rows; the inner block sticks
-   to the top of the screen while the products beside it scroll. Sides
-   alternate programmatically; "center" takes the middle two columns
-   with products flowing down both outer columns. */
-function StoryTile({
-  story,
-  position,
-}: {
-  story: StoryData;
-  position: "left" | "right" | "center";
-}) {
-  const columnStart =
-    position === "right" ? "lg:col-start-3" : position === "center" ? "lg:col-start-2" : "";
-  return (
-    <div className={`col-span-2 lg:row-span-3 ${columnStart}`}>
-      <div className="sticky top-0 flex flex-col bg-surface">
-        <a href={story.url ?? "#"} className="group block overflow-hidden">
-          <div
-            aria-hidden
-            className="aspect-[4/3] w-full bg-surface-2 bg-cover bg-center transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
-            style={story.image ? { backgroundImage: `url(${story.image})` } : undefined}
-          />
-        </a>
-        {/* button top-aligned with the title */}
-        <div className="flex flex-col justify-between gap-6 px-4 py-6 sm:px-6 md:flex-row md:items-start">
-          <div className="flex max-w-md flex-col gap-3">
-            <p className="font-display text-title-md text-ink">{story.title}</p>
-            {story.body && <p className="text-body-sm text-ink-2">{story.body}</p>}
-          </div>
-          <CtaPill
-            label={story.ctaLabel ?? "Explore the Collection"}
-            href={story.url ?? "#"}
-            variant="secondary"
-          />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* Grid pattern: one row of four products, then a story row (story
-   spans 2 cols × 3 rows with six products in the 2×3 beside it — only
-   when six remain, so it always has a full column to stick against),
-   then at least two full product rows before the next story. */
-function CollectionGrid({
-  cards,
-  stories,
-}: {
-  cards: ProductCardData[];
-  stories: StoryData[];
-}) {
-  const cells: React.ReactNode[] = [];
-  let p = 0;
-  let s = 0;
-  let side = 0; // alternation counter for auto-placed stories
-  const pushProducts = (count: number) => {
-    for (const card of cards.slice(p, p + count)) {
-      cells.push(<ProductCard key={card._key} product={card} />);
-    }
-    p += count;
-  };
-  pushProducts(4); // opening row
-  while (s < stories.length && cards.length - p >= 6) {
-    const story = stories[s];
-    const position =
-      story.placement === "center"
-        ? "center"
-        : ((side++ % 2 === 1 ? "right" : "left") as "left" | "right");
-    cells.push(<StoryTile key={`story-${s}`} story={story} position={position} />);
-    pushProducts(6); // the 2×3 beside (or around) the story
-    s += 1;
-    if (s < stories.length) pushProducts(8); // ≥2 rows between stories
-  }
-  pushProducts(cards.length - p); // remainder
-  return (
-    <div className="grid grid-cols-2 gap-px overflow-x-clip lg:grid-cols-4">{cells}</div>
-  );
-}
-
 export default async function CollectionPage({
   params,
 }: {
@@ -246,20 +149,33 @@ export default async function CollectionPage({
   }
 
   const title = leaf(collection?.title ?? "Shop All", collection?.parent?.title);
-  /* one card per product on the PLP (swatches still switch colorways) */
-  const cards = products
-    .map((product) => toCards(product, discounts, settings)[0])
-    .filter((card): card is ProductCardData => Boolean(card));
-  const fallbackCards: ProductCardData[] = Array.from({ length: 24 }, (_, i) => ({
-    _key: `fallback-${i}`,
-    title: "Presidio",
-    price: "$198.00",
-    colorway: "Gray / Navy",
-    colorCount: "+4 colors",
-    image: "/figma/products/presidio-white.png",
-    hoverImage: "/figma/products/presidio-white-hover.png",
+  /* one card per product on the PLP (swatches still switch colorways),
+     each paired with its filterable facets */
+  const items: ExplorerItem[] = products
+    .map((product): ExplorerItem | null => {
+      const card = toCards(product, discounts, settings)[0];
+      return card ? { card, meta: toMeta(product) } : null;
+    })
+    .filter((item): item is ExplorerItem => Boolean(item));
+  const fallbackItems: ExplorerItem[] = Array.from({ length: 24 }, (_, i) => ({
+    card: {
+      _key: `fallback-${i}`,
+      title: "Presidio",
+      price: "$198.00",
+      colorway: "Gray / Navy",
+      colorCount: "+4 colors",
+      image: "/figma/products/presidio-white.png",
+      hoverImage: "/figma/products/presidio-white-hover.png",
+    } satisfies ProductCardData,
+    meta: {
+      productType: "Footwear",
+      gender: i % 2 === 0 ? "mens" : "womens",
+      price: 198,
+      sizes: ["7", "8", "9", "10", "11", "12"],
+      colors: [{ label: "Gray", hex: "#cacbc8" }],
+    },
   }));
-  const gridCards = collection ? cards : cards.length ? cards : fallbackCards;
+  const gridItems = collection ? items : items.length ? items : fallbackItems;
   const stories: StoryData[] = storyDocs.length
     ? storyDocs.map((story) => ({
         title: story.title,
@@ -279,7 +195,7 @@ export default async function CollectionPage({
       {collection?.showFooterTagline && <FooterTagline />}
       {/* breadcrumb + centered serif title; crumbs use the nav link
           style, the current page keeps its underline drawn */}
-      <div className="flex flex-col items-center gap-4 px-6 pb-10 pt-36">
+      <div className="flex flex-col items-center gap-4 px-4 pb-10 pt-36 md:px-6">
         <div className="flex items-center gap-3">
           {collection?.parent?.slug ? (
             <NavTextLink
@@ -297,7 +213,7 @@ export default async function CollectionPage({
 
       {/* subcategory chips — one level deeper; leaf pages show none */}
       {chips.length > 0 && (
-        <div className="no-scrollbar flex w-full justify-start gap-2 overflow-x-auto px-6 pb-8 md:justify-center">
+        <div className="no-scrollbar flex w-full justify-start gap-2 overflow-x-auto px-4 pb-8 md:justify-center md:px-6">
           {chips.map((sub) => (
             <Chip
               key={sub!._id}
@@ -308,24 +224,10 @@ export default async function CollectionPage({
         </div>
       )}
 
-      {/* filter & count row */}
-      <div className="label flex w-full items-center justify-between px-6 pb-4 pt-6 font-medium text-ink">
-        <button type="button" className="flex items-center gap-2">
-          FILTER &amp; SORT
-          <span className="text-ink-2">▽</span>
-        </button>
-        <p className="text-ink-2">{gridCards.length} RESULTS</p>
-      </div>
-
-      <CollectionGrid cards={gridCards} stories={stories} />
-
-      {/* load more */}
-      <div className="flex w-full justify-center py-14">
-        <CtaPill label="Load More Products" href="#" down />
-      </div>
+      <CollectionExplorer items={gridItems} stories={stories} />
 
       {/* collection description */}
-      <p className="label px-6 pb-16 text-ink-3">
+      <p className="label px-4 pb-16 text-ink-3 md:px-6">
         {collection?.description ?? FALLBACK_DESCRIPTION}
       </p>
     </div>

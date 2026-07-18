@@ -292,7 +292,10 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
   );
 
   return (
-    <div ref={heroRef} className="relative h-svh w-full bg-surface-2">
+    /* dvh (not svh): the hero's bottom tracks the live viewport
+       through iOS toolbar transitions, so the arrows' 16px hold above
+       the purchase bar stays exact in every toolbar state */
+    <div ref={heroRef} className="relative h-dvh w-full bg-surface-2">
       {/* image carousel: slides share the canvas, no gaps */}
       <div
         ref={trackRef}
@@ -341,7 +344,7 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
               type="button"
               aria-label="Previous image"
               onClick={() => step(-1)}
-              className="pointer-events-auto flex size-10 items-center justify-center rounded-xs bg-wash text-ink backdrop-blur-md"
+              className="pointer-events-auto flex size-[2.875rem] items-center justify-center rounded-xs bg-wash text-ink backdrop-blur-md"
             >
               <ArrowLeft />
             </button>
@@ -349,7 +352,7 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
               type="button"
               aria-label="Next image"
               onClick={() => step(1)}
-              className="pointer-events-auto flex size-10 items-center justify-center rounded-xs bg-wash text-ink backdrop-blur-md"
+              className="pointer-events-auto flex size-[2.875rem] items-center justify-center rounded-xs bg-wash text-ink backdrop-blur-md"
             >
               <ArrowRight />
             </button>

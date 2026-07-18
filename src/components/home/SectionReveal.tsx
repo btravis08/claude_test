@@ -20,7 +20,7 @@ import { motion, useInView } from "motion/react";
 const RevealContext = createContext(false);
 export const useSectionRevealed = () => useContext(RevealContext);
 
-const EASE: [number, number, number, number] = [0.33, 1, 0.68, 1];
+const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 export function SectionReveal({
   className,
@@ -53,7 +53,7 @@ export function RevealText({
       className={className}
       initial={{ clipPath: "inset(0 0 100% 0)" }}
       animate={{ clipPath: on ? "inset(0 0 0% 0)" : "inset(0 0 100% 0)" }}
-      transition={{ duration: 0.5, delay, ease: EASE }}
+      transition={{ duration: 1.2, delay, ease: EASE }}
     >
       {children}
     </motion.div>

@@ -42,7 +42,7 @@ export function SliderShell({
   bordered = true,
   cols = "auto-cols-[85%] sm:auto-cols-[45%] lg:auto-cols-[31%] xl:auto-cols-[23.75%]",
   progress: showProgress = true,
-  headerClassName = "p-6",
+  headerClassName = "p-4 md:p-6",
   trackClassName = "",
 }: {
   title?: string;

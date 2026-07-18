@@ -55,7 +55,7 @@ export function Carousel({
     >
       {/* the deep bottom padding (spacing-11xl on desktop) keeps the
           body copy clear of the sticky purchase bar */}
-      <div className="flex min-w-0 flex-col justify-between gap-12 px-8 pb-28 pt-12 lg:px-32 lg:pb-11xl lg:pt-24">
+      <div className="flex min-w-0 flex-col justify-between gap-12 px-4 pb-28 pt-12 md:px-8 lg:px-32 lg:pb-11xl lg:pt-24">
         <div className="flex flex-col gap-8">
           {eyebrow && <p className="label font-medium text-ink">{eyebrow}</p>}
           <div className="flex flex-col items-start font-display text-headline-sm">
@@ -108,7 +108,7 @@ export function Carousel({
             transition={{ duration: 0.7, ease: [...MEDIA_EASE] }}
           />
         </AnimatePresence>
-        <div className="absolute inset-0 flex items-end justify-end p-6">
+        <div className="absolute inset-0 flex items-end justify-end p-4 md:p-6">
           <button
             aria-label="Pause"
             className="flex size-7 items-center justify-center rounded-full bg-btn text-btn-fg"

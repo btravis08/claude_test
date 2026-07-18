@@ -46,7 +46,7 @@ export function ShopTheLook({ products }: { products: LookProductData[] }) {
   if (products.length === 0) return null;
   return (
     <div
-      className="absolute bottom-0 right-0 flex flex-col items-end gap-2 p-6"
+      className="absolute bottom-0 right-0 flex flex-col items-end gap-2 p-4 md:p-6"
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
     >
@@ -136,14 +136,14 @@ export function VideoPlayerBlock({ src }: { src: string }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 p-6"
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 p-4 md:p-6"
             onClick={() => setOpen(false)}
           >
             <button
               type="button"
               aria-label="Close video"
               onClick={() => setOpen(false)}
-              className="absolute right-6 top-6 flex size-10 items-center justify-center rounded-xs bg-white text-[#161716]"
+              className="absolute right-4 top-4 flex size-10 items-center justify-center rounded-xs bg-white text-[#161716] md:right-6 md:top-6"
             >
               <Close />
             </button>
@@ -215,7 +215,7 @@ export function AutoplayVideo({
           className="absolute inset-0 size-full object-cover"
         />
       </motion.div>
-      <div className="absolute inset-0 flex items-end justify-end p-6">
+      <div className="absolute inset-0 flex items-end justify-end p-4 md:p-6">
         <button
           type="button"
           aria-label={paused ? "Play" : "Pause"}

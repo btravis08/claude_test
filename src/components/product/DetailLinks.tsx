@@ -79,7 +79,7 @@ export function DetailLinks({ links }: { links: DetailLinkData[] }) {
               transition={{ duration: 0.5, ease: [...MEDIA_EASE] }}
               className="fixed inset-y-0 right-0 z-[90] flex w-[30rem] max-w-full flex-col overflow-y-auto bg-surface text-ink"
             >
-              <div className="flex items-center justify-between border-b border-line p-6">
+              <div className="flex items-center justify-between border-b border-line p-4 md:p-6">
                 <p className="label font-medium">{(active.label ?? "").toUpperCase()}</p>
                 <button
                   type="button"
@@ -90,7 +90,7 @@ export function DetailLinks({ links }: { links: DetailLinkData[] }) {
                   <Close />
                 </button>
               </div>
-              <div className="flex flex-col gap-4 p-6 text-body-sm leading-relaxed text-ink-2">
+              <div className="flex flex-col gap-4 p-4 text-body-sm leading-relaxed text-ink-2 md:p-6">
                 {active.body ? (
                   <PortableText value={active.body} />
                 ) : (

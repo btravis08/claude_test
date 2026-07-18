@@ -117,7 +117,7 @@ export function ProductCard({ product }: { product: ProductCardData }) {
       <motion.div
         onMouseEnter={() => setWellHover(true)}
         onMouseLeave={() => setWellHover(false)}
-        className="group/well relative flex aspect-[236/301] w-full flex-col justify-end overflow-hidden rounded-xs bg-surface-2 p-6"
+        className="group/well relative flex aspect-[236/301] w-full flex-col justify-end overflow-hidden rounded-xs bg-surface-2 p-4 md:p-6"
         initial={{ opacity: 0, scale: 1.05 }}
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true, amount: 0.2 }}
@@ -160,7 +160,7 @@ export function ProductCard({ product }: { product: ProductCardData }) {
           </div>
         )}
       </motion.div>
-      <div className="flex w-full flex-col gap-1.5 px-4 sm:px-6">
+      <div className="flex w-full flex-col gap-1.5 px-4 md:px-6">
         <div className="label flex w-full items-center justify-between font-medium text-ink">
           <p>{product.title}</p>
           <p className="flex items-baseline gap-1.5">

@@ -368,7 +368,7 @@ export function SectionRenderer({ sections }: { sections: PageSection[] }) {
                 data-mode={section.colorMode ?? "light"}
                 className="w-full bg-surface text-ink"
               >
-                <div className="mx-auto max-w-3xl px-6 py-16">
+                <div className="mx-auto max-w-3xl px-4 py-16 md:px-6">
                   <div className="prose prose-neutral max-w-none dark:prose-invert">
                     {section.body && <PortableText value={section.body} />}
                   </div>

@@ -111,7 +111,7 @@ export function SiteFooter() {
         {columns.map((col) => (
           <div
             key={col.heading}
-            className="flex flex-col gap-[1.125rem] border-b border-l border-line px-6 pb-16 pt-6"
+            className="flex flex-col gap-[1.125rem] border-b border-l border-line px-4 pb-16 pt-4 md:px-6 md:pt-6"
           >
             <p className="label font-medium opacity-70">{col.heading}</p>
             <div className="flex flex-col items-start gap-[0.5625rem]">
@@ -121,7 +121,7 @@ export function SiteFooter() {
             </div>
           </div>
         ))}
-        <div className="flex flex-col gap-[1.125rem] border-b border-l border-line px-6 pb-16 pt-6">
+        <div className="flex flex-col gap-[1.125rem] border-b border-l border-line px-4 pb-16 pt-4 md:px-6 md:pt-6">
           <Logo />
           <p className="text-[0.75rem] uppercase leading-none">
             Maecenas suspendisse ultrices pellentesque et ornare dui nisl. Eget
@@ -131,7 +131,7 @@ export function SiteFooter() {
       </div>
 
       {/* newsletter */}
-      <form className="flex w-full flex-col items-stretch gap-3 p-6 sm:flex-row sm:gap-0">
+      <form className="flex w-full flex-col items-stretch gap-3 p-4 sm:flex-row sm:gap-0 md:p-6">
         <label className="flex h-[2.875rem] flex-1 items-center rounded-xs bg-wash pl-4 pr-3 backdrop-blur-[12px] md:h-10">
           <span className="sr-only">Email address</span>
           <input
@@ -149,7 +149,7 @@ export function SiteFooter() {
       </form>
 
       {/* bottom bar */}
-      <div className="flex w-full flex-col gap-6 px-6 py-8 sm:h-[4.5rem] sm:flex-row sm:items-start sm:gap-8">
+      <div className="flex w-full flex-col gap-6 px-4 py-8 sm:h-[4.5rem] sm:flex-row sm:items-start sm:gap-8 md:px-6">
         <div className="flex flex-1 items-center">
           <p className="label font-medium">©2026 SUN DAY RED</p>
         </div>

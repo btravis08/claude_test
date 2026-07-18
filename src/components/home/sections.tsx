@@ -250,7 +250,7 @@ export function InfoSlider({
           framed ? "font-display text-title-md text-ink" : undefined
         }
         bordered={!framed}
-        headerClassName={framed ? "border-b border-line px-6 pb-12 pt-6" : undefined}
+        headerClassName={framed ? "border-b border-line px-4 pb-12 pt-4 md:px-6 md:pt-6" : undefined}
         cols={
           framed
             ? "auto-cols-[85%] sm:auto-cols-[45%] lg:auto-cols-[28.75%]"
@@ -274,7 +274,7 @@ export function InfoSlider({
             card: card.body ? (
               <a
                 href="#"
-                className="group flex w-full flex-col gap-[1.125rem] border-y border-r border-line bg-surface p-6 pb-16"
+                className="group flex w-full flex-col gap-[1.125rem] border-y border-r border-line bg-surface p-4 pb-16 md:p-6 md:pb-16"
               >
                 {media}
                 <p className="font-display text-title-xs text-ink">{card.title}</p>
@@ -283,7 +283,7 @@ export function InfoSlider({
             ) : (
               <a href="#" className="group flex w-full flex-col gap-[1.125rem] bg-surface pb-16">
                 {media}
-                <p className="px-4 text-body-md font-medium text-ink sm:px-6">{card.title}</p>
+                <p className="px-4 text-body-md font-medium text-ink md:px-6">{card.title}</p>
               </a>
             ),
           };
@@ -460,7 +460,7 @@ export function FiftyFifty({
               className="group relative block overflow-hidden"
             >
               {media}
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between p-6">
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between p-4 md:p-6">
                 <p className="font-display text-title-md">{panel.title}</p>
                 <span className="flex size-10 items-center justify-center rounded-xs bg-white text-[#161716]">
                   <ArrowSwap dx={1} dy={-1}>
@@ -475,7 +475,7 @@ export function FiftyFifty({
           <div key={panel._key ?? i} className="relative overflow-hidden">
             {media}
             {panel.title && (
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end p-6">
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end p-4 md:p-6">
                 <p className="font-display text-title-md">{panel.title}</p>
               </div>
             )}
@@ -662,7 +662,7 @@ export function Gallery({ mode = "light", title = "Gallery", slides = defaultGal
 export function Reviews({ mode = "light", title = "Reviews" }: { mode?: Mode; title?: string }) {
   return (
     <section data-mode={mode} className="w-full border-t border-line bg-surface text-ink">
-      <div className="flex flex-col items-center gap-6 px-6 py-20 text-center">
+      <div className="flex flex-col items-center gap-6 px-4 py-20 text-center md:px-6">
         <p className="font-display text-title-md">{title}</p>
         <p className="label text-ink-2">4.8 ★★★★★ · 3 REVIEWS</p>
         {/* Yotpo main widget mounts here once the integration lands */}

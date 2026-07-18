@@ -26,7 +26,7 @@ const FREE_SHIPPING_THRESHOLD = 250;
 
 function PanelHeader({ title, onClose }: { title: string; onClose: () => void }) {
   return (
-    <div className="flex w-full shrink-0 items-center justify-between p-6">
+    <div className="flex w-full shrink-0 items-center justify-between p-4 md:p-6">
       <p className="font-display text-title-xs capitalize text-ink">{title}</p>
       <button type="button" aria-label="Close" onClick={onClose} className="text-ink">
         <Close size={16} />
@@ -64,7 +64,7 @@ function QuickAddView() {
       <div className="min-h-0 flex-1 overflow-y-auto">
         {/* colorway */}
         {variants.length > 0 && (
-          <div className="flex flex-col gap-[1.375rem] border-t border-line p-6">
+          <div className="flex flex-col gap-[1.375rem] border-t border-line p-4 md:p-6">
             <p className="flex items-baseline gap-2.5 text-body-md font-medium text-ink">
               Color
               <span className="font-normal text-ink-2">{active?.name}</span>
@@ -101,7 +101,7 @@ function QuickAddView() {
         )}
 
         {/* fit toggle */}
-        <div className="flex flex-col gap-6 border-t border-line p-6">
+        <div className="flex flex-col gap-6 border-t border-line p-4 md:p-6">
           <p className="text-body-md font-medium text-ink">Fit</p>
           <div className="flex w-full items-stretch gap-2">
             {["Normal", "Wide"].map((option) => (
@@ -123,7 +123,7 @@ function QuickAddView() {
 
         {/* size grid */}
         {sizes.length > 0 && (
-          <div className="flex flex-col gap-6 border-t border-line p-6 pb-8">
+          <div className="flex flex-col gap-6 border-t border-line p-4 pb-8 md:p-6 md:pb-8">
             <p className="text-body-md font-medium text-ink">Size</p>
             <div className="grid grid-cols-6 gap-2">
               {sizes.map((option) => (
@@ -145,7 +145,7 @@ function QuickAddView() {
         )}
       </div>
 
-      <div className="shrink-0 bg-surface p-6">
+      <div className="shrink-0 bg-surface p-4 md:p-6">
         <button
           type="button"
           onClick={add}
@@ -180,7 +180,7 @@ function CartView() {
     <>
       <div className="min-h-0 flex-1 overflow-y-auto">
         {/* free shipping meter */}
-        <div className="flex flex-col gap-8 p-6">
+        <div className="flex flex-col gap-8 p-4 md:p-6">
           <p className="w-full text-center text-body-md font-medium text-ink">
             {remaining > 0
               ? `You’re ${formatPrice(remaining)} away from free shipping`
@@ -200,7 +200,7 @@ function CartView() {
 
         {/* items */}
         {items.map((item) => (
-          <div key={item.id} className="border-b border-line p-6">
+          <div key={item.id} className="border-b border-line p-4 md:p-6">
             <div className="flex w-full items-center gap-6">
               <div
                 className="size-[5.25rem] shrink-0 bg-surface-2 bg-contain bg-center bg-no-repeat"
@@ -248,11 +248,11 @@ function CartView() {
         {/* recommendations */}
         {suggestions.length > 0 && (
           <>
-            <div className="flex items-center justify-center p-6">
+            <div className="flex items-center justify-center p-4 md:p-6">
               <p className="text-body-md font-medium text-ink">Customers also bought</p>
             </div>
             {suggestions.map((item, i) => (
-              <div key={`${item.title}-${i}`} className="p-6 pt-0">
+              <div key={`${item.title}-${i}`} className="p-4 pt-0 md:p-6 md:pt-0">
                 <div className="flex w-full items-center gap-6">
                   <div
                     className="size-[5.25rem] shrink-0 bg-surface-2 bg-contain bg-center bg-no-repeat"
@@ -291,7 +291,7 @@ function CartView() {
       </div>
 
       {/* checkout footer */}
-      <div className="flex shrink-0 flex-col gap-8 bg-surface p-6">
+      <div className="flex shrink-0 flex-col gap-8 bg-surface p-4 md:p-6">
         <div className="flex w-full items-start justify-between text-body-md text-ink">
           <p className="font-medium">Subtotal</p>
           <p>{formatPrice(subtotal)}</p>
@@ -316,12 +316,12 @@ function EmptyView() {
   const { close } = useCart();
   return (
     <>
-      <div className="flex min-h-0 flex-1 items-center justify-center overflow-y-auto p-6">
+      <div className="flex min-h-0 flex-1 items-center justify-center overflow-y-auto p-4 md:p-6">
         <p className="font-display text-title-md text-ink">
           You have no items in your bag
         </p>
       </div>
-      <div className="shrink-0 bg-surface p-6">
+      <div className="shrink-0 bg-surface p-4 md:p-6">
         <a
           href="#"
           onClick={close}

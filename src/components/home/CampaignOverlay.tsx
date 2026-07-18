@@ -50,7 +50,7 @@ export function CampaignOverlay({
       {/* each text fades in over the same ease-in-out as its travel */}
       <div
         className={`grid w-full grid-cols-[1fr_auto_1fr] items-center ${
-          go ? "px-6" : "px-[4%]"
+          go ? "px-4 md:px-6" : "px-[4%]"
         }`}
       >
         {left !== undefined && (

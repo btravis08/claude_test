@@ -91,8 +91,9 @@ export function Carousel({
         </div>
       </div>
       {/* The module's height is driven by this image: 4:5 portrait at
-          half the section width */}
-      <div className="relative aspect-[4/5] overflow-hidden bg-surface-2">
+          half the section width. data-mode=dark: imagery inverts the
+          fixed bars' point-sampling */}
+      <div data-mode="dark" className="relative aspect-[4/5] overflow-hidden bg-surface-2">
         <AnimatePresence initial={false}>
           <motion.div
             key={active}

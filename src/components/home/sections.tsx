@@ -76,7 +76,12 @@ function Media({
 } & MediaBlockProps) {
   const autoplay = kind === "videoAutoplay" && videoUrl;
   return (
-    <div className={`relative w-full overflow-hidden rounded-xs bg-surface-2 ${aspect}`}>
+    /* data-mode=dark: imagery is dark-mode content, so the fixed
+       bars' point-sampling inverts over any media section */
+    <div
+      data-mode="dark"
+      className={`relative w-full overflow-hidden rounded-xs bg-surface-2 ${aspect}`}
+    >
       {autoplay ? (
         <AutoplayVideo src={videoUrl} poster={image} />
       ) : (

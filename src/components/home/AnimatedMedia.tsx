@@ -64,7 +64,9 @@ export function AnimatedMedia({
   );
 
   return (
-    <div ref={ref} className="absolute inset-0 overflow-hidden">
+    /* imagery counts as dark-mode content for the fixed bars'
+       point-sampling, wherever this renders */
+    <div ref={ref} data-mode="dark" className="absolute inset-0 overflow-hidden">
       <motion.div
         className="absolute inset-0"
         style={scrub ? { y } : undefined}

@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
 import { useCart } from "@/components/cart/CartContext";
-import { Menu } from "@/components/icons";
+import { ArrowLeft, ArrowRight, Menu } from "@/components/icons";
 
 /*
   PDP hero: required on every product page. Matches the comp:
@@ -50,6 +50,21 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
   /* mobile: the fixed bar collapses to the menu chip while the
      description section's variant panel is on screen */
   const [panelInView, setPanelInView] = useState(false);
+  /* mobile carousel arrows ride a sticky hold line 16px above the
+     fixed purchase bar (its measured height + gap), then anchor 16px
+     from the hero's bottom edge once scrolling carries it up — same
+     handoff as the homepage hero CTA */
+  const mobileDockRef = useRef<HTMLDivElement>(null);
+  const [arrowHold, setArrowHold] = useState(140);
+  useEffect(() => {
+    const el = mobileDockRef.current;
+    if (!el) return;
+    const measure = () => setArrowHold(el.offsetHeight + 16);
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
   const variants = product.variants ?? [];
   const active = variants[selected];
   const sizes = product.sizes ?? [];
@@ -143,6 +158,19 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
       window.removeEventListener("resize", onScroll);
     };
   }, []);
+
+  /* arrows step one slide, measured like the sliders (consecutive
+     slide offsets include any gap) */
+  const step = (dir: number) => {
+    const el = trackRef.current;
+    if (!el) return;
+    const slideEls = el.querySelectorAll<HTMLElement>("[data-slide]");
+    const width =
+      slideEls.length > 1
+        ? slideEls[1].offsetLeft - slideEls[0].offsetLeft
+        : el.clientWidth;
+    el.scrollBy({ left: dir * width, behavior: "smooth" });
+  };
 
   /* mouse drag for the track (touch swipes natively) */
   const drag = useRef({ active: false, startX: 0, startScroll: 0, moved: false });
@@ -299,6 +327,36 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
         {controls(false)}
       </div>
 
+      {/* mobile carousel arrows: left/right edges of the hero, held
+          16px above the fixed purchase bar until the hero's bottom
+          edge catches them (sticky handoff, like the homepage hero
+          CTA), then they ride away with the hero */}
+      <div className="pointer-events-none absolute inset-0 z-10 md:hidden">
+        <div className="flex h-full flex-col justify-end px-4 pb-4">
+          <div
+            className="sticky flex w-full items-center justify-between"
+            style={{ bottom: arrowHold }}
+          >
+            <button
+              type="button"
+              aria-label="Previous image"
+              onClick={() => step(-1)}
+              className="pointer-events-auto flex size-10 items-center justify-center rounded-xs bg-wash text-ink backdrop-blur-md"
+            >
+              <ArrowLeft />
+            </button>
+            <button
+              type="button"
+              aria-label="Next image"
+              onClick={() => step(1)}
+              className="pointer-events-auto flex size-10 items-center justify-center rounded-xs bg-wash text-ink backdrop-blur-md"
+            >
+              <ArrowRight />
+            </button>
+          </div>
+        </div>
+      </div>
+
       {/* eased scroll progress along the very bottom */}
       <div className="absolute inset-x-0 bottom-0 z-10 h-0.5">
         <motion.div
@@ -335,6 +393,7 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
           panel is on screen it minimizes to just the menu chip on
           the right, then returns once the panel passes */}
       <div
+        ref={mobileDockRef}
         data-purchase-dock
         data-mode={barMode}
         className="fixed inset-x-0 bottom-0 z-40 p-4 text-ink md:hidden"

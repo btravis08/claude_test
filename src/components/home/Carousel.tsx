@@ -1,7 +1,7 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
-import { useState } from "react";
+import { AnimatePresence, LayoutGroup, motion } from "motion/react";
+import { useId, useState } from "react";
 
 import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
 import { Pause } from "@/components/icons";
@@ -50,6 +50,8 @@ export function Carousel({
   items = defaultItems,
 }: CarouselProps) {
   const [active, setActive] = useState(0);
+  /* scopes the thumb-edge layoutId to this carousel instance */
+  const railId = useId();
   const current = items[active] ?? items[0];
 
   const description = (
@@ -94,18 +96,26 @@ export function Carousel({
               </a>
             ))}
           </div>
-          {/* mobile/tablet: tappable body-size list */}
+          {/* mobile/tablet: tappable body-size list; the active item
+              carries the nav-link underline (same 300ms left-in /
+              right-out draw as NavTextLink) */}
           <div className="flex flex-col items-start gap-1 lg:hidden">
             {items.map((item, i) => (
               <button
                 key={item._key ?? i}
                 type="button"
                 onClick={() => setActive(i)}
-                className={`text-left text-body-md transition-colors duration-300 ${
-                  i === active ? "font-medium text-ink" : "text-ink-2"
+                className={`relative text-left text-body-md transition-colors duration-300 ${
+                  i === active ? "text-ink" : "text-ink-2"
                 }`}
               >
                 {(item.title ?? "").replace(/→+$/, "")}
+                <span
+                  aria-hidden
+                  className={`absolute inset-x-0 -bottom-0.5 h-px origin-right bg-ink transition-transform duration-300 ${
+                    i === active ? "origin-left scale-x-100" : "scale-x-0"
+                  }`}
+                />
               </button>
             ))}
           </div>
@@ -168,25 +178,36 @@ export function Carousel({
               />
             </AnimatePresence>
           </div>
-          <div className="flex w-16 shrink-0 flex-col gap-2">
-            {items.map((item, i) => (
-              <button
-                key={item._key ?? i}
-                type="button"
-                aria-label={(item.title ?? `Slide ${i + 1}`).replace(/→+$/, "")}
-                onClick={() => setActive(i)}
-                className={`relative aspect-square w-full overflow-hidden bg-surface-2 transition-opacity duration-300 ${
-                  i === active ? "" : "opacity-60"
-                }`}
-              >
-                <span
-                  aria-hidden
-                  className="absolute inset-0 bg-cover bg-center"
-                  style={{ backgroundImage: `url(${item.image})` }}
-                />
-              </button>
-            ))}
-          </div>
+          <LayoutGroup id={railId}>
+            <div className="flex w-16 shrink-0 flex-col gap-2">
+              {items.map((item, i) => (
+                <button
+                  key={item._key ?? i}
+                  type="button"
+                  aria-label={(item.title ?? `Slide ${i + 1}`).replace(/→+$/, "")}
+                  onClick={() => setActive(i)}
+                  className={`relative aspect-square w-full overflow-hidden bg-surface-2 transition-opacity duration-300 ${
+                    i === active ? "" : "opacity-60"
+                  }`}
+                >
+                  <span
+                    aria-hidden
+                    className="absolute inset-0 bg-cover bg-center"
+                    style={{ backgroundImage: `url(${item.image})` }}
+                  />
+                  {/* shared 2px edge bar slides to the tapped thumb */}
+                  {i === active && (
+                    <motion.span
+                      layoutId="thumb-edge"
+                      aria-hidden
+                      className="absolute inset-y-0 left-0 w-0.5 bg-ink"
+                      transition={{ duration: 0.45, ease: [...MEDIA_EASE] }}
+                    />
+                  )}
+                </button>
+              ))}
+            </div>
+          </LayoutGroup>
         </div>
         <div className="relative min-h-14">{description}</div>
       </div>

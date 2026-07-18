@@ -7,8 +7,7 @@ import {
   useMotionValue,
   useTransform,
 } from "motion/react";
-import { useLayoutEffect, useRef } from "react";
-import { useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
 import { Pause } from "@/components/icons";
@@ -66,6 +65,31 @@ export function Carousel({
 }: CarouselProps) {
   const [active, setActive] = useState(0);
   const current = items[active] ?? items[0];
+
+  /* the image shown before the latest change — the static underlay
+     the incoming mobile slide covers */
+  const lastImage = useRef<string | undefined>(undefined);
+  const prevImage = lastImage.current;
+  useEffect(() => {
+    lastImage.current = current?.image;
+  }, [current?.image]);
+
+  /* Mobile slide-over: a persistent layer driven by a motion value
+     (mount animations are suppressed under the page transition's
+     presence context, so a keyed element with `initial` won't play).
+     On change the layer jumps below the mask and tweens up over the
+     held underlay — same duration/easing as the rail bar */
+  const slideBoxRef = useRef<HTMLDivElement>(null);
+  const slideY = useMotionValue(0);
+  const prevActive = useRef(active);
+  useLayoutEffect(() => {
+    if (prevActive.current === active) return;
+    prevActive.current = active;
+    const h = slideBoxRef.current?.offsetHeight ?? 0;
+    if (!h) return;
+    slideY.jump(h);
+    animate(slideY, 0, { duration: 0.6, ease: [0.85, 0, 0.15, 1] });
+  }, [active, slideY]);
 
   /* The thumb rail's travelling edge bar. Both edges tween to the
      active thumb on the SAME bezier in one continuous motion; the
@@ -237,26 +261,27 @@ export function Carousel({
       <div className="flex flex-col gap-8 px-4 pb-28 pt-8 md:px-8 lg:hidden">
         <div className="flex items-start gap-2">
           <div
+            ref={slideBoxRef}
             data-mode="dark"
             className="relative aspect-[4/5] min-w-0 flex-1 overflow-hidden bg-surface-2"
           >
-            <AnimatePresence initial={false}>
-              {/* bleeds 32px past the mask top/bottom so the y-slide
-                  travels behind the container edge instead of
-                  revealing the (dark-mode) backdrop */}
-              <motion.div
-                key={active}
+            {/* the outgoing image holds still underneath while the new
+                one slides up over it */}
+            {prevImage && (
+              <div
                 aria-hidden
-                className="absolute -inset-y-8 inset-x-0 bg-cover bg-center"
-                style={{
-                  backgroundImage: `url(${current?.image ?? "/figma/media-portrait.png"})`,
-                }}
-                initial={{ opacity: 0, y: 32 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.55, ease: [...MEDIA_EASE] }}
+                className="absolute inset-0 bg-cover bg-center"
+                style={{ backgroundImage: `url(${prevImage})` }}
               />
-            </AnimatePresence>
+            )}
+            <motion.div
+              aria-hidden
+              className="absolute inset-0 bg-cover bg-center"
+              style={{
+                y: slideY,
+                backgroundImage: `url(${current?.image ?? "/figma/media-portrait.png"})`,
+              }}
+            />
           </div>
           <div ref={railRef} className="relative flex w-16 shrink-0 flex-col gap-2">
             {items.map((item, i) => (

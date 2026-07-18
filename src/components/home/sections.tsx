@@ -284,7 +284,9 @@ export function InfoSlider({
             card: card.body ? (
               <a
                 href="#"
-                className="group flex w-full flex-col gap-[1.125rem] border-y border-r border-line bg-surface p-4 pb-16 md:p-6 md:pb-16"
+                /* border-b only: the header row above already draws
+                   the top rule — border-y would stack into a 2px line */
+                className="group flex w-full flex-col gap-[1.125rem] border-b border-r border-line bg-surface p-4 pb-16 md:p-6 md:pb-16"
               >
                 {media}
                 <p className="font-display text-title-xs text-ink">{card.title}</p>

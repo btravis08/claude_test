@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useScroll, useTransform } from "motion/react";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 /*
   Standard image treatment: when the image enters the viewport it fades
@@ -13,6 +13,11 @@ import { useRef } from "react";
   instead — the residual 15% oversize leaves ~7.5% bleed above and
   below the frame, which the image spends by translating slower than
   the page (±6.5% of its height, scrubbed to scroll position).
+
+  Touch devices skip the parallax: it's driven by JS scroll events,
+  which iOS delivers too sparsely during momentum scrolling — the
+  image visibly stair-steps. There the media renders static with the
+  standard entrance instead.
 */
 export const MEDIA_EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -31,6 +36,15 @@ export function AnimatedMedia({
   entranceDuration?: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const [touch, setTouch] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(hover: none), (pointer: coarse)");
+    const update = () => setTouch(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+  const scrub = parallax && !touch;
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start end", "end start"],
@@ -53,9 +67,9 @@ export function AnimatedMedia({
     <div ref={ref} className="absolute inset-0 overflow-hidden">
       <motion.div
         className="absolute inset-0"
-        style={parallax ? { y } : undefined}
-        initial={{ opacity: 0, scale: parallax ? 1.2 : 1.05 }}
-        whileInView={{ opacity: 1, scale: parallax ? 1.15 : 1 }}
+        style={scrub ? { y } : undefined}
+        initial={{ opacity: 0, scale: scrub ? 1.2 : 1.05 }}
+        whileInView={{ opacity: 1, scale: scrub ? 1.15 : 1 }}
         viewport={{ once: true, amount: 0.2 }}
         transition={{ duration: entranceDuration, ease: [...MEDIA_EASE] }}
       >

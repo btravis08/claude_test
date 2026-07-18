@@ -116,8 +116,13 @@ function MiniProductCard({ card, first }: { card: ProductCardData; first?: boole
   return (
     <SmartLink
       href={card.href ?? "#"}
-      className={`group flex w-full flex-col gap-[1.125rem] border-b border-r border-line bg-surface p-4 pb-16 md:p-6 md:pb-16 ${
-        first ? "pl-0" : ""
+      /* mobile: every card is flush-left (pl-0) so whichever card
+         snaps to the gutter puts its image exactly on the 16px line;
+         the right padding supplies the 16px between a card's border
+         and the next image. sm+ returns to the padded-card model
+         where only the first card is flush. */
+      className={`group flex w-full flex-col gap-[1.125rem] border-b border-r border-line bg-surface p-4 pl-0 pb-16 md:p-6 md:pb-16 ${
+        first ? "md:pl-0" : "sm:pl-4 md:pl-6"
       }`}
     >
       <div className="relative aspect-[236/301] w-full overflow-hidden rounded-xs bg-surface-2">
@@ -315,11 +320,12 @@ export default async function ProductPage({
             progress={false}
             headerClassName="pb-7 pr-4 md:pr-8"
             trackClassName="border-t-[1.5px] border-line"
-            /* the flush first card gives up its left padding (16px
-               mobile / 24px md+), so its column is that much narrower
-               — keeps every media well (and thus card height)
-               identical, per the comp's 260/284px rhythm */
-            cols="auto-cols-[68%] [grid-template-columns:calc(68%-1rem)] sm:auto-cols-[41%] sm:[grid-template-columns:calc(41%-1rem)] md:[grid-template-columns:calc(41%-1.5rem)]"
+            /* mobile columns are uniform (every card is flush-left);
+               at sm+ the flush FIRST card gives up its left padding
+               (16px sm / 24px md+), so its column is that much
+               narrower — keeps every media well (and thus card
+               height) identical, per the comp's 260/284px rhythm */
+            cols="auto-cols-[68%] sm:auto-cols-[41%] sm:[grid-template-columns:calc(41%-1rem)] md:[grid-template-columns:calc(41%-1.5rem)]"
             items={pairs.map((item, i) => ({
               key: item._key ?? String(i),
               card: <MiniProductCard card={item} first={i === 0} />,

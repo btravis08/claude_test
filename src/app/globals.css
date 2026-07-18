@@ -243,6 +243,21 @@ body {
   [role="button"]:not(:disabled) {
     cursor: pointer;
   }
+
+  /* SPA route changes flip the nav's color mode (data-mode) while the
+     chrome stays mounted — ease every color in the header and the
+     mobile control bar so light/dark states cross-fade instead of
+     snapping. In the base layer on purpose: elements carrying their
+     own transition utilities (hover scales, underline draws) override
+     this and keep their behavior. */
+  [data-nav-root],
+  [data-nav-root] *,
+  [data-navbar],
+  [data-navbar] * {
+    transition-property: color, background-color, border-color, fill, stroke;
+    transition-duration: 300ms;
+    transition-timing-function: ease;
+  }
 }
 
 /* Media overlay: 20% scrim + bottom gradient (Figma content-overlay mask) */

@@ -484,6 +484,7 @@ export function Navigation({ data }: { data?: NavData | null }) {
     <>
       <motion.header
         data-mode={transparent && isHome ? "dark" : "light"}
+        data-nav-root
         /* named so route view-transitions leave the nav untouched */
         style={{ viewTransitionName: "site-header" } as React.CSSProperties}
         initial={false}

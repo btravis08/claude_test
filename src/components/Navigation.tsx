@@ -532,7 +532,7 @@ export function Navigation({ data }: { data?: NavData | null }) {
             hairline is the alpha border while transparent (white 15%
             over a dark hero) and border-primary once opaque */}
         <div
-          className={`flex h-[3.75rem] items-center border-b px-6 py-3 transition-colors duration-300 ${
+          className={`flex h-[3.75rem] items-center border-b max-md:border-b-0 px-6 py-3 transition-colors duration-300 ${
             transparent
               ? "border-line-2 bg-transparent"
               : "border-line bg-surface"
@@ -554,7 +554,7 @@ export function Navigation({ data }: { data?: NavData | null }) {
           <div className="flex-1 md:hidden" />
           <div className="flex flex-1 items-center justify-center">
             <Link href="/" aria-label="Home" data-nav-probe className="text-ink">
-              <Logo />
+              <Logo className="max-md:scale-125" />
             </Link>
           </div>
           <div className="hidden flex-1 items-center justify-end gap-8 md:flex">
@@ -620,7 +620,7 @@ export function Navigation({ data }: { data?: NavData | null }) {
           >
             <div className="p-6">
               <Link href="/" aria-label="Home" onClick={() => setMobileOpen(false)}>
-                <Logo />
+                <Logo className="max-md:origin-left max-md:scale-125" />
               </Link>
             </div>
             <div className="mt-4 flex flex-col">

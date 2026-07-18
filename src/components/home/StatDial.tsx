@@ -44,14 +44,15 @@ export function StatDial({ value = 0, label }: { value?: number; label?: string 
         className="size-16 overflow-visible"
         strokeWidth={1.6}
       >
-        {Array.from({ length: TICKS }, (_, i) => {
-          const d = tickPath(i);
-          if (i >= filled)
-            return <path key={i} d={d} className="stroke-[var(--line)]" />;
+        {/* full hairline ring underneath; the value's ticks draw over it */}
+        {Array.from({ length: TICKS }, (_, i) => (
+          <path key={i} d={tickPath(i)} className="stroke-[var(--line)]" />
+        ))}
+        {Array.from({ length: filled }, (_, i) => {
           return (
             <motion.path
               key={i}
-              d={d}
+              d={tickPath(i)}
               className="stroke-[var(--ink)]"
               initial={{ pathLength: 0 }}
               animate={{ pathLength: inView ? 1 : 0 }}

@@ -636,14 +636,22 @@ export function Navigation({ data }: { data?: NavData | null }) {
           hasFullHero && !isHome && !mobileOpen ? "hidden" : ""
         }`}
       >
+        {/* every item binds text-ink directly (icons included): each
+            runs its own color transition off the same var flip, so
+            text and glyphs invert in perfect lockstep — inherited
+            animation doesn't reach SVG strokes reliably on iOS */}
         <div
           className={`label flex h-12 items-center justify-between rounded-xs px-6 text-ink transition-colors duration-300 ${
             mobileOpen ? "bg-surface-2" : "bg-wash backdrop-blur-md"
           }`}
         >
-          <a href="#">SEARCH</a>
-          <a href="#">ACCOUNT</a>
-          <button type="button" onClick={openCart} className="uppercase">
+          <a href="#" className="text-ink">
+            SEARCH
+          </a>
+          <a href="#" className="text-ink">
+            ACCOUNT
+          </a>
+          <button type="button" onClick={openCart} className="uppercase text-ink">
             BAG [{bagCount}]
           </button>
           <button
@@ -651,9 +659,9 @@ export function Navigation({ data }: { data?: NavData | null }) {
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileOpen}
             onClick={() => setMobileOpen((v) => !v)}
-            className="flex size-8 items-center justify-center"
+            className="flex size-8 items-center justify-center text-ink"
           >
-            {mobileOpen ? <Close /> : <Menu />}
+            {mobileOpen ? <Close className="text-ink" /> : <Menu className="text-ink" />}
           </button>
         </div>
       </div>

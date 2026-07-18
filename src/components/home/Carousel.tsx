@@ -61,17 +61,38 @@ export function Carousel({
   const current = items[active] ?? items[0];
 
   /* the thumb rail's travelling edge bar: measure the active thumb's
-     offset within the rail so the bar slides to it */
+     offset within the rail so the bar slides to it. While moving it
+     stretches to 1.5x its length mid-travel (symmetric about the
+     travel path) and settles back to 1x */
   const railRef = useRef<HTMLDivElement>(null);
-  const [bar, setBar] = useState({ top: 0, height: 0 });
+  const prevBar = useRef<{ top: number; height: number } | null>(null);
+  const [bar, setBar] = useState<{
+    top: number | number[];
+    height: number | number[];
+  }>({ top: 0, height: 0 });
   useLayoutEffect(() => {
-    const measure = () => {
+    const measure = (stretch: boolean) => {
       const btn = railRef.current?.querySelectorAll("button")[active];
-      if (btn) setBar({ top: btn.offsetTop, height: btn.offsetHeight });
+      if (!btn) return;
+      const top = btn.offsetTop;
+      const height = btn.offsetHeight;
+      const prev = prevBar.current;
+      if (stretch && prev && prev.top !== top) {
+        const long = height * 1.5;
+        const midCenter = (prev.top + prev.height / 2 + top + height / 2) / 2;
+        setBar({
+          top: [prev.top, midCenter - long / 2, top],
+          height: [prev.height, long, height],
+        });
+      } else {
+        setBar({ top, height });
+      }
+      prevBar.current = { top, height };
     };
-    measure();
-    window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
+    measure(true);
+    const onResize = () => measure(false);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
   }, [active, items.length]);
 
   const description = (
@@ -218,13 +239,14 @@ export function Carousel({
               </button>
             ))}
             {/* one 2px bar on the rail's right edge travels to the
-                active thumb (measured, so it survives resize) */}
+                active thumb, stretching mid-flight; dramatic
+                ease-in-out across the keyframes */}
             <motion.span
               aria-hidden
               className="absolute right-0 w-0.5 bg-ink"
               initial={false}
               animate={{ top: bar.top, height: bar.height }}
-              transition={{ duration: 0.45, ease: [...MEDIA_EASE] }}
+              transition={{ duration: 0.6, ease: [0.85, 0, 0.15, 1] }}
             />
           </div>
         </div>

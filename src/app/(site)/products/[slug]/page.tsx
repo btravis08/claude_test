@@ -354,7 +354,7 @@ export default async function ProductPage({
             }))}
           />
           {/* Design Details — the homepage carousel component */}
-          <Carousel eyebrow="Design Details" />
+          <Carousel eyebrow="Design details" />
           <ThreeDViewer image="/figma/products/presidio-white.png" />
           <FiftyFifty
             mode="light"

@@ -11,6 +11,7 @@ import { Logo } from "@/components/Logo";
 import { useCart } from "@/components/cart/CartContext";
 import { NavTextLink } from "@/components/NavTextLink";
 import { SmartLink } from "@/components/SmartLink";
+import { startNavBackdropProbes } from "@/components/navBackdrop";
 import { ArrowUpRight, Close, Menu, SearchMd } from "@/components/icons";
 
 /*
@@ -405,6 +406,7 @@ export function Navigation({ data }: { data?: NavData | null }) {
   /* color mode of the section under the mobile bottom bar */
   const [barMode, setBarMode] = useState<"light" | "dark">("light");
   const lastY = useRef(0);
+  const headerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const modeUnderBar = (): "light" | "dark" => {
@@ -493,6 +495,15 @@ export function Navigation({ data }: { data?: NavData | null }) {
      transparent (light mode) until the page starts scrolling. */
   const overlayZone = hasFullHero ? overHero : atTop;
   const transparent = overlayZone && !hovered && active === null && !panelVisible;
+
+  /* while transparent, each [data-nav-probe] element samples the
+     backdrop luminance behind it and flips its own color mode — a
+     dark carousel slide under one link turns that link white while
+     its neighbors stay ink */
+  useEffect(() => {
+    if (!transparent || !headerRef.current) return;
+    return startNavBackdropProbes(headerRef.current);
+  }, [transparent, pathname]);
   const activeItem = active !== null ? nav.items[active] : null;
   const hasDropdown = (item: MenuItem) => item.layout !== "none";
 
@@ -513,12 +524,8 @@ export function Navigation({ data }: { data?: NavData | null }) {
           setHovered(false);
           setActive(null);
         }}
-        /* nav-blend must sit on the header itself: fixed + z-index
-           make it a stacking context, so a blend INSIDE it could
-           never reach the page — the context root blends as a group */
-        className={`fixed top-0 z-50 flex w-full flex-col text-ink ${
-          transparent ? "nav-blend" : ""
-        }`}
+        ref={headerRef}
+        className="fixed top-0 z-50 flex w-full flex-col text-ink"
       >
         {/* bar: transparent over the hero / at top, bg-primary once
             scrolled back in or engaged (hover / open dropdown). The
@@ -535,6 +542,8 @@ export function Navigation({ data }: { data?: NavData | null }) {
             {nav.items.map((item, i) => (
               <span
                 key={item.title}
+                data-nav-probe
+                className="text-ink"
                 onMouseEnter={() => setActive(hasDropdown(item) ? i : null)}
                 onFocus={() => setActive(hasDropdown(item) ? i : null)}
               >
@@ -544,16 +553,18 @@ export function Navigation({ data }: { data?: NavData | null }) {
           </div>
           <div className="flex-1 md:hidden" />
           <div className="flex flex-1 items-center justify-center">
-            <Link href="/" aria-label="Home">
+            <Link href="/" aria-label="Home" data-nav-probe className="text-ink">
               <Logo />
             </Link>
           </div>
           <div className="hidden flex-1 items-center justify-end gap-8 md:flex">
-            <a href="#" aria-label="Search" className="text-ink">
+            <a href="#" aria-label="Search" data-nav-probe className="text-ink">
               <SearchMd />
             </a>
-            <NavButton label="ACCOUNT" />
-            <button type="button" onClick={openCart}>
+            <span data-nav-probe className="text-ink">
+              <NavButton label="ACCOUNT" />
+            </span>
+            <button type="button" onClick={openCart} data-nav-probe className="text-ink">
               <NavButton label={`BAG [${bagCount}]`} />
             </button>
           </div>

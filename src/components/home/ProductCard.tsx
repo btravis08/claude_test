@@ -109,13 +109,13 @@ export function ProductCard({ product }: { product: ProductCardData }) {
         : undefined
       : product.colorCount;
 
-  const CardShell = (
-    product.href?.startsWith("/") ? MotionLink : motion.a
-  ) as typeof motion.a;
+  const internal = Boolean(product.href?.startsWith("/"));
+  const CardShell = (internal ? MotionLink : motion.a) as typeof motion.a;
 
   return (
     <CardShell
       href={product.href ?? "#"}
+      {...(internal ? { prefetch: true, scroll: false } : {})}
       initial="rest"
       animate={showSwatches ? "hover" : "rest"}
       onMouseEnter={() => setCardHover(true)}

@@ -1,37 +1,69 @@
 "use client";
 
+import { AnimatePresence, motion } from "motion/react";
 import { usePathname } from "next/navigation";
-import * as React from "react";
+import { LayoutRouterContext } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { useContext, useEffect, useRef } from "react";
+
+import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
 
 /*
-  Route-change cross-fade: the wrapper is keyed by pathname, so on
-  navigation the old page content exits (fade out) while the new page
-  enters (fade in) via the browser View Transitions API — the fixed
-  chrome (nav, footer) never remounts and holds still. Animations live
-  in globals.css (.page-exit / .page-enter).
+  Route-change fade, strictly sequential: the old page eases fully
+  out, then the new page eases in, while the fixed chrome (nav,
+  mobile bar, footer) stays mounted and untouched. Animated with
+  Motion on the real DOM — compositor-driven opacity, smooth on
+  mobile Safari where the View Transitions API stutters.
 
-  React's <ViewTransition> ships in the canary React that Next vendors
-  for the App Router; the installed react types don't know it yet, so
-  it's pulled off the namespace. Browsers without the API (and any
-  React without the export) just swap instantly.
+  The exiting subtree is wrapped in a frozen LayoutRouterContext so
+  it keeps rendering the OLD route while AnimatePresence fades it
+  out — without this, the outgoing clone would re-render as the new
+  page mid-exit.
+
+  Links pass scroll={false} (see SmartLink); the scroll reset to the
+  top happens here between the fades, while nothing is visible.
 */
-const ViewTransition = (
-  React as unknown as {
-    ViewTransition?: React.ComponentType<{
-      children: React.ReactNode;
-      enter?: string;
-      exit?: string;
-      default?: string;
-    }>;
-  }
-).ViewTransition;
+
+function FrozenRouter({ children }: { children: React.ReactNode }) {
+  const context = useContext(LayoutRouterContext);
+  const frozen = useRef(context).current;
+  return (
+    <LayoutRouterContext.Provider value={frozen}>{children}</LayoutRouterContext.Provider>
+  );
+}
 
 export function PageTransition({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  if (!ViewTransition) return <>{children}</>;
+  /* browser back/forward restores its own scroll position — only
+     fresh link navigations reset to the top */
+  const isPop = useRef(false);
+  useEffect(() => {
+    const onPop = () => {
+      isPop.current = true;
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
+
   return (
-    <ViewTransition key={pathname} enter="page-enter" exit="page-exit" default="none">
-      {children}
-    </ViewTransition>
+    <AnimatePresence
+      mode="wait"
+      initial={false}
+      onExitComplete={() => {
+        if (!isPop.current) window.scrollTo({ top: 0, behavior: "instant" });
+        isPop.current = false;
+      }}
+    >
+      <motion.div
+        key={pathname}
+        initial={{ opacity: 0 }}
+        animate={{
+          opacity: 1,
+          transition: { duration: 0.42, ease: [...MEDIA_EASE] },
+        }}
+        exit={{ opacity: 0, transition: { duration: 0.28, ease: [...MEDIA_EASE] } }}
+      >
+        <FrozenRouter>{children}</FrozenRouter>
+      </motion.div>
+    </AnimatePresence>
   );
 }

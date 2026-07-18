@@ -63,12 +63,23 @@ export function ArrowButton({
   );
 }
 
-/* internal hrefs ride next/link so the arrow CTAs navigate client-side */
+/* internal hrefs ride next/link so the arrow CTAs navigate client-side;
+   prefetch + scroll:false match SmartLink (PageTransition owns the
+   scroll reset between fades) */
 const MotionLink = motion.create(Link);
 
 export function ArrowLink({ href, ...props }: React.ComponentProps<typeof motion.a>) {
-  const Comp = (
-    typeof href === "string" && href.startsWith("/") ? MotionLink : motion.a
-  ) as typeof motion.a;
-  return <Comp href={href} initial="rest" whileHover="hover" animate="rest" {...props} />;
+  const internal = typeof href === "string" && href.startsWith("/");
+  const Comp = (internal ? MotionLink : motion.a) as typeof motion.a;
+  const linkProps = internal ? { prefetch: true, scroll: false } : {};
+  return (
+    <Comp
+      href={href}
+      initial="rest"
+      whileHover="hover"
+      animate="rest"
+      {...linkProps}
+      {...props}
+    />
+  );
 }

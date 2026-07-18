@@ -443,7 +443,10 @@ export function Navigation({ data }: { data?: NavData | null }) {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
-  }, [hasFullHero]);
+    /* pathname included so overHero/atTop recompute on every route
+       change, not only when hasFullHero flips — a same-kind
+       navigation (e.g. PDP → home at rest) fires no scroll event */
+  }, [hasFullHero, pathname]);
 
   /* the PDP purchase bar's menu chip opens the standard sheet */
   useEffect(() => {
@@ -453,10 +456,14 @@ export function Navigation({ data }: { data?: NavData | null }) {
   }, []);
 
   /* SPA navigation keeps this component mounted — close the meganav
-     and the mobile sheet whenever the route changes */
+     and the mobile sheet whenever the route changes, and drop the
+     hover state (iOS taps fire mouseenter with no mouseleave, and on
+     desktop the cursor is still parked on the link it clicked — both
+     would hold the bar opaque over the new page's hero) */
   useEffect(() => {
     setActive(null);
     setMobileOpen(false);
+    setHovered(false);
   }, [pathname]);
 
   // lock page scroll behind the mobile sheet

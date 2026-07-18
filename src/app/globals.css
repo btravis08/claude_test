@@ -277,15 +277,16 @@ body {
 
 /*
   SPA route transitions (React ViewTransition + the browser View
-  Transitions API): old page content fades out quickly, the new page
-  fades in after it, while the fixed header — named site-header — is
+  Transitions API): strictly sequential — the old page eases fully
+  out first, then the new page eases in (`both` holds it invisible
+  through the delay). The fixed header — named site-header — is
   pinned out of the animation so the nav never moves.
 */
 ::view-transition-old(.page-exit) {
-  animation: 200ms cubic-bezier(0.22, 1, 0.36, 1) both sdr-page-fade reverse;
+  animation: 280ms cubic-bezier(0.22, 1, 0.36, 1) both sdr-page-fade reverse;
 }
 ::view-transition-new(.page-enter) {
-  animation: 350ms cubic-bezier(0.22, 1, 0.36, 1) 120ms both sdr-page-fade;
+  animation: 420ms cubic-bezier(0.22, 1, 0.36, 1) 300ms both sdr-page-fade;
 }
 @keyframes sdr-page-fade {
   from {

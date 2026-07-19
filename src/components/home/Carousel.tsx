@@ -74,22 +74,37 @@ export function Carousel({
     lastImage.current = current?.image;
   }, [current?.image]);
 
-  /* Mobile slide-over: a persistent layer driven by a motion value
+  /* Mobile slide-over: a persistent layer driven by motion values
      (mount animations are suppressed under the page transition's
      presence context, so a keyed element with `initial` won't play).
-     On change the layer jumps below the mask and tweens up over the
-     held underlay — same duration/easing as the rail bar */
+     On change the incoming image starts offset 30% of the container
+     toward the travel direction — from below when moving to a later
+     slide, from above when moving to an earlier one — at 1.2x scale
+     and transparent, then fades/settles into place over the held
+     underlay; same duration/easing as the rail bar */
   const slideBoxRef = useRef<HTMLDivElement>(null);
   const slideY = useMotionValue(0);
+  const slideOpacity = useMotionValue(1);
+  const slideScale = useMotionValue(1);
   const prevActive = useRef(active);
   useLayoutEffect(() => {
-    if (prevActive.current === active) return;
+    const prev = prevActive.current;
+    if (prev === active) return;
     prevActive.current = active;
     const h = slideBoxRef.current?.offsetHeight ?? 0;
     if (!h) return;
-    slideY.jump(h);
-    animate(slideY, 0, { duration: 0.6, ease: [0.85, 0, 0.15, 1] });
-  }, [active, slideY]);
+    const dir = active > prev ? 1 : -1;
+    const T = {
+      duration: 0.6,
+      ease: [0.85, 0, 0.15, 1] as [number, number, number, number],
+    };
+    slideY.jump(dir * h * 0.3);
+    slideOpacity.jump(0);
+    slideScale.jump(1.2);
+    animate(slideY, 0, T);
+    animate(slideOpacity, 1, T);
+    animate(slideScale, 1, T);
+  }, [active, slideY, slideOpacity, slideScale]);
 
   /* The thumb rail's travelling edge bar. Both edges tween to the
      active thumb on the SAME bezier in one continuous motion; the
@@ -279,6 +294,8 @@ export function Carousel({
               className="absolute inset-0 bg-cover bg-center"
               style={{
                 y: slideY,
+                opacity: slideOpacity,
+                scale: slideScale,
                 backgroundImage: `url(${current?.image ?? "/figma/media-portrait.png"})`,
               }}
             />

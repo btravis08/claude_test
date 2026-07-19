@@ -1,9 +1,15 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
+import {
+  AnimatePresence,
+  animate,
+  motion,
+  useMotionValue,
+  useTransform,
+} from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
 import { ArrowLink, ArrowSwap } from "@/components/home/ArrowHover";
@@ -12,7 +18,32 @@ import { useCart } from "@/components/cart/CartContext";
 import { NavTextLink } from "@/components/NavTextLink";
 import { SmartLink } from "@/components/SmartLink";
 import { startNavBackdropProbes } from "@/components/navBackdrop";
-import { ArrowUpRight, Close, Menu, SearchMd } from "@/components/icons";
+import { ArrowUpRight, SearchMd } from "@/components/icons";
+
+/* the mobile bar's hamburger: its two bars glide to the center and
+   rotate into an X (same 300ms curve as the bar's color cross-fade) */
+function MenuX({ open, className }: { open: boolean; className?: string }) {
+  const line = (openTf: string): React.CSSProperties => ({
+    transform: open ? openTf : "none",
+    transformOrigin: "12px 12px",
+    transition: "transform 300ms cubic-bezier(0.4, 0, 0.2, 1)",
+  });
+  return (
+    <svg
+      style={{ width: "1rem", height: "1rem" }}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="square"
+      className={className}
+      aria-hidden
+    >
+      <path d="M4.5 9h15" style={line("translateY(3px) rotate(45deg)")} />
+      <path d="M4.5 15h15" style={line("translateY(-3px) rotate(-45deg)")} />
+    </svg>
+  );
+}
 
 /*
   Site navigation. Content comes from the Sanity "navigation" singleton
@@ -403,6 +434,40 @@ export function Navigation({ data }: { data?: NavData | null }) {
   const [panelVisible, setPanelVisible] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { count: bagCount, openCart } = useCart();
+
+  /* On pages where the bar is hidden behind a purchase dock (PDP),
+     opening the menu reveals it with a choreography: the bar unclips
+     leftward from the hamburger chip while the links fade in right to
+     left. Imperative motion values — mount animations are suppressed
+     under the page transition's presence context. */
+  const mobileBarRef = useRef<HTMLDivElement>(null);
+  const barClip = useMotionValue(0);
+  const barClipPath = useTransform(
+    barClip,
+    (v) => `inset(0 0 0 ${v}px round 0.125rem)`,
+  );
+  const searchOp = useMotionValue(1);
+  const accountOp = useMotionValue(1);
+  const bagOp = useMotionValue(1);
+  const prevMobileOpen = useRef(false);
+  useLayoutEffect(() => {
+    const opened = mobileOpen && !prevMobileOpen.current;
+    prevMobileOpen.current = mobileOpen;
+    if (!opened || !(hasFullHero && !isHome)) return;
+    const el = mobileBarRef.current;
+    if (!el || el.offsetWidth === 0) return;
+    barClip.jump(Math.max(0, el.offsetWidth - 48));
+    animate(barClip, 0, { duration: 0.5, ease: [0.85, 0, 0.15, 1] });
+    /* rightmost first (nearest the X), sweeping left */
+    [bagOp, accountOp, searchOp].forEach((mv, i) => {
+      mv.jump(0);
+      animate(mv, 1, {
+        duration: 0.35,
+        delay: 0.18 + i * 0.09,
+        ease: [0.22, 1, 0.36, 1],
+      });
+    });
+  }, [mobileOpen, hasFullHero, isHome, barClip, searchOp, accountOp, bagOp]);
   /* color mode of the section under the mobile bottom bar */
   const [barMode, setBarMode] = useState<"light" | "dark">("light");
   const lastY = useRef(0);
@@ -669,20 +734,27 @@ export function Navigation({ data }: { data?: NavData | null }) {
             runs its own color transition off the same var flip, so
             text and glyphs invert in perfect lockstep — inherited
             animation doesn't reach SVG strokes reliably on iOS */}
-        <div
+        <motion.div
+          ref={mobileBarRef}
+          style={{ clipPath: barClipPath }}
           className={`label flex h-12 items-center justify-between rounded-xs px-6 text-ink transition-colors duration-300 ${
             mobileOpen ? "bg-surface-2" : "bg-wash backdrop-blur-md"
           }`}
         >
-          <a href="#" className="text-ink">
+          <motion.a href="#" className="text-ink" style={{ opacity: searchOp }}>
             SEARCH
-          </a>
-          <a href="#" className="text-ink">
+          </motion.a>
+          <motion.a href="#" className="text-ink" style={{ opacity: accountOp }}>
             ACCOUNT
-          </a>
-          <button type="button" onClick={openCart} className="uppercase text-ink">
+          </motion.a>
+          <motion.button
+            type="button"
+            onClick={openCart}
+            className="uppercase text-ink"
+            style={{ opacity: bagOp }}
+          >
             BAG [{bagCount}]
-          </button>
+          </motion.button>
           <button
             type="button"
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
@@ -690,9 +762,9 @@ export function Navigation({ data }: { data?: NavData | null }) {
             onClick={() => setMobileOpen((v) => !v)}
             className="flex size-8 items-center justify-center text-ink"
           >
-            {mobileOpen ? <Close className="text-ink" /> : <Menu className="text-ink" />}
+            <MenuX open={mobileOpen} className="text-ink" />
           </button>
-        </div>
+        </motion.div>
       </div>
     </>
   );

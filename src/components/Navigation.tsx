@@ -493,7 +493,15 @@ export function Navigation({ data }: { data?: NavData | null }) {
         window.innerHeight - 40,
       );
       for (const el of stack) {
-        if (el.closest("[data-navbar]") || el.closest("header")) continue;
+        /* overlays (menu sheet, flyouts) sit over the page — sample
+           through them so the bar reflects the content beneath and
+           can't get stuck in the overlay's mode after it closes */
+        if (
+          el.closest("[data-navbar]") ||
+          el.closest("header") ||
+          el.closest("[data-nav-overlay]")
+        )
+          continue;
         const section = el.closest<HTMLElement>("[data-mode]");
         /* only true dark inverts the bar — the mid modes carry
            light-mode content treatment per the Figma variables */
@@ -692,6 +700,7 @@ export function Navigation({ data }: { data?: NavData | null }) {
         {mobileOpen && (
           <motion.div
             data-mode="light"
+            data-nav-overlay
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

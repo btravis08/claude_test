@@ -203,7 +203,12 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
         window.innerHeight - 52,
       );
       for (const el of stack) {
-        if (el.closest("[data-purchase-dock]") || el.closest("[data-navbar]")) continue;
+        if (
+          el.closest("[data-purchase-dock]") ||
+          el.closest("[data-navbar]") ||
+          el.closest("[data-nav-overlay]")
+        )
+          continue;
         const section = el.closest<HTMLElement>("[data-mode]");
         if (section) return section.dataset.mode === "dark" ? "dark" : "light";
       }

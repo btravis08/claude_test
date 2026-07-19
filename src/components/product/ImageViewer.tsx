@@ -304,6 +304,7 @@ export function ImageViewer({
   return (
     <motion.div
       data-mode="light"
+      data-nav-overlay
       style={{ opacity: rootOp }}
       className="fixed inset-0 z-[80] flex flex-col bg-surface text-ink"
       role="dialog"

@@ -340,11 +340,13 @@ function FilterPanel({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4, ease: [...MEDIA_EASE] }}
+            data-nav-overlay
             className="fixed inset-0 z-[80] cursor-default bg-[rgba(29,29,29,0.5)] backdrop-blur-md"
           />
           <motion.aside
             key="filter-panel"
             data-mode="light"
+            data-nav-overlay
             role="dialog"
             aria-label="Filter & sort"
             /* mobile: rises from the bottom; md+: slides from the left */

@@ -417,7 +417,7 @@ export function FiftyFifty({
   return (
     <section
       data-mode={mode}
-      className={`grid w-full grid-cols-1 gap-y-0.5 bg-white text-ink sm:grid-cols-2 ${
+      className={`grid w-full grid-cols-1 bg-white text-ink sm:grid-cols-2 ${
         ratio === "flex" ? "sm:h-svh" : ""
       }`}
     >

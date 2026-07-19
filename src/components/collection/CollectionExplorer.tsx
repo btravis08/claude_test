@@ -9,6 +9,7 @@ import { ProductCard } from "@/components/home/ProductCard";
 import type { ProductCardData } from "@/components/home/ProductCard";
 import { ArrowRight, ArrowUpRight, Close, FilterLines, Plus } from "@/components/icons";
 import { SmartLink } from "@/components/SmartLink";
+import { useMdUp } from "@/components/useMdUp";
 
 /*
   Client half of the PLP: the FILTER & SORT row (comp 33416:33779),
@@ -288,6 +289,7 @@ function FilterPanel({
 }) {
   const [draft, setDraft] = useState<FilterState>(applied);
   const [draftSort, setDraftSort] = useState<SortKey | null>(sort);
+  const mdUp = useMdUp();
   /* per-group visible caps, expanded by each LOAD MORE */
   const [caps, setCaps] = useState({ types: 6, sizes: 6, colors: 5 });
 
@@ -345,9 +347,10 @@ function FilterPanel({
             data-mode="light"
             role="dialog"
             aria-label="Filter & sort"
-            initial={{ x: "-100%" }}
-            animate={{ x: "0%" }}
-            exit={{ x: "-100%" }}
+            /* mobile: rises from the bottom; md+: slides from the left */
+            initial={mdUp ? { x: "-100%" } : { y: "100%" }}
+            animate={{ x: "0%", y: "0%" }}
+            exit={mdUp ? { x: "-100%" } : { y: "100%" }}
             transition={{ duration: 0.6, ease: [...MEDIA_EASE] }}
             className="fixed inset-y-0 left-0 z-[90] flex w-[28.0625rem] max-w-full flex-col bg-surface text-ink"
           >

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 
 import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
 import { Close, Minus, Plus, Ruler } from "@/components/icons";
+import { useMdUp } from "@/components/useMdUp";
 import {
   formatPrice,
   parsePrice,
@@ -346,6 +347,7 @@ function EmptyView() {
 
 export function CartFlyout() {
   const { isOpen, view, items, quickAdd, close } = useCart();
+  const mdUp = useMdUp();
 
   /* scroll lock + escape while open */
   useEffect(() => {
@@ -391,9 +393,10 @@ export function CartFlyout() {
             data-mode="light"
             role="dialog"
             aria-label={title}
-            initial={{ x: "100%" }}
-            animate={{ x: "0%" }}
-            exit={{ x: "100%" }}
+            /* mobile: rises from the bottom; md+: slides from the right */
+            initial={mdUp ? { x: "100%" } : { y: "100%" }}
+            animate={{ x: "0%", y: "0%" }}
+            exit={mdUp ? { x: "100%" } : { y: "100%" }}
             transition={{ duration: 0.6, ease: [...MEDIA_EASE] }}
             className="fixed inset-y-0 right-0 z-[90] flex w-[31.25rem] max-w-full flex-col bg-surface text-ink"
           >

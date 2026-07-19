@@ -263,6 +263,26 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
      the loop clones map back to their originals) */
   const [viewer, setViewer] = useState<number | null>(null);
 
+  /* each slide fades in only once its image has actually decoded —
+     otherwise a refresh paints the frame first and the image pops in
+     whenever the network delivers it */
+  const [loaded, setLoaded] = useState<Record<string, boolean>>({});
+  useEffect(() => {
+    let alive = true;
+    const mark = (src: string) =>
+      setLoaded((l) => (l[src] ? l : { ...l, [src]: true }));
+    slides.forEach((src) => {
+      const img = new Image();
+      img.onload = () => alive && mark(src);
+      img.onerror = () => alive && mark(src);
+      img.src = src;
+      if (img.complete) mark(src);
+    });
+    return () => {
+      alive = false;
+    };
+  }, [slides]);
+
   /* the purchase module, shared by the in-hero overlay and the fixed
      dock. Per the comp (Product Details 33298:29150): a 16px-padded
      inner container inside a 16px-padded wrapper; name/price and the
@@ -386,7 +406,9 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
               className="absolute inset-x-[8%] inset-y-[22%] bg-contain bg-center bg-no-repeat"
               style={{ backgroundImage: `url(${src})` }}
               initial={{ opacity: 0, scale: 1.04 }}
-              animate={{ opacity: 1, scale: 1 }}
+              animate={
+                loaded[src] ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 1.04 }
+              }
               transition={{ duration: 0.9, ease: [...MEDIA_EASE] }}
             />
           </div>

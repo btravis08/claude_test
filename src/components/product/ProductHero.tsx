@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
 import { useCart } from "@/components/cart/CartContext";
 import { ArrowLeft, ArrowRight, Menu } from "@/components/icons";
+import { ImageViewer } from "@/components/product/ImageViewer";
 
 /*
   PDP hero: required on every product page. Matches the comp:
@@ -246,12 +247,21 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
     }
     el.scrollLeft = drag.current.startScroll - dx;
   };
+  const suppressClick = useRef(false);
   const endDrag = () => {
     if (!drag.current.active) return;
+    /* a drag release lands on a slide — swallow the click it spawns */
+    suppressClick.current = drag.current.moved;
     drag.current.active = false;
     drag.current.moved = false;
     setDragging(false);
+    if (suppressClick.current)
+      setTimeout(() => (suppressClick.current = false), 0);
   };
+
+  /* full-screen viewer, opened by tapping a slide (real image index —
+     the loop clones map back to their originals) */
+  const [viewer, setViewer] = useState<number | null>(null);
 
   /* the purchase module, shared by the in-hero overlay and the fixed
      dock. Per the comp (Product Details 33298:29150): a 16px-padded
@@ -361,7 +371,15 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
         }`}
       >
         {renderSlides.map((src, i) => (
-          <div key={`${selected}-${i}`} data-slide className="relative h-full snap-start">
+          <div
+            key={`${selected}-${i}`}
+            data-slide
+            onClick={() => {
+              if (suppressClick.current) return;
+              setViewer(loop ? (i - 1 + slides.length) % slides.length : i);
+            }}
+            className="relative h-full cursor-zoom-in snap-start"
+          >
             <motion.div
               role="img"
               aria-label={`${product.title} — image ${i + 1}`}
@@ -426,6 +444,26 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
           the hero has fully scrolled away, gone again as soon as the
           bottom shopping module comes into view (sits above the mobile
           control bar on small screens) */}
+      {/* full-screen image viewer */}
+      <AnimatePresence>
+        {viewer !== null && (
+          <motion.div
+            key="image-viewer"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: [...MEDIA_EASE] }}
+          >
+            <ImageViewer
+              images={slides}
+              title={product.title}
+              initialIndex={viewer}
+              onClose={() => setViewer(null)}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <AnimatePresence>
         {heroGone && !shopReached && (
           <motion.div

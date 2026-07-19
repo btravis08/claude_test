@@ -701,10 +701,11 @@ export function Navigation({ data }: { data?: NavData | null }) {
           <motion.div
             data-mode="light"
             data-nav-overlay
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3, ease: [...MEDIA_EASE] }}
+            /* rises from the bottom like every other mobile modal */
+            initial={{ y: "100%" }}
+            animate={{ y: "0%" }}
+            exit={{ y: "100%" }}
+            transition={{ duration: 0.6, ease: [...MEDIA_EASE] }}
             className="fixed inset-0 z-[60] flex flex-col overflow-y-auto bg-surface text-ink md:hidden"
           >
             <div className="p-6">

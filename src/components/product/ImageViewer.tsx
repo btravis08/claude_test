@@ -27,24 +27,47 @@ function useFlyFrom(box: SourceBox | undefined, axis: "both" | "y" = "both") {
   const y = useMotionValue(0);
   const scaleX = useMotionValue(1);
   const scaleY = useMotionValue(1);
+  /* the open-time deltas, kept so close can retrace them exactly */
+  const start = useRef({ x: 0, y: 0, sx: 1, sy: 1, has: false });
   useLayoutEffect(() => {
     const el = ref.current;
     if (!box || !el) return;
     const to = el.getBoundingClientRect();
     if (!to.width) return;
-    y.jump(box.top + box.height / 2 - (to.top + to.height / 2));
+    const dy = box.top + box.height / 2 - (to.top + to.height / 2);
+    const dx = box.left + box.width / 2 - (to.left + to.width / 2);
+    start.current = {
+      x: axis === "both" ? dx : 0,
+      y: dy,
+      sx: axis === "both" ? box.width / to.width : 1,
+      sy: axis === "both" ? box.height / to.height : 1,
+      has: true,
+    };
+    y.jump(dy);
     animate(y, 0, FLY);
     if (axis === "both") {
-      x.jump(box.left + box.width / 2 - (to.left + to.width / 2));
-      scaleX.jump(box.width / to.width);
-      scaleY.jump(box.height / to.height);
+      x.jump(dx);
+      scaleX.jump(start.current.sx);
+      scaleY.jump(start.current.sy);
       animate(x, 0, FLY);
       animate(scaleX, 1, FLY);
       animate(scaleY, 1, FLY);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  return { ref, style: { x, y, scaleX, scaleY } };
+  /* retrace back to the on-page rect (scroll is locked while open, so
+     the captured deltas still land exactly) */
+  const reverse = () => {
+    const s = start.current;
+    if (!s.has) return Promise.resolve();
+    return Promise.all([
+      animate(y, s.y, FLY),
+      animate(x, s.x, FLY),
+      animate(scaleX, s.sx, FLY),
+      animate(scaleY, s.sy, FLY),
+    ]).then(() => undefined);
+  };
+  return { ref, style: { x, y, scaleX, scaleY }, reverse };
 }
 
 /*
@@ -103,6 +126,27 @@ export function ImageViewer({
   /* the tapped image slides from its on-page spot to screen center */
   const flyImg = useFlyFrom(from?.image, "y");
   const initialSlot = useRef(Math.min(initialIndex, n - 1) + (n > 1 ? 1 : 0));
+
+  /* closing retraces the whole choreography — controls fly back to
+     their on-page rects, then the overlay fades over the real
+     elements sitting exactly beneath them. Zoomed close skips the
+     retrace (the composition no longer matches the page) */
+  const closingRef = useRef(false);
+  const requestClose = () => {
+    if (closingRef.current) return;
+    closingRef.current = true;
+    if (panning) {
+      onClose();
+      return;
+    }
+    animate(pillContent, 0, { duration: 0.2 });
+    Promise.all([
+      flyLeft.reverse(),
+      flyRight.reverse(),
+      flyPill.reverse(),
+      flyImg.reverse(),
+    ]).then(onClose);
+  };
   /* the pill's content resolves after the bar has mostly shrunk in */
   const pillContent = useMotionValue(from?.bar ? 0 : 1);
   useEffect(() => {
@@ -121,7 +165,7 @@ export function ImageViewer({
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") requestClose();
       if (e.key === "ArrowLeft") page(-1);
       if (e.key === "ArrowRight") page(1);
     };
@@ -257,7 +301,7 @@ export function ImageViewer({
         <button
           type="button"
           aria-label="Close viewer"
-          onClick={onClose}
+          onClick={requestClose}
           className="pointer-events-auto text-ink"
         >
           <Close />

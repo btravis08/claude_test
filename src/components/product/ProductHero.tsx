@@ -513,7 +513,12 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
             key="image-viewer"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            /* once the retrace lands, the remaining modal surface
+               dissolves over the (identical) live page underneath */
+            exit={{
+              opacity: 0,
+              transition: { duration: 0.5, ease: [...MEDIA_EASE] },
+            }}
             transition={{ duration: 0.3, ease: [...MEDIA_EASE] }}
           >
             <ImageViewer

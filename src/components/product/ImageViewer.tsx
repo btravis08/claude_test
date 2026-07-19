@@ -132,6 +132,10 @@ export function ImageViewer({
      elements sitting exactly beneath them. Zoomed close skips the
      retrace (the composition no longer matches the page) */
   const closingRef = useRef(false);
+  /* counter / close / progress line — these have no on-page
+     counterpart, so they fade away during the retrace, leaving just
+     the background to dissolve once everything has landed */
+  const chromeOp = useMotionValue(1);
   const requestClose = () => {
     if (closingRef.current) return;
     closingRef.current = true;
@@ -140,6 +144,7 @@ export function ImageViewer({
       return;
     }
     animate(pillContent, 0, { duration: 0.2 });
+    animate(chromeOp, 0, { duration: 0.25 });
     Promise.all([
       flyLeft.reverse(),
       flyRight.reverse(),
@@ -294,7 +299,10 @@ export function ImageViewer({
       aria-label={`${title ?? "Product"} images`}
     >
       {/* counter + close */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-center justify-between p-4 md:p-6">
+      <motion.div
+        style={{ opacity: chromeOp }}
+        className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-center justify-between p-4 md:p-6"
+      >
         <p className="font-mono text-[0.875rem] leading-none text-ink">
           {pad(index + 1)} / {pad(n)}
         </p>
@@ -306,7 +314,7 @@ export function ImageViewer({
         >
           <Close />
         </button>
-      </div>
+      </motion.div>
 
       {/* imagery */}
       <div className="relative min-h-0 flex-1">
@@ -432,14 +440,17 @@ export function ImageViewer({
       </div>
 
       {/* the hero's eased slide indicator along the very bottom */}
-      <div className="absolute inset-x-0 bottom-0 z-10 h-0.5">
+      <motion.div
+        style={{ opacity: chromeOp }}
+        className="absolute inset-x-0 bottom-0 z-10 h-0.5"
+      >
         <motion.div
           className="h-full bg-ink"
           initial={false}
           animate={{ width: `${Math.min(progress, 1) * 100}%` }}
           transition={{ duration: 0.5, ease: "easeOut" }}
         />
-      </div>
+      </motion.div>
     </div>
   );
 }

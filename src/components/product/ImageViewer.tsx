@@ -116,13 +116,51 @@ export function ImageViewer({
     return () => window.removeEventListener("keydown", onKey);
   });
 
-  /* track mode: open on (or return to) the current image */
+  /* the track loops like the hero: edge clones on both ends, and a
+     settle-teleport recenters after crossing into a clone */
+  const loop = n > 1;
+  const renderImages = loop ? [images[n - 1], ...images, images[0]] : images;
+
+  /* track mode: open on (or return to) the current image (offset by
+     the leading clone) */
   useLayoutEffect(() => {
     if (panning) return;
     const el = trackRef.current;
-    if (el) el.scrollTo({ left: index * el.clientWidth, behavior: "instant" });
+    if (el)
+      el.scrollTo({
+        left: (index + (loop ? 1 : 0)) * el.clientWidth,
+        behavior: "instant",
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [panning]);
+
+  /* teleport by one full span once a clone settles, so both arrows
+     keep their direction seamlessly at either end */
+  useEffect(() => {
+    if (!loop || panning) return;
+    const el = trackRef.current;
+    if (!el) return;
+    let settle: ReturnType<typeof setTimeout> | undefined;
+    const onScroll = () => {
+      clearTimeout(settle);
+      settle = setTimeout(() => {
+        const w = el.clientWidth;
+        if (w <= 0) return;
+        const span = n * w;
+        const max = el.scrollWidth - el.clientWidth;
+        if (el.scrollLeft < w * 0.5) {
+          el.scrollTo({ left: el.scrollLeft + span, behavior: "instant" });
+        } else if (el.scrollLeft > max - w * 0.5) {
+          el.scrollTo({ left: el.scrollLeft - span, behavior: "instant" });
+        }
+      }, 90);
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      clearTimeout(settle);
+      el.removeEventListener("scroll", onScroll);
+    };
+  }, [loop, panning, n]);
 
   /* zoomed: center the canvas whenever it (re)appears — after a zoom
      transition settles or when paging between images */
@@ -140,11 +178,18 @@ export function ImageViewer({
   const onTrackScroll = () => {
     const el = trackRef.current;
     if (!el) return;
-    const max = el.scrollWidth - el.clientWidth;
-    if (max > 0) setProgress(el.scrollLeft / max);
-    setIndex(
-      Math.max(0, Math.min(n - 1, Math.round(el.scrollLeft / el.clientWidth))),
-    );
+    const w = el.clientWidth;
+    if (loop) {
+      /* clones excluded: raw real position 0..n-1 */
+      const raw = el.scrollLeft / w - 1;
+      const pos = Math.min(n - 1, Math.max(0, raw));
+      setProgress(n > 1 ? pos / (n - 1) : 1);
+      setIndex(((Math.round(raw) % n) + n) % n);
+    } else {
+      const max = el.scrollWidth - el.clientWidth;
+      if (max > 0) setProgress(el.scrollLeft / max);
+      setIndex(Math.max(0, Math.min(n - 1, Math.round(el.scrollLeft / w))));
+    }
   };
 
   const page = (dir: number) => {
@@ -152,7 +197,9 @@ export function ImageViewer({
       const el = trackRef.current;
       if (el) el.scrollBy({ left: dir * el.clientWidth, behavior: "smooth" });
     } else {
-      const next = Math.max(0, Math.min(n - 1, index + dir));
+      const next = loop
+        ? (index + dir + n) % n
+        : Math.max(0, Math.min(n - 1, index + dir));
       setIndex(next);
       setProgress(n > 1 ? next / (n - 1) : 1);
     }
@@ -212,11 +259,13 @@ export function ImageViewer({
             onScroll={onTrackScroll}
             className="no-scrollbar grid h-full w-full snap-x snap-mandatory auto-cols-[100%] grid-flow-col overflow-x-auto"
           >
-            {images.map((src, i) => (
+            {renderImages.map((src, i) => (
               <div key={i} className="relative h-full snap-start">
                 <div
                   role="img"
-                  aria-label={`${title ?? "Product"} — image ${i + 1}`}
+                  aria-label={`${title ?? "Product"} — image ${
+                    loop ? ((i - 1 + n) % n) + 1 : i + 1
+                  }`}
                   className="absolute inset-x-[8%] inset-y-[16%] bg-contain bg-center bg-no-repeat"
                   style={{ backgroundImage: `url(${src})` }}
                 />

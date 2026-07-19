@@ -228,8 +228,10 @@ export function Carousel({
                 {(item.title ?? "").replace(/→+$/, "")}
                 <span
                   aria-hidden
-                  className={`absolute inset-x-0 bottom-0 h-px origin-right bg-current transition-transform duration-300 ${
-                    i === active ? "origin-left scale-x-100" : "scale-x-0"
+                  className={`absolute inset-x-0 bottom-0 h-px bg-current transition-transform duration-300 ${
+                    i === active
+                      ? "origin-left scale-x-100"
+                      : "origin-right scale-x-0"
                   }`}
                 />
               </button>

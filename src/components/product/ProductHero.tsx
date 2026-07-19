@@ -409,6 +409,9 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
        the purchase bar stays exact in every toolbar state */
     <div ref={heroRef} className="relative h-dvh w-full bg-surface-2">
       {/* image carousel: slides share the canvas, no gaps */}
+      {/* while the viewer is open its flown copies own the screen —
+          the originals hide so the open fade doesn't double them, and
+          reappear under the exit fade once the copies land back */}
       <div
         ref={trackRef}
         onPointerDown={onPointerDown}
@@ -416,6 +419,7 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
         onDragStart={(e) => e.preventDefault()}
+        style={{ visibility: viewer !== null ? "hidden" : "visible" }}
         className={`no-scrollbar grid h-full w-full auto-cols-[100%] grid-flow-col overflow-x-auto sm:auto-cols-[45%] ${
           dragging ? "cursor-grabbing select-none" : "cursor-grab snap-x snap-mandatory"
         }`}
@@ -463,7 +467,10 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
         <div className="flex h-full flex-col justify-end px-4 pb-4">
           <div
             className="sticky flex w-full items-center justify-between"
-            style={{ bottom: arrowHold }}
+            style={{
+              bottom: arrowHold,
+              visibility: viewer !== null ? "hidden" : "visible",
+            }}
           >
             <button
               type="button"
@@ -547,6 +554,7 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
         ref={mobileDockRef}
         data-purchase-dock
         data-mode={barMode}
+        style={{ visibility: viewer !== null ? "hidden" : "visible" }}
         className="fixed inset-x-0 bottom-0 z-40 p-4 text-ink md:hidden"
       >
         <div className="flex w-full items-center justify-end gap-3">

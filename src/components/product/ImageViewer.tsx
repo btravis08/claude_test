@@ -1,6 +1,6 @@
 "use client";
 
-import { animate, motion, useMotionValue, useTransform } from "motion/react";
+import { animate, motion, useMotionValue } from "motion/react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { ArrowLeft, ArrowRight, Close, Minus, Plus } from "@/components/icons";
@@ -72,32 +72,20 @@ export function ImageViewer({
 }) {
   const n = images.length;
   const [index, setIndex] = useState(Math.min(initialIndex, n - 1));
-  /* zoom target (drives the pill); the actual canvas size eases to it
-     through a motion value. The pan view stays mounted until a
-     zoom-out lands back on 100 */
+  /* zoom target (drives the pill and the resting canvas size). The
+     transition itself runs as a compositor scale on a fixed overlay —
+     animating the canvas's layout size reflows (and recentering
+     scrolls) every frame, which stutters on phones. The native-scroll
+     pan layer swaps back in at rest; it stays mounted until a
+     zoom-out lands on 100 */
   const [zoom, setZoom] = useState(100);
   const [panning, setPanning] = useState(false);
-  const zoomMV = useMotionValue(100);
-  const zoomW = useTransform(zoomMV, (v) => `${v}%`);
+  const [animating, setAnimating] = useState(false);
+  const zscale = useMotionValue(1);
   const zoomTarget = useRef(100);
   const [progress, setProgress] = useState(n > 1 ? index / (n - 1) : 1);
   const trackRef = useRef<HTMLDivElement>(null);
   const panRef = useRef<HTMLDivElement>(null);
-
-  /* keep the growing/shrinking canvas centered each frame */
-  useEffect(
-    () =>
-      zoomMV.on("change", () => {
-        const el = panRef.current;
-        if (!el) return;
-        el.scrollTo({
-          left: (el.scrollWidth - el.clientWidth) / 2,
-          top: (el.scrollHeight - el.clientHeight) / 2,
-          behavior: "instant",
-        });
-      }),
-    [zoomMV],
-  );
 
   const flyLeft = useFlyFrom(from?.left);
   const flyRight = useFlyFrom(from?.right);
@@ -136,9 +124,10 @@ export function ImageViewer({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [panning]);
 
-  /* zoomed: recenter the canvas when paging between images */
+  /* zoomed: center the canvas whenever it (re)appears — after a zoom
+     transition settles or when paging between images */
   useLayoutEffect(() => {
-    if (!panning) return;
+    if (!panning || animating) return;
     const el = panRef.current;
     if (el)
       el.scrollTo({
@@ -146,7 +135,7 @@ export function ImageViewer({
         top: (el.scrollHeight - el.clientHeight) / 2,
         behavior: "instant",
       });
-  }, [panning, index]);
+  }, [panning, animating, index, zoom]);
 
   const onTrackScroll = () => {
     const el = trackRef.current;
@@ -169,9 +158,10 @@ export function ImageViewer({
     }
   };
 
-  /* the canvas size eases between zoom stops; leaving 100 mounts the
-     pan view first (composed identically to the slide, so the swap is
-     invisible), and landing back on 100 returns to the track */
+  /* ease between zoom stops on the overlay's compositor scale; the
+     overlay at scale 1 is composed identically to a slide, so both
+     mode handoffs are invisible. Landing back on 100 returns to the
+     track */
   const stepZoom = (dir: number) => {
     const i = ZOOMS.indexOf(zoom) + dir;
     if (i < 0 || i >= ZOOMS.length) return;
@@ -179,9 +169,12 @@ export function ImageViewer({
     setZoom(next);
     zoomTarget.current = next;
     if (next > 100) setPanning(true);
-    animate(zoomMV, next, { duration: 0.5, ease: [0.22, 1, 0.36, 1] }).then(
+    setAnimating(true);
+    animate(zscale, next / 100, { duration: 0.5, ease: [0.22, 1, 0.36, 1] }).then(
       () => {
-        if (zoomTarget.current === 100) setPanning(false);
+        if (zoomTarget.current !== next) return; // superseded mid-flight
+        setAnimating(false);
+        if (next === 100) setPanning(false);
       },
     );
   };
@@ -231,20 +224,41 @@ export function ImageViewer({
             ))}
           </div>
         ) : (
-          /* zoomed: the canvas eases between zoom sizes and pans with
-             native (momentum) scrolling. Its inner insets mirror the
-             slide composition, so at 100% it's pixel-identical to the
-             track and the mode swap is invisible */
-          <div ref={panRef} className="no-scrollbar h-full w-full overflow-auto">
-            <motion.div className="relative" style={{ width: zoomW, height: zoomW }}>
+          <>
+            {/* at rest: the real canvas at the target size, panning
+                with native (momentum) scrolling; hidden while the
+                overlay animates the transition */}
+            <div
+              ref={panRef}
+              className="no-scrollbar h-full w-full overflow-auto"
+              style={{ visibility: animating ? "hidden" : "visible" }}
+            >
               <div
-                role="img"
-                aria-label={`${title ?? "Product"} — image ${index + 1}, ${zoom}%`}
-                className="absolute inset-x-[8%] inset-y-[16%] bg-contain bg-center bg-no-repeat"
-                style={{ backgroundImage: `url(${images[index]})` }}
-              />
-            </motion.div>
-          </div>
+                className="relative"
+                style={{ width: `${zoom}%`, height: `${zoom}%` }}
+              >
+                <div
+                  role="img"
+                  aria-label={`${title ?? "Product"} — image ${index + 1}, ${zoom}%`}
+                  className="absolute inset-x-[8%] inset-y-[16%] bg-contain bg-center bg-no-repeat"
+                  style={{ backgroundImage: `url(${images[index]})` }}
+                />
+              </div>
+            </div>
+            {/* transition overlay: a full-frame slide composition
+                scaled about center on the compositor — buttery on
+                phones where per-frame layout is not */}
+            {animating && (
+              <div className="absolute inset-0 overflow-hidden">
+                <motion.div aria-hidden className="absolute inset-0" style={{ scale: zscale }}>
+                  <div
+                    className="absolute inset-x-[8%] inset-y-[16%] bg-contain bg-center bg-no-repeat"
+                    style={{ backgroundImage: `url(${images[index]})` }}
+                  />
+                </motion.div>
+              </div>
+            )}
+          </>
         )}
       </div>
 

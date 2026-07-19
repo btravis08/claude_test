@@ -20,7 +20,7 @@ const STEP = 360 / TICKS;
 const R_OUT = 32;
 const R_IN = 20;
 /* start-time offset between consecutive dials on the shared timeline */
-const DIAL_STAGGER = 0.3;
+const DIAL_STAGGER = 0.225;
 
 /* inner→outer path so pathLength draws the tick outward */
 const tickPath = (i: number) => {
@@ -61,8 +61,8 @@ function StatDial({
             initial={{ pathLength: 0 }}
             animate={{ pathLength: active ? 1 : 0 }}
             transition={{
-              duration: 0.45,
-              delay: delay + i * 0.035,
+              duration: 0.34,
+              delay: delay + i * 0.026,
               ease: [0.33, 1, 0.68, 1],
             }}
           />

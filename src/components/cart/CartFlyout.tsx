@@ -103,16 +103,17 @@ function QuickAddView() {
         {/* fit toggle */}
         <div className="flex flex-col gap-6 border-t border-line p-4 md:p-6">
           <p className="text-body-md font-medium text-ink">Fit</p>
-          {/* segmented toggle per Figma: selected segment fills with the
-              secondary-hover gray, text stays ink in both states */}
+          {/* segmented toggle: the selected segment is the primary
+              button style (black fill, inverted text) on the gray
+              track */}
           <div className="flex w-full items-center bg-surface-2 p-1.5">
             {["Normal", "Wide"].map((option) => (
               <button
                 key={option}
                 type="button"
                 onClick={() => setFit(option)}
-                className={`label flex h-9 flex-1 items-center justify-center px-3 font-medium text-ink transition-colors ${
-                  fit === option ? "bg-[#cacbc8]" : ""
+                className={`label flex h-9 flex-1 items-center justify-center px-3 font-medium transition-colors ${
+                  fit === option ? "bg-btn text-btn-fg" : "text-ink"
                 }`}
               >
                 {option}

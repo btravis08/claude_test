@@ -446,7 +446,9 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
       {/* mobile: the purchase bar IS the bottom nav, fixed from load
           (bottom of the svh hero). While the description's variant
           panel is on screen it minimizes to just the menu chip on
-          the right, then returns once the panel passes */}
+          the right, returning once the panel passes — and minimizes
+          for good once the bottom product slider is reached (and
+          stays minimal over the footer) */}
       <div
         ref={mobileDockRef}
         data-purchase-dock
@@ -455,7 +457,7 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
       >
         <div className="flex w-full items-center justify-end gap-3">
           <AnimatePresence initial={false}>
-            {!panelInView && (
+            {!panelInView && !shopReached && (
               <motion.div
                 key="mobile-controls"
                 initial={{ opacity: 0, y: 16 }}

@@ -492,8 +492,13 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
         </div>
       </div>
 
-      {/* eased scroll progress along the very bottom */}
-      <div className="absolute inset-x-0 bottom-0 z-10 h-0.5">
+      {/* eased scroll progress along the very bottom (hidden with the
+          other originals while the viewer owns the screen — the black
+          line reads loudly through the opening fade) */}
+      <div
+        className="absolute inset-x-0 bottom-0 z-10 h-0.5"
+        style={{ visibility: viewer !== null ? "hidden" : "visible" }}
+      >
         <motion.div
           className="h-full bg-ink"
           initial={false}

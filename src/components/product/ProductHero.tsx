@@ -266,9 +266,14 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
      viewer's controls fly in from them */
   const [viewer, setViewer] = useState<{
     index: number;
-    from?: { left?: SourceBox; right?: SourceBox; bar?: SourceBox };
+    from?: {
+      left?: SourceBox;
+      right?: SourceBox;
+      bar?: SourceBox;
+      image?: SourceBox;
+    };
   } | null>(null);
-  const openViewer = (index: number) => {
+  const openViewer = (index: number, slideEl?: HTMLElement) => {
     const box = (el?: Element | null): SourceBox | undefined => {
       if (!el) return undefined;
       const r = (el as HTMLElement).getBoundingClientRect();
@@ -283,6 +288,7 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
         left: box(hero?.querySelector('button[aria-label="Previous image"]')),
         right: box(hero?.querySelector('button[aria-label="Next image"]')),
         bar: box(mobileDockRef.current?.firstElementChild),
+        image: box(slideEl?.querySelector('[role="img"]')),
       },
     });
   };
@@ -418,9 +424,12 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
           <div
             key={`${selected}-${i}`}
             data-slide
-            onClick={() => {
+            onClick={(e) => {
               if (suppressClick.current) return;
-              openViewer(loop ? (i - 1 + slides.length) % slides.length : i);
+              openViewer(
+                loop ? (i - 1 + slides.length) % slides.length : i,
+                e.currentTarget,
+              );
             }}
             className="relative h-full cursor-zoom-in snap-start"
           >

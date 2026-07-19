@@ -18,8 +18,10 @@ const FLY = { duration: 0.6, ease: [0.85, 0, 0.15, 1] as const };
 /* FLIP: start the element at a captured on-page rect (offset +
    scale from its natural layout position) and settle it into place.
    Imperative motion values — mount animations are suppressed under
-   the page transition's presence context. */
-function useFlyFrom(box: SourceBox | undefined) {
+   the page transition's presence context. axis "y" translates
+   vertically only (used for the slide image, whose horizontal rect
+   isn't meaningful before the track positions itself). */
+function useFlyFrom(box: SourceBox | undefined, axis: "both" | "y" = "both") {
   const ref = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -30,14 +32,16 @@ function useFlyFrom(box: SourceBox | undefined) {
     if (!box || !el) return;
     const to = el.getBoundingClientRect();
     if (!to.width) return;
-    x.jump(box.left + box.width / 2 - (to.left + to.width / 2));
     y.jump(box.top + box.height / 2 - (to.top + to.height / 2));
-    scaleX.jump(box.width / to.width);
-    scaleY.jump(box.height / to.height);
-    animate(x, 0, FLY);
     animate(y, 0, FLY);
-    animate(scaleX, 1, FLY);
-    animate(scaleY, 1, FLY);
+    if (axis === "both") {
+      x.jump(box.left + box.width / 2 - (to.left + to.width / 2));
+      scaleX.jump(box.width / to.width);
+      scaleY.jump(box.height / to.height);
+      animate(x, 0, FLY);
+      animate(scaleX, 1, FLY);
+      animate(scaleY, 1, FLY);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return { ref, style: { x, y, scaleX, scaleY } };
@@ -65,9 +69,15 @@ export function ImageViewer({
   images: string[];
   title?: string;
   initialIndex?: number;
-  /* on-page rects the controls fly in from (mobile: the hero arrows
-     and the bottom bar shrinking into the zoom pill) */
-  from?: { left?: SourceBox; right?: SourceBox; bar?: SourceBox };
+  /* on-page rects the controls fly in from (mobile: the hero arrows,
+     the bottom bar shrinking into the zoom pill, and the tapped
+     slide's image sliding to screen center) */
+  from?: {
+    left?: SourceBox;
+    right?: SourceBox;
+    bar?: SourceBox;
+    image?: SourceBox;
+  };
   onClose: () => void;
 }) {
   const n = images.length;
@@ -90,6 +100,9 @@ export function ImageViewer({
   const flyLeft = useFlyFrom(from?.left);
   const flyRight = useFlyFrom(from?.right);
   const flyPill = useFlyFrom(from?.bar);
+  /* the tapped image slides from its on-page spot to screen center */
+  const flyImg = useFlyFrom(from?.image, "y");
+  const initialSlot = useRef(Math.min(initialIndex, n - 1) + (n > 1 ? 1 : 0));
   /* the pill's content resolves after the bar has mostly shrunk in */
   const pillContent = useMotionValue(from?.bar ? 0 : 1);
   useEffect(() => {
@@ -259,18 +272,25 @@ export function ImageViewer({
             onScroll={onTrackScroll}
             className="no-scrollbar grid h-full w-full snap-x snap-mandatory auto-cols-[100%] grid-flow-col overflow-x-auto"
           >
-            {renderImages.map((src, i) => (
-              <div key={i} className="relative h-full snap-start">
-                <div
-                  role="img"
-                  aria-label={`${title ?? "Product"} — image ${
-                    loop ? ((i - 1 + n) % n) + 1 : i + 1
-                  }`}
-                  className="absolute inset-x-[8%] inset-y-[16%] bg-contain bg-center bg-no-repeat"
-                  style={{ backgroundImage: `url(${src})` }}
-                />
-              </div>
-            ))}
+            {renderImages.map((src, i) => {
+              const fly = i === initialSlot.current;
+              return (
+                <div key={i} className="relative h-full snap-start">
+                  <motion.div
+                    ref={fly ? flyImg.ref : undefined}
+                    role="img"
+                    aria-label={`${title ?? "Product"} — image ${
+                      loop ? ((i - 1 + n) % n) + 1 : i + 1
+                    }`}
+                    className="absolute inset-x-[8%] inset-y-[16%] bg-contain bg-center bg-no-repeat"
+                    style={{
+                      ...(fly ? flyImg.style : undefined),
+                      backgroundImage: `url(${src})`,
+                    }}
+                  />
+                </div>
+              );
+            })}
           </div>
         ) : (
           <>

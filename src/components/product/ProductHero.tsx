@@ -7,6 +7,7 @@ import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
 import { useCart } from "@/components/cart/CartContext";
 import { ArrowLeft, ArrowRight, Menu } from "@/components/icons";
 import { ImageViewer } from "@/components/product/ImageViewer";
+import type { SourceBox } from "@/components/product/ImageViewer";
 
 /*
   PDP hero: required on every product page. Matches the comp:
@@ -260,8 +261,31 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
   };
 
   /* full-screen viewer, opened by tapping a slide (real image index —
-     the loop clones map back to their originals) */
-  const [viewer, setViewer] = useState<number | null>(null);
+     the loop clones map back to their originals). At open we capture
+     the live rects of the mobile arrows and bottom bar so the
+     viewer's controls fly in from them */
+  const [viewer, setViewer] = useState<{
+    index: number;
+    from?: { left?: SourceBox; right?: SourceBox; bar?: SourceBox };
+  } | null>(null);
+  const openViewer = (index: number) => {
+    const box = (el?: Element | null): SourceBox | undefined => {
+      if (!el) return undefined;
+      const r = (el as HTMLElement).getBoundingClientRect();
+      return r.width > 0
+        ? { left: r.left, top: r.top, width: r.width, height: r.height }
+        : undefined;
+    };
+    const hero = heroRef.current;
+    setViewer({
+      index,
+      from: {
+        left: box(hero?.querySelector('button[aria-label="Previous image"]')),
+        right: box(hero?.querySelector('button[aria-label="Next image"]')),
+        bar: box(mobileDockRef.current?.firstElementChild),
+      },
+    });
+  };
 
   /* each slide fades in only once its image has actually decoded —
      otherwise a refresh paints the frame first and the image pops in
@@ -396,7 +420,7 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
             data-slide
             onClick={() => {
               if (suppressClick.current) return;
-              setViewer(loop ? (i - 1 + slides.length) % slides.length : i);
+              openViewer(loop ? (i - 1 + slides.length) % slides.length : i);
             }}
             className="relative h-full cursor-zoom-in snap-start"
           >
@@ -479,7 +503,8 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
             <ImageViewer
               images={slides}
               title={product.title}
-              initialIndex={viewer}
+              initialIndex={viewer.index}
+              from={viewer.from}
               onClose={() => setViewer(null)}
             />
           </motion.div>

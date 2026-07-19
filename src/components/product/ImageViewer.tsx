@@ -1,9 +1,47 @@
 "use client";
 
-import { motion } from "motion/react";
+import { animate, motion, useMotionValue } from "motion/react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { ArrowLeft, ArrowRight, Close, Minus, Plus } from "@/components/icons";
+
+/* a screen rect captured on the page at open time */
+export interface SourceBox {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+}
+
+const FLY = { duration: 0.6, ease: [0.85, 0, 0.15, 1] as const };
+
+/* FLIP: start the element at a captured on-page rect (offset +
+   scale from its natural layout position) and settle it into place.
+   Imperative motion values — mount animations are suppressed under
+   the page transition's presence context. */
+function useFlyFrom(box: SourceBox | undefined) {
+  const ref = useRef<HTMLDivElement>(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const scaleX = useMotionValue(1);
+  const scaleY = useMotionValue(1);
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!box || !el) return;
+    const to = el.getBoundingClientRect();
+    if (!to.width) return;
+    x.jump(box.left + box.width / 2 - (to.left + to.width / 2));
+    y.jump(box.top + box.height / 2 - (to.top + to.height / 2));
+    scaleX.jump(box.width / to.width);
+    scaleY.jump(box.height / to.height);
+    animate(x, 0, FLY);
+    animate(y, 0, FLY);
+    animate(scaleX, 1, FLY);
+    animate(scaleY, 1, FLY);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  return { ref, style: { x, y, scaleX, scaleY } };
+}
 
 /*
   Full-screen product image viewer (opened by tapping a hero slide):
@@ -21,11 +59,15 @@ export function ImageViewer({
   images,
   title,
   initialIndex = 0,
+  from,
   onClose,
 }: {
   images: string[];
   title?: string;
   initialIndex?: number;
+  /* on-page rects the controls fly in from (mobile: the hero arrows
+     and the bottom bar shrinking into the zoom pill) */
+  from?: { left?: SourceBox; right?: SourceBox; bar?: SourceBox };
   onClose: () => void;
 }) {
   const n = images.length;
@@ -34,6 +76,16 @@ export function ImageViewer({
   const [progress, setProgress] = useState(n > 1 ? index / (n - 1) : 1);
   const trackRef = useRef<HTMLDivElement>(null);
   const panRef = useRef<HTMLDivElement>(null);
+
+  const flyLeft = useFlyFrom(from?.left);
+  const flyRight = useFlyFrom(from?.right);
+  const flyPill = useFlyFrom(from?.bar);
+  /* the pill's content resolves after the bar has mostly shrunk in */
+  const pillContent = useMotionValue(from?.bar ? 0 : 1);
+  useEffect(() => {
+    if (from?.bar) animate(pillContent, 1, { duration: 0.3, delay: 0.3 });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   /* lock the page scroll behind the overlay */
   useEffect(() => {
@@ -162,47 +214,60 @@ export function ImageViewer({
         )}
       </div>
 
-      {/* bottom controls: arrows at the corners, zoom pill centered */}
+      {/* bottom controls: arrows at the corners, zoom pill centered.
+          On open they fly in from their on-page rects — the hero
+          arrows slide down into the corners, the bottom bar shrinks
+          into the zoom pill */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex items-center justify-between p-4 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] md:p-6">
-        <button
-          type="button"
-          aria-label="Previous image"
-          onClick={() => page(-1)}
-          className="pointer-events-auto flex size-[2.875rem] items-center justify-center rounded-xs bg-wash text-ink backdrop-blur-md"
-        >
-          <ArrowLeft />
-        </button>
-        <div className="pointer-events-auto flex h-[2.875rem] items-center gap-1 rounded-xs bg-surface-2 px-2">
+        <motion.div ref={flyLeft.ref} style={flyLeft.style}>
           <button
             type="button"
-            aria-label="Zoom out"
-            disabled={zoom === ZOOMS[0]}
-            onClick={() => stepZoom(-1)}
-            className="flex size-9 items-center justify-center text-ink disabled:opacity-30"
+            aria-label="Previous image"
+            onClick={() => page(-1)}
+            className="pointer-events-auto flex size-[2.875rem] items-center justify-center rounded-xs bg-wash text-ink backdrop-blur-md"
           >
-            <Minus />
+            <ArrowLeft />
           </button>
-          <p className="w-14 text-center font-mono text-[0.875rem] leading-none text-ink">
-            {zoom}%
-          </p>
+        </motion.div>
+        <motion.div
+          ref={flyPill.ref}
+          style={flyPill.style}
+          className="pointer-events-auto flex h-[2.875rem] items-center gap-1 rounded-xs bg-surface-2 px-2"
+        >
+          <motion.div style={{ opacity: pillContent }} className="flex items-center gap-1">
+            <button
+              type="button"
+              aria-label="Zoom out"
+              disabled={zoom === ZOOMS[0]}
+              onClick={() => stepZoom(-1)}
+              className="flex size-9 items-center justify-center text-ink disabled:opacity-30"
+            >
+              <Minus />
+            </button>
+            <p className="w-14 text-center font-mono text-[0.875rem] leading-none text-ink">
+              {zoom}%
+            </p>
+            <button
+              type="button"
+              aria-label="Zoom in"
+              disabled={zoom === ZOOMS[ZOOMS.length - 1]}
+              onClick={() => stepZoom(1)}
+              className="flex size-9 items-center justify-center text-ink disabled:opacity-30"
+            >
+              <Plus />
+            </button>
+          </motion.div>
+        </motion.div>
+        <motion.div ref={flyRight.ref} style={flyRight.style}>
           <button
             type="button"
-            aria-label="Zoom in"
-            disabled={zoom === ZOOMS[ZOOMS.length - 1]}
-            onClick={() => stepZoom(1)}
-            className="flex size-9 items-center justify-center text-ink disabled:opacity-30"
+            aria-label="Next image"
+            onClick={() => page(1)}
+            className="pointer-events-auto flex size-[2.875rem] items-center justify-center rounded-xs bg-wash text-ink backdrop-blur-md"
           >
-            <Plus />
+            <ArrowRight />
           </button>
-        </div>
-        <button
-          type="button"
-          aria-label="Next image"
-          onClick={() => page(1)}
-          className="pointer-events-auto flex size-[2.875rem] items-center justify-center rounded-xs bg-wash text-ink backdrop-blur-md"
-        >
-          <ArrowRight />
-        </button>
+        </motion.div>
       </div>
 
       {/* the hero's eased slide indicator along the very bottom */}

@@ -1,5 +1,5 @@
 import { AnimatedMedia } from "@/components/home/AnimatedMedia";
-import { ArrowLink, ArrowSwap } from "@/components/home/ArrowHover";
+import { ArrowInViewPlay, ArrowLink, ArrowSwap } from "@/components/home/ArrowHover";
 import { CampaignOverlay } from "@/components/home/CampaignOverlay";
 import {
   AutoplayVideo,
@@ -482,11 +482,17 @@ export function FiftyFifty({
               {media}
               <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between p-4 md:p-6">
                 <p className="font-display text-title-md">{panel.title}</p>
-                <span className="flex size-10 items-center justify-center rounded-xs bg-white text-[#161716]">
+                {/* md+: swap on panel hover; mobile: plays once in view */}
+                <span className="hidden size-10 items-center justify-center rounded-xs bg-white text-[#161716] md:flex">
                   <ArrowSwap dx={1} dy={-1}>
                     <ArrowUpRight />
                   </ArrowSwap>
                 </span>
+                <ArrowInViewPlay className="flex size-10 items-center justify-center rounded-xs bg-white text-[#161716] md:hidden">
+                  <ArrowSwap dx={1} dy={-1}>
+                    <ArrowUpRight />
+                  </ArrowSwap>
+                </ArrowInViewPlay>
               </div>
             </ArrowLink>
           );
@@ -500,8 +506,14 @@ export function FiftyFifty({
           >
             {media}
             {panel.title && (
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end p-4 md:p-6">
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between p-4 md:p-6">
                 <p className="font-display text-title-md">{panel.title}</p>
+                {/* mobile: the square NE arrow, playing once in view */}
+                <ArrowInViewPlay className="flex size-10 shrink-0 items-center justify-center rounded-xs bg-white text-[#161716] md:hidden">
+                  <ArrowSwap dx={1} dy={-1}>
+                    <ArrowUpRight />
+                  </ArrowSwap>
+                </ArrowInViewPlay>
               </div>
             )}
           </div>

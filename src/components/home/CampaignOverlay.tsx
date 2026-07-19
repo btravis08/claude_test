@@ -5,6 +5,8 @@ import type { Transition } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
 import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
+import { ArrowInViewPlay, ArrowSwap } from "@/components/home/ArrowHover";
+import { ArrowUpRight } from "@/components/icons";
 
 /*
   Hero / Full Width text treatment: nav-style label texts on the sides,
@@ -40,11 +42,6 @@ export function CampaignOverlay({
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.2 });
   const [go, setGo] = useState(false);
-  /* stacked text link: the underline draws itself in once the link
-     rises above the bottom 20% of the screen (no hover on touch) */
-  const linkRef = useRef<HTMLSpanElement>(null);
-  const linkInView = useInView(linkRef, { once: true, margin: "0px 0px -20% 0px" });
-
 
   useEffect(() => {
     if (!inView) return;
@@ -69,14 +66,10 @@ export function CampaignOverlay({
           control bar until the edge catches up (pure CSS sticky).
           Full Width ("link") rests statically 16px above the
           section's bottom and keeps the nav-style text link. */}
-      {stack && (
+      {stack === "button" && (
         <div className="absolute inset-0 md:hidden">
           <div className="flex h-full flex-col justify-end px-4 pb-4">
-            <div
-              className={`flex w-full flex-col items-center gap-6 ${
-                stack === "button" ? "hero-cta sticky" : ""
-              }`}
-            >
+            <div className="hero-cta sticky flex w-full flex-col items-center gap-6">
               <div className="flex flex-col items-center gap-4 text-center">
                 {left !== undefined && (
                   <motion.span {...fade} className="label font-medium">
@@ -89,30 +82,43 @@ export function CampaignOverlay({
                   </motion.span>
                 )}
               </div>
-              {right !== undefined &&
-                (stack === "button" ? (
-                  <motion.span
-                    {...fade}
-                    className="label flex h-[2.875rem] w-full items-center justify-center rounded-xs bg-btn font-medium text-btn-fg"
-                  >
-                    {right}
-                  </motion.span>
-                ) : (
-                  <motion.span {...fade} ref={linkRef} className="label relative font-medium">
-                    {right}
-                    {/* nav-style underline: same 300ms draw as the nav
-                        links' hover, fired when the link clears the
-                        bottom 20% of the screen */}
-                    <motion.span
-                      aria-hidden
-                      className="absolute inset-x-0 -bottom-0.5 h-px origin-left bg-current"
-                      initial={{ scaleX: 0 }}
-                      animate={{ scaleX: linkInView ? 1 : 0 }}
-                      transition={{ duration: 0.3, ease: "easeInOut", delay: 0.1 }}
-                    />
-                  </motion.span>
-                ))}
+              {right !== undefined && (
+                <motion.span
+                  {...fade}
+                  className="label flex h-[2.875rem] w-full items-center justify-center rounded-xs bg-btn font-medium text-btn-fg"
+                >
+                  {right}
+                </motion.span>
+              )}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Full Width mobile: eyebrow + headline bottom-left, square NE
+          arrow bottom-right (plays its swap once when it enters view) */}
+      {stack === "link" && (
+        <div className="absolute inset-0 md:hidden">
+          <div className="flex h-full items-end justify-between gap-4 p-4">
+            <div className="flex min-w-0 flex-col gap-3">
+              {left !== undefined && (
+                <motion.span {...fade} className="label font-medium">
+                  {left}
+                </motion.span>
+              )}
+              {center !== undefined && (
+                <motion.span {...fade} className="font-display text-headline-lg">
+                  {center}
+                </motion.span>
+              )}
+            </div>
+            <motion.span {...fade} className="shrink-0">
+              <ArrowInViewPlay className="flex size-10 items-center justify-center rounded-xs bg-white text-[#161716]">
+                <ArrowSwap dx={1} dy={-1}>
+                  <ArrowUpRight />
+                </ArrowSwap>
+              </ArrowInViewPlay>
+            </motion.span>
           </div>
         </div>
       )}

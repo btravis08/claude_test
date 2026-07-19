@@ -1,8 +1,9 @@
 "use client";
 
-import { motion } from "motion/react";
+import { motion, useInView } from "motion/react";
 import type { Variants } from "motion/react";
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 
 /*
   Arrow-swap hover from the design storyboard: on hover the arrow
@@ -60,6 +61,36 @@ export function ArrowButton({
       disabled={disabled}
       {...props}
     />
+  );
+}
+
+/* Plays the swap once when scrolled into view (touch has no hover),
+   then resets so pointer hover still replays it. State-driven, so the
+   page transition's mount suppression can't skip it. */
+export function ArrowInViewPlay({
+  className,
+  children,
+}: {
+  className?: string;
+  children: React.ReactNode;
+}) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: "0px 0px -15% 0px" });
+  const [play, setPlay] = useState(false);
+  useEffect(() => {
+    if (inView) setPlay(true);
+  }, [inView]);
+  return (
+    <motion.span
+      ref={ref}
+      className={className}
+      initial="rest"
+      whileHover="hover"
+      animate={play ? "hover" : "rest"}
+      onAnimationComplete={() => setPlay(false)}
+    >
+      {children}
+    </motion.span>
   );
 }
 

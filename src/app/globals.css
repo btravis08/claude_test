@@ -257,7 +257,8 @@ body {
      this and keep their behavior. */
   [data-nav-root],
   [data-navbar],
-  :is([data-nav-root], [data-navbar])
+  [data-purchase-dock],
+  :is([data-nav-root], [data-navbar], [data-purchase-dock])
     :is(
       [class*="text-ink"],
       [class*="text-btn"],

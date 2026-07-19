@@ -196,7 +196,8 @@ export default async function CollectionPage({
       {collection?.showFooterTagline && <FooterTagline />}
       {/* breadcrumb + centered serif title; crumbs use the nav link
           style, the current page keeps its underline drawn */}
-      <div className="flex flex-col items-center gap-4 px-4 pb-10 pt-36 md:px-6">
+      {/* mobile: 30% less air under the logo (144px -> ~101px) */}
+      <div className="flex flex-col items-center gap-4 px-4 pb-10 pt-[6.3125rem] md:px-6 md:pt-36">
         <div className="flex items-center gap-3">
           {collection?.parent?.slug ? (
             <NavTextLink

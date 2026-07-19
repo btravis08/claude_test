@@ -287,6 +287,42 @@ body {
   bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
 }
 
+/*
+  Touch-device parallax: same ±6.5% drift as the desktop JS scrub, but
+  compositor-driven off the element's own view() timeline so iOS
+  momentum scrolling can't stair-step it. The animation owns transform
+  while active (it outranks Motion's inline entrance scale — opacity
+  still fades in via Motion); browsers without scroll-driven
+  animations skip it and keep the static entrance.
+*/
+@supports (animation-timeline: view()) {
+  /* the overflow-hidden mask is itself a scroll container, so view()
+     on the inner layer would resolve against it (a zero-length range).
+     Name the timeline on the mask — tracked against the viewport — and
+     drive the layer from that. */
+  .sdr-parallax-frame {
+    view-timeline: --sdr-media block;
+  }
+  /* when frames nest (a clipping panel wrapper around the media
+     wrapper), only the outermost may own the name — an inner frame's
+     range is degenerate inside its clipped parent */
+  .sdr-parallax-frame .sdr-parallax-frame {
+    view-timeline-name: none;
+  }
+  .sdr-parallax {
+    animation: sdr-parallax-scrub linear both;
+    animation-timeline: --sdr-media;
+  }
+}
+@keyframes sdr-parallax-scrub {
+  from {
+    transform: translateY(-6.5%) scale(1.15);
+  }
+  to {
+    transform: translateY(6.5%) scale(1.15);
+  }
+}
+
 /* Media overlay: 20% scrim + bottom gradient (Figma content-overlay mask) */
 @utility media-overlay {
   position: absolute;

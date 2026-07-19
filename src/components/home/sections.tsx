@@ -80,9 +80,15 @@ function Media({
   return (
     /* data-mode=dark: imagery is dark-mode content, so the fixed
        bars' point-sampling inverts over any media section */
+    /* sdr-parallax-frame: names the view() timeline the touch-device
+       CSS parallax scrubs against — it must live on this wrapper (the
+       outermost overflow ancestor) so the timeline tracks the
+       viewport, not a degenerate inner scrollport */
     <div
       data-mode="dark"
-      className={`relative w-full overflow-hidden rounded-xs bg-surface-2 ${aspect}`}
+      className={`relative w-full overflow-hidden rounded-xs bg-surface-2 ${
+        parallax ? "sdr-parallax-frame" : ""
+      } ${aspect}`}
     >
       {autoplay ? (
         <AutoplayVideo src={videoUrl} poster={image} />
@@ -471,7 +477,7 @@ export function FiftyFifty({
               key={panel._key ?? i}
               href={panel.url}
               aria-label={panel.title}
-              className="group relative block overflow-hidden"
+              className="sdr-parallax-frame group relative block overflow-hidden"
             >
               {media}
               <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between p-4 md:p-6">
@@ -486,7 +492,12 @@ export function FiftyFifty({
           );
         }
         return (
-          <div key={panel._key ?? i} className="relative overflow-hidden">
+          <div
+            key={panel._key ?? i}
+            className={`relative overflow-hidden ${
+              kind !== "videoAutoplay" ? "sdr-parallax-frame" : ""
+            }`}
+          >
             {media}
             {panel.title && (
               <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end p-4 md:p-6">

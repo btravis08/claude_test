@@ -14,10 +14,12 @@ import { useEffect, useRef, useState } from "react";
   below the frame, which the image spends by translating slower than
   the page (±6.5% of its height, scrubbed to scroll position).
 
-  Touch devices skip the parallax: it's driven by JS scroll events,
+  Touch devices skip the JS scrub: it's driven by scroll events,
   which iOS delivers too sparsely during momentum scrolling — the
-  image visibly stair-steps. There the media renders static with the
-  standard entrance instead.
+  image visibly stair-steps. There the same ±6.5% drift runs as a CSS
+  scroll-driven animation instead (.sdr-parallax in globals.css,
+  compositor-driven via animation-timeline: view()), falling back to
+  the static entrance where unsupported.
 */
 export const MEDIA_EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -68,7 +70,7 @@ export function AnimatedMedia({
        point-sampling, wherever this renders */
     <div ref={ref} data-mode="dark" className="absolute inset-0 overflow-hidden">
       <motion.div
-        className="absolute inset-0"
+        className={`absolute inset-0 ${parallax && touch ? "sdr-parallax" : ""}`}
         style={scrub ? { y } : undefined}
         initial={{ opacity: 0, scale: scrub ? 1.2 : 1.05 }}
         whileInView={{ opacity: 1, scale: scrub ? 1.15 : 1 }}

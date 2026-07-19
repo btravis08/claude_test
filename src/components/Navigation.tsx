@@ -21,27 +21,29 @@ import { startNavBackdropProbes } from "@/components/navBackdrop";
 import { ArrowUpRight, SearchMd } from "@/components/icons";
 
 /* the mobile bar's hamburger: its two bars glide to the center and
-   rotate into an X (same 300ms curve as the bar's color cross-fade) */
+   rotate about their own midpoints into an X (inverse on close), on
+   the nav's 300ms curve. Plain HTML bars — SVG transform-origin
+   resolves against the path's own box on iOS and mangles the X */
 function MenuX({ open, className }: { open: boolean; className?: string }) {
-  const line = (openTf: string): React.CSSProperties => ({
+  const bar = (top: number, openTf: string): React.CSSProperties => ({
+    position: "absolute",
+    left: 3,
+    width: 10,
+    height: 1.5,
+    top,
+    backgroundColor: "currentColor",
     transform: open ? openTf : "none",
-    transformOrigin: "12px 12px",
     transition: "transform 300ms cubic-bezier(0.4, 0, 0.2, 1)",
   });
   return (
-    <svg
-      style={{ width: "1rem", height: "1rem" }}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="square"
-      className={className}
+    <span
       aria-hidden
+      className={`relative block ${className ?? ""}`}
+      style={{ width: "1rem", height: "1rem" }}
     >
-      <path d="M4.5 9h15" style={line("translateY(3px) rotate(45deg)")} />
-      <path d="M4.5 15h15" style={line("translateY(-3px) rotate(-45deg)")} />
-    </svg>
+      <span style={bar(5.25, "translateY(2px) rotate(45deg)")} />
+      <span style={bar(9.25, "translateY(-2px) rotate(-45deg)")} />
+    </span>
   );
 }
 

@@ -481,7 +481,10 @@ export function FiftyFifty({
             >
               {media}
               <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between p-4 md:p-6">
-                <p className="font-display text-title-md">{panel.title}</p>
+                {/* mobile: same display size as the Full Width headline */}
+                <p className="font-display text-headline-lg md:text-title-md">
+                  {panel.title}
+                </p>
                 {/* md+: swap on panel hover; mobile: plays once in view */}
                 <span className="hidden size-10 items-center justify-center rounded-xs bg-white text-[#161716] md:flex">
                   <ArrowSwap dx={1} dy={-1}>
@@ -507,7 +510,10 @@ export function FiftyFifty({
             {media}
             {panel.title && (
               <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between p-4 md:p-6">
-                <p className="font-display text-title-md">{panel.title}</p>
+                {/* mobile: same display size as the Full Width headline */}
+                <p className="font-display text-headline-lg md:text-title-md">
+                  {panel.title}
+                </p>
                 {/* mobile: the square NE arrow, playing once in view */}
                 <ArrowInViewPlay className="flex size-10 shrink-0 items-center justify-center rounded-xs bg-white text-[#161716] md:hidden">
                   <ArrowSwap dx={1} dy={-1}>

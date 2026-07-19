@@ -273,7 +273,11 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
       image?: SourceBox;
     };
   } | null>(null);
+  /* the closing fade reveals the originals beneath the overlay */
+  const [viewerFading, setViewerFading] = useState(false);
+  const originalsHidden = viewer !== null && !viewerFading;
   const openViewer = (index: number, slideEl?: HTMLElement) => {
+    setViewerFading(false);
     const box = (el?: Element | null): SourceBox | undefined => {
       if (!el) return undefined;
       const r = (el as HTMLElement).getBoundingClientRect();
@@ -419,7 +423,7 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
         onDragStart={(e) => e.preventDefault()}
-        style={{ visibility: viewer !== null ? "hidden" : "visible" }}
+        style={{ visibility: originalsHidden ? "hidden" : "visible" }}
         className={`no-scrollbar grid h-full w-full auto-cols-[100%] grid-flow-col overflow-x-auto sm:auto-cols-[45%] ${
           dragging ? "cursor-grabbing select-none" : "cursor-grab snap-x snap-mandatory"
         }`}
@@ -469,7 +473,7 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
             className="sticky flex w-full items-center justify-between"
             style={{
               bottom: arrowHold,
-              visibility: viewer !== null ? "hidden" : "visible",
+              visibility: originalsHidden ? "hidden" : "visible",
             }}
           >
             <button
@@ -497,7 +501,7 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
           line reads loudly through the opening fade) */}
       <div
         className="absolute inset-x-0 bottom-0 z-10 h-0.5"
-        style={{ visibility: viewer !== null ? "hidden" : "visible" }}
+        style={{ visibility: originalsHidden ? "hidden" : "visible" }}
       >
         <motion.div
           className="h-full bg-ink"
@@ -518,12 +522,6 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
             key="image-viewer"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            /* once the retrace lands, the remaining modal surface
-               dissolves over the (identical) live page underneath */
-            exit={{
-              opacity: 0,
-              transition: { duration: 0.5, ease: [...MEDIA_EASE] },
-            }}
             transition={{ duration: 0.3, ease: [...MEDIA_EASE] }}
           >
             <ImageViewer
@@ -531,7 +529,13 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
               title={product.title}
               initialIndex={viewer.index}
               from={viewer.from}
-              onClose={() => setViewer(null)}
+              /* the viewer fades itself out imperatively; the exit
+                 here is instant — originals are revealed for the fade */
+              onFadeStart={() => setViewerFading(true)}
+              onClose={() => {
+                setViewer(null);
+                setViewerFading(false);
+              }}
             />
           </motion.div>
         )}
@@ -564,7 +568,7 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
         ref={mobileDockRef}
         data-purchase-dock
         data-mode={barMode}
-        style={{ visibility: viewer !== null ? "hidden" : "visible" }}
+        style={{ visibility: originalsHidden ? "hidden" : "visible" }}
         className="fixed inset-x-0 bottom-0 z-40 p-4 text-ink md:hidden"
       >
         <div className="flex w-full items-center justify-end gap-3">

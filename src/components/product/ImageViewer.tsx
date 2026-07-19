@@ -87,6 +87,7 @@ export function ImageViewer({
   title,
   initialIndex = 0,
   from,
+  onFadeStart,
   onClose,
 }: {
   images: string[];
@@ -101,6 +102,9 @@ export function ImageViewer({
     bar?: SourceBox;
     image?: SourceBox;
   };
+  /* fired when the closing fade begins — the parent unhides the
+     page's originals so the site fades in beneath the overlay */
+  onFadeStart?: () => void;
   onClose: () => void;
 }) {
   const n = images.length;
@@ -136,11 +140,18 @@ export function ImageViewer({
      counterpart, so they fade away during the retrace, leaving just
      the background to dissolve once everything has landed */
   const chromeOp = useMotionValue(1);
+  /* the whole overlay's dissolve is imperative (never a presence
+     exit) so the site reliably fades in beneath it */
+  const rootOp = useMotionValue(1);
+  const fadeOut = (duration: number) => {
+    onFadeStart?.();
+    animate(rootOp, 0, { duration, ease: [0.22, 1, 0.36, 1] }).then(onClose);
+  };
   const requestClose = () => {
     if (closingRef.current) return;
     closingRef.current = true;
     if (panning) {
-      onClose();
+      fadeOut(0.4);
       return;
     }
     animate(pillContent, 0, { duration: 0.2 });
@@ -150,7 +161,7 @@ export function ImageViewer({
       flyRight.reverse(),
       flyPill.reverse(),
       flyImg.reverse(),
-    ]).then(onClose);
+    ]).then(() => fadeOut(0.5));
   };
   /* the pill's content resolves after the bar has mostly shrunk in */
   const pillContent = useMotionValue(from?.bar ? 0 : 1);
@@ -291,8 +302,9 @@ export function ImageViewer({
   const pad = (v: number) => String(v).padStart(2, "0");
 
   return (
-    <div
+    <motion.div
       data-mode="light"
+      style={{ opacity: rootOp }}
       className="fixed inset-0 z-[80] flex flex-col bg-surface text-ink"
       role="dialog"
       aria-modal="true"
@@ -451,6 +463,6 @@ export function ImageViewer({
           transition={{ duration: 0.5, ease: "easeOut" }}
         />
       </motion.div>
-    </div>
+    </motion.div>
   );
 }

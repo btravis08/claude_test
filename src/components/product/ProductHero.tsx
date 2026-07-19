@@ -8,6 +8,7 @@ import { useCart } from "@/components/cart/CartContext";
 import { ArrowLeft, ArrowRight, Menu } from "@/components/icons";
 import { ImageViewer } from "@/components/product/ImageViewer";
 import type { SourceBox } from "@/components/product/ImageViewer";
+import { SwatchRail } from "@/components/product/SwatchRail";
 
 /*
   PDP hero: required on every product page. Matches the comp:
@@ -360,33 +361,7 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
           </span>
         </div>
         {variants.length > 1 && (
-          <div className="flex items-center gap-[0.3125rem]">
-            {variants.map((variant, i) => (
-              <button
-                key={i}
-                type="button"
-                aria-label={variant.name ?? `Colorway ${i + 1}`}
-                onClick={() => setSelected(i)}
-                className={`flex size-[2.875rem] items-end justify-center overflow-hidden border-b-2 bg-wash md:size-10 ${
-                  i === selected ? "border-ink" : "border-transparent"
-                }`}
-              >
-                {variant.image ? (
-                  <span
-                    aria-hidden
-                    className="block size-full bg-contain bg-center bg-no-repeat opacity-90"
-                    style={{ backgroundImage: `url(${variant.image})` }}
-                  />
-                ) : (
-                  <span
-                    aria-hidden
-                    className="block size-full"
-                    style={{ backgroundColor: variant.color ?? "#c8c8c4" }}
-                  />
-                )}
-              </button>
-            ))}
-          </div>
+          <SwatchRail variants={variants} selected={selected} onSelect={setSelected} />
         )}
       </div>
       <button

@@ -317,7 +317,7 @@ async function run() {
         _type: "sectionCarousel",
         _key: key(),
         colorMode: "light",
-        eyebrow: "DESIGN DETAILS",
+        eyebrow: "Design details",
         items: ["Engineered to Move", "Lorem Ipsum", "Dolor Sit Amet", "Non Sqwuit", "Microsuede Tongue"].map(
           (title) => ({
             _type: "carouselItem",

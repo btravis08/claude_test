@@ -193,8 +193,16 @@ export function Carousel({
           body copy clear of the sticky purchase bar */}
       <div className="flex min-w-0 flex-col gap-12 px-4 pt-12 md:px-8 lg:justify-between lg:px-32 lg:pb-11xl lg:pt-24">
         <div className="flex flex-col gap-8">
-          {/* serif title, matching the framed slider headers above */}
-          {eyebrow && <p className="font-display text-title-md text-ink">{eyebrow}</p>}
+          {/* serif title, matching the framed slider headers above.
+              Legacy CMS documents stored the eyebrow in all caps —
+              render those in sentence case */}
+          {eyebrow && (
+            <p className="font-display text-title-md text-ink">
+              {eyebrow === eyebrow.toUpperCase()
+                ? eyebrow.charAt(0) + eyebrow.slice(1).toLowerCase()
+                : eyebrow}
+            </p>
+          )}
           {/* desktop: serif headline list, hover-driven */}
           <div className="hidden flex-col items-start font-display text-headline-sm lg:flex">
             {items.map((item, i) => (

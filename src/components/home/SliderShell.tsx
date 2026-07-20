@@ -96,17 +96,48 @@ export function SliderShell({
     setScrollable(el.scrollWidth > el.clientWidth + 4);
   }, []);
 
+  /* JS snapping. CSS scroll-snap is off entirely — iOS's snap engine
+     fought programmatic scrolls (stranding the track) and its
+     proximity mode barely snaps, leaving swipes parked mid-card. So
+     the track settles itself: once a scroll goes quiet, glide to the
+     nearest card start, clamped so the last card rests flush right.
+     (References below — stepWidth, drag, pending — are declared
+     later; the callback only runs after mount.) */
+  const settleTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const touching = useRef(false);
+  const settleSoon = useCallback(() => {
+    clearTimeout(settleTimer.current);
+    settleTimer.current = setTimeout(() => {
+      const el = trackRef.current;
+      /* never yank the track under a finger, an active mouse drag, or
+         an in-flight arrow scroll (which hard-settles on its own) */
+      if (!el || touching.current || drag.current.active || pending.current !== null) return;
+      const step = stepWidth(el);
+      if (step <= 0) return;
+      const max = el.scrollWidth - el.clientWidth;
+      const target = Math.min(Math.max(Math.round(el.scrollLeft / step) * step, 0), max);
+      if (Math.abs(target - el.scrollLeft) > 1)
+        el.scrollTo({ left: target, behavior: "smooth" });
+    }, 140);
+  }, []);
+
   useEffect(() => {
     updateArrows();
     const el = trackRef.current;
     if (!el) return;
-    el.addEventListener("scroll", updateArrows, { passive: true });
+    const onScroll = () => {
+      updateArrows();
+      /* free scrolls (momentum, trackpad) re-arm the settle until
+         they go quiet; guarded scrolls bail inside settleSoon */
+      if (!touching.current) settleSoon();
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", updateArrows);
     return () => {
-      el.removeEventListener("scroll", updateArrows);
+      el.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", updateArrows);
     };
-  }, [updateArrows, visible.length]);
+  }, [updateArrows, settleSoon, visible.length]);
 
   /* One step = distance between consecutive card starts (card width
      plus the 1px gap), so arrows and snap stay exact */
@@ -137,24 +168,28 @@ export function SliderShell({
       dir > 0 ? Math.floor((base + 4) / step) : Math.ceil((base - 4) / step);
     const target = Math.min(Math.max((idx + dir) * step, 0), max);
     pending.current = target;
-    el.style.scrollSnapType = "none";
     el.scrollTo({ left: target, behavior: "smooth" });
     clearTimeout(snapTimer.current);
     snapTimer.current = setTimeout(() => {
       el.scrollTo({ left: target, behavior: "instant" });
-      el.style.scrollSnapType = "";
       pending.current = null;
       updateArrows();
     }, 650);
   };
 
-  /* a touch mid-flight cancels the pending settle (it would yank the
-     track out from under the finger) and re-arms snap for the swipe */
+  /* a touch mid-flight cancels the pending arrow settle (it would
+     yank the track out from under the finger) */
   const onTouchStart = () => {
-    const el = trackRef.current;
+    touching.current = true;
     clearTimeout(snapTimer.current);
+    clearTimeout(settleTimer.current);
     pending.current = null;
-    if (el) el.style.scrollSnapType = "";
+  };
+  const onTouchEnd = () => {
+    touching.current = false;
+    /* arm the settle now — momentum scroll events keep deferring it
+       until the swipe actually comes to rest */
+    settleSoon();
   };
 
   const applyFilter = (next: string | null) => {
@@ -283,26 +318,19 @@ export function SliderShell({
         onPointerCancel={endDrag}
         onClickCapture={onClickCapture}
         onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+        onTouchCancel={onTouchEnd}
         onDragStart={(e) => e.preventDefault()}
         className={`no-scrollbar w-full gap-px overflow-x-auto ${trackClassName} ${
           variable ? "flex" : `grid grid-flow-col ${cols}`
-        } ${
-          /* proximity, not mandatory: iOS honors a mandatory
-             snap-start even beyond max scroll, which parks the last
-             card at the left with blank space trailing it — proximity
-             still snaps nearby cards but lets the track legally rest
-             flush at either end */
-          dragging
-            ? "cursor-grabbing select-none"
-            : "cursor-grab snap-x snap-proximity"
-        }`}
+        } ${dragging ? "cursor-grabbing select-none" : "cursor-grab"}`}
       >
         <AnimatePresence initial={false} onExitComplete={updateArrows}>
           {visible.map((item) => (
             <motion.div
               key={item.key}
               data-slide
-              className={`flex snap-start ${variable ? "shrink-0" : "min-w-0"}`}
+              className={`flex ${variable ? "shrink-0" : "min-w-0"}`}
               initial={{ opacity: 0 }}
               animate={{
                 opacity: 1,

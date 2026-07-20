@@ -257,11 +257,17 @@ export function SliderShell({
         }`}
       >
         <AnimatePresence initial={false} onExitComplete={updateArrows}>
-          {visible.map((item) => (
+          {visible.map((item, i) => (
             <motion.div
               key={item.key}
               data-slide
-              className={`flex snap-start ${variable ? "shrink-0" : "min-w-0"}`}
+              /* the LAST slide snaps to the track's end: iOS honors a
+                 mandatory snap-start even beyond max scroll, parking
+                 the final card at the left with blank space after —
+                 end-alignment right-justifies it instead */
+              className={`flex ${
+                i === visible.length - 1 ? "snap-end" : "snap-start"
+              } ${variable ? "shrink-0" : "min-w-0"}`}
               initial={{ opacity: 0 }}
               animate={{
                 opacity: 1,

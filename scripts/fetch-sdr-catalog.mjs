@@ -9,9 +9,11 @@
   fetch-sdr-catalog GitHub workflow (Actions runners) or locally:
     node scripts/fetch-sdr-catalog.mjs
 
-  Product URLs come from two places: the product sitemap (which
-  undercounts — it listed 34 while the site sells more) and a walk of
-  every category PLP from the category sitemap, paged via SFCC's
+  Product URLs come from four sources, because the site's sitemaps
+  are stale (the product sitemap listed 34 while the site sells
+  more): the product sitemap, a walk of every category PLP from the
+  category sitemap, every nav/footer link off the live homepage, and
+  an a-z/0-9 sweep of the site search index — all paged via SFCC's
   start/sz params, harvesting the grid tiles' links. Data comes from
   each product page's JSON-LD (schema.org Product), which Salesforce
   Commerce emits with name, description, sku, price, and image set.
@@ -74,6 +76,33 @@ function canonical(url) {
 /* Walk a category (PLP) page through SFCC's start/sz paging and pull
    every .html link out of the grid. Nav/footer links repeat on every
    page, so a page that adds nothing new means we're past the end. */
+/* PDP URLs end in an UPPERCASE product-id .html (/slug/DW-LA032.html);
+   lowercase .html links (mens-gear.html) may be category landings —
+   case-sensitive on purpose */
+const PDP_LIKE = /\/[A-Z0-9]{2,}-[A-Z0-9-]+\.html$/;
+const BROWSE_SKIP =
+  /\/(cart|checkout|login|account|wishlist|order|stores|customer|privacy|terms|on\/demandware)/i;
+
+/* Sitemap-independent seed source: every internal link in the
+   homepage markup (nav, meganav, footer) that isn't a PDP or a
+   utility page is a potential listing page worth walking. */
+async function discoverBrowsePages() {
+  const pages = new Set();
+  try {
+    const html = await get(`${BASE}/`);
+    for (const m of html.matchAll(/href=["']([^"']+)["']/g)) {
+      const c = canonical(m[1]);
+      if (!c || c === `${BASE}/`) continue;
+      if (/\.(jpg|jpeg|png|svg|css|js|xml|ico|webp|avif|pdf|mp4)$/i.test(c)) continue;
+      if (PDP_LIKE.test(c) || BROWSE_SKIP.test(c)) continue;
+      pages.add(c);
+    }
+  } catch (e) {
+    console.log(`homepage fetch failed: ${e.message}`);
+  }
+  return [...pages].slice(0, 80);
+}
+
 async function collectCategoryLinks(catUrl) {
   const found = new Set();
   for (let start = 0; start < 480; start += 60) {
@@ -150,26 +179,47 @@ async function discoverProductUrls() {
       console.log(`  skipping ${sm}: ${e.message}`);
     }
   }
-  console.log(`\nwalking ${categories.size} category pages…`);
-  debug.categories = { count: categories.size, crawled: [] };
-  const catList = [...categories];
-  let catCursor = 0;
-  await Promise.all(
-    Array.from({ length: CONCURRENCY }, async () => {
-      while (catCursor < catList.length) {
-        const cat = catList[catCursor++];
-        const links = await collectCategoryLinks(cat);
-        let added = 0;
-        for (const link of links) {
-          if (categories.has(link) || urls.has(link)) continue;
-          urls.add(link);
-          added += 1;
+  /* walk a batch of listing-ish URLs, folding their grid links into
+     the candidate set; non-listing pages terminate after one fetch */
+  async function walkListings(label, list) {
+    console.log(`\nwalking ${list.length} ${label} pages…`);
+    const crawled = [];
+    let cursor = 0;
+    await Promise.all(
+      Array.from({ length: CONCURRENCY }, async () => {
+        while (cursor < list.length) {
+          const page = list[cursor++];
+          const links = await collectCategoryLinks(page);
+          let added = 0;
+          for (const link of links) {
+            if (categories.has(link) || urls.has(link)) continue;
+            urls.add(link);
+            added += 1;
+          }
+          crawled.push({ page, links: links.size, newCandidates: added });
+          console.log(`  ${page} → ${links.size} links, ${added} new (${urls.size} total)`);
         }
-        debug.categories.crawled.push({ category: cat, links: links.size, newCandidates: added });
-        console.log(`  ${cat} → ${links.size} links, ${added} new (${urls.size} total)`);
-      }
-    }),
+      }),
+    );
+    return crawled;
+  }
+
+  debug.categories = {
+    count: categories.size,
+    crawled: await walkListings("category", [...categories]),
+  };
+
+  /* the sitemaps may be stale, so add two sitemap-independent
+     sources: (1) every nav/footer link off the live homepage… */
+  const browse = (await discoverBrowsePages()).filter((b) => !categories.has(b));
+  debug.navBrowse = { count: browse.length, crawled: await walkListings("nav", browse) };
+
+  /* …and (2) the site search index, swept one character at a time —
+     search covers every purchasable product regardless of sitemaps */
+  const searchPages = [..."abcdefghijklmnopqrstuvwxyz0123456789"].map(
+    (ch) => `${BASE}/search?q=${ch}`,
   );
+  debug.searchSweep = { crawled: await walkListings("search", searchPages) };
 
   await mkdir(join(ROOT, "design/sdr-catalog"), { recursive: true });
   await writeFile(

@@ -1,5 +1,889 @@
 {
-  "capturedAt": "2026-07-20T02:21:12.873Z",
+  "capturedAt": "2026-07-20T02:26:02.749Z",
   "source": "https://www.sundayred.com",
-  "products": []
+  "products": [
+    {
+      "url": "https://www.sundayred.com/3l-rain-jacket/DW-LA032.html?lang=en_US",
+      "sku": "DW-LA032",
+      "name": "3L Rain Jacket",
+      "description": "Weatherproof, breathable, unbeatable. The 3L Rain Jacket is your ally against the elements.",
+      "brand": "LS",
+      "color": null,
+      "price": "550.00",
+      "currency": "USD",
+      "availability": "http://schema.org/InStock",
+      "images": [
+        "/sdr/DW-LA032/0.jpg",
+        "/sdr/DW-LA032/1.jpg",
+        "/sdr/DW-LA032/2.jpg",
+        "/sdr/DW-LA032/3.jpg",
+        "/sdr/DW-LA032/4.jpg",
+        "/sdr/DW-LA032/5.jpg"
+      ],
+      "imagesRemote": [
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10118_zoom_D.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10118_zoom_D5.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10118_zoom_D6.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10118_zoom_D7.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10298_zoom_D9.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10298_zoom_D10.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/on/demandware.static/Sites-SunDayRed-Site/-/en_US/v1784434001712/images/social-share-default.jpg"
+      ]
+    },
+    {
+      "url": "https://www.sundayred.com/3l-short-sleeve-rain-shirt/DW-LA033.html?lang=en_US",
+      "sku": "DW-LA033",
+      "name": "3L Short Sleeve Rain Shirt",
+      "description": "A Polartec®-shielded shirt made to match your relentless pursuit of perfection.",
+      "brand": "LS",
+      "color": null,
+      "price": "500.00",
+      "currency": "USD",
+      "availability": "http://schema.org/InStock",
+      "images": [
+        "/sdr/DW-LA033/0.jpg",
+        "/sdr/DW-LA033/1.jpg",
+        "/sdr/DW-LA033/2.jpg",
+        "/sdr/DW-LA033/3.jpg",
+        "/sdr/DW-LA033/4.jpg",
+        "/sdr/DW-LA033/5.jpg"
+      ],
+      "imagesRemote": [
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10120_zoom_D.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10120_zoom_D5.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10118_zoom_D7.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10120_zoom_D9.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10120_zoom_D10.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10298_zoom_D12.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/on/demandware.static/Sites-SunDayRed-Site/-/en_US/v1784434001712/images/social-share-default.jpg"
+      ]
+    },
+    {
+      "url": "https://www.sundayred.com/3l-wind%2Frain-half-zip-jacket/DW-LA079.html?lang=en_US",
+      "sku": "DW-LA079",
+      "name": "3L Wind/Rain Half Zip Jacket",
+      "description": "Swing through any storm with a breathable, flexible, waterproof layer backed with the power of Polartec® Powershield®",
+      "brand": "LS",
+      "color": null,
+      "price": "550.00",
+      "currency": "USD",
+      "availability": "http://schema.org/InStock",
+      "images": [
+        "/sdr/DW-LA079/0.jpg",
+        "/sdr/DW-LA079/1.jpg",
+        "/sdr/DW-LA079/2.jpg",
+        "/sdr/DW-LA079/3.jpg",
+        "/sdr/DW-LA079/4.jpg",
+        "/sdr/DW-LA079/5.jpg"
+      ],
+      "imagesRemote": [
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10298_zoom_D.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10298_zoom_D5.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10298_zoom_D7.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10118_zoom_D9.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10118_zoom_D10.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10298_zoom_D11.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10298_zoom_D12.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/on/demandware.static/Sites-SunDayRed-Site/-/en_US/v1784434001712/images/social-share-default.jpg"
+      ]
+    },
+    {
+      "url": "https://www.sundayred.com/luare-tufted-hoodie/DW-LA154.html?lang=en_US",
+      "sku": "DW-LA154",
+      "name": "Luare Tufted Hoodie",
+      "description": "A heavyweight lifestyle hoodie created using a unique 'toothbrushing' Tiger application.",
+      "brand": "LS",
+      "color": null,
+      "price": null,
+      "currency": null,
+      "availability": "http://schema.org/InStock",
+      "images": [
+        "/sdr/DW-LA154/0.jpg",
+        "/sdr/DW-LA154/1.jpg",
+        "/sdr/DW-LA154/2.jpg",
+        "/sdr/DW-LA154/3.jpg",
+        "/sdr/DW-LA154/4.jpg",
+        "/sdr/DW-LA154/5.jpg"
+      ],
+      "imagesRemote": [
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L11996_zoom_D.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L11996_zoom_D9.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L11996_zoom_D7.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L11996_zoom_D8.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L11996_zoom_D2.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/on/demandware.static/Sites-SunDayRed-Site/-/en_US/v1784434001712/images/social-share-default.jpg"
+      ]
+    },
+    {
+      "url": "https://www.sundayred.com/3l-rain-vest/DW-LA160.html?lang=en_US",
+      "sku": "DW-LA160",
+      "name": "3L Rain Vest",
+      "description": "A unique 3L weatherproof full zip shell, in a versatile vest form, built exclusively for Tour players.",
+      "brand": "LS",
+      "color": null,
+      "price": "450.00",
+      "currency": "USD",
+      "availability": "http://schema.org/InStock",
+      "images": [
+        "/sdr/DW-LA160/0.jpg",
+        "/sdr/DW-LA160/1.jpg",
+        "/sdr/DW-LA160/2.jpg",
+        "/sdr/DW-LA160/3.jpg",
+        "/sdr/DW-LA160/4.jpg"
+      ],
+      "imagesRemote": [
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10760_zoom_D.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10760_zoom_D2.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10760_zoom_D3.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10760_zoom_D4.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/on/demandware.static/Sites-SunDayRed-Site/-/en_US/v1784434001712/images/social-share-default.jpg"
+      ]
+    },
+    {
+      "url": "https://www.sundayred.com/reserve-quilted-vest/DW-LA170.html?lang=en_US",
+      "sku": "DW-LA170",
+      "name": "Reserve Quilted Vest",
+      "description": "A refined quilted vest with elevated trim, climate proof exterior, and light insulation.  ",
+      "brand": "LS",
+      "color": null,
+      "price": "150.00",
+      "currency": "USD",
+      "availability": "http://schema.org/InStock",
+      "images": [
+        "/sdr/DW-LA170/0.jpg",
+        "/sdr/DW-LA170/1.jpg",
+        "/sdr/DW-LA170/2.jpg"
+      ],
+      "imagesRemote": [
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10785_zoom_D.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10785_zoom_D2.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10785_zoom_D3.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/on/demandware.static/Sites-SunDayRed-Site/-/en_US/v1784434001712/images/social-share-default.jpg"
+      ]
+    },
+    {
+      "url": "https://www.sundayred.com/reserve-quilted-jacket/DW-LA171.html?lang=en_US",
+      "sku": "DW-LA171",
+      "name": "Reserve Quilted Jacket",
+      "description": "A refined quilted jacket with elevated trim, climate proof exterior, and light insulation.  ",
+      "brand": "LS",
+      "color": null,
+      "price": "174.00",
+      "currency": "USD",
+      "availability": "http://schema.org/InStock",
+      "images": [
+        "/sdr/DW-LA171/0.jpg",
+        "/sdr/DW-LA171/1.jpg",
+        "/sdr/DW-LA171/2.jpg",
+        "/sdr/DW-LA171/3.jpg",
+        "/sdr/DW-LA171/4.jpg"
+      ],
+      "imagesRemote": [
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10787_zoom_D.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10787_zoom_D7.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10787_zoom_D8.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10787_zoom_D9.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/on/demandware.static/Sites-SunDayRed-Site/-/en_US/v1784434001712/images/social-share-default.jpg"
+      ]
+    },
+    {
+      "url": "https://www.sundayred.com/3d-merino-wool-crew/DW-LA182.html?lang=en_US",
+      "sku": "DW-LA182",
+      "name": "3D Merino Wool Crew",
+      "description": "An elegant lightweight 100% Merino wool crewneck engineered for performance, crafted using whole garment technology to produce the best golf specific sweater on the market.",
+      "brand": "LS",
+      "color": null,
+      "price": "111.00",
+      "currency": "USD",
+      "availability": "http://schema.org/InStock",
+      "images": [
+        "/sdr/DW-LA182/0.jpg",
+        "/sdr/DW-LA182/1.jpg",
+        "/sdr/DW-LA182/2.jpg",
+        "/sdr/DW-LA182/3.jpg",
+        "/sdr/DW-LA182/4.jpg"
+      ],
+      "imagesRemote": [
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10832_zoom_D.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10832_zoom_D7.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10832_zoom_D8.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10832_zoom_D9.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/on/demandware.static/Sites-SunDayRed-Site/-/en_US/v1784434001712/images/social-share-default.jpg"
+      ]
+    },
+    {
+      "url": "https://www.sundayred.com/3d-merino-wool-quarter-zip/DW-LA183.html?lang=en_US",
+      "sku": "DW-LA183",
+      "name": "3D Merino Wool Quarter Zip",
+      "description": "An elegant lightweight 100% Merino wool 1/4 zip engineered for performance, crafted using whole garment technology to produce the best golf specific sweater on the market.",
+      "brand": "LS",
+      "color": null,
+      "price": null,
+      "currency": null,
+      "availability": "http://schema.org/InStock",
+      "images": [
+        "/sdr/DW-LA183/0.jpg",
+        "/sdr/DW-LA183/1.jpg",
+        "/sdr/DW-LA183/2.jpg",
+        "/sdr/DW-LA183/3.jpg",
+        "/sdr/DW-LA183/4.jpg"
+      ],
+      "imagesRemote": [
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10836_zoom_D.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10836_zoom_D7.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10836_zoom_D8.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10836_zoom_D9.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/on/demandware.static/Sites-SunDayRed-Site/-/en_US/v1784434001712/images/social-share-default.jpg"
+      ]
+    },
+    {
+      "url": "https://www.sundayred.com/3d-merino-wool-hoodie/DW-LA184.html?lang=en_US",
+      "sku": "DW-LA184",
+      "name": "3D Merino Wool Hoodie",
+      "description": "An elegant lightweight 100% Merino wool hoodie engineered for performance, crafted using whole garment technology to produce the best golf specific sweater on the market.",
+      "brand": "LS",
+      "color": null,
+      "price": "120.00",
+      "currency": "USD",
+      "availability": "http://schema.org/InStock",
+      "images": [
+        "/sdr/DW-LA184/0.jpg",
+        "/sdr/DW-LA184/1.jpg",
+        "/sdr/DW-LA184/2.jpg",
+        "/sdr/DW-LA184/3.jpg",
+        "/sdr/DW-LA184/4.jpg"
+      ],
+      "imagesRemote": [
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10841_zoom_D.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10841_zoom_D7.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10841_zoom_D8.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L10841_zoom_D9.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/on/demandware.static/Sites-SunDayRed-Site/-/en_US/v1784434001712/images/social-share-default.jpg"
+      ]
+    },
+    {
+      "url": "https://www.sundayred.com/icon-chain-stitch-hoodie/DW-LA223.html?lang=en_US",
+      "sku": "DW-LA223",
+      "name": "Icon Chain Stitch Hoodie",
+      "description": "A new icon, introducing our incredibly soft, midweight hoodie, engineered for versatility across a range of activities, both on and off course.",
+      "brand": "LS",
+      "color": null,
+      "price": null,
+      "currency": null,
+      "availability": "http://schema.org/InStock",
+      "images": [
+        "/sdr/DW-LA223/0.jpg",
+        "/sdr/DW-LA223/1.jpg",
+        "/sdr/DW-LA223/2.jpg",
+        "/sdr/DW-LA223/3.jpg"
+      ],
+      "imagesRemote": [
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L11914_zoom_D.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L12077_zoom_D12.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L11914_zoom_D9.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/on/demandware.static/Sites-SunDayRed-Site/-/en_US/v1784434001712/images/social-share-default.jpg"
+      ]
+    },
+    {
+      "url": "https://www.sundayred.com/pacific-luxe-quarter-zip/DW-LA233.html?lang=en_US",
+      "sku": "DW-LA233",
+      "name": "Pacific Luxe Quarter Zip",
+      "description": "An incredibly soft midweight 1/4 zip layer, with elevated details and great versatility",
+      "brand": "LS",
+      "color": null,
+      "price": "114.00",
+      "currency": "USD",
+      "availability": "http://schema.org/InStock",
+      "images": [
+        "/sdr/DW-LA233/0.jpg",
+        "/sdr/DW-LA233/1.jpg",
+        "/sdr/DW-LA233/2.jpg",
+        "/sdr/DW-LA233/3.jpg",
+        "/sdr/DW-LA233/4.jpg",
+        "/sdr/DW-LA233/5.jpg"
+      ],
+      "imagesRemote": [
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L11574_zoom_D.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L11574_zoom_D7.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L11574_zoom_D8.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L11574_zoom_D9.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L11574_zoom_D10.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L11574_zoom_D2.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/on/demandware.static/Sites-SunDayRed-Site/-/en_US/v1784434001712/images/social-share-default.jpg"
+      ]
+    },
+    {
+      "url": "https://www.sundayred.com/pacific-luxe-crew/DW-LA234.html?lang=en_US",
+      "sku": "DW-LA234",
+      "name": "Pacific Luxe Crew",
+      "description": "An incredibly soft midweight crewneck, with elevated details and great versatility",
+      "brand": "LS",
+      "color": null,
+      "price": "111.00",
+      "currency": "USD",
+      "availability": "http://schema.org/InStock",
+      "images": [
+        "/sdr/DW-LA234/0.jpg",
+        "/sdr/DW-LA234/1.jpg",
+        "/sdr/DW-LA234/2.jpg",
+        "/sdr/DW-LA234/3.jpg",
+        "/sdr/DW-LA234/4.jpg",
+        "/sdr/DW-LA234/5.jpg"
+      ],
+      "imagesRemote": [
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L11348_zoom_D.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L11348_zoom_D7.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L11348_zoom_D2.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L11348_zoom_D8.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L11348_zoom_D9.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L11348_zoom_D10.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/on/demandware.static/Sites-SunDayRed-Site/-/en_US/v1784434001712/images/social-share-default.jpg"
+      ]
+    },
+    {
+      "url": "https://www.sundayred.com/pacific-luxe-hoodie/DW-LA235.html?lang=en_US",
+      "sku": "DW-LA235",
+      "name": "Pacific Luxe Hoodie",
+      "description": "An incredibly soft midweight pullover hood, with elevated details and great versatility",
+      "brand": "LS",
+      "color": null,
+      "price": null,
+      "currency": null,
+      "availability": "http://schema.org/InStock",
+      "images": [
+        "/sdr/DW-LA235/0.jpg",
+        "/sdr/DW-LA235/1.jpg",
+        "/sdr/DW-LA235/2.jpg",
+        "/sdr/DW-LA235/3.jpg",
+        "/sdr/DW-LA235/4.jpg"
+      ],
+      "imagesRemote": [
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L11577_zoom_D.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L11577_zoom_D7.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L11577_zoom_D8.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L11577_zoom_D10.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/on/demandware.static/Sites-SunDayRed-Site/-/en_US/v1784434001712/images/social-share-default.jpg"
+      ]
+    },
+    {
+      "url": "https://www.sundayred.com/pacific-luxe-jogger/DW-LA251.html?lang=en_US",
+      "sku": "DW-LA251",
+      "name": "Pacific Luxe Jogger",
+      "description": "An incredibly soft midweight jogger, with elevated details and great versatility",
+      "brand": "LS",
+      "color": null,
+      "price": null,
+      "currency": null,
+      "availability": "http://schema.org/InStock",
+      "images": [
+        "/sdr/DW-LA251/0.jpg",
+        "/sdr/DW-LA251/1.jpg",
+        "/sdr/DW-LA251/2.jpg",
+        "/sdr/DW-LA251/3.jpg",
+        "/sdr/DW-LA251/4.jpg",
+        "/sdr/DW-LA251/5.jpg"
+      ],
+      "imagesRemote": [
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L11581_zoom_D.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L11581_zoom_D7.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L11581_zoom_D8.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L11581_zoom_D9.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L11581_zoom_D2.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/on/demandware.static/Sites-SunDayRed-Site/-/en_US/v1784434001712/images/social-share-default.jpg"
+      ]
+    },
+    {
+      "url": "https://www.sundayred.com/dynam-ii-classic-pant/DW-LA427.html?lang=en_US",
+      "sku": "DW-LA427",
+      "name": "Dynam II Classic Pant",
+      "description": "A traditional pant crafted using performance fabric and premium details.",
+      "brand": "LS",
+      "color": null,
+      "price": "160.00",
+      "currency": "USD",
+      "availability": "http://schema.org/InStock",
+      "images": [
+        "/sdr/DW-LA427/0.jpg",
+        "/sdr/DW-LA427/1.jpg",
+        "/sdr/DW-LA427/2.jpg",
+        "/sdr/DW-LA427/3.jpg"
+      ],
+      "imagesRemote": [
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L12058_zoom_D.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L12058_zoom_D2.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/L12058_zoom_D9.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/on/demandware.static/Sites-SunDayRed-Site/-/en_US/v1784434001712/images/social-share-default.jpg"
+      ]
+    },
+    {
+      "url": "https://www.sundayred.com/pioneer-cypress/DW-LL002.html?lang=en_US",
+      "sku": "DW-LL002",
+      "name": "Pioneer Cypress",
+      "description": "A golf shoe 40,000,000 steps in the making, built from the ground up with Tiger.&nbsp;",
+      "brand": "LS",
+      "color": null,
+      "price": null,
+      "currency": null,
+      "availability": "http://schema.org/InStock",
+      "images": [
+        "/sdr/DW-LL002/0.jpg",
+        "/sdr/DW-LL002/1.jpg",
+        "/sdr/DW-LL002/2.jpg",
+        "/sdr/DW-LL002/3.jpg",
+        "/sdr/DW-LL002/4.jpg",
+        "/sdr/DW-LL002/5.jpg"
+      ],
+      "imagesRemote": [
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LH0001_zoom_D3.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LH0001_zoom_D8.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LH0001_zoom_D4.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LH0001_zoom_D5.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LH0001_zoom_D7.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LH0001_zoom_D.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LH0001_zoom_D2.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/on/demandware.static/Sites-SunDayRed-Site/-/en_US/v1784434001712/images/social-share-default.jpg"
+      ]
+    },
+    {
+      "url": "https://www.sundayred.com/pioneer-magnolia/DW-LL003.html?lang=en_US",
+      "sku": "DW-LL003",
+      "name": "Pioneer Magnolia",
+      "description": "<span data-teams=\"true\">The Pioneer Magnolia merges the high-performance foundation of the Pioneer Collection with the timeless elegance of a wingtip upper, delivering heritage style with modern technical advantages. Available in 5 colorways.</span>",
+      "brand": "LS",
+      "color": null,
+      "price": "275.00",
+      "currency": "USD",
+      "availability": "http://schema.org/InStock",
+      "images": [
+        "/sdr/DW-LL003/0.jpg",
+        "/sdr/DW-LL003/1.jpg",
+        "/sdr/DW-LL003/2.jpg",
+        "/sdr/DW-LL003/3.jpg",
+        "/sdr/DW-LL003/4.jpg",
+        "/sdr/DW-LL003/5.jpg"
+      ],
+      "imagesRemote": [
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LH0044_zoom_D3.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LH0044_zoom_D8.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LH0044_zoom_D4.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LH0044_zoom_D2.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LH0044_zoom_D5.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LH0044_zoom_D6.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LH0044_zoom_D7.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LH0044_zoom_D.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/on/demandware.static/Sites-SunDayRed-Site/-/en_US/v1784434001712/images/social-share-default.jpg"
+      ]
+    },
+    {
+      "url": "https://www.sundayred.com/osprey/DW-LL005.html?lang=en_US",
+      "sku": "DW-LL005",
+      "name": "Osprey",
+      "description": "A versatile golf shoe that seamlessly transitions from office to course, combining performance materials with minimalist design for the modern golfer's lifestyle. Available in four core colorways.",
+      "brand": "LS",
+      "color": null,
+      "price": "175.00",
+      "currency": "USD",
+      "availability": "http://schema.org/InStock",
+      "images": [
+        "/sdr/DW-LL005/0.jpg",
+        "/sdr/DW-LL005/1.jpg",
+        "/sdr/DW-LL005/2.jpg",
+        "/sdr/DW-LL005/3.jpg",
+        "/sdr/DW-LL005/4.jpg",
+        "/sdr/DW-LL005/5.jpg"
+      ],
+      "imagesRemote": [
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LH0030_zoom_D3.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LH0030_zoom_D8.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LH0030_zoom_D4.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LH0030_zoom_D5.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LH0030_zoom_D.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LH0030_zoom_D2.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LH0030_zoom_D6.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LH0030_zoom_D7.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/on/demandware.static/Sites-SunDayRed-Site/-/en_US/v1784434001712/images/social-share-default.jpg"
+      ]
+    },
+    {
+      "url": "https://www.sundayred.com/cypress-cotton-crew-sock/DW-LU009.html?lang=en_US",
+      "sku": "DW-LU009",
+      "name": "Cypress Cotton Crew Sock",
+      "description": "Golf socks that craft the steps to success.",
+      "brand": "LS",
+      "color": null,
+      "price": "9.00",
+      "currency": "USD",
+      "availability": "http://schema.org/InStock",
+      "images": [
+        "/sdr/DW-LU009/0.jpg",
+        "/sdr/DW-LU009/1.jpg",
+        "/sdr/DW-LU009/2.jpg"
+      ],
+      "imagesRemote": [
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0011_zoom_D2.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0011_zoom_D.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/on/demandware.static/Sites-SunDayRed-Site/-/en_US/v1784434001712/images/social-share-default.jpg"
+      ]
+    },
+    {
+      "url": "https://www.sundayred.com/icon-rope-5-panel-snapback-hat/DW-LU021.html?lang=en_US",
+      "sku": "DW-LU021",
+      "name": "Icon Rope 5 Panel Snapback Hat",
+      "description": "Traditional styling meets modern performance in our Icon performance 5 panel rope hat.",
+      "brand": "LS",
+      "color": null,
+      "price": null,
+      "currency": null,
+      "availability": "http://schema.org/InStock",
+      "images": [
+        "/sdr/DW-LU021/0.jpg",
+        "/sdr/DW-LU021/1.jpg",
+        "/sdr/DW-LU021/2.jpg",
+        "/sdr/DW-LU021/3.jpg",
+        "/sdr/DW-LU021/4.jpg"
+      ],
+      "imagesRemote": [
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0061_zoom_D.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0061_zoom_D2.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0061_zoom_D3.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0061_zoom_D4.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/on/demandware.static/Sites-SunDayRed-Site/-/en_US/v1784434001712/images/social-share-default.jpg"
+      ]
+    },
+    {
+      "url": "https://www.sundayred.com/jupiter-chain-stitch-6-panel-snapback/DW-LU026.html?lang=en_US",
+      "sku": "DW-LU026",
+      "name": "Jupiter Chain Stitch 6 Panel Snapback",
+      "description": "Every stripe tells a story with our Jupiter chainstitch 6 panel snapback hat.  Pairs well with our Icon chainstitch hoodie.",
+      "brand": "LS",
+      "color": null,
+      "price": null,
+      "currency": null,
+      "availability": "http://schema.org/InStock",
+      "images": [
+        "/sdr/DW-LU026/0.jpg",
+        "/sdr/DW-LU026/1.jpg",
+        "/sdr/DW-LU026/2.jpg",
+        "/sdr/DW-LU026/3.jpg",
+        "/sdr/DW-LU026/4.jpg"
+      ],
+      "imagesRemote": [
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0077_zoom_D.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0077_zoom_D2.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0077_zoom_D3.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0077_zoom_D4.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/on/demandware.static/Sites-SunDayRed-Site/-/en_US/v1784434001712/images/social-share-default.jpg"
+      ]
+    },
+    {
+      "url": "https://www.sundayred.com/tour-flex-glove/DW-LU030.html?lang=en_US",
+      "sku": "DW-LU030",
+      "name": "Tour Flex Glove",
+      "description": "The glove to grab when excellence in execution is non-negotiable.",
+      "brand": "LS",
+      "color": null,
+      "price": "45.00",
+      "currency": "USD",
+      "availability": "http://schema.org/InStock",
+      "images": [
+        "/sdr/DW-LU030/0.jpg",
+        "/sdr/DW-LU030/1.jpg",
+        "/sdr/DW-LU030/2.jpg",
+        "/sdr/DW-LU030/3.jpg",
+        "/sdr/DW-LU030/4.jpg"
+      ],
+      "imagesRemote": [
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0164_zoom_D4.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0164_zoom_D.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0164_zoom_D2.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0164_zoom_D3.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/on/demandware.static/Sites-SunDayRed-Site/-/en_US/v1784434001712/images/social-share-default.jpg"
+      ]
+    },
+    {
+      "url": "https://www.sundayred.com/tour-leather-glove/DW-LU031.html?lang=en_US",
+      "sku": "DW-LU031",
+      "name": "Tour Leather Glove",
+      "description": "Designed to deliver exactly what a golf glove should: enhance, distraction-free traction.",
+      "brand": "LS",
+      "color": null,
+      "price": "45.00",
+      "currency": "USD",
+      "availability": "http://schema.org/InStock",
+      "images": [
+        "/sdr/DW-LU031/0.jpg",
+        "/sdr/DW-LU031/1.jpg",
+        "/sdr/DW-LU031/2.jpg",
+        "/sdr/DW-LU031/3.jpg",
+        "/sdr/DW-LU031/4.jpg"
+      ],
+      "imagesRemote": [
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0118_zoom_D4.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0118_zoom_D.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0118_zoom_D2.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0118_zoom_D3.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/on/demandware.static/Sites-SunDayRed-Site/-/en_US/v1784434001712/images/social-share-default.jpg"
+      ]
+    },
+    {
+      "url": "https://www.sundayred.com/leather-move-glove/DW-LU133.html?lang=en_US",
+      "sku": "DW-LU133",
+      "name": "Leather Move Glove",
+      "description": "A full  leather Tour glove in AAA Cabretta leather, engineered for fit, feel, and performance.",
+      "brand": "LS",
+      "color": null,
+      "price": "30.00",
+      "currency": "USD",
+      "availability": "http://schema.org/InStock",
+      "images": [
+        "/sdr/DW-LU133/0.jpg",
+        "/sdr/DW-LU133/1.jpg",
+        "/sdr/DW-LU133/2.jpg",
+        "/sdr/DW-LU133/3.jpg",
+        "/sdr/DW-LU133/4.jpg"
+      ],
+      "imagesRemote": [
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0565_zoom_D.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0565_zoom_D2.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0565_zoom_D3.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0565_zoom_D4.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/on/demandware.static/Sites-SunDayRed-Site/-/en_US/v1784434001712/images/social-share-default.jpg"
+      ]
+    },
+    {
+      "url": "https://www.sundayred.com/sun-day-red-x-vessel-core-shoe-bag/DW-LU115.html?lang=en_US",
+      "sku": "LS054701",
+      "name": "Sun Day Red x Vessel Core Shoe Bag",
+      "description": "A premium shoe and storage bag, in a custom cross-hatch synthetic leather fabric as part of a collaboration with the premium performance brand Vessel.",
+      "brand": "LS",
+      "color": null,
+      "price": "150.00",
+      "currency": "USD",
+      "availability": "http://schema.org/InStock",
+      "images": [
+        "/sdr/LS054701/0.jpg",
+        "/sdr/LS054701/1.jpg",
+        "/sdr/LS054701/2.jpg",
+        "/sdr/LS054701/3.jpg",
+        "/sdr/LS054701/4.jpg",
+        "/sdr/LS054701/5.jpg"
+      ],
+      "imagesRemote": [
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0547_zoom_D.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0547_zoom_D2.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0547_zoom_D3.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0547_zoom_D4.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0547_zoom_D5.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/on/demandware.static/Sites-SunDayRed-Site/-/en_US/v1784434001712/images/social-share-default.jpg"
+      ]
+    },
+    {
+      "url": "https://www.sundayred.com/%2792-polo-ball-marker-le/DW-LU181.html?lang=en_US",
+      "sku": "LS067801",
+      "name": "'92 Polo Ball Marker LE",
+      "description": "A limited edition icon polo ball marker, part of our '92 pack",
+      "brand": "LS",
+      "color": null,
+      "price": "36.00",
+      "currency": "USD",
+      "availability": "http://schema.org/InStock",
+      "images": [
+        "/sdr/LS067801/0.jpg",
+        "/sdr/LS067801/1.jpg",
+        "/sdr/LS067801/2.jpg",
+        "/sdr/LS067801/3.jpg",
+        "/sdr/LS067801/4.jpg",
+        "/sdr/LS067801/5.jpg"
+      ],
+      "imagesRemote": [
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0678_zoom_D5.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0678_zoom_D.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0678_zoom_D2.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0678_zoom_D3.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0678_zoom_D4.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/on/demandware.static/Sites-SunDayRed-Site/-/en_US/v1784434001712/images/social-share-default.jpg"
+      ]
+    },
+    {
+      "url": "https://www.sundayred.com/sun-day-red-x-vessel-icon-leather-driver-headcover/DW-LU177.html?lang=en_US",
+      "sku": "LS068201",
+      "name": "Sun Day Red x Vessel Icon Leather Driver Headcover",
+      "description": "Exclusive cross collaboration Sunday Red x Vessel, driver headcover in custom camel leather.",
+      "brand": "LS",
+      "color": null,
+      "price": "120.00",
+      "currency": "USD",
+      "availability": "http://schema.org/InStock",
+      "images": [
+        "/sdr/LS068201/0.jpg",
+        "/sdr/LS068201/1.jpg",
+        "/sdr/LS068201/2.jpg",
+        "/sdr/LS068201/3.jpg",
+        "/sdr/LS068201/4.jpg",
+        "/sdr/LS068201/5.jpg"
+      ],
+      "imagesRemote": [
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0682_zoom_D.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0682_zoom_D2.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0682_zoom_D3.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0682_zoom_D4.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0682_zoom_D5.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/on/demandware.static/Sites-SunDayRed-Site/-/en_US/v1784434001712/images/social-share-default.jpg"
+      ]
+    },
+    {
+      "url": "https://www.sundayred.com/sun-day-red-x-vessel-icon-leather-blade-headcover/DW-LU178.html?lang=en_US",
+      "sku": "LS068301",
+      "name": "Sun Day Red x Vessel Icon Leather Blade Headcover",
+      "description": "Exclusive cross collaboration Sun Day Red x Vessel, blade headcover in a genuine leather pebble grain, using Tiger's custom design blade shape.",
+      "brand": "LS",
+      "color": null,
+      "price": "90.00",
+      "currency": "USD",
+      "availability": "http://schema.org/InStock",
+      "images": [
+        "/sdr/LS068301/0.jpg",
+        "/sdr/LS068301/1.jpg",
+        "/sdr/LS068301/2.jpg",
+        "/sdr/LS068301/3.jpg",
+        "/sdr/LS068301/4.jpg"
+      ],
+      "imagesRemote": [
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0683_zoom_D4.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0683_zoom_D2.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0683_zoom_D.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0683_zoom_D3.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/on/demandware.static/Sites-SunDayRed-Site/-/en_US/v1784434001712/images/social-share-default.jpg"
+      ]
+    },
+    {
+      "url": "https://www.sundayred.com/sun-day-red-x-vessel-icon-nylon-driver-headcover/DW-LU179.html?lang=en_US",
+      "sku": "LS068401",
+      "name": "Sun Day Red x Vessel Icon Nylon Driver Headcover",
+      "description": "Exclusive cross collaboration Sun Day Red x Vessel, driver headcover in weather proof nylon shell.",
+      "brand": "LS",
+      "color": null,
+      "price": "60.00",
+      "currency": "USD",
+      "availability": "http://schema.org/InStock",
+      "images": [
+        "/sdr/LS068401/0.jpg",
+        "/sdr/LS068401/1.jpg",
+        "/sdr/LS068401/2.jpg",
+        "/sdr/LS068401/3.jpg",
+        "/sdr/LS068401/4.jpg",
+        "/sdr/LS068401/5.jpg"
+      ],
+      "imagesRemote": [
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0684_zoom_D.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0684_zoom_D2.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0684_zoom_D3.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0684_zoom_D4.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0684_zoom_D5.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/on/demandware.static/Sites-SunDayRed-Site/-/en_US/v1784434001712/images/social-share-default.jpg"
+      ]
+    },
+    {
+      "url": "https://www.sundayred.com/sun-day-red-x-vessel-icon-nylon-blade-headcover/DW-LU180.html?lang=en_US",
+      "sku": "LS068501",
+      "name": "Sun Day Red x Vessel Icon Nylon Blade Headcover",
+      "description": "Exclusive cross collaboration Sun Day Red x Vessel, blade headcover in weather proof nylon shell, using Tiger's custom design blade shape.",
+      "brand": "LS",
+      "color": null,
+      "price": "54.00",
+      "currency": "USD",
+      "availability": "http://schema.org/InStock",
+      "images": [
+        "/sdr/LS068501/0.jpg",
+        "/sdr/LS068501/1.jpg",
+        "/sdr/LS068501/2.jpg",
+        "/sdr/LS068501/3.jpg",
+        "/sdr/LS068501/4.jpg"
+      ],
+      "imagesRemote": [
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0685_zoom_D4.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0685_zoom_D.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0685_zoom_D2.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0685_zoom_D3.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/on/demandware.static/Sites-SunDayRed-Site/-/en_US/v1784434001712/images/social-share-default.jpg"
+      ]
+    },
+    {
+      "url": "https://www.sundayred.com/sun-day-red-x-vessel-icon-blade-core-headcover/DW-LU176.html?lang=en_US",
+      "sku": "LS074001",
+      "name": "Sun Day Red x Vessel Icon Blade Core Headcover",
+      "description": "This exclusive Sun Day Red x Vessel collaboration blade putter cover combines premium leather protection with Sun Day Red's distinctive branding.",
+      "brand": "LS",
+      "color": null,
+      "price": "100.00",
+      "currency": "USD",
+      "availability": "http://schema.org/InStock",
+      "images": [
+        "/sdr/LS074001/0.jpg",
+        "/sdr/LS074001/1.jpg",
+        "/sdr/LS074001/2.jpg",
+        "/sdr/LS074001/3.jpg",
+        "/sdr/LS074001/4.jpg"
+      ],
+      "imagesRemote": [
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0680_zoom_D4.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0680_zoom_D.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0680_zoom_D2.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0680_zoom_D3.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/on/demandware.static/Sites-SunDayRed-Site/-/en_US/v1784434001712/images/social-share-default.jpg"
+      ]
+    },
+    {
+      "url": "https://www.sundayred.com/sun-day-red-x-vessel-icon-leather-driver-headcover-ii/DW-LU228.html?lang=en_US",
+      "sku": "LS074701",
+      "name": "Sun Day Red x Vessel Icon Leather Driver Headcover II",
+      "description": "Exclusive cross collaboration Sun Day Red x Vessel, driver headcover in custom antique white leather.",
+      "brand": "LS",
+      "color": null,
+      "price": "120.00",
+      "currency": "USD",
+      "availability": "http://schema.org/InStock",
+      "images": [
+        "/sdr/LS074701/0.jpg",
+        "/sdr/LS074701/1.jpg",
+        "/sdr/LS074701/2.jpg",
+        "/sdr/LS074701/3.jpg",
+        "/sdr/LS074701/4.jpg",
+        "/sdr/LS074701/5.jpg"
+      ],
+      "imagesRemote": [
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0747_zoom_D.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0747_zoom_D2.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0747_zoom_D3.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0747_zoom_D4.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0747_zoom_D5.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/on/demandware.static/Sites-SunDayRed-Site/-/en_US/v1784434001712/images/social-share-default.jpg"
+      ]
+    },
+    {
+      "url": "https://www.sundayred.com/sun-day-red-x-vessel-icon-leather-blade-headcover-ii/DW-LU229.html?lang=en_US",
+      "sku": "LS074801",
+      "name": "Sun Day Red x Vessel Icon Leather Blade Headcover II",
+      "description": "Exclusive cross collaboration Sun Day Red x Vessel, blade headcover in a genuine leather pebble grain, using Tiger's custom design blade shape.",
+      "brand": "LS",
+      "color": null,
+      "price": "90.00",
+      "currency": "USD",
+      "availability": "http://schema.org/InStock",
+      "images": [
+        "/sdr/LS074801/0.jpg",
+        "/sdr/LS074801/1.jpg",
+        "/sdr/LS074801/2.jpg",
+        "/sdr/LS074801/3.jpg",
+        "/sdr/LS074801/4.jpg"
+      ],
+      "imagesRemote": [
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0748_zoom_D4.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0748_zoom_D.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0748_zoom_D2.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/dw/image/v2/AAIS_PRD/on/demandware.static/-/Sites-sundayred-master-catalog/en_US/v1784434001712/zoom/LS0748_zoom_D3.jpg?sw=625&sh=833&sm=cut&sfrm=jpg&q=80&strip=true&bgcolor=f4f4f4",
+        "https://www.sundayred.com/on/demandware.static/Sites-SunDayRed-Site/-/en_US/v1784434001712/images/social-share-default.jpg"
+      ]
+    }
+  ]
 }

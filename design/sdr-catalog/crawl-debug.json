@@ -1,0 +1,29 @@
+{
+  "index": "https://www.sundayred.com/sitemap_index.xml",
+  "sitemaps": [
+    "https://www.sundayred.com/sitemap_0-product.xml",
+    "https://www.sundayred.com/sitemap_1-category.xml",
+    "https://www.sundayred.com/sitemap_2.xml"
+  ],
+  "productMaps": [
+    "https://www.sundayred.com/sitemap_0-product.xml"
+  ],
+  "samples": [
+    {
+      "sitemap": "https://www.sundayred.com/sitemap_0-product.xml",
+      "count": 34,
+      "first": [
+        "https://www.sundayred.com/3l-rain-jacket/DW-LA032.html?lang=en_US",
+        "https://www.sundayred.com/3l-short-sleeve-rain-shirt/DW-LA033.html?lang=en_US",
+        "https://www.sundayred.com/3l-wind%2Frain-half-zip-jacket/DW-LA079.html?lang=en_US",
+        "https://www.sundayred.com/luare-tufted-hoodie/DW-LA154.html?lang=en_US",
+        "https://www.sundayred.com/3l-rain-vest/DW-LA160.html?lang=en_US",
+        "https://www.sundayred.com/reserve-quilted-vest/DW-LA170.html?lang=en_US",
+        "https://www.sundayred.com/reserve-quilted-jacket/DW-LA171.html?lang=en_US",
+        "https://www.sundayred.com/3d-merino-wool-crew/DW-LA182.html?lang=en_US",
+        "https://www.sundayred.com/3d-merino-wool-quarter-zip/DW-LA183.html?lang=en_US",
+        "https://www.sundayred.com/3d-merino-wool-hoodie/DW-LA184.html?lang=en_US"
+      ]
+    }
+  ]
+}

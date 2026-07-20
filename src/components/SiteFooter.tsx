@@ -1,10 +1,12 @@
 "use client";
 
+import { motion } from "motion/react";
 import { useLayoutEffect, useRef, useState } from "react";
 
 import { useFooterTagline } from "@/components/FooterTagline";
 import { Logo } from "@/components/Logo";
 import { NavTextLink } from "@/components/NavTextLink";
+import { Plus } from "@/components/icons";
 
 const columns: { heading: string; links: string[] }[] = [
   {
@@ -22,6 +24,42 @@ const columns: { heading: string; links: string[] }[] = [
 ];
 
 const social = ["FB", "TT", "IG", "X", "TW"];
+
+/* mobile link groups collapse into accordions; the + rotates into an
+   x while the panel's height eases open */
+function FooterAccordion({ heading, links }: { heading: string; links: string[] }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="border-b border-line">
+      <button
+        type="button"
+        aria-expanded={open}
+        onClick={() => setOpen((v) => !v)}
+        className="flex h-[4.625rem] w-full items-center justify-between px-4 text-left"
+      >
+        <span className="text-body-md font-medium uppercase text-ink">{heading}</span>
+        <Plus
+          size={16}
+          className={`text-ink transition-transform duration-300 ${
+            open ? "rotate-45" : ""
+          }`}
+        />
+      </button>
+      <motion.div
+        initial={false}
+        animate={{ height: open ? "auto" : 0 }}
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        className="overflow-hidden"
+      >
+        <div className="flex flex-col items-start gap-3 px-4 pb-6">
+          {links.map((link) => (
+            <NavTextLink key={link} label={link.toUpperCase()} />
+          ))}
+        </div>
+      </motion.div>
+    </div>
+  );
+}
 
 /*
   Fixed-reveal footer. The page scrolls inside a raised (z-10) wrapper
@@ -127,8 +165,25 @@ export function SiteFooter() {
         </div>
       )}
 
+      {/* mobile: logo + blurb over accordion link groups (per the
+          mobile footer comp); sm+ keeps the column grid below */}
+      <div className="sm:hidden">
+        <div className="flex flex-col items-start gap-6 px-4 pb-8 pt-8">
+          <Logo />
+          <p className="text-[0.75rem] uppercase leading-[1.5]">
+            Maecenas suspendisse ultrices pellentesque et ornare dui nisl. Eget
+            convallis lorem faucibus tortor in.
+          </p>
+        </div>
+        <div className="flex flex-col border-t border-line">
+          {columns.map((col) => (
+            <FooterAccordion key={col.heading} heading={col.heading} links={col.links} />
+          ))}
+        </div>
+      </div>
+
       {/* link columns */}
-      <div className="grid w-full grid-cols-1 border-t border-line sm:grid-cols-2 lg:grid-cols-4">
+      <div className="hidden w-full grid-cols-1 border-t border-line sm:grid sm:grid-cols-2 lg:grid-cols-4">
         {columns.map((col) => (
           <div
             key={col.heading}
@@ -152,7 +207,7 @@ export function SiteFooter() {
       </div>
 
       {/* newsletter */}
-      <form className="flex w-full flex-col items-stretch gap-3 p-4 sm:flex-row sm:gap-0 md:p-6">
+      <form className="flex w-full flex-col items-stretch gap-3 p-4 pt-10 sm:flex-row sm:gap-0 sm:pt-4 md:p-6">
         {/* flex-1 only in the sm+ row layout — in the stacked mobile
             column it would become the vertical basis and squash the
             46px heights */}
@@ -172,8 +227,14 @@ export function SiteFooter() {
         </button>
       </form>
 
-      {/* bottom bar */}
-      <div className="flex w-full flex-col gap-6 px-4 py-8 sm:h-[4.5rem] sm:flex-row sm:items-start sm:gap-8 md:px-6">
+      {/* bottom bar — mobile: socials and copyright share one line */}
+      <div className="flex w-full items-center justify-between px-4 pb-2 pt-6 sm:hidden">
+        {social.map((s) => (
+          <NavTextLink key={s} label={s} />
+        ))}
+        <p className="label font-medium">©2026 SUN DAY RED</p>
+      </div>
+      <div className="hidden w-full gap-8 px-4 py-8 sm:flex sm:h-[4.5rem] sm:items-start md:px-6">
         <div className="flex flex-1 items-center">
           <p className="label font-medium">©2026 SUN DAY RED</p>
         </div>

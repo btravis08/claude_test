@@ -116,6 +116,28 @@ async function run() {
   });
   console.log("✓ Accessories (smart, tag == accessories)");
 
+  /* Shop All (smart, no rules) already contains the whole active
+     catalog — but its category chips only covered the apparel tags.
+     Extend them to the full real range. */
+  const CHIPS = [
+    "polos",
+    "tshirts",
+    "sweaters",
+    "hoodies",
+    "outerwear",
+    "pants",
+    "shorts",
+    "footwear",
+    "headwear",
+    "accessories",
+  ];
+  await client
+    .patch("collection-shop-all")
+    .set({ subcategories: CHIPS.map((t) => refk(`collection-${t}`)) })
+    .commit()
+    .then(() => console.log(`✓ Shop All chips → ${CHIPS.length} categories`))
+    .catch(() => console.log("- Shop All collection not found, skipped"));
+
   await manualCol(
     "collection-vessel",
     "Sun Day Red x Vessel",

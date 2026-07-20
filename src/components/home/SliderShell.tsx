@@ -111,11 +111,7 @@ export function SliderShell({
   const settleRaf = useRef(0);
   const watching = useRef(false);
 
-  const glide = useCallback((el: HTMLDivElement) => {
-    const step = stepWidth(el);
-    if (step <= 0) return;
-    const max = el.scrollWidth - el.clientWidth;
-    const target = Math.min(Math.max(Math.round(el.scrollLeft / step) * step, 0), max);
+  const glideTo = useCallback((el: HTMLDivElement, target: number) => {
     const from = el.scrollLeft;
     if (Math.abs(target - from) < 1) return;
     const t0 = performance.now();
@@ -130,6 +126,16 @@ export function SliderShell({
     cancelAnimationFrame(settleRaf.current);
     settleRaf.current = requestAnimationFrame(anim);
   }, []);
+
+  const glide = useCallback(
+    (el: HTMLDivElement) => {
+      const step = stepWidth(el);
+      if (step <= 0) return;
+      const max = el.scrollWidth - el.clientWidth;
+      glideTo(el, Math.min(Math.max(Math.round(el.scrollLeft / step) * step, 0), max));
+    },
+    [glideTo],
+  );
 
   const settleWatch = useCallback(() => {
     if (watching.current) return;
@@ -222,19 +228,89 @@ export function SliderShell({
 
   /* a touch mid-flight cancels the pending arrow settle (it would
      yank the track out from under the finger) */
-  const onTouchStart = () => {
-    touching.current = true;
-    clearTimeout(snapTimer.current);
-    cancelAnimationFrame(settleRaf.current);
-    watching.current = false;
-    pending.current = null;
-  };
-  const onTouchEnd = () => {
-    touching.current = false;
-    /* start watching now — the watcher polls positions itself, so it
-       works even if iOS goes quiet on scroll events mid-momentum */
-    settleWatch();
-  };
+  /* Touch paging (Swiper-style, hand-rolled). The track has
+     touch-action: pan-y, so iOS never scrolls it horizontally itself
+     — there is no native momentum to fight. Horizontal gestures are
+     ours: the finger drives scrollLeft 1:1, and release locks to the
+     next/previous card by swipe velocity (or the nearest card for a
+     slow drag). Vertical gestures pass through to page scroll. */
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el) return;
+    let mode: "h" | "v" | null = null;
+    let startX = 0;
+    let startY = 0;
+    let startScroll = 0;
+    let lastX = 0;
+    let lastT = 0;
+    let vx = 0;
+    const onStart = (e: TouchEvent) => {
+      if (e.touches.length !== 1) return;
+      touching.current = true;
+      clearTimeout(snapTimer.current);
+      cancelAnimationFrame(settleRaf.current);
+      watching.current = false;
+      pending.current = null;
+      mode = null;
+      startX = lastX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      startScroll = el.scrollLeft;
+      lastT = performance.now();
+      vx = 0;
+    };
+    const onMove = (e: TouchEvent) => {
+      if (!touching.current || e.touches.length !== 1) return;
+      const x = e.touches[0].clientX;
+      const y = e.touches[0].clientY;
+      if (mode === null) {
+        const dx = x - startX;
+        const dy = y - startY;
+        if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
+        mode = Math.abs(dx) > Math.abs(dy) ? "h" : "v";
+      }
+      if (mode !== "h") return;
+      e.preventDefault();
+      const now = performance.now();
+      if (now > lastT) {
+        vx = (x - lastX) / (now - lastT);
+        lastX = x;
+        lastT = now;
+      }
+      el.scrollLeft = startScroll - (x - startX);
+    };
+    const onEnd = () => {
+      touching.current = false;
+      if (mode === "h") {
+        const step = stepWidth(el);
+        if (step > 0) {
+          const max = el.scrollWidth - el.clientWidth;
+          const cur = el.scrollLeft / step;
+          /* a real flick advances one card in its direction; a slow
+             drag settles to whichever card is nearest */
+          const idx =
+            Math.abs(vx) > 0.25
+              ? vx < 0
+                ? Math.floor(cur) + 1
+                : Math.ceil(cur) - 1
+              : Math.round(cur);
+          glideTo(el, Math.min(Math.max(idx * step, 0), max));
+        }
+      }
+      mode = null;
+    };
+    el.addEventListener("touchstart", onStart, { passive: true });
+    /* passive: false — preventDefault must be able to stop the page
+       from vertical-scrolling once a gesture locks horizontal */
+    el.addEventListener("touchmove", onMove, { passive: false });
+    el.addEventListener("touchend", onEnd);
+    el.addEventListener("touchcancel", onEnd);
+    return () => {
+      el.removeEventListener("touchstart", onStart);
+      el.removeEventListener("touchmove", onMove);
+      el.removeEventListener("touchend", onEnd);
+      el.removeEventListener("touchcancel", onEnd);
+    };
+  }, [glideTo]);
 
   const applyFilter = (next: string | null) => {
     setGender(next === gender ? null : next);
@@ -360,11 +436,8 @@ export function SliderShell({
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
         onClickCapture={onClickCapture}
-        onTouchStart={onTouchStart}
-        onTouchEnd={onTouchEnd}
-        onTouchCancel={onTouchEnd}
         onDragStart={(e) => e.preventDefault()}
-        className={`no-scrollbar w-full gap-px overflow-x-auto ${trackClassName} ${
+        className={`no-scrollbar w-full touch-pan-y gap-px overflow-x-auto ${trackClassName} ${
           variable ? "flex" : `grid grid-flow-col ${cols}`
         } ${dragging ? "cursor-grabbing select-none" : "cursor-grab"}`}
       >

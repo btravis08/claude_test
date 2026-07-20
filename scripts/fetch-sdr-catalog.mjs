@@ -20,7 +20,7 @@
   Images are normalized through the Demandware image service at
   sw=1200, q=85.
 */
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -29,7 +29,13 @@ const BASE = "https://www.sundayred.com";
 const UA =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15";
 const MAX_IMAGES_PER_PRODUCT = 6;
-const CONCURRENCY = 4;
+/* gentle pacing: run #4 proved Akamai rate-limits the crawl mid-run
+   (discovery succeeded, then every capture got connection-refused) */
+const CONCURRENCY = 2;
+const DELAY_MS = 350;
+/* this many connection failures in a row = we're blocked; save
+   partial progress and let the next run (fresh runner IP) resume */
+const BLOCKED_THRESHOLD = 20;
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -319,6 +325,10 @@ async function captureProduct(url) {
       console.log(`    image failed (${e.message}): ${src.slice(0, 100)}`);
     }
   }
+  /* if the page worked but every image was refused, we got blocked
+     mid-product — leave it pending so the next run retries it */
+  if (rawImages.length && images.length === 0)
+    throw new Error("images blocked mid-capture");
 
   return {
     url,
@@ -336,16 +346,42 @@ async function captureProduct(url) {
   };
 }
 
-const urls = await discoverProductUrls();
-console.log(`\ncapturing ${urls.length} products…`);
+/* Discovery is expensive (~300 requests) and is what trips the rate
+   limiter, so the discovered URL list is committed as a seed —
+   subsequent runs skip straight to capturing. Delete
+   design/sdr-catalog/urls.json to force a re-discovery. */
+const SEED = join(ROOT, "design/sdr-catalog/urls.json");
+let urls;
+try {
+  urls = JSON.parse(await readFile(SEED, "utf8"));
+  console.log(`using ${urls.length} seeded urls from design/sdr-catalog/urls.json`);
+} catch {
+  urls = await discoverProductUrls();
+  await writeFile(SEED, JSON.stringify(urls, null, 1));
+}
+
+/* resume: keep everything already captured, only fetch what's left */
+const OUT = join(ROOT, "design/sdr-catalog/products.json");
+let existing = [];
+try {
+  existing = JSON.parse(await readFile(OUT, "utf8")).products ?? [];
+} catch {
+  /* first run */
+}
+const done = new Set(existing.map((p) => p.url.replace(/\?.*$/, "")));
+const pending = urls.filter((u) => !done.has(u));
+console.log(`\ncapturing ${pending.length} products (${existing.length} already captured)…`);
+
 const products = [];
 let cursor = 0;
+let consecutiveFailures = 0;
 await Promise.all(
   Array.from({ length: CONCURRENCY }, async () => {
-    while (cursor < urls.length) {
-      const url = urls[cursor++];
+    while (cursor < pending.length && consecutiveFailures < BLOCKED_THRESHOLD) {
+      const url = pending[cursor++];
       try {
         const p = await captureProduct(url);
+        consecutiveFailures = 0;
         if (p) {
           products.push(p);
           console.log(`✓ ${p.name} (${p.images.length} images)`);
@@ -353,18 +389,26 @@ await Promise.all(
           console.log(`- no product data: ${url}`);
         }
       } catch (e) {
+        consecutiveFailures += 1;
         console.log(`✗ ${url}: ${e.message}`);
       }
-      await sleep(150);
+      await sleep(DELAY_MS);
     }
   }),
 );
+if (consecutiveFailures >= BLOCKED_THRESHOLD)
+  console.log(
+    `\nblocked (${BLOCKED_THRESHOLD} consecutive failures) — saving partial progress; re-run to resume`,
+  );
 
-products.sort((a, b) => a.sku.localeCompare(b.sku));
+const all = [...existing, ...products].sort((a, b) => a.sku.localeCompare(b.sku));
 await mkdir(join(ROOT, "design/sdr-catalog"), { recursive: true });
 await writeFile(
-  join(ROOT, "design/sdr-catalog/products.json"),
-  JSON.stringify({ capturedAt: new Date().toISOString(), source: BASE, products }, null, 2),
+  OUT,
+  JSON.stringify({ capturedAt: new Date().toISOString(), source: BASE, products: all }, null, 2),
 );
-console.log(`\nwrote design/sdr-catalog/products.json (${products.length} products)`);
-if (products.length === 0) process.exit(1);
+const remaining = pending.length - products.length;
+console.log(
+  `\nwrote design/sdr-catalog/products.json (${all.length} total, +${products.length} this run, ${remaining} still pending)`,
+);
+if (all.length === 0) process.exit(1);

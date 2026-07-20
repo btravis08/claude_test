@@ -70,20 +70,31 @@ async function discoverProductUrls() {
 
   const children = locs(index).filter((u) => u.endsWith(".xml"));
   const sitemaps = children.length ? children : [candidates[0]];
+  /* prefer sitemaps that declare themselves product sitemaps; if none
+     do, crawl every page and let the JSON-LD Product check decide */
+  const productMaps = sitemaps.filter((u) => /product/i.test(u));
+  const usable = productMaps.length ? productMaps : sitemaps;
   const urls = new Set();
-  for (const sm of sitemaps) {
+  const debug = { index: candidates.find(Boolean), sitemaps, productMaps, samples: [] };
+  for (const sm of usable) {
     try {
       const xml = await get(sm);
-      for (const loc of locs(xml)) {
-        /* product detail pages end in <CODE>.html (e.g. L12163.html) */
-        if (/\/[A-Za-z]?\d{4,}[A-Za-z0-9-]*\.html(?:$|\?)/.test(loc)) urls.add(loc);
-      }
-      console.log(`  ${sm} → ${urls.size} product urls so far`);
+      const found = locs(xml).filter((u) => !u.endsWith(".xml"));
+      debug.samples.push({ sitemap: sm, count: found.length, first: found.slice(0, 10) });
+      for (const loc of found) urls.add(loc);
+      console.log(`  ${sm} → ${found.length} urls (${urls.size} total)`);
     } catch (e) {
+      debug.samples.push({ sitemap: sm, error: e.message });
       console.log(`  skipping ${sm}: ${e.message}`);
     }
   }
-  return [...urls];
+  await mkdir(join(ROOT, "design/sdr-catalog"), { recursive: true });
+  await writeFile(
+    join(ROOT, "design/sdr-catalog/crawl-debug.json"),
+    JSON.stringify(debug, null, 2),
+  );
+  /* bound the crawl; non-product pages fall out at the JSON-LD gate */
+  return [...urls].slice(0, 600);
 }
 
 function extractJsonLd(html) {
@@ -133,7 +144,10 @@ async function captureProduct(url) {
     return t === "Product" || (Array.isArray(t) && t.includes("Product"));
   });
 
-  const name = product?.name ?? meta(html, "og:title");
+  /* only pages with real Product structured data count — with the
+     broadened crawl, everything else falls out here */
+  if (!product) return null;
+  const name = product.name ?? meta(html, "og:title");
   if (!name) return null;
   const offers = Array.isArray(product?.offers) ? product.offers[0] : product?.offers;
   const rawImages = [
@@ -176,6 +190,8 @@ async function captureProduct(url) {
     currency: offers?.priceCurrency ?? null,
     availability: offers?.availability ?? null,
     images,
+    /* remote originals, kept for re-fetching/diagnosis */
+    imagesRemote: rawImages,
   };
 }
 

@@ -39,18 +39,68 @@ async function run() {
     return;
   }
 
-  /* ---------- migrate sdr.<slug> → sdr-<slug> ---------- */
-  let moved = 0;
-  for (const { _id } of dotted) {
+  /* ---------- migrate sdr.<slug> → sdr-<slug> ----------
+     Three phases, because collections/navigation may already hold
+     strong references to the dot ids (Sanity refuses to delete a
+     referenced document):
+       1. create the dash-id copies
+       2. rewrite _refs in every referencing document
+       3. delete the dot-id originals */
+  const dottedIds = dotted.map((d) => d._id);
+
+  let copied = 0;
+  for (const _id of dottedIds) {
     const doc = await client.getDocument(_id);
     if (!doc) continue;
-    const newId = _id.replace(/^sdr\./, "sdr-");
-    await client.createOrReplace({ ...doc, _id: newId });
-    await client.delete(_id);
-    moved += 1;
-    if (moved % 20 === 0) console.log(`  ${moved}/${dotted.length}…`);
+    const { _rev, _createdAt, _updatedAt, ...rest } = doc as Record<string, unknown>;
+    void _rev;
+    void _createdAt;
+    void _updatedAt;
+    await client.createOrReplace({
+      ...(rest as { _type: string }),
+      _id: _id.replace(/^sdr\./, "sdr-"),
+    });
+    copied += 1;
+    if (copied % 20 === 0) console.log(`  copied ${copied}/${dottedIds.length}…`);
   }
-  console.log(`\n✓ migrated ${moved} products to visible ids`);
+  console.log(`✓ copied ${copied} products to dash ids`);
+
+  /* rewrite refs anywhere they occur (collections, navigation, …) */
+  const fixRefs = (value: unknown): unknown => {
+    if (Array.isArray(value)) return value.map(fixRefs);
+    if (value && typeof value === "object") {
+      const out: Record<string, unknown> = {};
+      for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+        out[k] =
+          k === "_ref" && typeof v === "string" && v.startsWith("sdr.")
+            ? v.replace(/^sdr\./, "sdr-")
+            : fixRefs(v);
+      }
+      return out;
+    }
+    return value;
+  };
+  const referencers = await client.fetch<{ _id: string }[]>(
+    `*[references($ids)]{ _id }`,
+    { ids: dottedIds },
+  );
+  for (const { _id } of referencers) {
+    const doc = await client.getDocument(_id);
+    if (!doc) continue;
+    await client.createOrReplace(fixRefs(doc) as { _id: string; _type: string });
+    console.log(`  ✓ rewrote references in ${_id}`);
+  }
+
+  let deleted = 0;
+  for (const _id of dottedIds) {
+    try {
+      await client.delete(_id);
+      deleted += 1;
+    } catch (e) {
+      console.log(`  ! could not delete ${_id}: ${(e as Error).message.slice(0, 120)}`);
+    }
+  }
+  console.log(`\n✓ migrated ${copied} products (${deleted} old ids removed)`);
 
   const pubAfter = await published.fetch<number>(
     `count(*[_type == "product" && status == "active"])`,

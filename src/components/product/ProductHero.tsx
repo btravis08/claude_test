@@ -5,7 +5,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
 import { useCart } from "@/components/cart/CartContext";
-import { ArrowLeft, ArrowRight, Menu } from "@/components/icons";
+import { ArrowLeft, ArrowRight } from "@/components/icons";
+import { MenuX } from "@/components/MenuX";
 import { ImageViewer } from "@/components/product/ImageViewer";
 import type { SourceBox } from "@/components/product/ImageViewer";
 import { SwatchRail } from "@/components/product/SwatchRail";
@@ -279,6 +280,15 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
       image?: SourceBox;
     };
   } | null>(null);
+  /* the nav's sheet state — the dock's hamburger morphs in sync */
+  const [menuOpen, setMenuOpen] = useState(false);
+  useEffect(() => {
+    const onState = (e: Event) =>
+      setMenuOpen(Boolean((e as CustomEvent).detail));
+    window.addEventListener("sdr:menu-state", onState);
+    return () => window.removeEventListener("sdr:menu-state", onState);
+  }, []);
+
   /* the closing fade reveals the originals beneath the overlay */
   const [viewerFading, setViewerFading] = useState(false);
   const originalsHidden = viewer !== null && !viewerFading;
@@ -592,9 +602,9 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
             type="button"
             aria-label="Open menu"
             onClick={() => window.dispatchEvent(new CustomEvent("sdr:open-menu"))}
-            className="flex size-[2.875rem] shrink-0 items-center justify-center rounded-xs bg-wash backdrop-blur-md"
+            className="flex size-[2.875rem] shrink-0 items-center justify-center rounded-xs bg-wash text-ink backdrop-blur-md"
           >
-            <Menu size={10} />
+            <MenuX open={menuOpen} className="text-ink" />
           </button>
         </div>
       </div>

@@ -19,33 +19,7 @@ import { NavTextLink } from "@/components/NavTextLink";
 import { SmartLink } from "@/components/SmartLink";
 import { startNavBackdropProbes } from "@/components/navBackdrop";
 import { ArrowUpRight, SearchMd } from "@/components/icons";
-
-/* the mobile bar's hamburger: its two bars glide to the center and
-   rotate about their own midpoints into an X (inverse on close), on
-   the nav's 300ms curve. Plain HTML bars — SVG transform-origin
-   resolves against the path's own box on iOS and mangles the X */
-function MenuX({ open, className }: { open: boolean; className?: string }) {
-  const bar = (top: number, openTf: string): React.CSSProperties => ({
-    position: "absolute",
-    left: 3,
-    width: 10,
-    height: 1.5,
-    top,
-    backgroundColor: "currentColor",
-    transform: open ? openTf : "none",
-    transition: "transform 300ms cubic-bezier(0.4, 0, 0.2, 1)",
-  });
-  return (
-    <span
-      aria-hidden
-      className={`relative block ${className ?? ""}`}
-      style={{ width: "1rem", height: "1rem" }}
-    >
-      <span style={bar(5.25, "translateY(2px) rotate(45deg)")} />
-      <span style={bar(9.25, "translateY(-2px) rotate(-45deg)")} />
-    </span>
-  );
-}
+import { MenuX } from "@/components/MenuX";
 
 /*
   Site navigation. Content comes from the Sanity "navigation" singleton
@@ -554,6 +528,14 @@ export function Navigation({ data }: { data?: NavData | null }) {
     window.addEventListener("sdr:open-menu", onOpen);
     return () => window.removeEventListener("sdr:open-menu", onOpen);
   }, []);
+
+  /* broadcast the sheet state so other chrome (the PDP dock's
+     hamburger) can morph in sync */
+  useEffect(() => {
+    window.dispatchEvent(
+      new CustomEvent("sdr:menu-state", { detail: mobileOpen }),
+    );
+  }, [mobileOpen]);
 
   /* SPA navigation keeps this component mounted — close the meganav
      and the mobile sheet whenever the route changes, and drop the

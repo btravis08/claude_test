@@ -217,7 +217,9 @@ function StoryTile({
         {/* mobile: stacked, full-width text, CTA right-aligned below;
             desktop: text left, button top-aligned right */}
         <div className="flex flex-col gap-16 p-4 lg:flex-row lg:items-start lg:justify-between lg:gap-16 lg:p-6">
-          <div className="flex flex-col gap-[1.125rem] lg:max-w-md">
+          {/* explicit width: the Figma --spacing scale shadows Tailwind's
+              named container sizes, so max-w-md would compute to 8px */}
+          <div className="flex flex-col gap-[1.125rem] lg:max-w-[28rem]">
             <p className="font-display text-title-xs capitalize text-ink">{story.title}</p>
             {story.body && <p className="text-body-sm text-ink-2">{story.body}</p>}
           </div>
@@ -568,7 +570,13 @@ function CollectionGrid({
   }
   pushProducts(cards.length - p); // remainder
   return (
-    <div className="grid grid-cols-2 gap-px overflow-x-clip lg:grid-cols-4">{cells}</div>
+    /* dense flow: a right/center story tile starts at a later column,
+       and default auto-placement never backtracks — the cells above-
+       left of it would stay empty; dense backfills them with the next
+       products (all product cells are 1x1, so order stays sensible) */
+    <div className="grid grid-flow-row-dense grid-cols-2 gap-px overflow-x-clip lg:grid-cols-4">
+      {cells}
+    </div>
   );
 }
 

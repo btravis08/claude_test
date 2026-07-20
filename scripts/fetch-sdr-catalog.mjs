@@ -9,10 +9,14 @@
   fetch-sdr-catalog GitHub workflow (Actions runners) or locally:
     node scripts/fetch-sdr-catalog.mjs
 
-  Data comes from each product page's JSON-LD (schema.org Product),
-  which Salesforce Commerce emits with name, description, sku, price,
-  and image set. Images are normalized through the Demandware image
-  service at sw=1200, q=85.
+  Product URLs come from two places: the product sitemap (which
+  undercounts — it listed 34 while the site sells more) and a walk of
+  every category PLP from the category sitemap, paged via SFCC's
+  start/sz params, harvesting the grid tiles' links. Data comes from
+  each product page's JSON-LD (schema.org Product), which Salesforce
+  Commerce emits with name, description, sku, price, and image set.
+  Images are normalized through the Demandware image service at
+  sw=1200, q=85.
 */
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
@@ -53,6 +57,46 @@ async function get(url, type = "text") {
 const locs = (xml) =>
   [...xml.matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/g)].map((m) => m[1]);
 
+/* strip query/hash so the same PDP linked with ?color= or ?lang=
+   variants dedupes to one capture */
+function canonical(url) {
+  try {
+    const u = new URL(url.replace(/&amp;/g, "&"), BASE);
+    if (u.hostname !== new URL(BASE).hostname) return null;
+    u.search = "";
+    u.hash = "";
+    return u.toString();
+  } catch {
+    return null;
+  }
+}
+
+/* Walk a category (PLP) page through SFCC's start/sz paging and pull
+   every .html link out of the grid. Nav/footer links repeat on every
+   page, so a page that adds nothing new means we're past the end. */
+async function collectCategoryLinks(catUrl) {
+  const found = new Set();
+  for (let start = 0; start < 480; start += 60) {
+    let html;
+    try {
+      const u = new URL(catUrl, BASE);
+      u.searchParams.set("sz", "60");
+      u.searchParams.set("start", String(start));
+      html = await get(u.toString());
+    } catch {
+      break;
+    }
+    const before = found.size;
+    for (const m of html.matchAll(/href=["']([^"']+\.html(?:\?[^"']*)?)["']/g)) {
+      const c = canonical(m[1]);
+      if (c) found.add(c);
+    }
+    if (found.size === before) break;
+    await sleep(150);
+  }
+  return found;
+}
+
 async function discoverProductUrls() {
   /* SFCC serves a sitemap index; product URLs live in child sitemaps */
   const candidates = [`${BASE}/sitemap_index.xml`, `${BASE}/sitemap.xml`];
@@ -81,20 +125,59 @@ async function discoverProductUrls() {
       const xml = await get(sm);
       const found = locs(xml).filter((u) => !u.endsWith(".xml"));
       debug.samples.push({ sitemap: sm, count: found.length, first: found.slice(0, 10) });
-      for (const loc of found) urls.add(loc);
+      for (const loc of found) urls.add(canonical(loc) ?? loc);
       console.log(`  ${sm} → ${found.length} urls (${urls.size} total)`);
     } catch (e) {
       debug.samples.push({ sitemap: sm, error: e.message });
       console.log(`  skipping ${sm}: ${e.message}`);
     }
   }
+
+  /* The product sitemap undercounts the live range (34 urls vs the
+     full site), so also walk every category PLP from the category
+     sitemap and harvest the product links off the grid tiles. The
+     JSON-LD Product gate below discards anything that isn't a PDP. */
+  const categoryMaps = sitemaps.filter((u) => /category/i.test(u));
+  const categories = new Set();
+  for (const sm of categoryMaps) {
+    try {
+      const xml = await get(sm);
+      for (const loc of locs(xml).filter((u) => !u.endsWith(".xml"))) {
+        const c = canonical(loc);
+        if (c) categories.add(c);
+      }
+    } catch (e) {
+      console.log(`  skipping ${sm}: ${e.message}`);
+    }
+  }
+  console.log(`\nwalking ${categories.size} category pages…`);
+  debug.categories = { count: categories.size, crawled: [] };
+  const catList = [...categories];
+  let catCursor = 0;
+  await Promise.all(
+    Array.from({ length: CONCURRENCY }, async () => {
+      while (catCursor < catList.length) {
+        const cat = catList[catCursor++];
+        const links = await collectCategoryLinks(cat);
+        let added = 0;
+        for (const link of links) {
+          if (categories.has(link) || urls.has(link)) continue;
+          urls.add(link);
+          added += 1;
+        }
+        debug.categories.crawled.push({ category: cat, links: links.size, newCandidates: added });
+        console.log(`  ${cat} → ${links.size} links, ${added} new (${urls.size} total)`);
+      }
+    }),
+  );
+
   await mkdir(join(ROOT, "design/sdr-catalog"), { recursive: true });
   await writeFile(
     join(ROOT, "design/sdr-catalog/crawl-debug.json"),
     JSON.stringify(debug, null, 2),
   );
   /* bound the crawl; non-product pages fall out at the JSON-LD gate */
-  return [...urls].slice(0, 600);
+  return [...urls].slice(0, 800);
 }
 
 function extractJsonLd(html) {
@@ -158,9 +241,17 @@ async function captureProduct(url) {
       ].filter(Boolean),
     ),
   ];
-  const sku = (product?.sku ?? url.match(/\/([A-Za-z]?\d{4,}[A-Za-z0-9-]*)\.html/)?.[1] ?? name)
+  const sku = (product?.sku ?? url.match(/\/([A-Za-z0-9][A-Za-z0-9-]{3,})\.html/)?.[1] ?? name)
     .toString()
     .replace(/[^A-Za-z0-9_-]/g, "_");
+
+  /* some PDPs omit offers from their JSON-LD — fall back to the
+     page's price markup */
+  const priceFallback =
+    html.match(/property=["']product:price:amount["'][^>]+content=["']([\d.]+)["']/i)?.[1] ??
+    html.match(/itemprop=["']price["'][^>]*content=["']([\d.]+)["']/i)?.[1] ??
+    html.match(/"price"\s*:\s*\{\s*"sales"\s*:\s*\{\s*"value"\s*:\s*([\d.]+)/)?.[1] ??
+    null;
 
   const images = [];
   let i = 0;
@@ -186,7 +277,7 @@ async function captureProduct(url) {
     description: product?.description ?? meta(html, "og:description") ?? null,
     brand: product?.brand?.name ?? product?.brand ?? null,
     color: product?.color ?? null,
-    price: offers?.price ?? null,
+    price: offers?.price ?? priceFallback,
     currency: offers?.priceCurrency ?? null,
     availability: offers?.availability ?? null,
     images,

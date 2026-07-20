@@ -98,28 +98,71 @@ export function SliderShell({
 
   /* JS snapping. CSS scroll-snap is off entirely — iOS's snap engine
      fought programmatic scrolls (stranding the track) and its
-     proximity mode barely snaps, leaving swipes parked mid-card. So
-     the track settles itself: once a scroll goes quiet, glide to the
-     nearest card start, clamped so the last card rests flush right.
+     proximity mode barely snaps, leaving swipes parked mid-card.
+     iOS is also unreliable at the two obvious primitives (scroll
+     events can go quiet during momentum, and smooth scrollTo around
+     momentum gets ignored), so the settle is fully hand-driven: a
+     rAF watcher polls scrollLeft until the track is actually still,
+     then a rAF glide animates scrollLeft directly to the nearest
+     card start, clamped so the last card rests flush right.
      (References below — stepWidth, drag, pending — are declared
-     later; the callback only runs after mount.) */
-  const settleTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+     later; the callbacks only run after mount.) */
   const touching = useRef(false);
-  const settleSoon = useCallback(() => {
-    clearTimeout(settleTimer.current);
-    settleTimer.current = setTimeout(() => {
-      const el = trackRef.current;
-      /* never yank the track under a finger, an active mouse drag, or
-         an in-flight arrow scroll (which hard-settles on its own) */
-      if (!el || touching.current || drag.current.active || pending.current !== null) return;
-      const step = stepWidth(el);
-      if (step <= 0) return;
-      const max = el.scrollWidth - el.clientWidth;
-      const target = Math.min(Math.max(Math.round(el.scrollLeft / step) * step, 0), max);
-      if (Math.abs(target - el.scrollLeft) > 1)
-        el.scrollTo({ left: target, behavior: "smooth" });
-    }, 140);
+  const settleRaf = useRef(0);
+  const watching = useRef(false);
+
+  const glide = useCallback((el: HTMLDivElement) => {
+    const step = stepWidth(el);
+    if (step <= 0) return;
+    const max = el.scrollWidth - el.clientWidth;
+    const target = Math.min(Math.max(Math.round(el.scrollLeft / step) * step, 0), max);
+    const from = el.scrollLeft;
+    if (Math.abs(target - from) < 1) return;
+    const t0 = performance.now();
+    const D = 320;
+    const anim = (now: number) => {
+      /* a finger or drag reclaims the track instantly */
+      if (touching.current || drag.current.active) return;
+      const t = Math.min((now - t0) / D, 1);
+      el.scrollLeft = from + (target - from) * (1 - Math.pow(1 - t, 3));
+      if (t < 1) settleRaf.current = requestAnimationFrame(anim);
+    };
+    cancelAnimationFrame(settleRaf.current);
+    settleRaf.current = requestAnimationFrame(anim);
   }, []);
+
+  const settleWatch = useCallback(() => {
+    if (watching.current) return;
+    const el0 = trackRef.current;
+    if (!el0) return;
+    watching.current = true;
+    let last = el0.scrollLeft;
+    let still = 0;
+    const tick = () => {
+      const el = trackRef.current;
+      /* bail under a finger, a mouse drag, or an in-flight arrow
+         scroll (which hard-settles on its own) */
+      if (!el || touching.current || drag.current.active || pending.current !== null) {
+        watching.current = false;
+        return;
+      }
+      const cur = el.scrollLeft;
+      if (Math.abs(cur - last) < 0.5) {
+        still += 1;
+        if (still >= 6) {
+          /* ~100ms of stillness: momentum is done, glide home */
+          watching.current = false;
+          glide(el);
+          return;
+        }
+      } else {
+        still = 0;
+        last = cur;
+      }
+      settleRaf.current = requestAnimationFrame(tick);
+    };
+    settleRaf.current = requestAnimationFrame(tick);
+  }, [glide]);
 
   useEffect(() => {
     updateArrows();
@@ -127,9 +170,9 @@ export function SliderShell({
     if (!el) return;
     const onScroll = () => {
       updateArrows();
-      /* free scrolls (momentum, trackpad) re-arm the settle until
-         they go quiet; guarded scrolls bail inside settleSoon */
-      if (!touching.current) settleSoon();
+      /* free scrolls (momentum, trackpad wheel) start the stillness
+         watcher; guarded states bail inside settleWatch */
+      if (!touching.current) settleWatch();
     };
     el.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", updateArrows);
@@ -137,7 +180,7 @@ export function SliderShell({
       el.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", updateArrows);
     };
-  }, [updateArrows, settleSoon, visible.length]);
+  }, [updateArrows, settleWatch, visible.length]);
 
   /* One step = distance between consecutive card starts (card width
      plus the 1px gap), so arrows and snap stay exact */
@@ -182,14 +225,15 @@ export function SliderShell({
   const onTouchStart = () => {
     touching.current = true;
     clearTimeout(snapTimer.current);
-    clearTimeout(settleTimer.current);
+    cancelAnimationFrame(settleRaf.current);
+    watching.current = false;
     pending.current = null;
   };
   const onTouchEnd = () => {
     touching.current = false;
-    /* arm the settle now — momentum scroll events keep deferring it
-       until the swipe actually comes to rest */
-    settleSoon();
+    /* start watching now — the watcher polls positions itself, so it
+       works even if iOS goes quiet on scroll events mid-momentum */
+    settleWatch();
   };
 
   const applyFilter = (next: string | null) => {
@@ -229,8 +273,7 @@ export function SliderShell({
     drag.current.active = false;
     if (drag.current.moved) {
       setDragging(false);
-      const cardW = stepWidth(el);
-      el.scrollTo({ left: Math.round(el.scrollLeft / cardW) * cardW, behavior: "smooth" });
+      glide(el);
     }
   };
 

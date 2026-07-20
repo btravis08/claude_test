@@ -155,6 +155,7 @@ export const product = defineType({
           { title: "Hoodies & Pullovers", value: "hoodies" },
           { title: "Outerwear", value: "outerwear" },
           { title: "Shorts", value: "shorts" },
+          { title: "Accessories", value: "accessories" },
         ],
         layout: "grid",
       },

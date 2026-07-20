@@ -116,10 +116,21 @@ export function SliderShell({
     return slides[0]?.offsetWidth ?? el.clientWidth;
   };
 
+  /* arrows scroll to exact clamped card positions (never relative
+     nudges) so repeated taps can't strand the track mid-snap */
   const slide = (dir: 1 | -1) => {
     const el = trackRef.current;
     if (!el) return;
-    el.scrollBy({ left: dir * stepWidth(el), behavior: "smooth" });
+    const step = stepWidth(el);
+    if (step <= 0) return;
+    const max = el.scrollWidth - el.clientWidth;
+    /* few-px tolerance so a settled position counts as its own index */
+    const idx =
+      dir > 0
+        ? Math.floor((el.scrollLeft + 4) / step)
+        : Math.ceil((el.scrollLeft - 4) / step);
+    const target = Math.min(Math.max((idx + dir) * step, 0), max);
+    el.scrollTo({ left: target, behavior: "smooth" });
   };
 
   const applyFilter = (next: string | null) => {
@@ -251,23 +262,22 @@ export function SliderShell({
         className={`no-scrollbar w-full gap-px overflow-x-auto ${trackClassName} ${
           variable ? "flex" : `grid grid-flow-col ${cols}`
         } ${
+          /* proximity, not mandatory: iOS honors a mandatory
+             snap-start even beyond max scroll, which parks the last
+             card at the left with blank space trailing it — proximity
+             still snaps nearby cards but lets the track legally rest
+             flush at either end */
           dragging
             ? "cursor-grabbing select-none"
-            : "cursor-grab snap-x snap-mandatory"
+            : "cursor-grab snap-x snap-proximity"
         }`}
       >
         <AnimatePresence initial={false} onExitComplete={updateArrows}>
-          {visible.map((item, i) => (
+          {visible.map((item) => (
             <motion.div
               key={item.key}
               data-slide
-              /* the LAST slide snaps to the track's end: iOS honors a
-                 mandatory snap-start even beyond max scroll, parking
-                 the final card at the left with blank space after —
-                 end-alignment right-justifies it instead */
-              className={`flex ${
-                i === visible.length - 1 ? "snap-end" : "snap-start"
-              } ${variable ? "shrink-0" : "min-w-0"}`}
+              className={`flex snap-start ${variable ? "shrink-0" : "min-w-0"}`}
               initial={{ opacity: 0 }}
               animate={{
                 opacity: 1,

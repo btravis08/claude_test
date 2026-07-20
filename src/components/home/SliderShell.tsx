@@ -116,21 +116,45 @@ export function SliderShell({
     return slides[0]?.offsetWidth ?? el.clientWidth;
   };
 
-  /* arrows scroll to exact clamped card positions (never relative
-     nudges) so repeated taps can't strand the track mid-snap */
+  /* Arrows scroll to exact clamped card positions (never relative
+     nudges). iOS Safari's snap engine fights smooth programmatic
+     scrolls and can strand the track (even parked in overscroll), so
+     snapping is suspended for the flight and re-armed after a hard
+     settle on the exact target. */
+  const snapTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  /* the in-flight destination — rapid taps step from it, not from the
+     mid-animation scroll position, so each tap advances a full card */
+  const pending = useRef<number | null>(null);
   const slide = (dir: 1 | -1) => {
     const el = trackRef.current;
     if (!el) return;
     const step = stepWidth(el);
     if (step <= 0) return;
     const max = el.scrollWidth - el.clientWidth;
+    const base = pending.current ?? el.scrollLeft;
     /* few-px tolerance so a settled position counts as its own index */
     const idx =
-      dir > 0
-        ? Math.floor((el.scrollLeft + 4) / step)
-        : Math.ceil((el.scrollLeft - 4) / step);
+      dir > 0 ? Math.floor((base + 4) / step) : Math.ceil((base - 4) / step);
     const target = Math.min(Math.max((idx + dir) * step, 0), max);
+    pending.current = target;
+    el.style.scrollSnapType = "none";
     el.scrollTo({ left: target, behavior: "smooth" });
+    clearTimeout(snapTimer.current);
+    snapTimer.current = setTimeout(() => {
+      el.scrollTo({ left: target, behavior: "instant" });
+      el.style.scrollSnapType = "";
+      pending.current = null;
+      updateArrows();
+    }, 650);
+  };
+
+  /* a touch mid-flight cancels the pending settle (it would yank the
+     track out from under the finger) and re-arms snap for the swipe */
+  const onTouchStart = () => {
+    const el = trackRef.current;
+    clearTimeout(snapTimer.current);
+    pending.current = null;
+    if (el) el.style.scrollSnapType = "";
   };
 
   const applyFilter = (next: string | null) => {
@@ -258,6 +282,7 @@ export function SliderShell({
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
         onClickCapture={onClickCapture}
+        onTouchStart={onTouchStart}
         onDragStart={(e) => e.preventDefault()}
         className={`no-scrollbar w-full gap-px overflow-x-auto ${trackClassName} ${
           variable ? "flex" : `grid grid-flow-col ${cols}`

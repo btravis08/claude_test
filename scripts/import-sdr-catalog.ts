@@ -197,7 +197,9 @@ async function run() {
   let done = 0;
   for (const [name, colorways] of groups) {
     const slug = slugify(name);
-    const id = `sdr.${slug}`;
+    /* dash, not dot: dot-namespaced ids are excluded from the
+       published perspective the site queries with */
+    const id = `sdr-${slug}`;
     const primary = colorways[0];
     const price = colorways.map((c) => c.price).find((v) => v != null);
     const gender = /women/i.test(name + primary.url) ? "womens" : "mens";

@@ -55,7 +55,7 @@ async function run() {
     names
       .filter((n) => re.test(n))
       .slice(0, limit)
-      .map((n) => `sdr.${slugify(n)}`);
+      .map((n) => `sdr-${slugify(n)}`);
 
   /* borrow a member product's first image so collection cards render */
   const imageOf = async (productId: string | undefined) => {

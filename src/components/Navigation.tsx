@@ -70,6 +70,8 @@ export interface MenuItem {
   cards?: NavCard[];
   image?: string;
   imageTitle?: string;
+  /* the mobile sheet's ALL link — this item's own collection page */
+  allUrl?: string;
 }
 
 export interface NavData {
@@ -308,21 +310,59 @@ function MegaPanel({ item }: { item: MenuItem }) {
 
 /* ---------- mobile accordion sheet ---------- */
 
+/* nested column group inside a mobile section: the column title
+   expands to its links (the links carry the collection routes) */
+function MobileGroup({ column }: { column: MenuColumn }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className="label flex items-center justify-between py-2 text-ink"
+      >
+        {column.title.toUpperCase()}
+        <span className="text-ink-2">{open ? "[ - ]" : "[ + ]"}</span>
+      </button>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: [...MEDIA_EASE] }}
+            className="overflow-hidden"
+          >
+            <div className="flex flex-col gap-3 py-2 pl-4">
+              {column.links.map((link) => (
+                <SmartLink key={link.label} href={link.url} className="label text-ink-2">
+                  {link.label.toUpperCase()}
+                </SmartLink>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
+
 function MobileSection({ item }: { item: MenuItem }) {
   const [open, setOpen] = useState(false);
-  const [featuredOpen, setFeaturedOpen] = useState(false);
 
-  /* cards → their titles; one column → its links; several columns →
-     the first as a nested group, the rest as flat category links */
+  /* cards → their titles as flat links; one column → its links flat;
+     several columns → ALL (the item's collection page) plus every
+     column as an expandable group of real links */
   const columns = item.columns ?? [];
-  const featured = columns.length > 1 ? columns[0] : undefined;
+  const groups = columns.length > 1 ? columns : [];
   const flat: NavLink[] =
     item.layout === "cards"
       ? (item.cards ?? []).map((card) => ({ label: card.title, url: card.url }))
       : columns.length === 1
         ? columns[0].links
-        : [{ label: "All", url: "#" }, ...columns.slice(1).map((c) => ({ label: c.title, url: "#" }))];
-  const expandable = featured !== undefined || flat.length > 0;
+        : [];
+  const expandable = groups.length > 0 || flat.length > 0;
 
   return (
     <div className="border-t border-line">
@@ -345,38 +385,14 @@ function MobileSection({ item }: { item: MenuItem }) {
             className="overflow-hidden"
           >
             <div className="flex flex-col items-stretch gap-1 px-6 pb-6">
-              {featured && (
-                <>
-                  <button
-                    type="button"
-                    onClick={() => setFeaturedOpen((v) => !v)}
-                    aria-expanded={featuredOpen}
-                    className="label flex items-center justify-between py-2 text-ink"
-                  >
-                    {featured.title.toUpperCase()}
-                    <span className="text-ink-2">{featuredOpen ? "[ - ]" : "[ + ]"}</span>
-                  </button>
-                  <AnimatePresence initial={false}>
-                    {featuredOpen && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3, ease: [...MEDIA_EASE] }}
-                        className="overflow-hidden"
-                      >
-                        <div className="flex flex-col gap-3 py-2 pl-4">
-                          {featured.links.map((link) => (
-                            <SmartLink key={link.label} href={link.url} className="label text-ink-2">
-                              {link.label.toUpperCase()}
-                            </SmartLink>
-                          ))}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </>
+              {groups.length > 0 && item.allUrl && (
+                <SmartLink href={item.allUrl} className="label py-2 text-ink">
+                  ALL
+                </SmartLink>
               )}
+              {groups.map((column) => (
+                <MobileGroup key={column.title} column={column} />
+              ))}
               {flat.map((link) => (
                 <SmartLink key={link.label} href={link.url} className="label py-2 text-ink">
                   {link.label.toUpperCase()}

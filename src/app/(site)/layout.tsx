@@ -56,6 +56,10 @@ function toNavData(doc: NavigationDoc | null): NavData | undefined {
     /* image card: collection first, overrides win */
     image: img(item.image, 1100) ?? img(item.imageCollection?.image, 1100),
     imageTitle: item.imageTitle ?? item.imageCollection?.title,
+    /* the mobile sheet's ALL link — the item's collection page */
+    allUrl: item.imageCollection?.slug
+      ? `/collections/${item.imageCollection.slug}`
+      : undefined,
   }));
   return { items, company: (doc.companyLinks ?? []).map(toLink) };
 }

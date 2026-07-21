@@ -200,7 +200,7 @@ export const navigationQuery = groq`
       },
       products[]->{ _id, title, "thumb": images[0], "hoverImage": images[1] },
       cards[] { _key, title, image, url },
-      imageCollection->{ title, image },
+      imageCollection->{ title, image, "slug": slug.current },
       imageTitle, image
     },
     companyLinks[] { _key, label, url, collection->{ title, "slug": slug.current } }

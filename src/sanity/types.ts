@@ -351,7 +351,7 @@ export interface NavItemDoc {
   columns?: NavColumnDoc[];
   products?: Array<NavProductDoc | null>;
   cards?: NavCardDoc[];
-  imageCollection?: { title?: string; image?: SanityImageSource } | null;
+  imageCollection?: { title?: string; image?: SanityImageSource; slug?: string } | null;
   imageTitle?: string;
   image?: SanityImageSource;
 }

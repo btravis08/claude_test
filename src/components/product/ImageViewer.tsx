@@ -347,7 +347,7 @@ export function ImageViewer({
                     aria-label={`${title ?? "Product"} — image ${
                       loop ? ((i - 1 + n) % n) + 1 : i + 1
                     }`}
-                    className="absolute inset-x-[8%] inset-y-[16%] bg-contain bg-center bg-no-repeat"
+                    className="absolute inset-0 bg-[length:100%_auto] bg-center bg-no-repeat md:inset-x-[8%] md:inset-y-[16%] md:bg-contain"
                     style={{
                       ...(fly ? flyImg.style : undefined),
                       backgroundImage: `url(${src})`,
@@ -374,7 +374,7 @@ export function ImageViewer({
                 <div
                   role="img"
                   aria-label={`${title ?? "Product"} — image ${index + 1}, ${zoom}%`}
-                  className="absolute inset-x-[8%] inset-y-[16%] bg-contain bg-center bg-no-repeat"
+                  className="absolute inset-0 bg-[length:100%_auto] bg-center bg-no-repeat md:inset-x-[8%] md:inset-y-[16%] md:bg-contain"
                   style={{ backgroundImage: `url(${images[index]})` }}
                 />
               </div>
@@ -386,7 +386,7 @@ export function ImageViewer({
               <div className="absolute inset-0 overflow-hidden">
                 <motion.div aria-hidden className="absolute inset-0" style={{ scale: zscale }}>
                   <div
-                    className="absolute inset-x-[8%] inset-y-[16%] bg-contain bg-center bg-no-repeat"
+                    className="absolute inset-0 bg-[length:100%_auto] bg-center bg-no-repeat md:inset-x-[8%] md:inset-y-[16%] md:bg-contain"
                     style={{ backgroundImage: `url(${images[index]})` }}
                   />
                 </motion.div>

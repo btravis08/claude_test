@@ -163,6 +163,49 @@ async function run() {
     "on-course",
     idsMatching(/\btees\b|marker|divot/i),
   );
+  await manualCol(
+    "collection-training",
+    "Training",
+    "training",
+    idsMatching(/training/i),
+  );
+
+  /* ---------- chips on every collection page ----------
+     Each top-level category page gets its sibling categories as
+     chips; Accessories gets its sub-ranges. (Shop All and the gender
+     pages already carry theirs.) */
+  const CATEGORY_IDS = [
+    "polos",
+    "tshirts",
+    "sweaters",
+    "hoodies",
+    "outerwear",
+    "pants",
+    "shorts",
+    "footwear",
+    "headwear",
+    "accessories",
+  ];
+  for (const tag of CATEGORY_IDS) {
+    const siblings = CATEGORY_IDS.filter((t) => t !== tag);
+    await client
+      .patch(`collection-${tag}`)
+      .set({
+        subcategories:
+          tag === "accessories"
+            ? [
+                "collection-headcovers",
+                "collection-gloves",
+                "collection-bags",
+                "collection-on-course",
+                "collection-vessel",
+              ].map(refk)
+            : siblings.map((t) => refk(`collection-${t}`)),
+      })
+      .commit()
+      .catch(() => console.log(`- collection-${tag} not found, chips skipped`));
+  }
+  console.log(`✓ chips set on ${CATEGORY_IDS.length} category collections`);
 
   /* ---------- 2. Summer Picks → real products ---------- */
   const picks = [
@@ -211,6 +254,9 @@ async function run() {
     "sun day red x vessel": "collection-vessel",
     "mens footwear": "collection-mens-footwear",
     "womens footwear": "collection-womens-footwear",
+    "training gear": "collection-training",
+    "skirts": "g:shorts",
+    "socks": "collection-accessories",
   };
   const norm = (label: string) =>
     label.toLowerCase().replace(/['’]/g, "").replace(/\s+/g, " ").trim();

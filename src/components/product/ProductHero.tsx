@@ -434,7 +434,10 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
             <motion.div
               role="img"
               aria-label={`${product.title} — image ${i + 1}`}
-              className="absolute inset-x-[8%] inset-y-[22%] bg-contain bg-center bg-no-repeat"
+              /* mobile: width-bound full bleed — the image always spans
+                 edge to edge (height follows its aspect, centered);
+                 md+: the framed contain layout from the comp */
+              className="absolute inset-0 bg-[length:100%_auto] bg-center bg-no-repeat md:inset-x-[8%] md:inset-y-[22%] md:bg-contain"
               style={{ backgroundImage: `url(${src})` }}
               initial={{ opacity: 0, scale: 1.04 }}
               animate={

@@ -7,12 +7,13 @@ jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
-      - name: Fetch homepage and inspect product links
+      - name: Query Sanity for page documents
         run: |
-          curl -s https://sundayred.vercel.app/ -o home.html
-          echo "=== all product hrefs ==="
-          grep -o 'href="/products/[^"]*"' home.html | sort | uniq -c
-          echo "=== anchors without product hrefs (# links) near titles ==="
-          grep -o 'href="#"[^>]*' home.html | head -5
-          echo "=== Presidio card context ==="
-          grep -o '.\{300\}Presidio.\{100\}' home.html | head -4
+          echo "=== page docs ==="
+          curl -s 'https://alsdve2t.apicdn.sanity.io/v2026-07-01/data/query/production?query=*%5B_type%3D%3D%22page%22%5D%7B_id%2C%22slug%22%3Aslug.current%2C%22sections%22%3Acount(sections)%7D'
+          echo ""
+          echo "=== home page fetch exactly as the site does ==="
+          curl -s 'https://alsdve2t.apicdn.sanity.io/v2026-07-01/data/query/production?query=*%5B_type%3D%3D%22page%22%20%26%26%20slug.current%3D%3D%24slug%5D%5B0%5D%7B_id%2Ctitle%2C%22sections%22%3Acount(sections)%7D&%24slug=%22home%22'
+          echo ""
+          echo "=== drafts? (should 401/403 without token, fine) ==="
+          curl -s 'https://alsdve2t.apicdn.sanity.io/v2026-07-01/data/query/production?query=count(*%5B_id%20in%20path(%22drafts.**%22)%20%26%26%20_type%3D%3D%22page%22%5D)'

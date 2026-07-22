@@ -437,6 +437,9 @@ export function SliderShell({
         onPointerCancel={endDrag}
         onClickCapture={onClickCapture}
         onDragStart={(e) => e.preventDefault()}
+        /* media reveals inside the rail key off the rail's own
+           vertical arrival, not per-slide horizontal visibility */
+        data-reveal-scope
         className={`no-scrollbar w-full touch-pan-y gap-px overflow-x-auto ${trackClassName} ${
           variable ? "flex" : `grid grid-flow-col ${cols}`
         } ${dragging ? "cursor-grabbing select-none" : "cursor-grab"}`}

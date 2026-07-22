@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useInView, useScroll, useTransform } from "motion/react";
+import { motion, useScroll, useTransform } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
 import { sanitySrcSet } from "@/sanity/lib/image";
@@ -88,8 +88,29 @@ export function AnimatedMedia({
   /* state-driven (not whileInView props): mount animations get
      suppressed under the SPA transition's presence context, which
      froze reveal overlays at opaque — a state flip + animate prop
-     runs regardless */
-  const inView = useInView(ref, { once: true, amount: 0.2 });
+     runs regardless.
+     Inside a horizontal rail the slide itself is clipped by the
+     scroller (intersection is zero no matter the rootMargin), so the
+     reveal observes the nearest [data-reveal-scope] — the rail — and
+     fires on VERTICAL arrival: upcoming cards arrive already
+     revealed. */
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const target = el.closest("[data-reveal-scope]") ?? el;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.2 },
+    );
+    io.observe(target);
+    return () => io.disconnect();
+  }, []);
 
   return (
     /* imagery counts as dark-mode content for the fixed bars'

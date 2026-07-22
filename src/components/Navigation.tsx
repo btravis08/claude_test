@@ -585,7 +585,24 @@ export function Navigation({ data }: { data?: NavData | null }) {
      its neighbors stay ink */
   useEffect(() => {
     if (!transparent || !headerRef.current) return;
-    return startNavBackdropProbes(headerRef.current);
+    /* canvas point-sampling is startup-expensive — wait for idle so
+       it never competes with hydration/LCP */
+    let stop: (() => void) | undefined;
+    let cancel: () => void;
+    const start = () => {
+      if (headerRef.current) stop = startNavBackdropProbes(headerRef.current);
+    };
+    if (typeof window.requestIdleCallback === "function") {
+      const handle = window.requestIdleCallback(start);
+      cancel = () => window.cancelIdleCallback(handle);
+    } else {
+      const handle = window.setTimeout(start, 350);
+      cancel = () => window.clearTimeout(handle);
+    }
+    return () => {
+      cancel();
+      stop?.();
+    };
   }, [transparent, pathname]);
   const activeItem = active !== null ? nav.items[active] : null;
   const hasDropdown = (item: MenuItem) => item.layout !== "none";

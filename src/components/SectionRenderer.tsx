@@ -13,6 +13,7 @@ import {
   ThreeDViewer,
 } from "@/components/home/sections";
 import type { LookProductData } from "@/components/home/MediaBlock";
+import { LazyHydrate } from "@/components/LazyHydrate";
 import type { ProductCardData } from "@/components/home/ProductCard";
 import {
   basePrice,
@@ -384,15 +385,19 @@ export function SectionRenderer({ sections }: { sections: PageSection[] }) {
         const pt = section.paddingTop && section.paddingTop !== "none" ? PAD_TOP[section.paddingTop] : "";
         const pb = section.paddingBottom && section.paddingBottom !== "none" ? PAD_BOTTOM[section.paddingBottom] : "";
         /* below-fold sections defer layout/paint until they approach
-           the viewport; the first section renders eagerly (LCP) */
+           the viewport; the first section renders eagerly (LCP).
+           From the third section down, hydration is deferred too —
+           the SSR HTML stands in until the user scrolls near. */
         const cv = sectionIndex > 0 ? "cv-auto" : "";
+        const wrapped =
+          sectionIndex > 1 ? <LazyHydrate>{node}</LazyHydrate> : node;
         if (!pt && !pb)
           return cv ? (
             <div key={section._key} className={`w-full ${cv}`}>
-              {node}
+              {wrapped}
             </div>
           ) : (
-            node
+            wrapped
           );
         const shellMode =
           section.colorMode ??
@@ -407,7 +412,7 @@ export function SectionRenderer({ sections }: { sections: PageSection[] }) {
             data-mode={shellMode}
             className={`w-full bg-surface ${pt} ${pb} ${cv}`}
           >
-            {node}
+            {wrapped}
           </div>
         );
       })}

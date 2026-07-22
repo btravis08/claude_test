@@ -99,14 +99,17 @@ export function AnimatedMedia({
       >
         {inner}
       </motion.div>
-      {/* fade-out overlay in place of fading the image itself */}
+      {/* fade-out overlay in place of fading the image itself. Capped
+          at 0.9s regardless of the entrance: the scale settle can run
+          long, but visual completeness (Speed Index) shouldn't wait
+          on a slow reveal */}
       <motion.div
         aria-hidden
         className="pointer-events-none absolute inset-0 bg-surface-2"
         initial={{ opacity: 1 }}
         whileInView={{ opacity: 0 }}
         viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: entranceDuration, ease: [...MEDIA_EASE] }}
+        transition={{ duration: Math.min(entranceDuration, 0.9), ease: [...MEDIA_EASE] }}
       />
     </div>
   );

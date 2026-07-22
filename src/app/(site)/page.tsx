@@ -11,7 +11,7 @@ import {
 import { preload } from "react-dom";
 
 import { sanityFetch } from "@/sanity/lib/fetch";
-import { urlFor } from "@/sanity/lib/image";
+import { sanitySrcSet, urlFor } from "@/sanity/lib/image";
 import { pageBySlugQuery } from "@/sanity/lib/queries";
 import type { Page } from "@/sanity/types";
 
@@ -33,7 +33,15 @@ export default async function Home() {
   const firstImage = first && "image" in first ? first.image : undefined;
   if (firstImage) {
     try {
-      preload(urlFor(firstImage).width(2000).url(), { as: "image", fetchPriority: "high" });
+      const url = urlFor(firstImage).width(2000).url();
+      /* srcset mirrors the hero <img> so the browser preloads exactly
+         the candidate it will render — no double download */
+      preload(url, {
+        as: "image",
+        fetchPriority: "high",
+        imageSrcSet: sanitySrcSet(url),
+        imageSizes: "100vw",
+      });
     } catch {
       /* malformed image reference — nothing to preload */
     }

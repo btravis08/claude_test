@@ -66,6 +66,7 @@ function Media({
   videoUrl,
   lookProducts,
   entranceDuration,
+  priority = false,
 }: {
   aspect: string;
   image?: string;
@@ -75,6 +76,7 @@ function Media({
   hoverScale?: boolean;
   parallax?: boolean;
   entranceDuration?: number;
+  priority?: boolean;
 } & MediaBlockProps) {
   const autoplay = kind === "videoAutoplay" && videoUrl;
   return (
@@ -100,6 +102,7 @@ function Media({
             hoverScale={hoverScale}
             parallax={parallax}
             entranceDuration={entranceDuration}
+            priority={priority}
           />
         )
       )}
@@ -156,6 +159,7 @@ export function Hero({
           kind={kind}
           videoUrl={videoUrl}
           entranceDuration={1.8}
+          priority
         />
         <CampaignOverlay
           left={eyebrow}

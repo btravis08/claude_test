@@ -132,7 +132,8 @@ export function ProductCard({ product }: { product: ProductCardData }) {
         transition={{ duration: 0.9, ease: [...MEDIA_EASE] }}
       >
         {/* padded product shot; the outgoing colorway stays visible
-            while the new one fades in, so the swap never goes blank */}
+            while the new one fades in, so the swap never goes blank.
+            A real <img> so off-screen cards lazy-load natively. */}
         <AnimatePresence initial={false}>
           <motion.div
             key={selected}
@@ -140,16 +141,26 @@ export function ProductCard({ product }: { product: ProductCardData }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            role="img"
-            aria-label={product.title}
-            className="absolute inset-x-[17.77%] top-1/2 aspect-square -translate-y-1/2 bg-contain bg-center bg-no-repeat"
-            style={{ backgroundImage: `url(${wellImage})` }}
-          />
+            className="absolute inset-x-[17.77%] top-1/2 aspect-square -translate-y-1/2"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={wellImage}
+              alt={product.title}
+              loading="lazy"
+              decoding="async"
+              draggable={false}
+              className="absolute inset-0 size-full object-contain"
+            />
+          </motion.div>
         </AnimatePresence>
         {/* full-bleed hover image, settles 1.05x → 1x, shown only while
             the pointer is over the well itself; the keyed layers
-            crossfade when a swatch picks another colorway */}
-        {hoverImage && (
+            crossfade when a swatch picks another colorway. Touch
+            devices never hover, so they never mount (or download) it;
+            on desktop it mounts on the first pointer entry, which also
+            warms every colorway via the preload effect above. */}
+        {hoverImage && !touch && (cardHover || wellHover || preloaded.current) && (
           <div
             aria-hidden
             className="pointer-events-none absolute inset-0 scale-105 opacity-0 transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/well:scale-100 group-hover/well:opacity-100"
@@ -157,13 +168,21 @@ export function ProductCard({ product }: { product: ProductCardData }) {
             <AnimatePresence initial={false}>
               <motion.div
                 key={selected}
-                className="absolute inset-0 bg-cover bg-center"
-                style={{ backgroundImage: `url(${hoverImage})` }}
+                className="absolute inset-0"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.25 }}
-              />
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={hoverImage}
+                  alt=""
+                  decoding="async"
+                  draggable={false}
+                  className="absolute inset-0 size-full object-cover"
+                />
+              </motion.div>
             </AnimatePresence>
           </div>
         )}

@@ -3,6 +3,8 @@
 import { motion, useScroll, useTransform } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
+import { sanitySrcSet } from "@/sanity/lib/image";
+
 /*
   Standard image treatment: when the image enters the viewport it fades
   in while settling from 1.05x to 1x. When the image sits inside a
@@ -29,6 +31,8 @@ export function AnimatedMedia({
   hoverScale = false,
   parallax = false,
   entranceDuration = 0.9,
+  priority = false,
+  sizes = "100vw",
 }: {
   image: string;
   position?: string;
@@ -36,6 +40,9 @@ export function AnimatedMedia({
   parallax?: boolean;
   /* seconds for the fade/settle entrance (the hero runs it slower) */
   entranceDuration?: number;
+  /* the LCP instance (home hero): eager high-priority fetch */
+  priority?: boolean;
+  sizes?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [touch, setTouch] = useState(false);
@@ -53,15 +60,28 @@ export function AnimatedMedia({
   });
   const y = useTransform(scrollYProgress, [0, 1], ["-6.5%", "6.5%"]);
 
+  /* a real <img>: native lazy-loading below the fold, responsive
+     srcset on Sanity URLs, and it paints at full opacity from the
+     first frame (LCP-honest) — the fade-in illusion comes from the
+     surface-colored overlay below fading away */
   const inner = (
-    <div
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={image}
+      srcSet={sanitySrcSet(image)}
+      sizes={sizes}
+      alt=""
       aria-hidden
-      className={`absolute inset-0 bg-cover ${
+      loading={priority ? "eager" : "lazy"}
+      fetchPriority={priority ? "high" : undefined}
+      decoding="async"
+      draggable={false}
+      className={`absolute inset-0 size-full object-cover ${
         hoverScale
           ? "transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
           : ""
       }`}
-      style={{ backgroundImage: `url(${image})`, backgroundPosition: position }}
+      style={{ objectPosition: position }}
     />
   );
 
@@ -72,13 +92,22 @@ export function AnimatedMedia({
       <motion.div
         className={`absolute inset-0 ${parallax && touch ? "sdr-parallax" : ""}`}
         style={scrub ? { y } : undefined}
-        initial={{ opacity: 0, scale: scrub ? 1.2 : 1.05 }}
-        whileInView={{ opacity: 1, scale: scrub ? 1.15 : 1 }}
+        initial={{ scale: scrub ? 1.2 : 1.05 }}
+        whileInView={{ scale: scrub ? 1.15 : 1 }}
         viewport={{ once: true, amount: 0.2 }}
         transition={{ duration: entranceDuration, ease: [...MEDIA_EASE] }}
       >
         {inner}
       </motion.div>
+      {/* fade-out overlay in place of fading the image itself */}
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-surface-2"
+        initial={{ opacity: 1 }}
+        whileInView={{ opacity: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: entranceDuration, ease: [...MEDIA_EASE] }}
+      />
     </div>
   );
 }

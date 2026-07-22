@@ -190,7 +190,9 @@ export default async function ProductPage({
         price: card?.price,
         compareAtPrice: card?.compareAtPrice,
         images: (product.images ?? [])
-          .map((image) => img(image))
+          /* 1200w covers a 428px phone at 3x DPR; the old 1600 default
+             shipped ~75% more pixels than any viewport rendered */
+          .map((image) => img(image, 1200))
           .filter((src): src is string => Boolean(src)),
         variants: card?.variants,
         sizes: product.options

@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, m } from "motion/react";
 import type { Variants } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
@@ -54,7 +54,7 @@ export function ShopTheLook({ products }: { products: LookProductData[] }) {
         {open && (
           <div className="flex w-80 flex-col gap-1.5">
             {products.map((product, i) => (
-              <motion.a
+              <m.a
                 key={product._key ?? i}
                 href="#"
                 custom={i}
@@ -87,7 +87,7 @@ export function ShopTheLook({ products }: { products: LookProductData[] }) {
                   </span>
                 </span>
                 <ChevronRight size={14} className="shrink-0 text-[#161716]" />
-              </motion.a>
+              </m.a>
             ))}
           </div>
         )}
@@ -131,7 +131,7 @@ export function VideoPlayerBlock({ src }: { src: string }) {
       </div>
       <AnimatePresence>
         {open && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -156,7 +156,7 @@ export function VideoPlayerBlock({ src }: { src: string }) {
               onClick={(e) => e.stopPropagation()}
               className="max-h-full max-w-full rounded-xs"
             />
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </>
@@ -196,7 +196,7 @@ export function AutoplayVideo({
 
   return (
     <>
-      <motion.div
+      <m.div
         className="absolute inset-0"
         initial={{ opacity: 0, scale: 1.05 }}
         whileInView={{ opacity: 1, scale: 1 }}
@@ -214,7 +214,7 @@ export function AutoplayVideo({
           preload="metadata"
           className="absolute inset-0 size-full object-cover"
         />
-      </motion.div>
+      </m.div>
       <div className="absolute inset-0 flex items-end justify-end p-4 md:p-6">
         <button
           type="button"

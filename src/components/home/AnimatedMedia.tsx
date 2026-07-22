@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "motion/react";
+import { m, useScroll, useTransform } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
 import { sanitySrcSet } from "@/sanity/lib/image";
@@ -23,7 +23,10 @@ import { sanitySrcSet } from "@/sanity/lib/image";
   compositor-driven via animation-timeline: view()), falling back to
   the static entrance where unsupported.
 */
-export const MEDIA_EASE = [0.22, 1, 0.36, 1] as const;
+import { EASE_OUT } from "@/lib/motion";
+
+/* re-exported house ease — kept for the existing import graph */
+export const MEDIA_EASE = EASE_OUT;
 
 export function AnimatedMedia({
   image,
@@ -116,7 +119,7 @@ export function AnimatedMedia({
     /* imagery counts as dark-mode content for the fixed bars'
        point-sampling, wherever this renders */
     <div ref={ref} data-mode="dark" className="absolute inset-0 overflow-hidden">
-      <motion.div
+      <m.div
         className={`absolute inset-0 ${parallax && touch ? "sdr-parallax" : ""}`}
         style={scrub ? { y } : undefined}
         initial={false}
@@ -124,12 +127,12 @@ export function AnimatedMedia({
         transition={{ duration: entranceDuration, ease: [...MEDIA_EASE] }}
       >
         {inner}
-      </motion.div>
+      </m.div>
       {/* fade-out overlay in place of fading the image itself. Capped
           at 0.9s regardless of the entrance: the scale settle can run
           long, but visual completeness (Speed Index) shouldn't wait
           on a slow reveal */}
-      <motion.div
+      <m.div
         aria-hidden
         className="pointer-events-none absolute inset-0 bg-surface-2"
         initial={false}

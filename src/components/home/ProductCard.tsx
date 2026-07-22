@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, m } from "motion/react";
 import type { Variants } from "motion/react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
 
 /* product links navigate client-side so the chrome stays put */
-const MotionLink = motion.create(Link);
+const MotionLink = m.create(Link);
 
 /* Swatches stagger-fade in from the right, right to left, when the
    pointer is over the card but outside the image well */
@@ -110,7 +110,7 @@ export function ProductCard({ product }: { product: ProductCardData }) {
       : product.colorCount;
 
   const internal = Boolean(product.href?.startsWith("/"));
-  const CardShell = (internal ? MotionLink : motion.a) as typeof motion.a;
+  const CardShell = (internal ? MotionLink : m.a) as typeof m.a;
 
   return (
     <CardShell
@@ -122,7 +122,7 @@ export function ProductCard({ product }: { product: ProductCardData }) {
       onMouseLeave={() => setCardHover(false)}
       className="flex w-full flex-col gap-[1.125rem] overflow-hidden bg-surface pb-16"
     >
-      <motion.div
+      <m.div
         onMouseEnter={() => setWellHover(true)}
         onMouseLeave={() => setWellHover(false)}
         className="group/well relative flex aspect-[236/301] w-full flex-col justify-end overflow-hidden rounded-xs bg-surface-2 p-4 md:p-6"
@@ -135,7 +135,7 @@ export function ProductCard({ product }: { product: ProductCardData }) {
             while the new one fades in, so the swap never goes blank.
             A real <img> so off-screen cards lazy-load natively. */}
         <AnimatePresence initial={false}>
-          <motion.div
+          <m.div
             key={selected}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -152,7 +152,7 @@ export function ProductCard({ product }: { product: ProductCardData }) {
               draggable={false}
               className="absolute inset-0 size-full object-contain"
             />
-          </motion.div>
+          </m.div>
         </AnimatePresence>
         {/* full-bleed hover image, settles 1.05x → 1x, shown only while
             the pointer is over the well itself; the keyed layers
@@ -166,7 +166,7 @@ export function ProductCard({ product }: { product: ProductCardData }) {
             className="pointer-events-none absolute inset-0 scale-105 opacity-0 transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/well:scale-100 group-hover/well:opacity-100"
           >
             <AnimatePresence initial={false}>
-              <motion.div
+              <m.div
                 key={selected}
                 className="absolute inset-0"
                 initial={{ opacity: 0 }}
@@ -182,11 +182,11 @@ export function ProductCard({ product }: { product: ProductCardData }) {
                   draggable={false}
                   className="absolute inset-0 size-full object-cover"
                 />
-              </motion.div>
+              </m.div>
             </AnimatePresence>
           </div>
         )}
-      </motion.div>
+      </m.div>
       {/* fixed-height text zone: it always reserves room for a
           two-line title, so a wrapping name grows inside it without
           changing the card height — the image grid never shifts */}
@@ -204,9 +204,9 @@ export function ProductCard({ product }: { product: ProductCardData }) {
           <p>{colorLabel}</p>
           <span className="relative flex items-center justify-end">
             {extraLabel && (
-              <motion.p variants={variants.length > 1 ? extraLabelVariants : undefined}>
+              <m.p variants={variants.length > 1 ? extraLabelVariants : undefined}>
                 {extraLabel}
-              </motion.p>
+              </m.p>
             )}
             {variants.length > 1 && (
               <span
@@ -215,7 +215,7 @@ export function ProductCard({ product }: { product: ProductCardData }) {
                 }`}
               >
                 {variants.map((variant, i) => (
-                  <motion.button
+                  <m.button
                     key={i}
                     type="button"
                     aria-label={variant.name ?? `Variant ${i + 1}`}

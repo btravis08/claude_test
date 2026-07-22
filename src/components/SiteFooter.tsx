@@ -1,12 +1,13 @@
 "use client";
 
-import { motion } from "motion/react";
+import { m } from "motion/react";
 import { useLayoutEffect, useRef, useState } from "react";
 
 import { useFooterTagline } from "@/components/FooterTagline";
 import { Logo } from "@/components/Logo";
 import { NavTextLink } from "@/components/NavTextLink";
 import { Plus } from "@/components/icons";
+import { EASE_OUT } from "@/lib/motion";
 
 const columns: { heading: string; links: string[] }[] = [
   {
@@ -45,10 +46,10 @@ function FooterAccordion({ heading, links }: { heading: string; links: string[] 
           }`}
         />
       </button>
-      <motion.div
+      <m.div
         initial={false}
         animate={{ height: open ? "auto" : 0 }}
-        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.4, ease: [...EASE_OUT] }}
         className="overflow-hidden"
       >
         <div className="flex flex-col items-start gap-3 px-4 pb-6">
@@ -56,7 +57,7 @@ function FooterAccordion({ heading, links }: { heading: string; links: string[] 
             <NavTextLink key={link} label={link.toUpperCase()} />
           ))}
         </div>
-      </motion.div>
+      </m.div>
     </div>
   );
 }

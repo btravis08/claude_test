@@ -1,9 +1,10 @@
 "use client";
 
-import { animate, motion, useMotionValue, useTransform } from "motion/react";
+import { animate, m, useMotionValue, useTransform } from "motion/react";
 import { useLayoutEffect, useRef } from "react";
 
 import type { HeroVariantData } from "@/components/product/ProductHero";
+import { EASE_DRAMATIC } from "@/lib/motion";
 
 /*
   Colorway swatch tiles with a travelling selection underline — the
@@ -16,7 +17,7 @@ import type { HeroVariantData } from "@/components/product/ProductHero";
 */
 
 const DUR = 0.6;
-const EASE: [number, number, number, number] = [0.85, 0, 0.15, 1];
+const EASE: [number, number, number, number] = [...EASE_DRAMATIC];
 
 export function SwatchRail({
   variants,
@@ -104,7 +105,7 @@ export function SwatchRail({
         </button>
       ))}
       {/* the travelling underline */}
-      <motion.span
+      <m.span
         aria-hidden
         className="absolute bottom-0 h-0.5 bg-ink"
         style={{ left: edgeL, width: barWidth }}

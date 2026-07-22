@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, m } from "motion/react";
 import { useEffect, useState } from "react";
 
 import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
@@ -198,7 +198,7 @@ function CartView() {
               : "You’ve unlocked free shipping"}
           </p>
           <div className="h-[5px] w-full bg-surface-2">
-            <motion.div
+            <m.div
               className="h-full bg-ink"
               initial={false}
               animate={{
@@ -377,7 +377,7 @@ export function CartFlyout() {
     <AnimatePresence>
       {isOpen && (
         <>
-          <motion.button
+          <m.button
             key="cart-scrim"
             type="button"
             aria-label="Close cart"
@@ -389,7 +389,7 @@ export function CartFlyout() {
             data-nav-overlay
             className="fixed inset-0 z-[80] cursor-default bg-[rgba(29,29,29,0.5)] backdrop-blur-md"
           />
-          <motion.aside
+          <m.aside
             key="cart-panel"
             data-mode="light"
             data-nav-overlay
@@ -404,7 +404,7 @@ export function CartFlyout() {
           >
             <PanelHeader title={title} onClose={close} />
             <AnimatePresence mode="wait" initial={false}>
-              <motion.div
+              <m.div
                 key={showQuickAdd ? "view-quickadd" : items.length > 0 ? "view-cart" : "view-empty"}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -413,9 +413,9 @@ export function CartFlyout() {
                 className="flex min-h-0 flex-1 flex-col"
               >
                 {body}
-              </motion.div>
+              </m.div>
             </AnimatePresence>
-          </motion.aside>
+          </m.aside>
         </>
       )}
     </AnimatePresence>

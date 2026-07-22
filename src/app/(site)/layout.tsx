@@ -5,6 +5,7 @@ import type { MenuItem, NavData, NavLink } from "@/components/Navigation";
 import { FooterTaglineProvider } from "@/components/FooterTagline";
 import { PageTransition } from "@/components/PageTransition";
 import { LegacyBand, SiteFooter } from "@/components/SiteFooter";
+import { MotionProvider } from "@/components/MotionProvider";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { urlFor } from "@/sanity/lib/image";
@@ -73,6 +74,7 @@ export default async function SiteLayout({
   const navDoc = await sanityFetch<NavigationDoc | null>(navigationQuery, {}, null);
 
   return (
+    <MotionProvider>
     <SmoothScroll>
       <CartProvider>
       <FooterTaglineProvider>
@@ -100,5 +102,6 @@ export default async function SiteLayout({
       </FooterTaglineProvider>
       </CartProvider>
     </SmoothScroll>
+    </MotionProvider>
   );
 }

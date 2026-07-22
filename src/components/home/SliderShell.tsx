@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, m } from "motion/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { ArrowButton, ArrowSwap } from "@/components/home/ArrowHover";
@@ -446,7 +446,7 @@ export function SliderShell({
       >
         <AnimatePresence initial={false} onExitComplete={updateArrows}>
           {visible.map((item) => (
-            <motion.div
+            <m.div
               key={item.key}
               data-slide
               className={`flex ${variable ? "shrink-0" : "min-w-0"}`}
@@ -468,7 +468,7 @@ export function SliderShell({
               }}
             >
               {item.card}
-            </motion.div>
+            </m.div>
           ))}
         </AnimatePresence>
       </div>
@@ -477,7 +477,7 @@ export function SliderShell({
           background of its own. */}
       {showProgress && scrollable && (
         <div className="relative z-10 -mt-0.5 h-0.5 w-full">
-          <motion.div
+          <m.div
             className="h-full bg-ink"
             initial={false}
             animate={{ width: `${Math.min(progress, 1) * 100}%` }}

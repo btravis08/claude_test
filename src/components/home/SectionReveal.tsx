@@ -1,7 +1,8 @@
 "use client";
 
 import { createContext, useContext, useRef } from "react";
-import { motion, useInView } from "motion/react";
+import { m, useInView } from "motion/react";
+import { EASE_OUT } from "@/lib/motion";
 
 /*
   Generic section animation wrapper: the wrapper watches its own
@@ -20,7 +21,7 @@ import { motion, useInView } from "motion/react";
 const RevealContext = createContext(false);
 export const useSectionRevealed = () => useContext(RevealContext);
 
-const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
+const EASE: [number, number, number, number] = [...EASE_OUT];
 
 export function SectionReveal({
   className,
@@ -49,14 +50,14 @@ export function RevealText({
 }) {
   const on = useSectionRevealed();
   return (
-    <motion.div
+    <m.div
       className={className}
       initial={{ clipPath: "inset(0 0 100% 0)" }}
       animate={{ clipPath: on ? "inset(0 0 0% 0)" : "inset(0 0 100% 0)" }}
       transition={{ duration: 1.2, delay, ease: EASE }}
     >
       {children}
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -69,7 +70,7 @@ export function RevealLine({
 }) {
   const on = useSectionRevealed();
   return (
-    <motion.div
+    <m.div
       aria-hidden
       className={`origin-left ${className ?? ""}`}
       initial={{ scaleX: 0 }}

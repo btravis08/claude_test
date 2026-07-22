@@ -1,9 +1,10 @@
 "use client";
 
-import { animate, motion, useMotionValue } from "motion/react";
+import { animate, m, useMotionValue } from "motion/react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { ArrowLeft, ArrowRight, Close, Minus, Plus } from "@/components/icons";
+import { EASE_DRAMATIC, EASE_OUT } from "@/lib/motion";
 
 /* a screen rect captured on the page at open time */
 export interface SourceBox {
@@ -13,7 +14,7 @@ export interface SourceBox {
   height: number;
 }
 
-const FLY = { duration: 0.6, ease: [0.85, 0, 0.15, 1] as const };
+const FLY = { duration: 0.6, ease: [...EASE_DRAMATIC] as const };
 
 /* FLIP: start the element at a captured on-page rect (offset +
    scale from its natural layout position) and settle it into place.
@@ -145,7 +146,7 @@ export function ImageViewer({
   const rootOp = useMotionValue(1);
   const fadeOut = (duration: number) => {
     onFadeStart?.();
-    animate(rootOp, 0, { duration, ease: [0.22, 1, 0.36, 1] }).then(onClose);
+    animate(rootOp, 0, { duration, ease: [...EASE_OUT] }).then(onClose);
   };
   const requestClose = () => {
     if (closingRef.current) return;
@@ -290,7 +291,7 @@ export function ImageViewer({
     zoomTarget.current = next;
     if (next > 100) setPanning(true);
     setAnimating(true);
-    animate(zscale, next / 100, { duration: 0.5, ease: [0.22, 1, 0.36, 1] }).then(
+    animate(zscale, next / 100, { duration: 0.5, ease: [...EASE_OUT] }).then(
       () => {
         if (zoomTarget.current !== next) return; // superseded mid-flight
         setAnimating(false);
@@ -302,7 +303,7 @@ export function ImageViewer({
   const pad = (v: number) => String(v).padStart(2, "0");
 
   return (
-    <motion.div
+    <m.div
       data-mode="light"
       data-nav-overlay
       style={{ opacity: rootOp }}
@@ -312,7 +313,7 @@ export function ImageViewer({
       aria-label={`${title ?? "Product"} images`}
     >
       {/* counter + close */}
-      <motion.div
+      <m.div
         style={{ opacity: chromeOp }}
         className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-center justify-between p-4 md:p-6"
       >
@@ -327,7 +328,7 @@ export function ImageViewer({
         >
           <Close />
         </button>
-      </motion.div>
+      </m.div>
 
       {/* imagery */}
       <div className="relative min-h-0 flex-1">
@@ -341,7 +342,7 @@ export function ImageViewer({
               const fly = i === initialSlot.current;
               return (
                 <div key={i} className="relative h-full snap-start">
-                  <motion.div
+                  <m.div
                     ref={fly ? flyImg.ref : undefined}
                     role="img"
                     aria-label={`${title ?? "Product"} — image ${
@@ -384,12 +385,12 @@ export function ImageViewer({
                 phones where per-frame layout is not */}
             {animating && (
               <div className="absolute inset-0 overflow-hidden">
-                <motion.div aria-hidden className="absolute inset-0" style={{ scale: zscale }}>
+                <m.div aria-hidden className="absolute inset-0" style={{ scale: zscale }}>
                   <div
                     className="absolute inset-0 bg-[length:100%_auto] bg-center bg-no-repeat md:inset-x-[8%] md:inset-y-[16%] md:bg-contain"
                     style={{ backgroundImage: `url(${images[index]})` }}
                   />
-                </motion.div>
+                </m.div>
               </div>
             )}
           </>
@@ -401,7 +402,7 @@ export function ImageViewer({
           arrows slide down into the corners, the bottom bar shrinks
           into the zoom pill */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex items-center justify-between p-4 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] md:p-6">
-        <motion.div ref={flyLeft.ref} style={flyLeft.style}>
+        <m.div ref={flyLeft.ref} style={flyLeft.style}>
           <button
             type="button"
             aria-label="Previous image"
@@ -410,13 +411,13 @@ export function ImageViewer({
           >
             <ArrowLeft />
           </button>
-        </motion.div>
-        <motion.div
+        </m.div>
+        <m.div
           ref={flyPill.ref}
           style={flyPill.style}
           className="pointer-events-auto flex h-[2.875rem] items-center gap-1 rounded-xs bg-surface-2 px-2"
         >
-          <motion.div style={{ opacity: pillContent }} className="flex items-center gap-1">
+          <m.div style={{ opacity: pillContent }} className="flex items-center gap-1">
             <button
               type="button"
               aria-label="Zoom out"
@@ -438,9 +439,9 @@ export function ImageViewer({
             >
               <Plus />
             </button>
-          </motion.div>
-        </motion.div>
-        <motion.div ref={flyRight.ref} style={flyRight.style}>
+          </m.div>
+        </m.div>
+        <m.div ref={flyRight.ref} style={flyRight.style}>
           <button
             type="button"
             aria-label="Next image"
@@ -449,21 +450,21 @@ export function ImageViewer({
           >
             <ArrowRight />
           </button>
-        </motion.div>
+        </m.div>
       </div>
 
       {/* the hero's eased slide indicator along the very bottom */}
-      <motion.div
+      <m.div
         style={{ opacity: chromeOp }}
         className="absolute inset-x-0 bottom-0 z-10 h-0.5"
       >
-        <motion.div
+        <m.div
           className="h-full bg-ink"
           initial={false}
           animate={{ width: `${Math.min(progress, 1) * 100}%` }}
           transition={{ duration: 0.5, ease: "easeOut" }}
         />
-      </motion.div>
-    </motion.div>
+      </m.div>
+    </m.div>
   );
 }

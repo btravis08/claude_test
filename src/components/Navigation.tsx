@@ -3,7 +3,7 @@
 import {
   AnimatePresence,
   animate,
-  motion,
+  m,
   useMotionValue,
   useTransform,
 } from "motion/react";
@@ -20,6 +20,7 @@ import { SmartLink } from "@/components/SmartLink";
 import { startNavBackdropProbes } from "@/components/navBackdrop";
 import { ArrowUpRight, SearchMd } from "@/components/icons";
 import { MenuX } from "@/components/MenuX";
+import { EASE_DRAMATIC, EASE_OUT } from "@/lib/motion";
 
 /*
   Site navigation. Content comes from the Sanity "navigation" singleton
@@ -180,7 +181,7 @@ function ColumnsPanel({ item }: { item: MenuItem }) {
       <div className="grid flex-1 grid-cols-2 gap-px lg:grid-cols-4">
         {(item.columns ?? []).map((column, i) => (
           <div key={i} className="bg-surface p-6 pb-16">
-            <motion.div
+            <m.div
               key={`${item.title}-${column.title}`}
               {...contentFade}
               className="flex flex-col items-start gap-8"
@@ -191,7 +192,7 @@ function ColumnsPanel({ item }: { item: MenuItem }) {
                   <NavButton key={link.label} label={link.label.toUpperCase()} href={link.url} />
                 ))}
               </div>
-            </motion.div>
+            </m.div>
           </div>
         ))}
       </div>
@@ -199,7 +200,7 @@ function ColumnsPanel({ item }: { item: MenuItem }) {
         <div className="relative hidden aspect-[5/6] w-1/3 shrink-0 overflow-hidden bg-surface lg:block">
           {/* image card, hover-identical to a 50/50 panel: image
               scales, the arrow swaps */}
-          <motion.div key={item.title} {...contentFade} className="absolute inset-0">
+          <m.div key={item.title} {...contentFade} className="absolute inset-0">
             <ArrowLink
               href="#"
               aria-label={item.imageTitle}
@@ -220,7 +221,7 @@ function ColumnsPanel({ item }: { item: MenuItem }) {
                 </span>
               </div>
             </ArrowLink>
-          </motion.div>
+          </m.div>
         </div>
       )}
     </div>
@@ -232,7 +233,7 @@ function ColumnsPanel({ item }: { item: MenuItem }) {
 function ProductsPanel({ item }: { item: MenuItem }) {
   const column = item.columns?.[0];
   return (
-    <motion.div
+    <m.div
       key={item.title}
       {...contentFade}
       className="flex w-full items-stretch gap-px border-b border-line bg-line"
@@ -273,7 +274,7 @@ function ProductsPanel({ item }: { item: MenuItem }) {
           </div>
         ))}
       </div>
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -281,7 +282,7 @@ function ProductsPanel({ item }: { item: MenuItem }) {
 
 function CardsPanel({ item }: { item: MenuItem }) {
   return (
-    <motion.div
+    <m.div
       key={item.title}
       {...contentFade}
       className="grid w-full grid-cols-3 gap-px border-b border-line bg-line"
@@ -298,7 +299,7 @@ function CardsPanel({ item }: { item: MenuItem }) {
           <p className="px-6 pt-6 font-display text-title-md text-ink">{card.title}</p>
         </SmartLink>
       ))}
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -327,7 +328,7 @@ function MobileGroup({ column }: { column: MenuColumn }) {
       </button>
       <AnimatePresence initial={false}>
         {open && (
-          <motion.div
+          <m.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
@@ -341,7 +342,7 @@ function MobileGroup({ column }: { column: MenuColumn }) {
                 </SmartLink>
               ))}
             </div>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </>
@@ -377,7 +378,7 @@ function MobileSection({ item }: { item: MenuItem }) {
       </button>
       <AnimatePresence initial={false}>
         {open && expandable && (
-          <motion.div
+          <m.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
@@ -399,7 +400,7 @@ function MobileSection({ item }: { item: MenuItem }) {
                 </SmartLink>
               ))}
             </div>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </div>
@@ -449,14 +450,14 @@ export function Navigation({ data }: { data?: NavData | null }) {
     const el = mobileBarRef.current;
     if (!el || el.offsetWidth === 0) return;
     barClip.jump(Math.max(0, el.offsetWidth - 48));
-    animate(barClip, 0, { duration: 0.5, ease: [0.85, 0, 0.15, 1] });
+    animate(barClip, 0, { duration: 0.5, ease: [...EASE_DRAMATIC] });
     /* rightmost first (nearest the X), sweeping left */
     [bagOp, accountOp, searchOp].forEach((mv, i) => {
       mv.jump(0);
       animate(mv, 1, {
         duration: 0.35,
         delay: 0.18 + i * 0.09,
-        ease: [0.22, 1, 0.36, 1],
+        ease: [...EASE_OUT],
       });
     });
   }, [mobileOpen, hasFullHero, isHome, barClip, searchOp, accountOp, bagOp]);
@@ -613,7 +614,7 @@ export function Navigation({ data }: { data?: NavData | null }) {
 
   return (
     <>
-      <motion.header
+      <m.header
         data-mode={transparent && isHome ? "dark" : "light"}
         data-nav-root
         initial={false}
@@ -677,7 +678,7 @@ export function Navigation({ data }: { data?: NavData | null }) {
         {/* meganav: slides open under the bar, Moncler-style */}
         <AnimatePresence onExitComplete={() => setPanelVisible(false)}>
           {activeItem && hasDropdown(activeItem) && (
-            <motion.div
+            <m.div
               key="meganav"
               initial={{ height: 0 }}
               animate={{ height: "auto" }}
@@ -686,16 +687,16 @@ export function Navigation({ data }: { data?: NavData | null }) {
               className="hidden max-h-[calc(100vh-3.75rem)] overflow-hidden md:block"
             >
               <MegaPanel item={activeItem} />
-            </motion.div>
+            </m.div>
           )}
         </AnimatePresence>
-      </motion.header>
+      </m.header>
 
       {/* 30% scrim over the page while the meganav is open — fades in
           place rather than sliding with the panel */}
       <AnimatePresence>
         {activeItem && hasDropdown(activeItem) && (
-          <motion.div
+          <m.div
             key="meganav-scrim"
             aria-hidden
             initial={{ opacity: 0 }}
@@ -713,7 +714,7 @@ export function Navigation({ data }: { data?: NavData | null }) {
       {/* mobile sheet */}
       <AnimatePresence>
         {mobileOpen && (
-          <motion.div
+          <m.div
             data-mode="light"
             data-nav-overlay
             /* rises from the bottom like every other mobile modal */
@@ -743,7 +744,7 @@ export function Navigation({ data }: { data?: NavData | null }) {
                 </SmartLink>
               ))}
             </div>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
 
@@ -761,27 +762,27 @@ export function Navigation({ data }: { data?: NavData | null }) {
             runs its own color transition off the same var flip, so
             text and glyphs invert in perfect lockstep — inherited
             animation doesn't reach SVG strokes reliably on iOS */}
-        <motion.div
+        <m.div
           ref={mobileBarRef}
           style={{ clipPath: barClipPath }}
           className={`label flex h-12 items-center justify-between rounded-xs px-6 text-ink transition-colors duration-300 ${
             mobileOpen ? "bg-surface-2" : "bg-wash backdrop-blur-md"
           }`}
         >
-          <motion.a href="#" className="text-ink" style={{ opacity: searchOp }}>
+          <m.a href="#" className="text-ink" style={{ opacity: searchOp }}>
             SEARCH
-          </motion.a>
-          <motion.a href="#" className="text-ink" style={{ opacity: accountOp }}>
+          </m.a>
+          <m.a href="#" className="text-ink" style={{ opacity: accountOp }}>
             ACCOUNT
-          </motion.a>
-          <motion.button
+          </m.a>
+          <m.button
             type="button"
             onClick={openCart}
             className="uppercase text-ink"
             style={{ opacity: bagOp }}
           >
             BAG [{bagCount}]
-          </motion.button>
+          </m.button>
           <button
             type="button"
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
@@ -791,7 +792,7 @@ export function Navigation({ data }: { data?: NavData | null }) {
           >
             <MenuX open={mobileOpen} className="text-ink" />
           </button>
-        </motion.div>
+        </m.div>
       </div>
     </>
   );

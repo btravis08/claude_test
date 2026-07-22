@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, m } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
 
 import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
@@ -333,7 +333,7 @@ function FilterPanel({
     <AnimatePresence>
       {open && (
         <>
-          <motion.button
+          <m.button
             key="filter-scrim"
             type="button"
             aria-label="Close filters"
@@ -345,7 +345,7 @@ function FilterPanel({
             data-nav-overlay
             className="fixed inset-0 z-[80] cursor-default bg-[rgba(29,29,29,0.5)] backdrop-blur-md"
           />
-          <motion.aside
+          <m.aside
             key="filter-panel"
             data-mode="light"
             data-nav-overlay
@@ -526,7 +526,7 @@ function FilterPanel({
                 View Results [{resultCount}]
               </button>
             </div>
-          </motion.aside>
+          </m.aside>
         </>
       )}
     </AnimatePresence>

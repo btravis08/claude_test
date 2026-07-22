@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, m } from "motion/react";
 import { usePathname } from "next/navigation";
 import { LayoutRouterContext } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { useContext, useEffect, useRef } from "react";
@@ -53,7 +53,7 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
         isPop.current = false;
       }}
     >
-      <motion.div
+      <m.div
         key={pathname}
         initial={{ opacity: 0 }}
         animate={{
@@ -63,7 +63,7 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
         exit={{ opacity: 0, transition: { duration: 0.28, ease: [...MEDIA_EASE] } }}
       >
         <FrozenRouter>{children}</FrozenRouter>
-      </motion.div>
+      </m.div>
     </AnimatePresence>
   );
 }

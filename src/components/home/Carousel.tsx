@@ -3,7 +3,7 @@
 import {
   AnimatePresence,
   animate,
-  motion,
+  m,
   useMotionValue,
   useTransform,
 } from "motion/react";
@@ -11,6 +11,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
 import { Pause } from "@/components/icons";
+import { EASE_DRAMATIC } from "@/lib/motion";
 
 export interface CarouselItemData {
   _key?: string;
@@ -96,7 +97,7 @@ export function Carousel({
     const dir = active > prev ? 1 : -1;
     const T = {
       duration: 0.6,
-      ease: [0.85, 0, 0.15, 1] as [number, number, number, number],
+      ease: [...EASE_DRAMATIC] as [number, number, number, number],
     };
     slideY.jump(dir * h * 0.3);
     slideOpacity.jump(0);
@@ -134,7 +135,7 @@ export function Carousel({
       edgeBottom.jump(m.top + m.height);
     } else {
       const DUR = 0.6;
-      const EASE: [number, number, number, number] = [0.85, 0, 0.15, 1];
+      const EASE: [number, number, number, number] = [...EASE_DRAMATIC];
       const dist = Math.abs(m.top - prev);
       /* stretch scales with travel: 1.5x for an adjacent hop up to
          2x for a full-rail jump, interpolated by steps travelled */
@@ -171,7 +172,7 @@ export function Carousel({
 
   const description = (
     <AnimatePresence mode="wait" initial={false}>
-      <motion.p
+      <m.p
         key={active}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -180,7 +181,7 @@ export function Carousel({
         className="label max-w-[30.375rem] font-medium text-ink-2"
       >
         {current?.description}
-      </motion.p>
+      </m.p>
     </AnimatePresence>
   );
 
@@ -257,7 +258,7 @@ export function Carousel({
         className="relative hidden aspect-[4/5] overflow-hidden bg-surface-2 lg:block"
       >
         <AnimatePresence initial={false}>
-          <motion.div
+          <m.div
             key={active}
             aria-hidden
             className="absolute inset-0 bg-cover bg-center"
@@ -299,7 +300,7 @@ export function Carousel({
                 style={{ backgroundImage: `url(${prevImage})` }}
               />
             )}
-            <motion.div
+            <m.div
               aria-hidden
               className="absolute inset-0 bg-cover bg-center"
               style={{
@@ -330,7 +331,7 @@ export function Carousel({
             ))}
             {/* one 2px bar on the rail's right edge travels to the
                 active thumb, stretching in flight (edge-lag) */}
-            <motion.span
+            <m.span
               aria-hidden
               className="absolute right-0 w-0.5 bg-ink"
               style={{ top: edgeTop, height: barHeight }}

@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, m } from "motion/react";
 import { PortableText } from "next-sanity";
 import type { PortableTextBlock } from "next-sanity";
 import { useEffect, useState } from "react";
@@ -57,7 +57,7 @@ export function DetailLinks({ links }: { links: DetailLinkData[] }) {
       <AnimatePresence>
         {active && (
           <>
-            <motion.button
+            <m.button
               key="drawer-scrim"
               type="button"
               aria-label="Close"
@@ -68,7 +68,7 @@ export function DetailLinks({ links }: { links: DetailLinkData[] }) {
               transition={{ duration: 0.35, ease: [...MEDIA_EASE] }}
               className="fixed inset-0 z-[80] cursor-default bg-black/30"
             />
-            <motion.aside
+            <m.aside
               key="drawer"
               data-mode="light"
               role="dialog"
@@ -97,7 +97,7 @@ export function DetailLinks({ links }: { links: DetailLinkData[] }) {
                   (active.text ?? []).map((paragraph, i) => <p key={i}>{paragraph}</p>)
                 )}
               </div>
-            </motion.aside>
+            </m.aside>
           </>
         )}
       </AnimatePresence>

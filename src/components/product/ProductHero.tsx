@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, m } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
@@ -439,7 +439,7 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
             }}
             className="relative h-full cursor-zoom-in snap-start"
           >
-            <motion.div
+            <m.div
               role="img"
               aria-label={`${product.title} — image ${i + 1}`}
               /* mobile: width-bound full bleed — the image always spans
@@ -455,7 +455,7 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
                 (so it counts as the LCP immediately); this surface-
                 colored overlay fading away creates the same fade-in
                 illusion without delaying the metric */}
-            <motion.div
+            <m.div
               aria-hidden
               className="pointer-events-none absolute inset-0 bg-surface"
               initial={false}
@@ -513,7 +513,7 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
         className="absolute inset-x-0 bottom-0 z-10 h-0.5"
         style={{ visibility: originalsHidden ? "hidden" : "visible" }}
       >
-        <motion.div
+        <m.div
           className="h-full bg-ink"
           initial={false}
           animate={{ width: `${Math.min(progress, 1) * 100}%` }}
@@ -528,7 +528,7 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
       {/* full-screen image viewer */}
       <AnimatePresence>
         {viewer !== null && (
-          <motion.div
+          <m.div
             key="image-viewer"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -547,13 +547,13 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
                 setViewerFading(false);
               }}
             />
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
 
       <AnimatePresence>
         {heroGone && !shopReached && (
-          <motion.div
+          <m.div
             key="purchase-dock"
             data-purchase-dock
             data-mode={barMode}
@@ -564,7 +564,7 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
             className="fixed inset-x-0 bottom-0 z-40 hidden p-4 text-ink transition-colors duration-300 md:block"
           >
             {controls(true)}
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
 
@@ -584,7 +584,7 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
         <div className="flex w-full items-center justify-end gap-3">
           <AnimatePresence initial={false}>
             {!panelInView && !shopReached && (
-              <motion.div
+              <m.div
                 key="mobile-controls"
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -615,7 +615,7 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
                 >
                   SELECT SIZE
                 </button>
-              </motion.div>
+              </m.div>
             )}
           </AnimatePresence>
           <button

@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useInView } from "motion/react";
+import { m, useInView } from "motion/react";
 import type { Variants } from "motion/react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -39,9 +39,9 @@ export function ArrowSwap({
 }) {
   return (
     <span className="inline-flex overflow-hidden">
-      <motion.span className="inline-flex" variants={swap(dx, dy)}>
+      <m.span className="inline-flex" variants={swap(dx, dy)}>
         {children}
-      </motion.span>
+      </m.span>
     </span>
   );
 }
@@ -52,9 +52,9 @@ export function ArrowSwap({
 export function ArrowButton({
   disabled,
   ...props
-}: React.ComponentProps<typeof motion.button>) {
+}: React.ComponentProps<typeof m.button>) {
   return (
-    <motion.button
+    <m.button
       initial="rest"
       whileHover={disabled ? undefined : "hover"}
       animate="rest"
@@ -81,7 +81,7 @@ export function ArrowInViewPlay({
     if (inView) setPlay(true);
   }, [inView]);
   return (
-    <motion.span
+    <m.span
       ref={ref}
       className={className}
       initial="rest"
@@ -90,18 +90,18 @@ export function ArrowInViewPlay({
       onAnimationComplete={() => setPlay(false)}
     >
       {children}
-    </motion.span>
+    </m.span>
   );
 }
 
 /* internal hrefs ride next/link so the arrow CTAs navigate client-side;
    prefetch + scroll:false match SmartLink (PageTransition owns the
    scroll reset between fades) */
-const MotionLink = motion.create(Link);
+const MotionLink = m.create(Link);
 
-export function ArrowLink({ href, ...props }: React.ComponentProps<typeof motion.a>) {
+export function ArrowLink({ href, ...props }: React.ComponentProps<typeof m.a>) {
   const internal = typeof href === "string" && href.startsWith("/");
-  const Comp = (internal ? MotionLink : motion.a) as typeof motion.a;
+  const Comp = (internal ? MotionLink : m.a) as typeof m.a;
   const linkProps = internal ? { prefetch: true, scroll: false } : {};
   return (
     <Comp

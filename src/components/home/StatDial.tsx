@@ -1,7 +1,8 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useInView } from "motion/react";
+import { m, useInView } from "motion/react";
+import { EASE_TICK } from "@/lib/motion";
 
 /*
   Radial tick dials for the tech-specs stats. Each ring is 45 ticks on
@@ -54,7 +55,7 @@ function StatDial({
           <path key={i} d={tickPath(i)} className="stroke-[var(--line)]" />
         ))}
         {Array.from({ length: filled }, (_, i) => (
-          <motion.path
+          <m.path
             key={i}
             d={tickPath(i)}
             className="stroke-[var(--ink)]"
@@ -63,7 +64,7 @@ function StatDial({
             transition={{
               duration: 0.34,
               delay: delay + i * 0.026,
-              ease: [0.33, 1, 0.68, 1],
+              ease: [...EASE_TICK],
             }}
           />
         ))}

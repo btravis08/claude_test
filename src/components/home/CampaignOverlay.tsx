@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useInView } from "motion/react";
+import { m, useInView } from "motion/react";
 import type { Transition } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
@@ -72,23 +72,23 @@ export function CampaignOverlay({
             <div className="hero-cta sticky flex w-full flex-col items-center gap-6">
               <div className="flex flex-col items-center gap-4 text-center">
                 {left !== undefined && (
-                  <motion.span {...fade} className="label font-medium">
+                  <m.span {...fade} className="label font-medium">
                     {left}
-                  </motion.span>
+                  </m.span>
                 )}
                 {center !== undefined && (
-                  <motion.span {...fade} className="font-display text-headline-lg">
+                  <m.span {...fade} className="font-display text-headline-lg">
                     {center}
-                  </motion.span>
+                  </m.span>
                 )}
               </div>
               {right !== undefined && (
-                <motion.span
+                <m.span
                   {...fade}
                   className="label flex h-[2.875rem] w-full items-center justify-center rounded-xs bg-btn font-medium text-btn-fg"
                 >
                   {right}
-                </motion.span>
+                </m.span>
               )}
             </div>
           </div>
@@ -102,23 +102,23 @@ export function CampaignOverlay({
           <div className="flex h-full items-end justify-between gap-4 p-4">
             <div className="flex min-w-0 flex-col gap-3">
               {left !== undefined && (
-                <motion.span {...fade} className="label font-medium">
+                <m.span {...fade} className="label font-medium">
                   {left}
-                </motion.span>
+                </m.span>
               )}
               {center !== undefined && (
-                <motion.span {...fade} className="font-display text-headline-lg">
+                <m.span {...fade} className="font-display text-headline-lg">
                   {center}
-                </motion.span>
+                </m.span>
               )}
             </div>
-            <motion.span {...fade} className="shrink-0">
+            <m.span {...fade} className="shrink-0">
               <ArrowInViewPlay className="flex size-10 items-center justify-center rounded-xs bg-white text-[#161716]">
                 <ArrowSwap dx={1} dy={-1}>
                   <ArrowUpRight />
                 </ArrowSwap>
               </ArrowInViewPlay>
-            </motion.span>
+            </m.span>
           </div>
         </div>
       )}
@@ -137,7 +137,7 @@ export function CampaignOverlay({
           }`}
         >
           {left !== undefined && (
-            <motion.span
+            <m.span
               layout="position"
               initial={{ opacity: 0 }}
               animate={{ opacity: go ? 1 : 0 }}
@@ -145,10 +145,10 @@ export function CampaignOverlay({
               className="label col-start-1 justify-self-start font-medium"
             >
               {left}
-            </motion.span>
+            </m.span>
           )}
           {center !== undefined && (
-            <motion.span
+            <m.span
               layout="position"
               initial={{ opacity: 0 }}
               animate={{ opacity: go ? 1 : 0 }}
@@ -156,10 +156,10 @@ export function CampaignOverlay({
               className="col-start-2 justify-self-center font-display text-headline-lg"
             >
               {center}
-            </motion.span>
+            </m.span>
           )}
           {right !== undefined && (
-            <motion.span
+            <m.span
               layout="position"
               initial={{ opacity: 0 }}
               animate={{ opacity: go ? 1 : 0 }}
@@ -169,7 +169,7 @@ export function CampaignOverlay({
               {right}
               {/* nav-style underline, driven by hovering the whole section */}
               <span className="absolute inset-x-0 -bottom-0.5 h-px origin-right scale-x-0 bg-current transition-transform duration-300 group-hover:origin-left group-hover:scale-x-100" />
-            </motion.span>
+            </m.span>
           )}
         </div>
       </div>

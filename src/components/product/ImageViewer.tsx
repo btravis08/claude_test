@@ -307,7 +307,7 @@ export function ImageViewer({
       data-mode="light"
       data-nav-overlay
       style={{ opacity: rootOp }}
-      className="fixed inset-0 z-[80] flex flex-col bg-surface text-ink"
+      className="fixed inset-0 z-[80] flex flex-col bg-surface-2 text-ink"
       role="dialog"
       aria-modal="true"
       aria-label={`${title ?? "Product"} images`}
@@ -415,7 +415,7 @@ export function ImageViewer({
         <m.div
           ref={flyPill.ref}
           style={flyPill.style}
-          className="pointer-events-auto flex h-[2.875rem] items-center gap-1 rounded-xs bg-surface-2 px-2"
+          className="pointer-events-auto flex h-[2.875rem] items-center gap-1 rounded-xs bg-wash backdrop-blur-md px-2"
         >
           <m.div style={{ opacity: pillContent }} className="flex items-center gap-1">
             <button

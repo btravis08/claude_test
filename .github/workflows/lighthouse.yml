@@ -1,0 +1,58 @@
+name: lighthouse
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run Lighthouse (mobile) against production
+        run: |
+          npx --yes lighthouse@latest https://sundayred.vercel.app/ \
+            --output=json --output-path=./lh-full.json \
+            --chrome-flags="--headless --no-sandbox" --quiet
+      - name: Trim report to the essentials
+        run: |
+          node -e '
+            const full = require("./lh-full.json");
+            const pick = [
+              "largest-contentful-paint", "lcp-breakdown", "largest-contentful-paint-element",
+              "network-requests", "total-byte-weight", "uses-responsive-images",
+              "modern-image-formats", "uses-optimized-images", "offscreen-images",
+              "render-blocking-resources", "prioritize-lcp-image", "bootup-time",
+              "mainthread-work-breakdown", "unused-javascript", "network-dependency-tree-insight",
+              "lcp-discovery-insight", "image-delivery-insight",
+            ];
+            const out = {
+              fetchTime: full.fetchTime,
+              finalUrl: full.finalDisplayedUrl,
+              metrics: Object.fromEntries(Object.entries(full.audits["metrics"]?.details?.items?.[0] ?? {})),
+              audits: {},
+            };
+            for (const id of pick) {
+              const a = full.audits[id];
+              if (!a) continue;
+              out.audits[id] = {
+                score: a.score, displayValue: a.displayValue,
+                items: a.details?.items?.slice(0, 40) ?? [],
+              };
+            }
+            require("fs").mkdirSync("design/perf", { recursive: true });
+            require("fs").writeFileSync("design/perf/lighthouse-mobile.json", JSON.stringify(out, null, 1));
+          '
+      - name: Commit report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add design/perf
+          git diff --cached --quiet && echo "No changes" && exit 0
+          git commit -m "Lighthouse mobile report for sundayred.vercel.app"
+          git push

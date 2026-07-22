@@ -141,6 +141,80 @@ embedded at /studio, with Motion (framer-motion) for interactions.
   Medium 500 (Medium carries the label style), Maison Neue Mono
   (unused by default; available through the `font-mono` utility).
 
+## Performance & motion ground rules (BINDING for all new work)
+
+Hard-won on 2026-07-21/22 (mobile PageSpeed: 18MB → ~800KB payload,
+LCP 51.9s → ~3.5s). Every change must keep these true.
+
+Images
+- Content imagery is a real `<img loading="lazy" decoding="async">`,
+  NEVER a CSS background-image (backgrounds can't lazy-load and hide
+  the LCP from the preload scanner). Backgrounds are acceptable only
+  for tiny chrome/thumbnails.
+- Every Sanity image URL goes through `urlFor()` (src/sanity/lib/
+  image.ts) — it appends `auto=format` (AVIF/WebP) globally — with an
+  explicit `.width()` sized to the surface (cards 800, PDP hero 1200,
+  media 1400–2000). Full-width media adds `srcSet={sanitySrcSet(url)}`.
+- Never request the raw asset URL. Never render all variants'
+  imagery eagerly — hover images mount only on hover-capable devices
+  after pointer entry (see ProductCard).
+- Static files in public/ must be compressed before commit (mozjpeg
+  q~72–75, ≤1920w; palette PNG for product shots). Nothing over
+  ~300KB ships without a reason.
+
+LCP
+- The first section's image is eager + `fetchPriority="high"` and
+  preloaded from the page (ReactDOM.preload, with imageSrcSet when a
+  srcset exists so the browser fetches exactly one candidate).
+- NEVER fade in the LCP image itself: an opacity-0 image delays the
+  metric. Use the overlay pattern (image at opacity 1 from first
+  paint; a surface-colored overlay fades out — AnimatedMedia and the
+  PDP hero are the references). Reveal overlays cap at 0.9s (Speed
+  Index) even when the scale settle runs longer.
+
+Motion / JS
+- Use `m.*` from motion/react under the app-wide
+  LazyMotion(domAnimation) provider (MotionProvider). NEVER import
+  `motion.*` — one import drags the full runtime back into a chunk.
+  Layout animations / drag (domMax features) are not available; FLIP
+  and drags are hand-rolled on motion values by design.
+- Eases and durations come from src/lib/motion.ts (EASE_OUT,
+  EASE_DRAMATIC, EASE_TICK, DUR). No inline bezier arrays. CSS twins
+  (cubic-bezier strings in classes) must match the tokens.
+- Reveals/entrances are STATE-DRIVEN (`initial={false}` +
+  `animate={{...}}` flipped by useInView/IO state), never
+  initial/whileInView mount animations — the SPA PageTransition's
+  presence context silently suppresses mount animations (recurring
+  bug class: frozen opaque overlays). Media inside horizontal rails
+  reveals off the rail's `[data-reveal-scope]`, not the clipped slide.
+- Expensive startup work (canvas sampling, probes) waits for
+  requestIdleCallback. Interaction-only chrome (viewer, cart flyout)
+  loads via next/dynamic ssr:false client wrappers.
+- NO lazy-hydration hacks (dangerouslySetInnerHTML adoption): React
+  19 responds to the mismatch with a full client re-render, which
+  breaks FrozenRouter and freezes reveals. `cv-auto`
+  (content-visibility) on below-fold sections is the approved
+  render-cost tool.
+- Route scroll resets go through Lenis (`lenis.scrollTo`), never bare
+  window.scrollTo — Lenis overrides it next frame.
+
+GROQ / data
+- GROQ comments are `//` ONLY. A `/* */` inside a query string fails
+  silently site-wide (every fetch falls back — the site looks like
+  the no-CMS demo). If prod ever shows fallback content with a
+  healthy dataset, suspect a query syntax error first.
+- Keep card projections slim: sliderProductFields carries no
+  sku/inventory (PDP-only fields live in the PDP query).
+
+Verification (before pushing perf-relevant work)
+- `npm run build` + drive the real pages with Playwright locally
+  (chromium at /opt/pw-browsers/chromium); remember localhost renders
+  CMS-less fallbacks — CMS-path bugs only reproduce on prod.
+- Measure prod from the workflow branch's GitHub Actions:
+  `lighthouse.yml` commits design/perf/lighthouse-mobile.json;
+  `probe.yml` greps live HTML (product hrefs, image URLs). The
+  sandbox cannot reach vercel.app/sanity.io — runners can.
+
 ## Deployment (Vercel staging)
 
 - The repo deploys on Vercel via the GitHub integration: pushes to

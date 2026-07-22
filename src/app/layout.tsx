@@ -63,6 +63,11 @@ export default function RootLayout({
       lang="en"
       className={`${featureDeck.variable} ${maison.variable} ${maisonMono.variable} h-full antialiased`}
     >
+      <head>
+        {/* every catalog image comes from the Sanity CDN — warm the
+            connection before the first image request */}
+        <link rel="preconnect" href="https://cdn.sanity.io" crossOrigin="" />
+      </head>
       <body className="min-h-full">{children}</body>
     </html>
   );

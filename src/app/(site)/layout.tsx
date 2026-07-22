@@ -1,5 +1,5 @@
 import { CartProvider } from "@/components/cart/CartContext";
-import { CartFlyout } from "@/components/cart/CartFlyout";
+import { LazyCartFlyout } from "@/components/cart/LazyCartFlyout";
 import { Navigation } from "@/components/Navigation";
 import type { MenuItem, NavData, NavLink } from "@/components/Navigation";
 import { FooterTaglineProvider } from "@/components/FooterTagline";
@@ -96,7 +96,7 @@ export default async function SiteLayout({
         <LegacyBand />
       </div>
       <SiteFooter />
-      <CartFlyout />
+      <LazyCartFlyout />
       </FooterTaglineProvider>
       </CartProvider>
     </SmoothScroll>

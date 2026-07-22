@@ -227,7 +227,7 @@ const PAD_BOTTOM = {
 export function SectionRenderer({ sections }: { sections: PageSection[] }) {
   return (
     <>
-      {sections.map((section) => {
+      {sections.map((section, sectionIndex) => {
         const node = (() => {
         switch (section._type) {
           case "sectionHero":
@@ -383,7 +383,17 @@ export function SectionRenderer({ sections }: { sections: PageSection[] }) {
            color mode so the padded strip matches its surface */
         const pt = section.paddingTop && section.paddingTop !== "none" ? PAD_TOP[section.paddingTop] : "";
         const pb = section.paddingBottom && section.paddingBottom !== "none" ? PAD_BOTTOM[section.paddingBottom] : "";
-        if (!pt && !pb) return node;
+        /* below-fold sections defer layout/paint until they approach
+           the viewport; the first section renders eagerly (LCP) */
+        const cv = sectionIndex > 0 ? "cv-auto" : "";
+        if (!pt && !pb)
+          return cv ? (
+            <div key={section._key} className={`w-full ${cv}`}>
+              {node}
+            </div>
+          ) : (
+            node
+          );
         const shellMode =
           section.colorMode ??
           (section._type === "sectionFullWidth" ||
@@ -395,7 +405,7 @@ export function SectionRenderer({ sections }: { sections: PageSection[] }) {
           <div
             key={section._key}
             data-mode={shellMode}
-            className={`w-full bg-surface ${pt} ${pb}`}
+            className={`w-full bg-surface ${pt} ${pb} ${cv}`}
           >
             {node}
           </div>

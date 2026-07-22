@@ -7,8 +7,16 @@ import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
 import { useCart } from "@/components/cart/CartContext";
 import { ArrowLeft, ArrowRight } from "@/components/icons";
 import { MenuX } from "@/components/MenuX";
-import { ImageViewer } from "@/components/product/ImageViewer";
+import dynamic from "next/dynamic";
+
 import type { SourceBox } from "@/components/product/ImageViewer";
+
+/* the zoom viewer only exists after a tap — keep its chunk (and its
+   share of Motion) out of the initial PDP bundle */
+const ImageViewer = dynamic(
+  () => import("@/components/product/ImageViewer").then((m) => m.ImageViewer),
+  { ssr: false },
+);
 import { SwatchRail } from "@/components/product/SwatchRail";
 
 /*
@@ -439,10 +447,19 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
                  md+: the framed contain layout from the comp */
               className="absolute inset-0 bg-[length:100%_auto] bg-center bg-no-repeat md:inset-x-[8%] md:inset-y-[22%] md:bg-contain"
               style={{ backgroundImage: `url(${src})` }}
-              initial={{ opacity: 0, scale: 1.04 }}
-              animate={
-                loaded[src] ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 1.04 }
-              }
+              initial={false}
+              animate={{ scale: loaded[src] ? 1 : 1.04 }}
+              transition={{ duration: 0.9, ease: [...MEDIA_EASE] }}
+            />
+            {/* the image itself stays at full opacity from first paint
+                (so it counts as the LCP immediately); this surface-
+                colored overlay fading away creates the same fade-in
+                illusion without delaying the metric */}
+            <motion.div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 bg-surface"
+              initial={false}
+              animate={{ opacity: loaded[src] ? 0 : 1 }}
               transition={{ duration: 0.9, ease: [...MEDIA_EASE] }}
             />
           </div>

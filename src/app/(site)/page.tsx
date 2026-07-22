@@ -8,7 +8,10 @@ import {
   InfoSlider,
   ProductSlider,
 } from "@/components/home/sections";
+import { preload } from "react-dom";
+
 import { sanityFetch } from "@/sanity/lib/fetch";
+import { urlFor } from "@/sanity/lib/image";
 import { pageBySlugQuery } from "@/sanity/lib/queries";
 import type { Page } from "@/sanity/types";
 
@@ -23,6 +26,18 @@ export default async function Home() {
     { slug: "home" },
     null,
   );
+
+  /* the first section's image is the LCP — preload it with the same
+     URL SectionRenderer will generate (urlFor + width 2000) */
+  const first = page?.sections?.[0];
+  const firstImage = first && "image" in first ? first.image : undefined;
+  if (firstImage) {
+    try {
+      preload(urlFor(firstImage).width(2000).url(), { as: "image", fetchPriority: "high" });
+    } catch {
+      /* malformed image reference — nothing to preload */
+    }
+  }
 
   return (
     <div data-mode="light" className="flex flex-col items-start bg-surface">

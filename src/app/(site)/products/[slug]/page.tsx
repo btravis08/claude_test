@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PortableText } from "next-sanity";
+import { preload } from "react-dom";
 
 import { FooterTagline } from "@/components/FooterTagline";
 import { RegisterCartRecommendations } from "@/components/cart/CartContext";
@@ -219,6 +220,10 @@ export default async function ProductPage({
       (src): src is string => Boolean(src),
     );
   }
+
+  /* the first hero slide is the LCP image — start it with the HTML
+     instead of waiting for hydration to reveal a CSS background */
+  if (heroImages[0]) preload(heroImages[0], { as: "image", fetchPriority: "high" });
 
   /* pairs well with: explicit references first, topped up to at least
      four cards with products sharing the first tag (excluding self) */

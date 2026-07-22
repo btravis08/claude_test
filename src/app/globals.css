@@ -367,3 +367,12 @@ html.lenis body {
   transition-duration: 1ms;
   transition-behavior: allow-discrete;
 }
+
+/* Below-fold sections skip layout/paint until they approach the
+   viewport (the home page is ~12,700px of design). The intrinsic
+   size placeholder keeps the scrollbar stable; `auto` remembers the
+   real size once rendered. */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 50rem;
+}

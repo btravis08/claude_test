@@ -54,8 +54,10 @@ const sliderProductFields = groq`
   _id, title, "slug": slug.current, price, pricing, status, gender, tags, vendor, productType, postedAt,
   options[] { name, values },
   variants[] {
-    /* cards/quick-add render name, swatch + imagery and price
-       overrides — sku/inventory stay on the PDP query only */
+    // cards/quick-add render name, swatch + imagery and price
+    // overrides — sku/inventory stay on the PDP query only.
+    // NOTE: GROQ comments are // only; a /* */ here broke every
+    // query embedding these fields (the site silently fell back)
     name, color, image, hoverImage, price, compareAtPrice
   },
   "thumb": images[0],

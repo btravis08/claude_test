@@ -115,6 +115,55 @@ embedded at /studio, with Motion (framer-motion) for interactions.
 - GOTCHA: `tag` is a reserved Sanity fetch-option name — GROQ params
   use `$productTag`.
 
+## Real product catalog (captured from sundayred.com)
+
+- `design/sdr-catalog/products.json` = the complete live catalog:
+  483 colorway captures grouping into 164 products; imagery in
+  `public/sdr/<sku>/<n>.jpg` (~435MB, up to 6 shots each, 1200w).
+  `urls.json` seeds the crawler; `crawl-debug.json` explains counts.
+- `scripts/fetch-sdr-catalog.mjs` (v5) re-captures: seeded, resumable
+  (skips what products.json already has), stops after 20 consecutive
+  refusals (Akamai rate-limits mid-run) and commits partial progress
+  — re-run until converged. Runs on the fetch-sdr-catalog.yml Actions
+  workflow (fresh runner IP per run) or the user's machine; the
+  sitemap undercounts, so discovery walks category PLPs + an a-z
+  search sweep. 14 URLs never capture (11 content pages, 3 that 500).
+- Import chain (all idempotent, run with
+  `npx sanity exec scripts/<x> --with-user-token` when the Sanity MCP
+  is absent): `import-sdr-catalog.ts` (products.json → 164 product
+  docs, one variant per colorway, sharp-sampled swatch colors),
+  `retire-lorem.ts` (drafts the 120 lorem products),
+  `wire-nav-collections.ts` (collections + nav links + chips),
+  `fix-catalog-ids.ts` (diagnoses raw-vs-published visibility).
+- CRITICAL Sanity rule: document _ids must NEVER contain a dot —
+  `sdr.foo` is a path/namespaced id, invisible to the `published`
+  perspective the site queries with (Studio still shows it, so the
+  break is silent). Catalog ids are `sdr-<slug>`.
+- Dataset state: 164 `sdr-*` products + the `product-presidio`
+  showcase are Active; lorem `product-seed-*` are Draft; `page-home`
+  (slug "home", 9 sections) drives the homepage; collections =
+  shop-all + 10 category smarts + gender trees + manual gear sets
+  (vessel/headcovers/gloves/bags/on-course/training/summer-picks).
+- The Sanity MCP connector (claude.ai) can read AND write the dataset
+  when connected — prefer it over user-run scripts; remember MCP
+  patches land as drafts and need publish_documents. SDR content is
+  TaylorMade's copyrighted material: staging/design use only.
+
+## GitHub Actions = the network escape hatch
+
+- The sandbox cannot reach sundayred.com, *.sanity.io, vercel.app, or
+  figma.com — Actions runners can. Workflows live on the repo DEFAULT
+  branch `claude/sanity-github-app-setup-x49xa8` (workflow_dispatch
+  only registers there) and commit results back to that branch:
+  - `lighthouse.yml` → design/perf/lighthouse-mobile.json (mobile
+    Lighthouse against production — the perf measurement loop)
+  - `probe.yml` → prints curl/grep inspection of live HTML or the
+    Sanity API to the job log (edit its steps per question)
+  - `fetch-sdr-catalog.yml` / `fetch-figma-assets` → data captures
+- Pattern: edit workflow on that branch via a worktree, dispatch via
+  the GitHub MCP, read job logs or fetch the committed file. Runner
+  queue occasionally starves — re-dispatch rather than wait forever.
+
 ## Frontend architecture
 
 - `src/app/globals.css` is the design-token source of truth: semantic
@@ -228,6 +277,34 @@ Verification (before pushing perf-relevant work)
 - The embedded Studio (/studio) on the deployed domain needs that
   domain added to the Sanity project's CORS origins (with
   credentials) at manage.sanity.io → API.
+
+## Verification recipes (sandbox)
+
+- Browser checks: playwright-core with
+  `executablePath: "/opt/pw-browsers/chromium"`; mobile context =
+  428x926, isMobile + hasTouch. Wait on "domcontentloaded" + a
+  poll/selector — NOT "networkidle" (long-lived requests hang it).
+  After `npm ci`, reinstall with `npm install --no-save playwright-core`.
+- `npm start` serves the LAST build — always `npm run build` first,
+  and kill the old server (`pkill -f next-server`; the command kills
+  its own shell too, so expect exit 144 and run it alone) or the
+  stale instance keeps port 3000 and you verify old code.
+- Localhost renders CMS-less fallbacks everywhere (Sanity is
+  egress-blocked): fallback home/PLP/PDP prove component behavior but
+  NOT data wiring — CMS-path bugs only reproduce on production
+  (verify via probe.yml).
+- Animation verification is numeric: measure computed opacity /
+  transforms / scrollLeft frame-by-frame in page.evaluate rather than
+  eyeballing screenshots (e.g. slider settles to scrollLeft % step
+  === 0; overlay opacity reaches 0; hero <img> opacity is 1 at first
+  paint).
+- iOS-specific behaviors that CANNOT be reproduced in sandbox
+  Chromium (snap engine fights, momentum event silence, SVG
+  transform-origin) are documented inline where they were fought:
+  SliderShell (hand-rolled touch paging — touch-action pan-y, one
+  card per flick), MenuX (HTML bars, not SVG), AnimatedMedia/
+  ProductHero (state-driven reveals). Change those with care and
+  have the user re-test on device.
 
 ## Local dev (user's machine)
 

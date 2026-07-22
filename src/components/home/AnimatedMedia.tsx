@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "motion/react";
+import { motion, useInView, useScroll, useTransform } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
 import { sanitySrcSet } from "@/sanity/lib/image";
@@ -85,6 +85,12 @@ export function AnimatedMedia({
     />
   );
 
+  /* state-driven (not whileInView props): mount animations get
+     suppressed under the SPA transition's presence context, which
+     froze reveal overlays at opaque — a state flip + animate prop
+     runs regardless */
+  const inView = useInView(ref, { once: true, amount: 0.2 });
+
   return (
     /* imagery counts as dark-mode content for the fixed bars'
        point-sampling, wherever this renders */
@@ -92,9 +98,8 @@ export function AnimatedMedia({
       <motion.div
         className={`absolute inset-0 ${parallax && touch ? "sdr-parallax" : ""}`}
         style={scrub ? { y } : undefined}
-        initial={{ scale: scrub ? 1.2 : 1.05 }}
-        whileInView={{ scale: scrub ? 1.15 : 1 }}
-        viewport={{ once: true, amount: 0.2 }}
+        initial={false}
+        animate={{ scale: inView ? (scrub ? 1.15 : 1) : scrub ? 1.2 : 1.05 }}
         transition={{ duration: entranceDuration, ease: [...MEDIA_EASE] }}
       >
         {inner}
@@ -106,9 +111,8 @@ export function AnimatedMedia({
       <motion.div
         aria-hidden
         className="pointer-events-none absolute inset-0 bg-surface-2"
-        initial={{ opacity: 1 }}
-        whileInView={{ opacity: 0 }}
-        viewport={{ once: true, amount: 0.2 }}
+        initial={false}
+        animate={{ opacity: inView ? 0 : 1 }}
         transition={{ duration: Math.min(entranceDuration, 0.9), ease: [...MEDIA_EASE] }}
       />
     </div>

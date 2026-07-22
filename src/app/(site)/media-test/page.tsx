@@ -59,7 +59,7 @@ export default function MediaTest() {
       <FiftyFifty
         ratio="5:4"
         panels={[
-          { title: "Image 5:4", image: "/figma/campaign.png" },
+          { title: "Image 5:4", image: "/figma/campaign.jpg" },
           {
             title: "Look 5:4",
             image: "/figma/products/presidio-navy-hover.png",
@@ -87,7 +87,7 @@ export default function MediaTest() {
       <FiftyFifty
         ratio="flex"
         panels={[
-          { title: "Flex Image", image: "/figma/campaign.png" },
+          { title: "Flex Image", image: "/figma/campaign.jpg" },
           {
             title: "Flex Autoplay",
             kind: "videoAutoplay",

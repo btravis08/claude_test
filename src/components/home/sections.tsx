@@ -141,7 +141,7 @@ export function Hero({
   eyebrow = "Now Arriving",
   headline = "Spring Traditions",
   primaryCta = "Shop Collection",
-  image = "/figma/campaign.png",
+  image = "/figma/campaign.jpg",
   kind = "image",
   videoUrl,
 }: HeroProps) {
@@ -188,7 +188,7 @@ export function FullWidth({
   eyebrow = "Now Arriving",
   headline = "Spring Traditions",
   primaryCta = "Shop Collection",
-  image = "/figma/campaign.png",
+  image = "/figma/campaign.jpg",
   kind = "image",
   videoUrl,
   lookProducts,
@@ -248,7 +248,7 @@ export interface InfoSliderProps {
 const defaultInfoCards: InfoCardData[] = ["Footwear", "Polos", "Headwear", "T-Shirts"].map(
   (title) => ({
     title,
-    image: "/figma/media-portrait.png",
+    image: "/figma/media-portrait.jpg",
   }),
 );
 
@@ -282,7 +282,7 @@ export function InfoSlider({
           const media = (
             <Media
               aspect="aspect-[3/4]"
-              image={card.image ?? "/figma/media-portrait.png"}
+              image={card.image ?? "/figma/media-portrait.jpg"}
               hoverScale={card.kind !== "videoAutoplay"}
               kind={card.kind === "videoAutoplay" ? "videoAutoplay" : "image"}
               videoUrl={card.videoUrl}
@@ -401,7 +401,7 @@ export interface FiftyFiftyProps {
 const defaultPanels: FiftyPanelData[] = ["Women’s Apparel", "Men’s Apparel"].map(
   (title) => ({
     title,
-    image: "/figma/campaign.png",
+    image: "/figma/campaign.jpg",
   }),
 );
 
@@ -462,7 +462,7 @@ export function FiftyFifty({
         const media = (
           <Media
             aspect={aspect}
-            image={panel.image ?? "/figma/campaign.png"}
+            image={panel.image ?? "/figma/campaign.jpg"}
             overlay
             hoverScale={kind === "image" && Boolean(panel.url)}
             parallax={kind !== "videoAutoplay"}
@@ -658,8 +658,8 @@ export interface GalleryProps {
 
 const defaultGallerySlides: GallerySlideData[] = [
   { image: "/figma/products/presidio-white-hover.png", aspect: 4 / 3 },
-  { image: "/figma/media-portrait.png", aspect: 3 / 4 },
-  { image: "/figma/campaign.png", aspect: 16 / 9 },
+  { image: "/figma/media-portrait.jpg", aspect: 3 / 4 },
+  { image: "/figma/campaign.jpg", aspect: 16 / 9 },
   { image: "/figma/products/presidio-black-hover.png", aspect: 1 },
 ];
 

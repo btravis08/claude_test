@@ -238,7 +238,7 @@ export function SectionRenderer({ sections }: { sections: PageSection[] }) {
                 eyebrow={section.eyebrow}
                 headline={section.headline}
                 primaryCta={section.primaryCta}
-                image={img(section.image) ?? "/figma/campaign.png"}
+                image={img(section.image) ?? "/figma/campaign.jpg"}
                 kind={section.mediaKind === "videoAutoplay" ? "videoAutoplay" : "image"}
                 videoUrl={section.videoUrl}
               />
@@ -251,7 +251,7 @@ export function SectionRenderer({ sections }: { sections: PageSection[] }) {
                 eyebrow={section.eyebrow}
                 headline={section.headline}
                 primaryCta={section.primaryCta}
-                image={img(section.image) ?? "/figma/campaign.png"}
+                image={img(section.image) ?? "/figma/campaign.jpg"}
                 kind={section.mediaKind}
                 videoUrl={section.videoUrl}
                 lookProducts={toLookCards(section.lookProducts)}

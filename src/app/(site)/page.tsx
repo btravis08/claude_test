@@ -45,6 +45,10 @@ export default async function Home() {
     } catch {
       /* malformed image reference — nothing to preload */
     }
+  } else {
+    /* CMS hero has no image — the component falls back to the static
+       campaign shot, which is still the LCP; preload it */
+    preload("/figma/campaign.jpg", { as: "image", fetchPriority: "high" });
   }
 
   return (

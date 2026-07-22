@@ -95,7 +95,7 @@ export function ProductCard({ product }: { product: ProductCardData }) {
       }
     }
   }, [cardHover, variants]);
-  const wellImage = active?.image ?? product.image ?? "/figma/card-shoe.png";
+  const wellImage = active?.image ?? product.image ?? "/figma/card-shoe.jpg";
   const hoverImage = active?.hoverImage ?? product.hoverImage;
   const extra = variants.length > 0 ? variants.length - 1 : undefined;
   const colorLabel = active?.name ?? product.colorway;

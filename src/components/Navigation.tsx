@@ -112,7 +112,7 @@ const DEFAULT_NAV: NavData = {
     {
       title: "Women",
       layout: "columns",
-      image: "/figma/media-portrait.png",
+      image: "/figma/media-portrait.jpg",
       imageTitle: "Women’s Apparel",
       columns: [
         FEATURED,
@@ -139,7 +139,7 @@ const DEFAULT_NAV: NavData = {
     {
       title: "Gear",
       layout: "columns",
-      image: "/figma/campaign.png",
+      image: "/figma/campaign.jpg",
       imageTitle: "Gear",
       columns: [
         { title: "Featured", links: L(["New Arrivals", "Sun Day Red x Vessel", "Tiger’s Favorites"]) },
@@ -153,8 +153,8 @@ const DEFAULT_NAV: NavData = {
       layout: "cards",
       cards: [
         { title: "The Legacy", image: "/figma/legacy-video.jpg", url: "#" },
-        { title: "Honors Journal", image: "/figma/campaign.png", url: "#" },
-        { title: "Team Sunday Red", image: "/figma/media-portrait.png", url: "#" },
+        { title: "Honors Journal", image: "/figma/campaign.jpg", url: "#" },
+        { title: "Team Sunday Red", image: "/figma/media-portrait.jpg", url: "#" },
       ],
     },
   ],

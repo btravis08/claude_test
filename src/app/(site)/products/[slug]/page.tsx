@@ -217,7 +217,7 @@ export default async function ProductPage({
     const homeHero = home?.sections?.find(
       (section): section is SectionHero => section._type === "sectionHero",
     );
-    const homeHeroImage = img(homeHero?.image) ?? "/figma/campaign.png";
+    const homeHeroImage = img(homeHero?.image) ?? "/figma/campaign.jpg";
     heroImages = [heroImages[0], homeHeroImage, ...heroImages.slice(2)].filter(
       (src): src is string => Boolean(src),
     );

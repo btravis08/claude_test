@@ -29,9 +29,9 @@ const LOREM =
   "Maecenas suspendisse ultrices pellentesque et ornare dui nisl. Eget convallis lorem faucibus tortor in. Cursus feugiat feugiat a quam vestibulum dignissim sem ullamcorper.";
 
 const defaultImages = [
-  "/figma/media-portrait.png",
-  "/figma/campaign.png",
-  "/figma/card-shoe.png",
+  "/figma/media-portrait.jpg",
+  "/figma/campaign.jpg",
+  "/figma/card-shoe.jpg",
   "/figma/legacy-video.jpg",
   "/figma/products/presidio-black.png",
 ];
@@ -262,7 +262,7 @@ export function Carousel({
             aria-hidden
             className="absolute inset-0 bg-cover bg-center"
             style={{
-              backgroundImage: `url(${current?.image ?? "/figma/media-portrait.png"})`,
+              backgroundImage: `url(${current?.image ?? "/figma/media-portrait.jpg"})`,
             }}
             initial={{ opacity: 0, scale: 1.05 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -306,7 +306,7 @@ export function Carousel({
                 y: slideY,
                 opacity: slideOpacity,
                 scale: slideScale,
-                backgroundImage: `url(${current?.image ?? "/figma/media-portrait.png"})`,
+                backgroundImage: `url(${current?.image ?? "/figma/media-portrait.jpg"})`,
               }}
             />
           </div>

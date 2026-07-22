@@ -74,10 +74,17 @@ function FooterAccordion({ heading, links }: { heading: string; links: string[] 
 export function LegacyBand() {
   return (
     <div data-mode="dark" className="relative h-[26.75rem] w-full overflow-hidden bg-black">
-      <div
+      {/* a real lazy <img>: as a CSS background this downloaded on
+          every page load despite being the last thing on the page */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/figma/legacy-video.jpg"
+        alt=""
         aria-hidden
-        className="absolute inset-0 bg-surface-2 bg-cover bg-center"
-        style={{ backgroundImage: "url(/figma/legacy-video.jpg)" }}
+        loading="lazy"
+        decoding="async"
+        draggable={false}
+        className="absolute inset-0 size-full bg-surface-2 object-cover"
       />
       <div className="absolute inset-0 bg-black/20" />
     </div>

@@ -1,0 +1,1090 @@
+{
+ "fetchTime": "2026-07-22T03:45:45.335Z",
+ "finalUrl": "https://sundayred.vercel.app/",
+ "metrics": {
+  "firstContentfulPaint": 1331,
+  "largestContentfulPaint": 11577,
+  "interactive": 13216,
+  "speedIndex": 6758,
+  "totalBlockingTime": 1713,
+  "maxPotentialFID": 711,
+  "cumulativeLayoutShift": 0,
+  "cumulativeLayoutShiftMainFrame": 0,
+  "lcpLoadDelay": 3548,
+  "lcpLoadDuration": 4595,
+  "timeToFirstByte": 627,
+  "observedTimeOrigin": 0,
+  "observedTimeOriginTs": 265541997,
+  "observedNavigationStart": 0,
+  "observedNavigationStartTs": 265541997,
+  "observedFirstPaint": 636,
+  "observedFirstPaintTs": 266178285,
+  "observedFirstContentfulPaint": 636,
+  "observedFirstContentfulPaintTs": 266178285,
+  "observedFirstContentfulPaintAllFrames": 636,
+  "observedFirstContentfulPaintAllFramesTs": 266178285,
+  "observedLargestContentfulPaint": 636,
+  "observedLargestContentfulPaintTs": 266178285,
+  "observedLargestContentfulPaintAllFrames": 636,
+  "observedLargestContentfulPaintAllFramesTs": 266178285,
+  "observedTraceEnd": 3790,
+  "observedTraceEndTs": 269331920,
+  "observedLoad": 737,
+  "observedLoadTs": 266279440,
+  "observedDomContentLoaded": 295,
+  "observedDomContentLoadedTs": 265836829,
+  "observedCumulativeLayoutShift": 0,
+  "observedCumulativeLayoutShiftMainFrame": 0,
+  "observedFirstVisualChange": 636,
+  "observedFirstVisualChangeTs": 266177997,
+  "observedLastVisualChange": 2502,
+  "observedLastVisualChangeTs": 268043997,
+  "observedSpeedIndex": 1728,
+  "observedSpeedIndexTs": 267270103
+ },
+ "audits": {
+  "largest-contentful-paint": {
+   "score": 0,
+   "displayValue": "11.6 s",
+   "items": []
+  },
+  "network-requests": {
+   "score": 1,
+   "items": [
+    {
+     "url": "https://sundayred.vercel.app/",
+     "sessionTargetType": "page",
+     "protocol": "h2",
+     "cache": "none",
+     "rendererStartTime": 0,
+     "networkRequestTime": 5.9329999999608845,
+     "networkEndTime": 76.74699999997392,
+     "finished": true,
+     "transferSize": 11531,
+     "resourceSize": 238332,
+     "statusCode": 200,
+     "mimeType": "text/html",
+     "resourceType": "Document",
+     "priority": "VeryHigh",
+     "experimentalFromMainFrame": true,
+     "entity": "vercel.app"
+    },
+    {
+     "url": "https://sundayred.vercel.app/_next/static/media/FeatureDeck_Regular_Trial-s.p.0n1j_o9wfel3f.woff",
+     "sessionTargetType": "page",
+     "protocol": "h2",
+     "cache": "none",
+     "rendererStartTime": 170.5229999999865,
+     "networkRequestTime": 179.75899999996182,
+     "networkEndTime": 198.24099999997998,
+     "finished": true,
+     "transferSize": 9302,
+     "resourceSize": 9080,
+     "statusCode": 200,
+     "mimeType": "font/woff",
+     "resourceType": "Font",
+     "priority": "High",
+     "isLinkPreload": true,
+     "experimentalFromMainFrame": true,
+     "entity": "vercel.app"
+    },
+    {
+     "url": "https://sundayred.vercel.app/_next/static/media/MaisonNeue_Book-s.p.1ubv_taxyr6_i.woff",
+     "sessionTargetType": "page",
+     "protocol": "h2",
+     "cache": "none",
+     "rendererStartTime": 178.850999999966,
+     "networkRequestTime": 180.03899999998976,
+     "networkEndTime": 227.5920000000042,
+     "finished": true,
+     "transferSize": 28941,
+     "resourceSize": 28732,
+     "statusCode": 200,
+     "mimeType": "font/woff",
+     "resourceType": "Font",
+     "priority": "High",
+     "isLinkPreload": true,
+     "experimentalFromMainFrame": true,
+     "entity": "vercel.app"
+    },
+    {
+     "url": "https://sundayred.vercel.app/_next/static/media/MaisonNeue_Medium-s.p.3y608iqh93p1p.woff",
+     "sessionTargetType": "page",
+     "protocol": "h2",
+     "cache": "none",
+     "rendererStartTime": 178.93399999995017,
+     "networkRequestTime": 180.24100000003818,
+     "networkEndTime": 199.4549999999581,
+     "finished": true,
+     "transferSize": 28660,
+     "resourceSize": 28448,
+     "statusCode": 200,
+     "mimeType": "font/woff",
+     "resourceType": "Font",
+     "priority": "High",
+     "isLinkPreload": true,
+     "experimentalFromMainFrame": true,
+     "entity": "vercel.app"
+    },
+    {
+     "url": "https://sundayred.vercel.app/_next/static/media/MaisonNeue_Mono-s.p.3uh75a5j1g3v2.woff",
+     "sessionTargetType": "page",
+     "protocol": "h2",
+     "cache": "none",
+     "rendererStartTime": 178.9899999999907,
+     "networkRequestTime": 180.43799999996554,
+     "networkEndTime": 223.48999999993248,
+     "finished": true,
+     "transferSize": 23430,
+     "resourceSize": 23220,
+     "statusCode": 200,
+     "mimeType": "font/woff",
+     "resourceType": "Font",
+     "priority": "High",
+     "isLinkPreload": true,
+     "experimentalFromMainFrame": true,
+     "entity": "vercel.app"
+    },
+    {
+     "url": "https://sundayred.vercel.app/figma/campaign.png",
+     "sessionTargetType": "page",
+     "protocol": "h2",
+     "cache": "none",
+     "rendererStartTime": 179.07000000000698,
+     "networkRequestTime": 180.65700000000652,
+     "networkEndTime": 238.2039999999688,
+     "finished": true,
+     "transferSize": 1774937,
+     "resourceSize": 1773759,
+     "statusCode": 200,
+     "mimeType": "image/png",
+     "resourceType": "Image",
+     "priority": "High",
+     "isLinkPreload": true,
+     "experimentalFromMainFrame": true,
+     "entity": "vercel.app"
+    },
+    {
+     "url": "https://sundayred.vercel.app/_next/static/chunks/2738kk2q_3b2m.css",
+     "sessionTargetType": "page",
+     "protocol": "h2",
+     "cache": "none",
+     "rendererStartTime": 179.14399999997113,
+     "networkRequestTime": 184.34799999999814,
+     "networkEndTime": 194.93999999994412,
+     "finished": true,
+     "transferSize": 12347,
+     "resourceSize": 58639,
+     "statusCode": 200,
+     "mimeType": "text/css",
+     "resourceType": "Stylesheet",
+     "priority": "VeryHigh",
+     "experimentalFromMainFrame": true,
+     "entity": "vercel.app"
+    },
+    {
+     "url": "https://sundayred.vercel.app/_next/static/chunks/13-mwa1nomz3g.js",
+     "sessionTargetType": "page",
+     "protocol": "h2",
+     "cache": "none",
+     "rendererStartTime": 179.22499999997672,
+     "networkRequestTime": 201.18400000000838,
+     "networkEndTime": 232.92299999995157,
+     "finished": true,
+     "transferSize": 9129,
+     "resourceSize": 28102,
+     "statusCode": 200,
+     "mimeType": "application/javascript",
+     "resourceType": "Script",
+     "priority": "Low",
+     "isLinkPreload": true,
+     "experimentalFromMainFrame": true,
+     "entity": "vercel.app"
+    },
+    {
+     "url": "https://sundayred.vercel.app/_next/static/chunks/3cjax0pm491q4.js",
+     "sessionTargetType": "page",
+     "protocol": "h2",
+     "cache": "none",
+     "rendererStartTime": 179.2939999999362,
+     "networkRequestTime": 201.35999999998603,
+     "networkEndTime": 229.2839999999851,
+     "finished": true,
+     "transferSize": 7719,
+     "resourceSize": 24147,
+     "statusCode": 200,
+     "mimeType": "application/javascript",
+     "resourceType": "Script",
+     "priority": "Low",
+     "experimentalFromMainFrame": true,
+     "entity": "vercel.app"
+    },
+    {
+     "url": "https://sundayred.vercel.app/_next/static/chunks/0vjik02ehetm8.js",
+     "sessionTargetType": "page",
+     "protocol": "h2",
+     "cache": "none",
+     "rendererStartTime": 179.3400000000256,
+     "networkRequestTime": 201.49700000003213,
+     "networkEndTime": 238.3849999999511,
+     "finished": true,
+     "transferSize": 40658,
+     "resourceSize": 147025,
+     "statusCode": 200,
+     "mimeType": "application/javascript",
+     "resourceType": "Script",
+     "priority": "Low",
+     "experimentalFromMainFrame": true,
+     "entity": "vercel.app"
+    },
+    {
+     "url": "https://sundayred.vercel.app/_next/static/chunks/2ejk_26znfoeu.js",
+     "sessionTargetType": "page",
+     "protocol": "h2",
+     "cache": "none",
+     "rendererStartTime": 179.3979999999865,
+     "networkRequestTime": 201.6689999999944,
+     "networkEndTime": 244.83199999993667,
+     "finished": true,
+     "transferSize": 65574,
+     "resourceSize": 203393,
+     "statusCode": 200,
+     "mimeType": "application/javascript",
+     "resourceType": "Script",
+     "priority": "Low",
+     "experimentalFromMainFrame": true,
+     "entity": "vercel.app"
+    },
+    {
+     "url": "https://sundayred.vercel.app/_next/static/chunks/0g8ku62w0yb2s.js",
+     "sessionTargetType": "page",
+     "protocol": "h2",
+     "cache": "none",
+     "rendererStartTime": 179.44599999999627,
+     "networkRequestTime": 201.8289999999688,
+     "networkEndTime": 237.22099999996135,
+     "finished": true,
+     "transferSize": 9773,
+     "resourceSize": 44022,
+     "statusCode": 200,
+     "mimeType": "application/javascript",
+     "resourceType": "Script",
+     "priority": "Low",
+     "experimentalFromMainFrame": true,
+     "entity": "vercel.app"
+    },
+    {
+     "url": "https://sundayred.vercel.app/_next/static/chunks/turbopack-02x5qw1kd2ogh.js",
+     "sessionTargetType": "page",
+     "protocol": "h2",
+     "cache": "none",
+     "rendererStartTime": 179.48599999997532,
+     "networkRequestTime": 201.96299999998882,
+     "networkEndTime": 234.81099999998696,
+     "finished": true,
+     "transferSize": 4831,
+     "resourceSize": 11053,
+     "statusCode": 200,
+     "mimeType": "application/javascript",
+     "resourceType": "Script",
+     "priority": "Low",
+     "experimentalFromMainFrame": true,
+     "entity": "vercel.app"
+    },
+    {
+     "url": "https://sundayred.vercel.app/_next/static/chunks/2yl1jv4w6po1z.js",
+     "sessionTargetType": "page",
+     "protocol": "h2",
+     "cache": "none",
+     "rendererStartTime": 179.53099999995902,
+     "networkRequestTime": 202.1940000000177,
+     "networkEndTime": 242.99099999997998,
+     "finished": true,
+     "transferSize": 1652,
+     "resourceSize": 3380,
+     "statusCode": 200,
+     "mimeType": "application/javascript",
+     "resourceType": "Script",
+     "priority": "Low",
+     "experimentalFromMainFrame": true,
+     "entity": "vercel.app"
+    },
+    {
+     "url": "https://sundayred.vercel.app/_next/static/chunks/1ntn7efqc-iiw.js",
+     "sessionTargetType": "page",
+     "protocol": "h2",
+     "cache": "none",
+     "rendererStartTime": 179.7050000000163,
+     "networkRequestTime": 202.40100000001257,
+     "networkEndTime": 244.66200000001118,
+     "finished": true,
+     "transferSize": 13675,
+     "resourceSize": 54763,
+     "statusCode": 200,
+     "mimeType": "application/javascript",
+     "resourceType": "Script",
+     "priority": "Low",
+     "experimentalFromMainFrame": true,
+     "entity": "vercel.app"
+    },
+    {
+     "url": "https://sundayred.vercel.app/_next/static/chunks/3zj5xk5ks159r.js",
+     "sessionTargetType": "page",
+     "protocol": "h2",
+     "cache": "none",
+     "rendererStartTime": 179.77000000001863,
+     "networkRequestTime": 202.61699999996927,
+     "networkEndTime": 236.9320000000298,
+     "finished": true,
+     "transferSize": 7200,
+     "resourceSize": 17958,
+     "statusCode": 200,
+     "mimeType": "application/javascript",
+     "resourceType": "Script",
+     "priority": "Low",
+     "experimentalFromMainFrame": true,
+     "entity": "vercel.app"
+    },
+    {
+     "url": "https://sundayred.vercel.app/_next/static/chunks/26cd0gkzo3na6.js",
+     "sessionTargetType": "page",
+     "protocol": "h2",
+     "cache": "none",
+     "rendererStartTime": 179.83299999998417,
+     "networkRequestTime": 202.83299999998417,
+     "networkEndTime": 238.90499999996973,
+     "finished": true,
+     "transferSize": 14347,
+     "resourceSize": 46796,
+     "statusCode": 200,
+     "mimeType": "application/javascript",
+     "resourceType": "Script",
+     "priority": "Low",
+     "experimentalFromMainFrame": true,
+     "entity": "vercel.app"
+    },
+    {
+     "url": "https://sundayred.vercel.app/_next/static/chunks/20fyfalez75bu.js",
+     "sessionTargetType": "page",
+     "protocol": "h2",
+     "cache": "none",
+     "rendererStartTime": 179.8979999999865,
+     "networkRequestTime": 203.10599999997066,
+     "networkEndTime": 235.07099999999627,
+     "finished": true,
+     "transferSize": 11946,
+     "resourceSize": 29151,
+     "statusCode": 200,
+     "mimeType": "application/javascript",
+     "resourceType": "Script",
+     "priority": "Low",
+     "experimentalFromMainFrame": true,
+     "entity": "vercel.app"
+    },
+    {
+     "url": "https://sundayred.vercel.app/_next/static/chunks/0pm1v065g32ka.js",
+     "sessionTargetType": "page",
+     "protocol": "h2",
+     "cache": "none",
+     "rendererStartTime": 179.9529999999795,
+     "networkRequestTime": 203.30499999999302,
+     "networkEndTime": 245.57299999997485,
+     "finished": true,
+     "transferSize": 50934,
+     "resourceSize": 149488,
+     "statusCode": 200,
+     "mimeType": "application/javascript",
+     "resourceType": "Script",
+     "priority": "Low",
+     "experimentalFromMainFrame": true,
+     "entity": "vercel.app"
+    },
+    {
+     "url": "https://sundayred.vercel.app/_next/static/chunks/2lwtlg2p5dmal.js",
+     "sessionTargetType": "page",
+     "protocol": "h2",
+     "cache": "none",
+     "rendererStartTime": 180.00799999997253,
+     "networkRequestTime": 203.50899999996182,
+     "networkEndTime": 253.13999999995576,
+     "finished": true,
+     "transferSize": 8487,
+     "resourceSize": 26578,
+     "statusCode": 200,
+     "mimeType": "application/javascript",
+     "resourceType": "Script",
+     "priority": "Low",
+     "experimentalFromMainFrame": true,
+     "entity": "vercel.app"
+    },
+    {
+     "url": "https://sundayred.vercel.app/figma/union.svg",
+     "sessionTargetType": "page",
+     "protocol": "h2",
+     "cache": "none",
+     "rendererStartTime": 304.38099999993574,
+     "networkRequestTime": 304.75599999999395,
+     "networkEndTime": 316.55300000001444,
+     "finished": true,
+     "transferSize": 4865,
+     "resourceSize": 10195,
+     "statusCode": 200,
+     "mimeType": "image/svg+xml",
+     "resourceType": "Image",
+     "priority": "High",
+     "experimentalFromMainFrame": true,
+     "entity": "vercel.app"
+    },
+    {
+     "url": "https://sundayred.vercel.app/figma/media-portrait.png",
+     "sessionTargetType": "page",
+     "protocol": "h2",
+     "cache": "none",
+     "rendererStartTime": 397.1609999999637,
+     "networkRequestTime": 397.5810000000056,
+     "networkEndTime": 410.11599999998,
+     "finished": true,
+     "transferSize": 158067,
+     "resourceSize": 157757,
+     "statusCode": 200,
+     "mimeType": "image/png",
+     "resourceType": "Image",
+     "priority": "Low",
+     "experimentalFromMainFrame": true,
+     "entity": "vercel.app"
+    },
+    {
+     "url": "https://sundayred.vercel.app/figma/card-shoe.png",
+     "sessionTargetType": "page",
+     "protocol": "h2",
+     "cache": "none",
+     "rendererStartTime": 397.46999999997206,
+     "networkRequestTime": 397.8960000000079,
+     "networkEndTime": 498.73399999999674,
+     "finished": true,
+     "transferSize": 113407,
+     "resourceSize": 113196,
+     "statusCode": 200,
+     "mimeType": "image/png",
+     "resourceType": "Image",
+     "priority": "Low",
+     "experimentalFromMainFrame": true,
+     "entity": "vercel.app"
+    },
+    {
+     "url": "https://sundayred.vercel.app/figma/legacy-video.jpg",
+     "sessionTargetType": "page",
+     "protocol": "h2",
+     "cache": "none",
+     "rendererStartTime": 397.58399999997346,
+     "networkRequestTime": 398.0769999999902,
+     "networkEndTime": 531.2870000000112,
+     "finished": true,
+     "transferSize": 4545950,
+     "resourceSize": 4543169,
+     "statusCode": 200,
+     "mimeType": "image/jpeg",
+     "resourceType": "Image",
+     "priority": "Low",
+     "experimentalFromMainFrame": true,
+     "entity": "vercel.app"
+    },
+    {
+     "url": "https://sundayred.vercel.app/figma/products/presidio-black.png",
+     "sessionTargetType": "page",
+     "protocol": "h2",
+     "cache": "none",
+     "rendererStartTime": 397.7160000000149,
+     "networkRequestTime": 398.2639999999665,
+     "networkEndTime": 478.88099999999395,
+     "finished": true,
+     "transferSize": 276754,
+     "resourceSize": 276409,
+     "statusCode": 200,
+     "mimeType": "image/png",
+     "resourceType": "Image",
+     "priority": "Low",
+     "experimentalFromMainFrame": true,
+     "entity": "vercel.app"
+    },
+    {
+     "url": "https://sundayred.vercel.app/favicon.ico?favicon.2vob68tjqpejf.ico",
+     "sessionTargetType": "page",
+     "protocol": "h2",
+     "cache": "none",
+     "rendererStartTime": 762.2380000000121,
+     "networkRequestTime": 762.6349999999511,
+     "networkEndTime": 821.5119999999879,
+     "finished": true,
+     "transferSize": 9462,
+     "resourceSize": 25931,
+     "statusCode": 200,
+     "mimeType": "image/vnd.microsoft.icon",
+     "resourceType": "Other",
+     "priority": "High",
+     "experimentalFromMainFrame": true,
+     "entity": "vercel.app"
+    },
+    {
+     "url": "https://sundayred.vercel.app/_next/static/chunks/0_yustn9lnui7.js",
+     "sessionTargetType": "page",
+     "protocol": "h2",
+     "cache": "none",
+     "rendererStartTime": 864.2489999999525,
+     "networkRequestTime": 864.795999999973,
+     "networkEndTime": 872.5219999999972,
+     "finished": true,
+     "transferSize": 3255,
+     "resourceSize": 10141,
+     "statusCode": 200,
+     "mimeType": "application/javascript",
+     "resourceType": "Script",
+     "priority": "Low",
+     "experimentalFromMainFrame": true,
+     "entity": "vercel.app"
+    },
+    {
+     "url": "https://sundayred.vercel.app/favicon.ico?favicon.2vob68tjqpejf.ico",
+     "sessionTargetType": "page",
+     "protocol": "h2",
+     "cache": "none",
+     "rendererStartTime": 960.1419999999925,
+     "networkRequestTime": 961.1239999999525,
+     "networkEndTime": 970.9319999999716,
+     "finished": true,
+     "transferSize": 44,
+     "resourceSize": 25931,
+     "statusCode": 200,
+     "mimeType": "image/vnd.microsoft.icon",
+     "resourceType": "Other",
+     "priority": "High",
+     "experimentalFromMainFrame": true,
+     "entity": "vercel.app"
+    },
+    {
+     "url": "https://sundayred.vercel.app/?_rsc=7h4NYy5eoyMcNlUN",
+     "sessionTargetType": "page",
+     "protocol": "h2",
+     "cache": "none",
+     "rendererStartTime": 1048.3319999999949,
+     "networkRequestTime": 1048.9370000000345,
+     "networkEndTime": 1083.0819999999949,
+     "finished": true,
+     "transferSize": 651,
+     "resourceSize": 1135,
+     "statusCode": 200,
+     "mimeType": "text/x-component",
+     "resourceType": "Fetch",
+     "priority": "Low",
+     "experimentalFromMainFrame": true,
+     "entity": "vercel.app"
+    },
+    {
+     "url": "https://sundayred.vercel.app/?_rsc=yIp22O3xgPPxC28X",
+     "sessionTargetType": "page",
+     "protocol": "h2",
+     "cache": "none",
+     "rendererStartTime": 1048.5839999999735,
+     "networkRequestTime": 1049.2980000000098,
+     "networkEndTime": 1059.6209999999846,
+     "finished": true,
+     "transferSize": 1300,
+     "resourceSize": 2250,
+     "statusCode": 200,
+     "mimeType": "text/x-component",
+     "resourceType": "Fetch",
+     "priority": "Low",
+     "experimentalFromMainFrame": true,
+     "entity": "vercel.app"
+    },
+    {
+     "url": "https://sundayred.vercel.app/?_rsc=fA_u5FizDPKOIdgy",
+     "sessionTargetType": "page",
+     "protocol": "h2",
+     "cache": "none",
+     "rendererStartTime": 1048.7609999999986,
+     "networkRequestTime": 1050.1089999999967,
+     "networkEndTime": 1063.1909999999916,
+     "finished": true,
+     "transferSize": 2541,
+     "resourceSize": 9899,
+     "statusCode": 200,
+     "mimeType": "text/x-component",
+     "resourceType": "Fetch",
+     "priority": "Low",
+     "experimentalFromMainFrame": true,
+     "entity": "vercel.app"
+    },
+    {
+     "url": "https://sundayred.vercel.app/?_rsc=gzSU19M5behYtFJ2",
+     "sessionTargetType": "page",
+     "protocol": "h2",
+     "cache": "none",
+     "rendererStartTime": 1048.926999999967,
+     "networkRequestTime": 1050.3269999999902,
+     "networkEndTime": 1061.304999999993,
+     "finished": true,
+     "transferSize": 2515,
+     "resourceSize": 24098,
+     "statusCode": 200,
+     "mimeType": "text/x-component",
+     "resourceType": "Fetch",
+     "priority": "Low",
+     "experimentalFromMainFrame": true,
+     "entity": "vercel.app"
+    }
+   ]
+  },
+  "total-byte-weight": {
+   "score": 0.5,
+   "displayValue": "Total size was 7,084 KiB",
+   "items": [
+    {
+     "url": "https://sundayred.vercel.app/figma/legacy-video.jpg",
+     "totalBytes": 4545950
+    },
+    {
+     "url": "https://sundayred.vercel.app/figma/campaign.png",
+     "totalBytes": 1774937
+    },
+    {
+     "url": "https://sundayred.vercel.app/figma/products/presidio-black.png",
+     "totalBytes": 276754
+    },
+    {
+     "url": "https://sundayred.vercel.app/figma/media-portrait.png",
+     "totalBytes": 158067
+    },
+    {
+     "url": "https://sundayred.vercel.app/figma/card-shoe.png",
+     "totalBytes": 113407
+    },
+    {
+     "url": "https://sundayred.vercel.app/_next/static/chunks/2ejk_26znfoeu.js",
+     "totalBytes": 65574
+    },
+    {
+     "url": "https://sundayred.vercel.app/_next/static/chunks/0pm1v065g32ka.js",
+     "totalBytes": 50934
+    },
+    {
+     "url": "https://sundayred.vercel.app/_next/static/chunks/0vjik02ehetm8.js",
+     "totalBytes": 40658
+    },
+    {
+     "url": "https://sundayred.vercel.app/_next/static/media/MaisonNeue_Book-s.p.1ubv_taxyr6_i.woff",
+     "totalBytes": 28941
+    },
+    {
+     "url": "https://sundayred.vercel.app/_next/static/media/MaisonNeue_Medium-s.p.3y608iqh93p1p.woff",
+     "totalBytes": 28660
+    }
+   ]
+  },
+  "bootup-time": {
+   "score": 0,
+   "displayValue": "3.3 s",
+   "items": [
+    {
+     "url": "https://sundayred.vercel.app/_next/static/chunks/2ejk_26znfoeu.js",
+     "total": 2354.4279999999812,
+     "scripting": 1993.6079999999813,
+     "scriptParseCompile": 16.212
+    },
+    {
+     "url": "https://sundayred.vercel.app/",
+     "total": 1390.732,
+     "scripting": 29.143999999999984,
+     "scriptParseCompile": 27.528000000000002
+    },
+    {
+     "url": "https://sundayred.vercel.app/_next/static/chunks/0pm1v065g32ka.js",
+     "total": 1281.0159999999682,
+     "scripting": 690.1119999999677,
+     "scriptParseCompile": 11.18
+    },
+    {
+     "url": "https://sundayred.vercel.app/_next/static/chunks/26cd0gkzo3na6.js",
+     "total": 1152.4160000000002,
+     "scripting": 64.45199999999996,
+     "scriptParseCompile": 4.0600000000000005
+    },
+    {
+     "url": "Unattributable",
+     "total": 1050.4359999999822,
+     "scripting": 41.416000000000004,
+     "scriptParseCompile": 0
+    },
+    {
+     "url": "https://sundayred.vercel.app/_next/static/chunks/0vjik02ehetm8.js",
+     "total": 268.8640000000001,
+     "scripting": 244.34000000000006,
+     "scriptParseCompile": 11.479999999999999
+    },
+    {
+     "url": "https://sundayred.vercel.app/_next/static/chunks/turbopack-02x5qw1kd2ogh.js",
+     "total": 132.36,
+     "scripting": 130.84,
+     "scriptParseCompile": 1.404
+    }
+   ]
+  },
+  "mainthread-work-breakdown": {
+   "score": 0,
+   "displayValue": "7.7 s",
+   "items": [
+    {
+     "group": "scriptEvaluation",
+     "groupLabel": "Script Evaluation",
+     "duration": 3205.775999999927
+    },
+    {
+     "group": "styleLayout",
+     "groupLabel": "Style & Layout",
+     "duration": 1863.3360000000005
+    },
+    {
+     "group": "other",
+     "groupLabel": "Other",
+     "duration": 1773.6879999999617
+    },
+    {
+     "group": "paintCompositeRender",
+     "groupLabel": "Rendering",
+     "duration": 426.3640000000055
+    },
+    {
+     "group": "parseHTML",
+     "groupLabel": "Parse HTML & CSS",
+     "duration": 211.25600000000003
+    },
+    {
+     "group": "garbageCollection",
+     "groupLabel": "Garbage Collection",
+     "duration": 135.57600000000005
+    },
+    {
+     "group": "scriptParseCompile",
+     "groupLabel": "Script Parsing & Compilation",
+     "duration": 94.68799999999999
+    }
+   ]
+  },
+  "unused-javascript": {
+   "score": 0,
+   "displayValue": "Est savings of 20 KiB",
+   "items": [
+    {
+     "url": "https://sundayred.vercel.app/_next/static/chunks/2ejk_26znfoeu.js",
+     "totalBytes": 65434,
+     "wastedBytes": 20802,
+     "wastedPercent": 31.79116292104448
+    }
+   ]
+  },
+  "network-dependency-tree-insight": {
+   "score": 0,
+   "items": [
+    {
+     "type": "list-section",
+     "value": {
+      "type": "network-tree",
+      "chains": {
+       "7DEBD15E2008878DF48C95EDA25A2A2C": {
+        "url": "https://sundayred.vercel.app/",
+        "navStartToEndTime": 219,
+        "transferSize": 11531,
+        "isLongest": true,
+        "children": {
+         "2438.7": {
+          "url": "https://sundayred.vercel.app/_next/static/chunks/2738kk2q_3b2m.css",
+          "navStartToEndTime": 207,
+          "transferSize": 12347,
+          "children": {}
+         }
+        }
+       }
+      },
+      "longestChain": {
+       "duration": 219
+      }
+     }
+    },
+    {
+     "type": "list-section",
+     "title": "Preconnected origins",
+     "description": "[preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) hints help the browser establish a connection earlier in the page load, saving time when the first request for that origin is made. The following are the origins that the page preconnected to.",
+     "value": {
+      "type": "table",
+      "headings": [
+       {
+        "key": "origin",
+        "valueType": "text",
+        "subItemsHeading": {
+         "key": "warning"
+        },
+        "label": "Origin"
+       },
+       {
+        "key": "source",
+        "valueType": "node",
+        "label": "Source"
+       }
+      ],
+      "items": [
+       {
+        "origin": "https://cdn.sanity.io/",
+        "subItems": {
+         "type": "subitems",
+         "items": [
+          {
+           "warning": "Unused preconnect. Only use preconnect for origins that the page is likely to request."
+          }
+         ]
+        }
+       },
+       {
+        "origin": "",
+        "source": {
+         "type": "node",
+         "lhId": "page-339-LINK",
+         "path": "1,HTML,0,HEAD,21,LINK",
+         "selector": "head > link",
+         "boundingRect": {
+          "top": 0,
+          "bottom": 0,
+          "left": 0,
+          "right": 0,
+          "width": 0,
+          "height": 0
+         },
+         "snippet": "<link rel=\"preconnect\" href=\"https://cdn.sanity.io\" crossorigin=\"\">",
+         "nodeLabel": "head > link"
+        },
+        "subItems": {
+         "type": "subitems",
+         "items": [
+          {
+           "warning": "Unused preconnect. Only use preconnect for origins that the page is likely to request."
+          }
+         ]
+        }
+       }
+      ]
+     }
+    },
+    {
+     "type": "list-section",
+     "title": "Preconnect candidates",
+     "description": "Add [preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) hints to your most important origins, but try to use no more than 4.",
+     "value": {
+      "type": "text",
+      "value": "No additional origins are good candidates for preconnecting"
+     }
+    }
+   ]
+  },
+  "lcp-discovery-insight": {
+   "score": 1,
+   "items": [
+    {
+     "type": "checklist",
+     "items": {
+      "priorityHinted": {
+       "label": "fetchpriority=high applied",
+       "value": true
+      },
+      "requestDiscoverable": {
+       "label": "Request is discoverable in initial document",
+       "value": true
+      },
+      "eagerlyLoaded": {
+       "label": "LCP resources should not use loading=lazy",
+       "value": true
+      }
+     }
+    },
+    {
+     "type": "node",
+     "lhId": "page-5-IMG",
+     "path": "3,MAIN,0,DIV,0,DIV,0,SECTION,0,A,0,DIV,0,DIV,0,DIV,0,IMG",
+     "selector": "div.relative > div.absolute > div.absolute > img.absolute",
+     "boundingRect": {
+      "top": 0,
+      "bottom": 0,
+      "left": 0,
+      "right": 0,
+      "width": 0,
+      "height": 0
+     },
+     "snippet": "<img src=\"/figma/campaign.png\" sizes=\"100vw\" alt=\"\" aria-hidden=\"true\" loading=\"eager\" fetchpriority=\"high\" decoding=\"async\" draggable=\"false\" class=\"absolute inset-0 size-full object-cover \" style=\"object-position:center\">",
+     "nodeLabel": "div.relative > div.absolute > div.absolute > img.absolute"
+    }
+   ]
+  },
+  "image-delivery-insight": {
+   "score": 0,
+   "displayValue": "Est savings of 4,745 KiB",
+   "items": [
+    {
+     "node": {
+      "type": "node",
+      "lhId": "page-0-DIV",
+      "path": "1,HTML,1,BODY,20,DIV,3,DIV,0,DIV",
+      "selector": "body.min-h-full > div#top > div.relative > div.absolute",
+      "boundingRect": {
+       "top": 6543,
+       "bottom": 6971,
+       "left": 0,
+       "right": 412,
+       "width": 412,
+       "height": 428
+      },
+      "snippet": "<div aria-hidden=\"true\" class=\"absolute inset-0 bg-surface-2 bg-cover bg-center\" style=\"background-image: url(&quot;/figma/legacy-video.jpg&quot;);\">",
+      "nodeLabel": "body.min-h-full > div#top > div.relative > div.absolute"
+     },
+     "url": "https://sundayred.vercel.app/figma/legacy-video.jpg",
+     "totalBytes": 4543169,
+     "wastedBytes": 2686316,
+     "subItems": {
+      "type": "subitems",
+      "items": [
+       {
+        "reason": "Using a modern image format (WebP, AVIF) or increasing the image compression could improve this image's download size.",
+        "wastedBytes": 2686316
+       }
+      ]
+     }
+    },
+    {
+     "node": {
+      "type": "node",
+      "lhId": "page-1-IMG",
+      "path": "1,HTML,1,BODY,20,DIV,2,MAIN,0,DIV,0,DIV,0,SECTION,0,A,0,DIV,0,DIV,0,DIV,0,IMG",
+      "selector": "div.relative > div.absolute > div.absolute > img.absolute",
+      "boundingRect": {
+       "top": -62,
+       "bottom": 885,
+       "left": -31,
+       "right": 443,
+       "width": 474,
+       "height": 946
+      },
+      "snippet": "<img sizes=\"100vw\" alt=\"\" aria-hidden=\"true\" loading=\"eager\" fetchpriority=\"high\" decoding=\"async\" draggable=\"false\" class=\"absolute inset-0 size-full object-cover \" src=\"/figma/campaign.png\" style=\"object-position: center center;\">",
+      "nodeLabel": "div.relative > div.absolute > div.absolute > img.absolute"
+     },
+     "url": "https://sundayred.vercel.app/figma/campaign.png",
+     "totalBytes": 1773759,
+     "wastedBytes": 1689061,
+     "subItems": {
+      "type": "subitems",
+      "items": [
+       {
+        "reason": "Using a modern image format (WebP, AVIF) or increasing the image compression could improve this image's download size.",
+        "wastedBytes": 1542370
+       },
+       {
+        "reason": "This image file is larger than it needs to be (833x1666) for its displayed dimensions (617x823). Use responsive images to reduce the image download size.",
+        "wastedBytes": 1124487
+       }
+      ]
+     }
+    },
+    {
+     "node": {
+      "type": "node",
+      "lhId": "page-2-IMG",
+      "path": "1,HTML,1,BODY,20,DIV,2,MAIN,0,DIV,0,DIV,8,SECTION,0,DIV,1,DIV,2,DIV,0,A,0,DIV,0,DIV,0,IMG",
+      "selector": "a.flex > div.group/well > div.absolute > img.absolute",
+      "boundingRect": {
+       "top": 6071,
+       "bottom": 6297,
+       "left": 765,
+       "right": 990,
+       "width": 226,
+       "height": 226
+      },
+      "snippet": "<img alt=\"Presidio\" loading=\"lazy\" decoding=\"async\" draggable=\"false\" class=\"absolute inset-0 size-full object-contain\" src=\"/figma/products/presidio-black.png\">",
+      "nodeLabel": "Presidio"
+     },
+     "url": "https://sundayred.vercel.app/figma/products/presidio-black.png",
+     "totalBytes": 276409,
+     "wastedBytes": 271585,
+     "subItems": {
+      "type": "subitems",
+      "items": [
+       {
+        "reason": "Using a modern image format (WebP, AVIF) or increasing the image compression could improve this image's download size.",
+        "wastedBytes": 128492
+       },
+       {
+        "reason": "This image file is larger than it needs to be (1250x710) for its displayed dimensions (226x128). Use responsive images to reduce the image download size.",
+        "wastedBytes": 267394
+       }
+      ]
+     }
+    },
+    {
+     "node": {
+      "type": "node",
+      "lhId": "page-3-IMG",
+      "path": "1,HTML,1,BODY,20,DIV,2,MAIN,0,DIV,0,DIV,1,SECTION,0,DIV,1,DIV,3,DIV,0,A,0,DIV,0,DIV,0,DIV,0,IMG",
+      "selector": "div.relative > div.absolute > div.absolute > img.absolute",
+      "boundingRect": {
+       "top": 896,
+       "bottom": 1363,
+       "left": 1054,
+       "right": 1404,
+       "width": 350,
+       "height": 467
+      },
+      "snippet": "<img sizes=\"100vw\" alt=\"\" aria-hidden=\"true\" loading=\"lazy\" decoding=\"async\" draggable=\"false\" class=\"absolute inset-0 size-full object-cover transition-transform duration-700 …\" src=\"/figma/media-portrait.png\" style=\"object-position: center center;\">",
+      "nodeLabel": "div.relative > div.absolute > div.absolute > img.absolute"
+     },
+     "url": "https://sundayred.vercel.app/figma/media-portrait.png",
+     "totalBytes": 157757,
+     "wastedBytes": 136065,
+     "subItems": {
+      "type": "subitems",
+      "items": [
+       {
+        "reason": "Using a modern image format (WebP, AVIF) or increasing the image compression could improve this image's download size.",
+        "wastedBytes": 136065
+       }
+      ]
+     }
+    },
+    {
+     "node": {
+      "type": "node",
+      "lhId": "page-4-SPAN",
+      "path": "1,HTML,1,BODY,20,DIV,2,MAIN,0,DIV,0,DIV,3,SECTION,2,DIV,0,DIV,1,DIV,2,BUTTON,0,SPAN",
+      "selector": "div.flex > div.relative > button.relative > span.absolute",
+      "boundingRect": {
+       "top": 2486,
+       "bottom": 2550,
+       "left": 332,
+       "right": 396,
+       "width": 64,
+       "height": 64
+      },
+      "snippet": "<span aria-hidden=\"true\" class=\"absolute inset-0 bg-cover bg-center\" style=\"background-image: url(&quot;/figma/card-shoe.png&quot;);\">",
+      "nodeLabel": "div.flex > div.relative > button.relative > span.absolute"
+     },
+     "url": "https://sundayred.vercel.app/figma/card-shoe.png",
+     "totalBytes": 113196,
+     "wastedBytes": 76217,
+     "subItems": {
+      "type": "subitems",
+      "items": [
+       {
+        "reason": "Using a modern image format (WebP, AVIF) or increasing the image compression could improve this image's download size.",
+        "wastedBytes": 76217
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

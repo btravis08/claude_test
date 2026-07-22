@@ -1,5 +1,6 @@
 "use client";
 
+import { useLenis } from "lenis/react";
 import { AnimatePresence, m } from "motion/react";
 import { usePathname } from "next/navigation";
 import { LayoutRouterContext } from "next/dist/shared/lib/app-router-context.shared-runtime";
@@ -33,6 +34,10 @@ function FrozenRouter({ children }: { children: React.ReactNode }) {
 
 export function PageTransition({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  /* the reset must go through Lenis: it tracks its own scroll
+     position and overrides a plain window.scrollTo on the next
+     frame, which left new pages opened at the old scroll depth */
+  const lenis = useLenis();
   /* browser back/forward restores its own scroll position — only
      fresh link navigations reset to the top */
   const isPop = useRef(false);
@@ -49,7 +54,10 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
       mode="wait"
       initial={false}
       onExitComplete={() => {
-        if (!isPop.current) window.scrollTo({ top: 0, behavior: "instant" });
+        if (!isPop.current) {
+          if (lenis) lenis.scrollTo(0, { immediate: true, force: true });
+          else window.scrollTo({ top: 0, behavior: "instant" });
+        }
         isPop.current = false;
       }}
     >

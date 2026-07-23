@@ -1,4 +1,5 @@
 import { PortableText } from "next-sanity";
+import { Suspense } from "react";
 
 import {
   Carousel,
@@ -389,7 +390,14 @@ export function SectionRenderer({ sections }: { sections: PageSection[] }) {
         /* below-fold sections defer layout/paint until they approach
            the viewport; the first section renders eagerly (LCP) */
         const cv = sectionIndex > 0 ? "cv-auto" : "";
-        const wrapped = node;
+        /* Suspense per below-fold section = a selective-hydration
+           boundary: the server HTML streams complete as before (the
+           fallback never shows), but React 19 hydrates each boundary
+           at low priority instead of hydrating the whole page in one
+           long task — interaction with a boundary jumps its priority.
+           The first section stays boundary-free: it hydrates first. */
+        const wrapped =
+          sectionIndex > 0 ? <Suspense fallback={null}>{node}</Suspense> : node;
         if (!pt && !pb)
           return cv ? (
             <div key={section._key} className={`w-full ${cv}`}>

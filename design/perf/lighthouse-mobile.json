@@ -1,51 +1,49 @@
 {
- "fetchTime": "2026-07-23T06:53:55.203Z",
+ "fetchTime": "2026-07-23T07:04:55.053Z",
  "finalUrl": "https://sundayred.vercel.app/",
  "metrics": {
-  "firstContentfulPaint": 2123,
-  "largestContentfulPaint": 4311,
-  "interactive": 7918,
-  "speedIndex": 6281,
-  "totalBlockingTime": 4704,
-  "maxPotentialFID": 1086,
+  "firstContentfulPaint": 1301,
+  "largestContentfulPaint": 5418,
+  "interactive": 5525,
+  "speedIndex": 5154,
+  "totalBlockingTime": 427,
+  "maxPotentialFID": 664,
   "cumulativeLayoutShift": 0,
   "cumulativeLayoutShiftMainFrame": 0,
-  "lcpLoadDelay": 1809,
-  "lcpLoadDuration": 2977,
-  "timeToFirstByte": 696,
+  "timeToFirstByte": 942,
   "observedTimeOrigin": 0,
-  "observedTimeOriginTs": 63719821,
+  "observedTimeOriginTs": 57948262,
   "observedNavigationStart": 0,
-  "observedNavigationStartTs": 63719821,
-  "observedFirstPaint": 1711,
-  "observedFirstPaintTs": 65430965,
-  "observedFirstContentfulPaint": 1711,
-  "observedFirstContentfulPaintTs": 65430965,
-  "observedFirstContentfulPaintAllFrames": 1711,
-  "observedFirstContentfulPaintAllFramesTs": 65430965,
-  "observedLargestContentfulPaint": 1711,
-  "observedLargestContentfulPaintTs": 65430965,
-  "observedLargestContentfulPaintAllFrames": 1711,
-  "observedLargestContentfulPaintAllFramesTs": 65430965,
-  "observedTraceEnd": 5049,
-  "observedTraceEndTs": 68769170,
-  "observedLoad": 1810,
-  "observedLoadTs": 65529781,
-  "observedDomContentLoaded": 988,
-  "observedDomContentLoadedTs": 64708208,
+  "observedNavigationStartTs": 57948262,
+  "observedFirstPaint": 1487,
+  "observedFirstPaintTs": 59435079,
+  "observedFirstContentfulPaint": 1487,
+  "observedFirstContentfulPaintTs": 59435079,
+  "observedFirstContentfulPaintAllFrames": 1487,
+  "observedFirstContentfulPaintAllFramesTs": 59435079,
+  "observedLargestContentfulPaint": 2054,
+  "observedLargestContentfulPaintTs": 60002591,
+  "observedLargestContentfulPaintAllFrames": 2054,
+  "observedLargestContentfulPaintAllFramesTs": 60002591,
+  "observedTraceEnd": 4423,
+  "observedTraceEndTs": 62371371,
+  "observedLoad": 1936,
+  "observedLoadTs": 59884673,
+  "observedDomContentLoaded": 1475,
+  "observedDomContentLoadedTs": 59423082,
   "observedCumulativeLayoutShift": 0,
   "observedCumulativeLayoutShiftMainFrame": 0,
-  "observedFirstVisualChange": 2272,
-  "observedFirstVisualChangeTs": 65991821,
-  "observedLastVisualChange": 3453,
-  "observedLastVisualChangeTs": 67172821,
-  "observedSpeedIndex": 2879,
-  "observedSpeedIndexTs": 66598464
+  "observedFirstVisualChange": 1804,
+  "observedFirstVisualChangeTs": 59752262,
+  "observedLastVisualChange": 2737,
+  "observedLastVisualChangeTs": 60685262,
+  "observedSpeedIndex": 2136,
+  "observedSpeedIndexTs": 60084286
  },
  "audits": {
   "largest-contentful-paint": {
-   "score": 0.41,
-   "displayValue": "4.3 s",
+   "score": 0.2,
+   "displayValue": "5.4 s",
    "items": []
   },
   "network-requests": {
@@ -57,11 +55,11 @@
      "protocol": "h2",
      "cache": "none",
      "rendererStartTime": 0,
-     "networkRequestTime": 6.620000000002619,
-     "networkEndTime": 511.278999999995,
+     "networkRequestTime": 0.7000000000043656,
+     "networkEndTime": 874.5110000000059,
      "finished": true,
-     "transferSize": 27035,
-     "resourceSize": 436340,
+     "transferSize": 27251,
+     "resourceSize": 436351,
      "statusCode": 200,
      "mimeType": "text/html",
      "resourceType": "Document",
@@ -74,9 +72,9 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 661.7920000000013,
-     "networkRequestTime": 676.5899999999965,
-     "networkEndTime": 874.2400000000052,
+     "rendererStartTime": 883.5809999999983,
+     "networkRequestTime": 884.323000000004,
+     "networkEndTime": 1411.1410000000033,
      "finished": true,
      "transferSize": 9294,
      "resourceSize": 9080,
@@ -93,11 +91,11 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 671.8439999999973,
-     "networkRequestTime": 676.9360000000015,
-     "networkEndTime": 852.0880000000034,
+     "rendererStartTime": 883.8459999999977,
+     "networkRequestTime": 884.5689999999959,
+     "networkEndTime": 1146.675000000003,
      "finished": true,
-     "transferSize": 28942,
+     "transferSize": 28955,
      "resourceSize": 28732,
      "statusCode": 200,
      "mimeType": "font/woff",
@@ -112,11 +110,11 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 671.9409999999989,
-     "networkRequestTime": 677.1569999999992,
-     "networkEndTime": 787.346000000005,
+     "rendererStartTime": 883.9800000000032,
+     "networkRequestTime": 884.7479999999996,
+     "networkEndTime": 1182.3839999999982,
      "finished": true,
-     "transferSize": 28756,
+     "transferSize": 28660,
      "resourceSize": 28448,
      "statusCode": 200,
      "mimeType": "font/woff",
@@ -131,9 +129,9 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 672.0079999999944,
-     "networkRequestTime": 677.3839999999982,
-     "networkEndTime": 916.1110000000044,
+     "rendererStartTime": 884.0490000000063,
+     "networkRequestTime": 884.9559999999983,
+     "networkEndTime": 1385.5520000000033,
      "finished": true,
      "transferSize": 23443,
      "resourceSize": 23220,
@@ -150,11 +148,11 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 672.0690000000031,
-     "networkRequestTime": 677.5990000000093,
-     "networkEndTime": 1141.309000000001,
+     "rendererStartTime": 884.1440000000002,
+     "networkRequestTime": 885.1450000000041,
+     "networkEndTime": 1139.1400000000067,
      "finished": true,
-     "transferSize": 12626,
+     "transferSize": 12580,
      "resourceSize": 12046,
      "statusCode": 200,
      "mimeType": "image/avif",
@@ -169,11 +167,11 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 672.1269999999931,
-     "networkRequestTime": 681.2959999999948,
-     "networkEndTime": 858.4010000000053,
+     "rendererStartTime": 884.2229999999981,
+     "networkRequestTime": 890.1080000000075,
+     "networkEndTime": 1454.5009999999966,
      "finished": true,
-     "transferSize": 12290,
+     "transferSize": 12289,
      "resourceSize": 58874,
      "statusCode": 200,
      "mimeType": "text/css",
@@ -187,11 +185,11 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 672.1860000000015,
-     "networkRequestTime": 763.5979999999909,
-     "networkEndTime": 1118.6120000000083,
+     "rendererStartTime": 884.2839999999997,
+     "networkRequestTime": 890.4360000000015,
+     "networkEndTime": 1212.7000000000044,
      "finished": true,
-     "transferSize": 9165,
+     "transferSize": 9129,
      "resourceSize": 28102,
      "statusCode": 200,
      "mimeType": "application/javascript",
@@ -206,9 +204,9 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 672.226999999999,
-     "networkRequestTime": 763.8930000000037,
-     "networkEndTime": 941.086000000003,
+     "rendererStartTime": 884.3389999999999,
+     "networkRequestTime": 890.6469999999972,
+     "networkEndTime": 1393.3650000000052,
      "finished": true,
      "transferSize": 7686,
      "resourceSize": 24147,
@@ -224,11 +222,11 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 672.2719999999972,
-     "networkRequestTime": 764.1050000000105,
-     "networkEndTime": 905.6080000000075,
+     "rendererStartTime": 884.4010000000053,
+     "networkRequestTime": 890.8669999999984,
+     "networkEndTime": 1497.841999999997,
      "finished": true,
-     "transferSize": 40622,
+     "transferSize": 40628,
      "resourceSize": 147025,
      "statusCode": 200,
      "mimeType": "application/javascript",
@@ -242,11 +240,11 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 672.3159999999989,
-     "networkRequestTime": 764.3270000000048,
-     "networkEndTime": 878.9250000000029,
+     "rendererStartTime": 884.4530000000013,
+     "networkRequestTime": 891.0510000000068,
+     "networkEndTime": 1272.7050000000017,
      "finished": true,
-     "transferSize": 65574,
+     "transferSize": 65581,
      "resourceSize": 203393,
      "statusCode": 200,
      "mimeType": "application/javascript",
@@ -260,9 +258,9 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 672.3510000000024,
-     "networkRequestTime": 764.5330000000104,
-     "networkEndTime": 856.9570000000022,
+     "rendererStartTime": 884.4950000000026,
+     "networkRequestTime": 891.5299999999988,
+     "networkEndTime": 1445.188000000002,
      "finished": true,
      "transferSize": 9773,
      "resourceSize": 44022,
@@ -278,11 +276,11 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 672.3969999999972,
-     "networkRequestTime": 764.6960000000108,
-     "networkEndTime": 902.476999999999,
+     "rendererStartTime": 884.5509999999995,
+     "networkRequestTime": 891.6870000000054,
+     "networkEndTime": 1203.701000000001,
      "finished": true,
-     "transferSize": 4767,
+     "transferSize": 4744,
      "resourceSize": 11053,
      "statusCode": 200,
      "mimeType": "application/javascript",
@@ -296,11 +294,11 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 672.4390000000058,
-     "networkRequestTime": 764.8830000000016,
-     "networkEndTime": 844.7389999999941,
+     "rendererStartTime": 884.612000000001,
+     "networkRequestTime": 891.8709999999992,
+     "networkEndTime": 1141.3550000000032,
      "finished": true,
-     "transferSize": 1679,
+     "transferSize": 1758,
      "resourceSize": 3380,
      "statusCode": 200,
      "mimeType": "application/javascript",
@@ -314,11 +312,11 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 672.4789999999994,
-     "networkRequestTime": 765.1049999999959,
-     "networkEndTime": 890.9400000000096,
+     "rendererStartTime": 884.6660000000047,
+     "networkRequestTime": 892.0450000000055,
+     "networkEndTime": 1197.760000000002,
      "finished": true,
-     "transferSize": 13678,
+     "transferSize": 13642,
      "resourceSize": 54763,
      "statusCode": 200,
      "mimeType": "application/javascript",
@@ -332,11 +330,11 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 672.5199999999968,
-     "networkRequestTime": 765.2660000000033,
-     "networkEndTime": 899.2430000000022,
+     "rendererStartTime": 884.7229999999981,
+     "networkRequestTime": 892.2139999999999,
+     "networkEndTime": 1372.2090000000026,
      "finished": true,
-     "transferSize": 8183,
+     "transferSize": 8123,
      "resourceSize": 19709,
      "statusCode": 200,
      "mimeType": "application/javascript",
@@ -350,9 +348,9 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 672.5690000000031,
-     "networkRequestTime": 765.4110000000073,
-     "networkEndTime": 904.0610000000088,
+     "rendererStartTime": 884.8030000000072,
+     "networkRequestTime": 892.362000000001,
+     "networkEndTime": 1413.3079999999973,
      "finished": true,
      "transferSize": 13749,
      "resourceSize": 34557,
@@ -368,11 +366,11 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 672.6140000000014,
-     "networkRequestTime": 765.5590000000011,
-     "networkEndTime": 914.2620000000024,
+     "rendererStartTime": 884.8759999999966,
+     "networkRequestTime": 892.6030000000028,
+     "networkEndTime": 1268.7669999999998,
      "finished": true,
-     "transferSize": 20618,
+     "transferSize": 20624,
      "resourceSize": 61343,
      "statusCode": 200,
      "mimeType": "application/javascript",
@@ -386,11 +384,11 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 672.6530000000057,
-     "networkRequestTime": 765.7029999999941,
-     "networkEndTime": 882.7000000000044,
+     "rendererStartTime": 884.9369999999981,
+     "networkRequestTime": 892.752999999997,
+     "networkEndTime": 1239.7940000000017,
      "finished": true,
-     "transferSize": 51246,
+     "transferSize": 51240,
      "resourceSize": 151001,
      "statusCode": 200,
      "mimeType": "application/javascript",
@@ -404,11 +402,11 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 672.6889999999985,
-     "networkRequestTime": 766.0629999999946,
-     "networkEndTime": 942.4540000000052,
+     "rendererStartTime": 884.9830000000075,
+     "networkRequestTime": 893.0539999999964,
+     "networkEndTime": 1379.328999999998,
      "finished": true,
-     "transferSize": 10517,
+     "transferSize": 10633,
      "resourceSize": 30913,
      "statusCode": 200,
      "mimeType": "application/javascript",
@@ -422,11 +420,11 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 971.1900000000023,
-     "networkRequestTime": 971.5480000000025,
-     "networkEndTime": 1079.3329999999987,
+     "rendererStartTime": 1457.6260000000038,
+     "networkRequestTime": 1457.8759999999966,
+     "networkEndTime": 1587.9049999999988,
      "finished": true,
-     "transferSize": 4848,
+     "transferSize": 4849,
      "resourceSize": 10195,
      "statusCode": 200,
      "mimeType": "image/svg+xml",
@@ -440,9 +438,9 @@
      "sessionTargetType": "page",
      "protocol": "data",
      "cache": "memory",
-     "rendererStartTime": 1157.4189999999944,
-     "networkRequestTime": 1157.4189999999944,
-     "networkEndTime": 1157.5379999999932,
+     "rendererStartTime": 1458.2549999999974,
+     "networkRequestTime": 1458.2549999999974,
+     "networkEndTime": 1458.311999999998,
      "finished": true,
      "transferSize": 0,
      "resourceSize": 862,
@@ -457,9 +455,9 @@
      "sessionTargetType": "page",
      "protocol": "data",
      "cache": "memory",
-     "rendererStartTime": 1447.4920000000056,
-     "networkRequestTime": 1447.4920000000056,
-     "networkEndTime": 1447.5999999999985,
+     "rendererStartTime": 1461.9570000000022,
+     "networkRequestTime": 1461.9570000000022,
+     "networkEndTime": 1462.0390000000043,
      "finished": true,
      "transferSize": 0,
      "resourceSize": 1504,
@@ -474,11 +472,11 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 1468.7280000000028,
-     "networkRequestTime": 1469.3050000000003,
-     "networkEndTime": 1718.4109999999928,
+     "rendererStartTime": 1463.923999999999,
+     "networkRequestTime": 1464.5480000000025,
+     "networkEndTime": 1704.0469999999987,
      "finished": true,
-     "transferSize": 18130,
+     "transferSize": 18156,
      "resourceSize": 17901,
      "statusCode": 200,
      "mimeType": "image/avif",
@@ -492,11 +490,11 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 1468.8989999999976,
-     "networkRequestTime": 1470.1340000000055,
-     "networkEndTime": 1709.5650000000023,
+     "rendererStartTime": 1464.0120000000024,
+     "networkRequestTime": 1465.2420000000056,
+     "networkEndTime": 1691.4459999999963,
      "finished": true,
-     "transferSize": 39631,
+     "transferSize": 39667,
      "resourceSize": 39393,
      "statusCode": 200,
      "mimeType": "image/avif",
@@ -506,51 +504,15 @@
      "entity": "sanity.io"
     },
     {
-     "url": "https://sundayred.vercel.app/favicon.ico?favicon.2vob68tjqpejf.ico",
-     "sessionTargetType": "page",
-     "protocol": "h2",
-     "cache": "none",
-     "rendererStartTime": 1804.061999999998,
-     "networkRequestTime": 1804.466999999997,
-     "networkEndTime": 1907.8689999999988,
-     "finished": true,
-     "transferSize": 9510,
-     "resourceSize": 25931,
-     "statusCode": 200,
-     "mimeType": "image/vnd.microsoft.icon",
-     "resourceType": "Other",
-     "priority": "High",
-     "experimentalFromMainFrame": true,
-     "entity": "vercel.app"
-    },
-    {
-     "url": "https://sundayred.vercel.app/_next/static/chunks/44wy6k9eab2zp.js",
-     "sessionTargetType": "page",
-     "protocol": "h2",
-     "cache": "none",
-     "rendererStartTime": 1895.841999999997,
-     "networkRequestTime": 1896.3940000000075,
-     "networkEndTime": 1970.757000000005,
-     "finished": true,
-     "transferSize": 4715,
-     "resourceSize": 13008,
-     "statusCode": 200,
-     "mimeType": "application/javascript",
-     "resourceType": "Script",
-     "priority": "Low",
-     "experimentalFromMainFrame": true,
-     "entity": "vercel.app"
-    },
-    {
      "url": "https://cdn.sanity.io/images/alsdve2t/production/c5ca4957c71d37d71d29caa6c2724f3b6608f526-313x417.png?w=1400&auto=format",
      "sessionTargetType": "page",
      "protocol": "h3",
      "cache": "none",
-     "rendererStartTime": 1921.1519999999946,
-     "networkRequestTime": 1921.8059999999896,
-     "networkEndTime": 2167.9040000000023,
+     "rendererStartTime": 1596.9370000000054,
+     "networkRequestTime": 1597.4160000000047,
+     "networkEndTime": 1862.6359999999986,
      "finished": true,
-     "transferSize": 35044,
+     "transferSize": 35101,
      "resourceSize": 35010,
      "statusCode": 200,
      "mimeType": "image/avif",
@@ -564,11 +526,11 @@
      "sessionTargetType": "page",
      "protocol": "h3",
      "cache": "none",
-     "rendererStartTime": 1921.7120000000068,
-     "networkRequestTime": 1922.487000000001,
-     "networkEndTime": 2186.5490000000063,
+     "rendererStartTime": 1597.349000000002,
+     "networkRequestTime": 1597.8300000000017,
+     "networkEndTime": 1904.1779999999999,
      "finished": true,
-     "transferSize": 105646,
+     "transferSize": 105705,
      "resourceSize": 105540,
      "statusCode": 200,
      "mimeType": "image/avif",
@@ -578,31 +540,13 @@
      "entity": "sanity.io"
     },
     {
-     "url": "https://sundayred.vercel.app/favicon.ico?favicon.2vob68tjqpejf.ico",
-     "sessionTargetType": "page",
-     "protocol": "h2",
-     "cache": "none",
-     "rendererStartTime": 2003.3009999999995,
-     "networkRequestTime": 2003.711000000003,
-     "networkEndTime": 2032.4910000000018,
-     "finished": true,
-     "transferSize": 50,
-     "resourceSize": 25931,
-     "statusCode": 200,
-     "mimeType": "image/vnd.microsoft.icon",
-     "resourceType": "Other",
-     "priority": "High",
-     "experimentalFromMainFrame": true,
-     "entity": "vercel.app"
-    },
-    {
      "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAALCAYAAAB/Ca1DAAAACXBIWXMAABYlAAAWJQFJUiTwAAACj…",
      "sessionTargetType": "page",
      "protocol": "data",
      "cache": "memory",
-     "rendererStartTime": 2077.5520000000033,
-     "networkRequestTime": 2077.5520000000033,
-     "networkEndTime": 2077.8819999999905,
+     "rendererStartTime": 1622.6680000000051,
+     "networkRequestTime": 1622.6680000000051,
+     "networkEndTime": 1622.9060000000027,
      "finished": true,
      "transferSize": 0,
      "resourceSize": 732,
@@ -617,9 +561,9 @@
      "sessionTargetType": "page",
      "protocol": "data",
      "cache": "memory",
-     "rendererStartTime": 2083.172999999988,
-     "networkRequestTime": 2083.172999999988,
-     "networkEndTime": 2083.4589999999953,
+     "rendererStartTime": 1623.524000000005,
+     "networkRequestTime": 1623.524000000005,
+     "networkEndTime": 1623.7330000000002,
      "finished": true,
      "transferSize": 0,
      "resourceSize": 378,
@@ -634,9 +578,9 @@
      "sessionTargetType": "page",
      "protocol": "data",
      "cache": "memory",
-     "rendererStartTime": 2083.6140000000087,
-     "networkRequestTime": 2083.6140000000087,
-     "networkEndTime": 2083.9300000000003,
+     "rendererStartTime": 1623.836000000003,
+     "networkRequestTime": 1623.836000000003,
+     "networkEndTime": 1624.046000000002,
      "finished": true,
      "transferSize": 0,
      "resourceSize": 435,
@@ -651,9 +595,9 @@
      "sessionTargetType": "page",
      "protocol": "data",
      "cache": "memory",
-     "rendererStartTime": 2084.684000000001,
-     "networkRequestTime": 2084.684000000001,
-     "networkEndTime": 2084.958000000006,
+     "rendererStartTime": 1624.497000000003,
+     "networkRequestTime": 1624.497000000003,
+     "networkEndTime": 1624.7060000000056,
      "finished": true,
      "transferSize": 0,
      "resourceSize": 385,
@@ -668,9 +612,9 @@
      "sessionTargetType": "page",
      "protocol": "data",
      "cache": "memory",
-     "rendererStartTime": 2085.077000000012,
-     "networkRequestTime": 2085.077000000012,
-     "networkEndTime": 2085.3350000000137,
+     "rendererStartTime": 1624.8059999999969,
+     "networkRequestTime": 1624.8059999999969,
+     "networkEndTime": 1625.0290000000023,
      "finished": true,
      "transferSize": 0,
      "resourceSize": 476,
@@ -685,9 +629,9 @@
      "sessionTargetType": "page",
      "protocol": "data",
      "cache": "memory",
-     "rendererStartTime": 2085.58400000001,
-     "networkRequestTime": 2085.58400000001,
-     "networkEndTime": 2085.876000000011,
+     "rendererStartTime": 1625.247000000003,
+     "networkRequestTime": 1625.247000000003,
+     "networkEndTime": 1625.4579999999987,
      "finished": true,
      "transferSize": 0,
      "resourceSize": 375,
@@ -702,9 +646,9 @@
      "sessionTargetType": "page",
      "protocol": "data",
      "cache": "memory",
-     "rendererStartTime": 2086.4019999999946,
-     "networkRequestTime": 2086.4019999999946,
-     "networkEndTime": 2086.661,
+     "rendererStartTime": 1625.823000000004,
+     "networkRequestTime": 1625.823000000004,
+     "networkEndTime": 1626.0350000000035,
      "finished": true,
      "transferSize": 0,
      "resourceSize": 350,
@@ -719,9 +663,9 @@
      "sessionTargetType": "page",
      "protocol": "data",
      "cache": "memory",
-     "rendererStartTime": 2096.6789999999964,
-     "networkRequestTime": 2096.6789999999964,
-     "networkEndTime": 2097.037000000004,
+     "rendererStartTime": 1631.2180000000008,
+     "networkRequestTime": 1631.2180000000008,
+     "networkEndTime": 1631.4400000000023,
      "finished": true,
      "transferSize": 0,
      "resourceSize": 415,
@@ -736,9 +680,9 @@
      "sessionTargetType": "page",
      "protocol": "data",
      "cache": "memory",
-     "rendererStartTime": 2098.214,
-     "networkRequestTime": 2098.214,
-     "networkEndTime": 2098.5020000000004,
+     "rendererStartTime": 1631.9300000000003,
+     "networkRequestTime": 1631.9300000000003,
+     "networkEndTime": 1632.2000000000044,
      "finished": true,
      "transferSize": 0,
      "resourceSize": 437,
@@ -753,12 +697,63 @@
      "sessionTargetType": "page",
      "protocol": "data",
      "cache": "memory",
-     "rendererStartTime": 2099.2790000000023,
-     "networkRequestTime": 2099.2790000000023,
-     "networkEndTime": 2099.560000000005,
+     "rendererStartTime": 1632.6640000000043,
+     "networkRequestTime": 1632.6640000000043,
+     "networkEndTime": 1632.885000000002,
      "finished": true,
      "transferSize": 0,
      "resourceSize": 399,
+     "statusCode": 200,
+     "mimeType": "image/jpeg",
+     "resourceType": "Image",
+     "priority": "Low",
+     "experimentalFromMainFrame": true
+    },
+    {
+     "url": "data:image/jpeg;base64,/9j/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYn…",
+     "sessionTargetType": "page",
+     "protocol": "data",
+     "cache": "memory",
+     "rendererStartTime": 1633.033000000003,
+     "networkRequestTime": 1633.033000000003,
+     "networkEndTime": 1633.2710000000006,
+     "finished": true,
+     "transferSize": 0,
+     "resourceSize": 447,
+     "statusCode": 200,
+     "mimeType": "image/jpeg",
+     "resourceType": "Image",
+     "priority": "Low",
+     "experimentalFromMainFrame": true
+    },
+    {
+     "url": "data:image/jpeg;base64,/9j/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYn…",
+     "sessionTargetType": "page",
+     "protocol": "data",
+     "cache": "memory",
+     "rendererStartTime": 1633.5529999999999,
+     "networkRequestTime": 1633.5529999999999,
+     "networkEndTime": 1633.7639999999956,
+     "finished": true,
+     "transferSize": 0,
+     "resourceSize": 431,
+     "statusCode": 200,
+     "mimeType": "image/jpeg",
+     "resourceType": "Image",
+     "priority": "Low",
+     "experimentalFromMainFrame": true
+    },
+    {
+     "url": "data:image/jpeg;base64,/9j/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYn…",
+     "sessionTargetType": "page",
+     "protocol": "data",
+     "cache": "memory",
+     "rendererStartTime": 1633.8610000000044,
+     "networkRequestTime": 1633.8610000000044,
+     "networkEndTime": 1634.0709999999963,
+     "finished": true,
+     "transferSize": 0,
+     "resourceSize": 317,
      "statusCode": 200,
      "mimeType": "image/jpeg",
      "resourceType": "Image",
@@ -769,43 +764,43 @@
   },
   "total-byte-weight": {
    "score": 1,
-   "displayValue": "Total size was 626 KiB",
+   "displayValue": "Total size was 627 KiB",
    "items": [
     {
      "url": "https://cdn.sanity.io/images/alsdve2t/production/7752200a6fd3514a40c7fe8584e58559c6d37f06-1250x1666.png?w=1400&auto=format",
-     "totalBytes": 105646
+     "totalBytes": 105705
     },
     {
      "url": "https://sundayred.vercel.app/_next/static/chunks/2ejk_26znfoeu.js",
-     "totalBytes": 65574
+     "totalBytes": 65581
     },
     {
      "url": "https://sundayred.vercel.app/_next/static/chunks/00x342mog13us.js",
-     "totalBytes": 51246
+     "totalBytes": 51240
     },
     {
      "url": "https://sundayred.vercel.app/_next/static/chunks/0vjik02ehetm8.js",
-     "totalBytes": 40622
+     "totalBytes": 40628
     },
     {
      "url": "https://cdn.sanity.io/images/alsdve2t/production/7752200a6fd3514a40c7fe8584e58559c6d37f06-1250x1666.png?w=768&auto=format",
-     "totalBytes": 39631
+     "totalBytes": 39667
     },
     {
      "url": "https://cdn.sanity.io/images/alsdve2t/production/c5ca4957c71d37d71d29caa6c2724f3b6608f526-313x417.png?w=1400&auto=format",
-     "totalBytes": 35044
+     "totalBytes": 35101
     },
     {
      "url": "https://sundayred.vercel.app/_next/static/media/MaisonNeue_Book-s.p.1ubv_taxyr6_i.woff",
-     "totalBytes": 28942
+     "totalBytes": 28955
     },
     {
      "url": "https://sundayred.vercel.app/_next/static/media/MaisonNeue_Medium-s.p.3y608iqh93p1p.woff",
-     "totalBytes": 28756
+     "totalBytes": 28660
     },
     {
      "url": "https://sundayred.vercel.app/",
-     "totalBytes": 27035
+     "totalBytes": 27251
     },
     {
      "url": "https://sundayred.vercel.app/_next/static/media/MaisonNeue_Mono-s.p.3uh75a5j1g3v2.woff",
@@ -815,114 +810,102 @@
   },
   "bootup-time": {
    "score": 0,
-   "displayValue": "4.7 s",
+   "displayValue": "2.0 s",
    "items": [
     {
      "url": "https://sundayred.vercel.app/_next/static/chunks/2ejk_26znfoeu.js",
-     "total": 2657.9199999999737,
-     "scripting": 2146.951999999974,
-     "scriptParseCompile": 23.624000000000002
-    },
-    {
-     "url": "https://sundayred.vercel.app/",
-     "total": 2244.888,
-     "scripting": 14.099999999999925,
-     "scriptParseCompile": 25.99599999999998
-    },
-    {
-     "url": "Unattributable",
-     "total": 1852.3119999999872,
-     "scripting": 40.69200000000005,
-     "scriptParseCompile": 0
+     "total": 1496.6999999999919,
+     "scripting": 1196.2079999999921,
+     "scriptParseCompile": 12.096
     },
     {
      "url": "https://sundayred.vercel.app/_next/static/chunks/00x342mog13us.js",
-     "total": 1226.9759999999706,
-     "scripting": 741.643999999969,
-     "scriptParseCompile": 13.424
+     "total": 705.5079999999919,
+     "scripting": 574.5759999999917,
+     "scriptParseCompile": 8.911999999999999
     },
     {
      "url": "https://sundayred.vercel.app/_next/static/chunks/2up-j5ogz0hld.js",
-     "total": 869.1280000000011,
-     "scripting": 381.63600000000054,
-     "scriptParseCompile": 5.528
+     "total": 447.3400000000017,
+     "scripting": 88.40000000000077,
+     "scriptParseCompile": 4.3
     },
     {
-     "url": "https://sundayred.vercel.app/_next/static/chunks/13-mwa1nomz3g.js",
-     "total": 525.6319999999994,
-     "scripting": 522.5799999999995,
-     "scriptParseCompile": 2.656
+     "url": "Unattributable",
+     "total": 187.2360000000002,
+     "scripting": 6.184,
+     "scriptParseCompile": 0
     },
     {
-     "url": "https://sundayred.vercel.app/_next/static/chunks/turbopack-02x5qw1kd2ogh.js",
-     "total": 496.268,
-     "scripting": 494.44399999999996,
-     "scriptParseCompile": 1.516
-    },
-    {
-     "url": "https://sundayred.vercel.app/_next/static/chunks/2yl1jv4w6po1z.js",
-     "total": 165.004,
-     "scripting": 126.604,
-     "scriptParseCompile": 17.016000000000002
+     "url": "https://sundayred.vercel.app/",
+     "total": 152.4999999999999,
+     "scripting": 12.583999999999932,
+     "scriptParseCompile": 23.935999999999986
     },
     {
      "url": "https://sundayred.vercel.app/_next/static/chunks/0vjik02ehetm8.js",
-     "total": 146.63600000000002,
-     "scripting": 121.012,
-     "scriptParseCompile": 11.104000000000001
+     "total": 128.8199999999999,
+     "scripting": 109.27199999999992,
+     "scriptParseCompile": 9.075999999999999
     }
    ]
   },
   "mainthread-work-breakdown": {
    "score": 0,
-   "displayValue": "10.3 s",
+   "displayValue": "3.2 s",
    "items": [
     {
      "group": "scriptEvaluation",
      "groupLabel": "Script Evaluation",
-     "duration": 4638.027999999629
+     "duration": 2018.7719999999813
     },
     {
      "group": "other",
      "groupLabel": "Other",
-     "duration": 2839.443999999935
+     "duration": 664.5319999999969
     },
     {
      "group": "styleLayout",
      "groupLabel": "Style & Layout",
-     "duration": 1679.9040000000007
-    },
-    {
-     "group": "parseHTML",
-     "groupLabel": "Parse HTML & CSS",
-     "duration": 682.528
-    },
-    {
-     "group": "paintCompositeRender",
-     "groupLabel": "Rendering",
-     "duration": 249.42400000000083
+     "duration": 260.116
     },
     {
      "group": "scriptParseCompile",
      "groupLabel": "Script Parsing & Compilation",
-     "duration": 129.27999999999994
+     "duration": 81.7200000000001
     },
     {
      "group": "garbageCollection",
      "groupLabel": "Garbage Collection",
-     "duration": 75.02800000000003
+     "duration": 71.14800000000001
+    },
+    {
+     "group": "paintCompositeRender",
+     "groupLabel": "Rendering",
+     "duration": 50.615999999999914
+    },
+    {
+     "group": "parseHTML",
+     "groupLabel": "Parse HTML & CSS",
+     "duration": 41.832
     }
    ]
   },
   "unused-javascript": {
-   "score": 0.5,
-   "displayValue": "Est savings of 25 KiB",
+   "score": 0,
+   "displayValue": "Est savings of 45 KiB",
    "items": [
     {
      "url": "https://sundayred.vercel.app/_next/static/chunks/00x342mog13us.js",
      "totalBytes": 51103,
-     "wastedBytes": 25349,
-     "wastedPercent": 49.60364500897345
+     "wastedBytes": 25343,
+     "wastedPercent": 49.59172455811551
+    },
+    {
+     "url": "https://sundayred.vercel.app/_next/static/chunks/2ejk_26znfoeu.js",
+     "totalBytes": 65434,
+     "wastedBytes": 20928,
+     "wastedPercent": 31.983893250996836
     }
    ]
   },
@@ -934,16 +917,16 @@
      "value": {
       "type": "network-tree",
       "chains": {
-       "3AE10BE061C77B346E91291E17E35147": {
+       "BC0771F26B7CD46E1B8CBD45F56513B3": {
         "url": "https://sundayred.vercel.app/",
-        "navStartToEndTime": 759,
-        "transferSize": 27035,
+        "navStartToEndTime": 899,
+        "transferSize": 27251,
         "isLongest": true,
         "children": {
-         "2416.7": {
+         "2163.7": {
           "url": "https://sundayred.vercel.app/_next/static/chunks/0nw3samcl-sfl.css",
-          "navStartToEndTime": 895,
-          "transferSize": 12290,
+          "navStartToEndTime": 1456,
+          "transferSize": 12289,
           "isLongest": true,
           "children": {}
          }
@@ -951,7 +934,7 @@
        }
       },
       "longestChain": {
-       "duration": 895
+       "duration": 1456
       }
      }
     },
@@ -979,13 +962,6 @@
       "items": [
        {
         "origin": "https://cdn.sanity.io/",
-        "subItems": {
-         "type": "subitems",
-         "items": []
-        }
-       },
-       {
-        "origin": "",
         "source": {
          "type": "node",
          "lhId": "page-629-LINK",
@@ -1004,11 +980,7 @@
         },
         "subItems": {
          "type": "subitems",
-         "items": [
-          {
-           "warning": "Unused preconnect. Only use preconnect for origins that the page is likely to request."
-          }
-         ]
+         "items": []
         }
        }
       ]
@@ -1026,42 +998,8 @@
    ]
   },
   "lcp-discovery-insight": {
-   "score": 1,
-   "items": [
-    {
-     "type": "checklist",
-     "items": {
-      "priorityHinted": {
-       "label": "fetchpriority=high applied",
-       "value": true
-      },
-      "requestDiscoverable": {
-       "label": "Request is discoverable in initial document",
-       "value": true
-      },
-      "eagerlyLoaded": {
-       "label": "LCP resources should not use loading=lazy",
-       "value": true
-      }
-     }
-    },
-    {
-     "type": "node",
-     "lhId": "page-0-IMG",
-     "path": "3,MAIN,0,DIV,0,DIV,0,SECTION,0,A,0,DIV,0,DIV,0,DIV,1,IMG",
-     "selector": "div.relative > div.absolute > div.absolute > img.absolute",
-     "boundingRect": {
-      "top": 0,
-      "bottom": 0,
-      "left": 0,
-      "right": 0,
-      "width": 0,
-      "height": 0
-     },
-     "snippet": "<img src=\"https://cdn.sanity.io/images/alsdve2t/production/3dea0f6ed4ff73e87b03c6f56…\" srcset=\"https://cdn.sanity.io/images/alsdve2t/production/3dea0f6ed4ff73e87b03c6f56…\" sizes=\"100vw\" alt=\"\" aria-hidden=\"true\" loading=\"eager\" fetchpriority=\"high\" decoding=\"async\" draggable=\"false\" class=\"absolute inset-0 size-full object-cover \" style=\"object-position:center\">",
-     "nodeLabel": "div.relative > div.absolute > div.absolute > img.absolute"
-    }
-   ]
+   "score": null,
+   "items": []
   },
   "image-delivery-insight": {
    "score": 1,

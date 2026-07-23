@@ -48,6 +48,8 @@ export interface ProductCardData {
   colorway?: string;
   colorCount?: string;
   image?: string;
+  /* base64 blur preview of the card image (Sanity metadata.lqip) */
+  imageLqip?: string;
   hoverImage?: string;
   variants?: ProductVariantData[];
   /* which variant this card shows by default (variant-per-card model) */
@@ -143,6 +145,15 @@ export function ProductCard({ product }: { product: ProductCardData }) {
             transition={{ duration: 0.25 }}
             className="absolute inset-x-[17.77%] top-1/2 aspect-square -translate-y-1/2"
           >
+            {/* LQIP blur under the shot while it lazy-loads (only the
+                default colorway has one — swatch swaps skip it) */}
+            {product.imageLqip && wellImage === product.image && (
+              <div
+                aria-hidden
+                className="absolute inset-0 bg-contain bg-center bg-no-repeat"
+                style={{ backgroundImage: `url(${product.imageLqip})` }}
+              />
+            )}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={wellImage}

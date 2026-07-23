@@ -94,6 +94,7 @@ export function toCards(
     gender: product.gender,
     colorway: variants[0]?.name,
     image: img(product.thumb, 800),
+    imageLqip: product.thumbLqip,
     hoverImage: img(product.hoverImage, 1200),
     variants,
   };
@@ -239,6 +240,7 @@ export function SectionRenderer({ sections }: { sections: PageSection[] }) {
                 headline={section.headline}
                 primaryCta={section.primaryCta}
                 image={img(section.image) ?? "/figma/campaign.jpg"}
+                lqip={section.imageLqip}
                 kind={section.mediaKind === "videoAutoplay" ? "videoAutoplay" : "image"}
                 videoUrl={section.videoUrl}
               />
@@ -252,6 +254,7 @@ export function SectionRenderer({ sections }: { sections: PageSection[] }) {
                 headline={section.headline}
                 primaryCta={section.primaryCta}
                 image={img(section.image) ?? "/figma/campaign.jpg"}
+                lqip={section.imageLqip}
                 kind={section.mediaKind}
                 videoUrl={section.videoUrl}
                 lookProducts={toLookCards(section.lookProducts)}

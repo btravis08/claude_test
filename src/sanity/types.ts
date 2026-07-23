@@ -27,6 +27,8 @@ export type SectionPad = "none" | "s" | "m" | "l";
 interface SectionBase {
   _key: string;
   colorMode?: ColorMode;
+  /* base64 blur preview of the section's main image (LQIP) */
+  imageLqip?: string;
   /* vertical spacing around the section: 0 / 32 / 48 / 96 */
   paddingTop?: SectionPad;
   paddingBottom?: SectionPad;
@@ -123,6 +125,7 @@ export interface SliderProduct {
   options?: Array<{ name?: string; values?: string[] }>;
   variants?: ProductVariant[];
   thumb?: SanityImageSource;
+  thumbLqip?: string;
   hoverImage?: SanityImageSource;
   /* manual collections this product belongs to (reverse lookup) */
   collectionIds?: string[];

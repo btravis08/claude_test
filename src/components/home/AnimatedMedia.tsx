@@ -36,6 +36,7 @@ export function AnimatedMedia({
   entranceDuration = 0.9,
   priority = false,
   sizes = "100vw",
+  lqip,
 }: {
   image: string;
   position?: string;
@@ -46,6 +47,8 @@ export function AnimatedMedia({
   /* the LCP instance (home hero): eager high-priority fetch */
   priority?: boolean;
   sizes?: string;
+  /* base64 blur preview painted under the image while it loads */
+  lqip?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [touch, setTouch] = useState(false);
@@ -126,6 +129,15 @@ export function AnimatedMedia({
         animate={{ scale: inView ? (scrub ? 1.15 : 1) : scrub ? 1.2 : 1.05 }}
         transition={{ duration: entranceDuration, ease: [...MEDIA_EASE] }}
       >
+        {/* LQIP underlay: the blurred preview shows the instant the
+            reveal overlay clears, until the real image paints over it */}
+        {lqip && (
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: `url(${lqip})`, backgroundPosition: position }}
+          />
+        )}
         {inner}
       </m.div>
       {/* fade-out overlay in place of fading the image itself. Capped

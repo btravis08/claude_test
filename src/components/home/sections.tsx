@@ -67,6 +67,7 @@ function Media({
   lookProducts,
   entranceDuration,
   priority = false,
+  lqip,
 }: {
   aspect: string;
   image?: string;
@@ -77,6 +78,7 @@ function Media({
   parallax?: boolean;
   entranceDuration?: number;
   priority?: boolean;
+  lqip?: string;
 } & MediaBlockProps) {
   const autoplay = kind === "videoAutoplay" && videoUrl;
   return (
@@ -103,6 +105,7 @@ function Media({
             parallax={parallax}
             entranceDuration={entranceDuration}
             priority={priority}
+            lqip={lqip}
           />
         )
       )}
@@ -134,6 +137,8 @@ export interface HeroProps {
   /* the hero's media is a static image or an autoplay video only */
   kind?: "image" | "videoAutoplay";
   videoUrl?: string;
+  /* base64 blur preview from Sanity image metadata */
+  lqip?: string;
 }
 
 export function Hero({
@@ -144,6 +149,7 @@ export function Hero({
   image = "/figma/campaign.jpg",
   kind = "image",
   videoUrl,
+  lqip,
 }: HeroProps) {
   return (
     <section data-mode={mode} className="relative w-full bg-surface text-ink">
@@ -160,6 +166,7 @@ export function Hero({
           videoUrl={videoUrl}
           entranceDuration={1.8}
           priority
+          lqip={lqip}
         />
         <CampaignOverlay
           left={eyebrow}
@@ -181,6 +188,8 @@ export interface FullWidthProps extends MediaBlockProps {
   headline?: string;
   primaryCta?: string;
   image?: string;
+  /* base64 blur preview from Sanity image metadata */
+  lqip?: string;
 }
 
 export function FullWidth({
@@ -192,6 +201,7 @@ export function FullWidth({
   kind = "image",
   videoUrl,
   lookProducts,
+  lqip,
 }: FullWidthProps) {
   const media = (
     <>
@@ -205,6 +215,7 @@ export function FullWidth({
         kind={kind}
         videoUrl={videoUrl}
         lookProducts={lookProducts}
+        lqip={lqip}
       />
       {/* pointer-events pass through the text overlay so the media's
           own controls (bag, play, pause) stay hoverable beneath it */}

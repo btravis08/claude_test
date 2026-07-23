@@ -61,6 +61,7 @@ const sliderProductFields = groq`
     name, color, image, hoverImage, price, compareAtPrice
   },
   "thumb": images[0],
+  "thumbLqip": images[0].asset->metadata.lqip,
   "hoverImage": images[1],
   "collectionIds": *[_type == "collection" && ^._id in products[]._ref]._id
 `;
@@ -91,6 +92,7 @@ const sectionFields = groq`
   tag,
   ratio,
   mediaKind,
+  "imageLqip": image.asset->metadata.lqip,
   "videoUrl": video.asset->url,
   lookProducts[]->{ ${lookProductFields} },
   cards[] {

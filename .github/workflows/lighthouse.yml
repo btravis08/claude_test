@@ -45,6 +45,12 @@ jobs:
                 items: a.details?.items?.slice(0, 40) ?? [],
               };
             }
+            // every LCP-flavored audit, in full — the element + phase
+            // breakdown names shift between Lighthouse versions
+            for (const [id, a] of Object.entries(full.audits)) {
+              if (!/lcp|largest/i.test(id) || out.audits[id]) continue;
+              out.audits[id] = a;
+            }
             require("fs").mkdirSync("design/perf", { recursive: true });
             require("fs").writeFileSync("design/perf/lighthouse-mobile.json", JSON.stringify(out, null, 1));
           '

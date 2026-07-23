@@ -291,7 +291,9 @@ export default async function ProductPage({
 
       {/* required: hero carousel + affixed purchase bar */}
       <ProductHero product={{ ...hero, images: heroImages }} />
-      <RegisterCartRecommendations items={pairsForCart} />
+      <RegisterCartRecommendations
+        items={pairsForCart}
+      />
 
       {/* required: about + pairs well with (arrowed mini-card slider);
           the halves split the section and it runs tall per the comp */}

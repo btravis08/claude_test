@@ -14,7 +14,10 @@ export async function sanityFetch<T>(
 ): Promise<T> {
   try {
     const result = await client.fetch<T | null>(query, params, {
-      next: { revalidate: 60 },
+      /* tag-based: a Sanity publish webhook hits /api/revalidate and
+         busts everything instantly; the 10-minute revalidate is only
+         the safety net if the webhook is missing/misconfigured */
+      next: { revalidate: 600, tags: ["sanity"] },
     });
     return result ?? fallback;
   } catch (error) {

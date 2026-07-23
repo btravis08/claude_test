@@ -67,6 +67,22 @@ export default function RootLayout({
         {/* every catalog image comes from the Sanity CDN — warm the
             connection before the first image request */}
         <link rel="preconnect" href="https://cdn.sanity.io" crossOrigin="" />
+        {/* Speculation Rules: Chrome fully prerenders product pages
+            when their links are hovered/touched (moderate), making
+            those navigations instant; other browsers ignore this */}
+        <script
+          type="speculationrules"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              prerender: [
+                { where: { href_matches: "/products/*" }, eagerness: "moderate" },
+              ],
+              prefetch: [
+                { where: { href_matches: "/collections/*" }, eagerness: "moderate" },
+              ],
+            }),
+          }}
+        />
       </head>
       <body className="min-h-full">{children}</body>
     </html>

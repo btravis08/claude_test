@@ -325,11 +325,17 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
      otherwise a refresh paints the frame first and the image pops in
      whenever the network delivers it */
   const [loaded, setLoaded] = useState<Record<string, boolean>>({});
+  /* keyed on the JOINED urls, not the array: `slides` is rebuilt every
+     render, and an every-render effect re-fire kept interrupting the
+     router's navigation transition under cacheComponents (Next 16) —
+     Link clicks away from the PDP silently never committed */
+  const slidesKey = slides.join("|");
   useEffect(() => {
     let alive = true;
     const mark = (src: string) =>
       setLoaded((l) => (l[src] ? l : { ...l, [src]: true }));
-    slides.forEach((src) => {
+    slidesKey.split("|").forEach((src) => {
+      if (!src) return;
       const img = new Image();
       img.onload = () => alive && mark(src);
       img.onerror = () => alive && mark(src);
@@ -339,7 +345,7 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
     return () => {
       alive = false;
     };
-  }, [slides]);
+  }, [slidesKey]);
 
   /* the purchase module, shared by the in-hero overlay and the fixed
      dock. Per the comp (Product Details 33298:29150): a 16px-padded

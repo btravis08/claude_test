@@ -1,4 +1,5 @@
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Suspense } from "react";
 
 import { CartProvider } from "@/components/cart/CartContext";
 import { LazyCartFlyout } from "@/components/cart/LazyCartFlyout";
@@ -93,9 +94,18 @@ export default async function SiteLayout({
            it or the fixed footer peeks through on load */
         className="relative z-10 flex min-h-lvh flex-col bg-surface mb-[min(var(--footer-h,0px),100svh)]"
       >
-        <Navigation data={toNavData(navDoc)} />
+        {/* PPR boundaries: Navigation and PageTransition read
+            usePathname — runtime data on dynamic-param routes — so
+            each sits in its own Suspense hole; the rest of the chrome
+            is the prerendered static shell. Fixed-position nav means
+            the null fallback never shifts layout. */}
+        <Suspense fallback={null}>
+          <Navigation data={toNavData(navDoc)} />
+        </Suspense>
         <main className="flex-1">
-          <PageTransition>{children}</PageTransition>
+          <Suspense fallback={null}>
+            <PageTransition>{children}</PageTransition>
+          </Suspense>
         </main>
         <LegacyBand />
       </div>

@@ -246,6 +246,34 @@ Motion / JS
   render-cost tool.
 - Route scroll resets go through Lenis (`lenis.scrollTo`), never bare
   window.scrollTo — Lenis overrides it next frame.
+- Effect dependencies must be identity-stable. An effect keyed on an
+  array/object rebuilt every render re-fires after EVERY render, and
+  under cacheComponents' transition-based router that silently KILLS
+  navigation: Link clicks run router.push but the URL never commits,
+  no errors anywhere (found via ProductHero's decode probe keyed on
+  `[slides]`; fixed by keying on `slides.join("|")`). When touching
+  effects on PDP/shared components, Playwright-verify "click a Link →
+  location.pathname changes".
+
+PPR / caching (Next 16 Cache Components is ON)
+- `cacheComponents: true` = Partial Prerendering everywhere: the
+  chrome is a prerendered static shell, page content streams.
+  `sanityFetch` is the single `use cache` boundary (cacheTag
+  "sanity", 10-min revalidate as the webhook safety net, week-long
+  stale-while-revalidate). The Sanity publish webhook →
+  /api/revalidate → `revalidateTag("sanity", "max")` busts it.
+- Errors must be caught INSIDE the cached scope (see fetch.ts): a
+  throw inside `use cache` counts as uncached data and fails the
+  whole prerender — it would also let any Sanity blip break a Vercel
+  build. Failed fetches cache null briefly (60s) so they self-heal.
+- `usePathname`/`useSearchParams` are runtime data on dynamic-param
+  routes: any chrome component using them must sit in a Suspense hole
+  (Navigation and PageTransition each have one in (site)/layout).
+  Route segment configs (`export const dynamic/revalidate`) are
+  forbidden under cacheComponents.
+- Navigation now runs through React <Activity>: back/forward keeps
+  previous routes mounted-but-hidden (effects cleaned up and
+  recreated). Anything assuming unmount-on-navigate must be checked.
 
 GROQ / data
 - GROQ comments are `//` ONLY. A `/* */` inside a query string fails

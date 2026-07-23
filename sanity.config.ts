@@ -2,6 +2,7 @@
 
 import { visionTool } from "@sanity/vision";
 import { defineConfig } from "sanity";
+import { defineDocuments, presentationTool } from "sanity/presentation";
 import { structureTool } from "sanity/structure";
 import type { StructureResolver } from "sanity/structure";
 
@@ -102,6 +103,32 @@ export default defineConfig({
   schema: { types: schemaTypes },
   plugins: [
     structureTool({ structure }),
+    /* Presentation: live preview of the real site (drafts included)
+       with click-to-edit overlays. The site and Studio share an
+       origin, so the default previewUrl just works; the enable route
+       flips Next draft mode before loading the page. */
+    presentationTool({
+      previewUrl: {
+        previewMode: { enable: "/api/draft-mode/enable" },
+      },
+      resolve: {
+        /* opening one of these documents jumps the preview to its page */
+        mainDocuments: defineDocuments([
+          {
+            route: "/products/:slug",
+            filter: `_type == "product" && slug.current == $slug`,
+          },
+          {
+            route: "/collections/:slug",
+            filter: `_type == "collection" && slug.current == $slug`,
+          },
+          {
+            route: "/:slug",
+            filter: `_type == "page" && slug.current == $slug`,
+          },
+        ]),
+      },
+    }),
     visionTool({ defaultApiVersion: apiVersion }),
   ],
 });

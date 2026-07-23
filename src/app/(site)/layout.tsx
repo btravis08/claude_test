@@ -1,4 +1,6 @@
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { draftMode } from "next/headers";
+import { VisualEditing } from "next-sanity/visual-editing";
 
 import { CartProvider } from "@/components/cart/CartContext";
 import { LazyCartFlyout } from "@/components/cart/LazyCartFlyout";
@@ -103,6 +105,10 @@ export default async function SiteLayout({
       <LazyCartFlyout />
       {/* real-user Core Web Vitals (enable Speed Insights in Vercel) */}
       <SpeedInsights />
+      {/* click-to-edit overlays + live refresh, ONLY inside the
+          Studio's Presentation preview (draft mode); ordinary
+          visitors never load this */}
+      {(await draftMode()).isEnabled && <VisualEditing />}
       </FooterTaglineProvider>
       </CartProvider>
     </SmoothScroll>

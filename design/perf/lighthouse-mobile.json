@@ -1,49 +1,49 @@
 {
- "fetchTime": "2026-07-23T07:06:16.469Z",
+ "fetchTime": "2026-07-23T07:10:31.539Z",
  "finalUrl": "https://sundayred.vercel.app/",
  "metrics": {
-  "firstContentfulPaint": 978,
-  "largestContentfulPaint": 5084,
-  "interactive": 5203,
-  "speedIndex": 2950,
-  "totalBlockingTime": 460,
-  "maxPotentialFID": 669,
+  "firstContentfulPaint": 1818,
+  "largestContentfulPaint": 5961,
+  "interactive": 6590,
+  "speedIndex": 5879,
+  "totalBlockingTime": 2113,
+  "maxPotentialFID": 875,
   "cumulativeLayoutShift": 0,
   "cumulativeLayoutShiftMainFrame": 0,
-  "timeToFirstByte": 618,
+  "timeToFirstByte": 829,
   "observedTimeOrigin": 0,
-  "observedTimeOriginTs": 355397503,
+  "observedTimeOriginTs": 61490794,
   "observedNavigationStart": 0,
-  "observedNavigationStartTs": 355397503,
-  "observedFirstPaint": 143,
-  "observedFirstPaintTs": 355540745,
-  "observedFirstContentfulPaint": 143,
-  "observedFirstContentfulPaintTs": 355540745,
-  "observedFirstContentfulPaintAllFrames": 143,
-  "observedFirstContentfulPaintAllFramesTs": 355540745,
-  "observedLargestContentfulPaint": 759,
-  "observedLargestContentfulPaintTs": 356156435,
-  "observedLargestContentfulPaintAllFrames": 759,
-  "observedLargestContentfulPaintAllFramesTs": 356156435,
-  "observedTraceEnd": 2690,
-  "observedTraceEndTs": 358087800,
-  "observedLoad": 197,
-  "observedLoadTs": 355594723,
-  "observedDomContentLoaded": 115,
-  "observedDomContentLoadedTs": 355512828,
+  "observedNavigationStartTs": 61490794,
+  "observedFirstPaint": 1558,
+  "observedFirstPaintTs": 63049293,
+  "observedFirstContentfulPaint": 1558,
+  "observedFirstContentfulPaintTs": 63049293,
+  "observedFirstContentfulPaintAllFrames": 1558,
+  "observedFirstContentfulPaintAllFramesTs": 63049293,
+  "observedLargestContentfulPaint": 3195,
+  "observedLargestContentfulPaintTs": 64686218,
+  "observedLargestContentfulPaintAllFrames": 3195,
+  "observedLargestContentfulPaintAllFramesTs": 64686218,
+  "observedTraceEnd": 4789,
+  "observedTraceEndTs": 66279876,
+  "observedLoad": 1613,
+  "observedLoadTs": 63103603,
+  "observedDomContentLoaded": 1606,
+  "observedDomContentLoadedTs": 63096799,
   "observedCumulativeLayoutShift": 0,
   "observedCumulativeLayoutShiftMainFrame": 0,
-  "observedFirstVisualChange": 477,
-  "observedFirstVisualChangeTs": 355874503,
-  "observedLastVisualChange": 1409,
-  "observedLastVisualChangeTs": 356806503,
-  "observedSpeedIndex": 816,
-  "observedSpeedIndexTs": 356213417
+  "observedFirstVisualChange": 1861,
+  "observedFirstVisualChangeTs": 63351794,
+  "observedLastVisualChange": 3195,
+  "observedLastVisualChangeTs": 64685794,
+  "observedSpeedIndex": 2583,
+  "observedSpeedIndexTs": 64074249
  },
  "audits": {
   "largest-contentful-paint": {
-   "score": 0.25,
-   "displayValue": "5.1 s",
+   "score": 0.13,
+   "displayValue": "6.0 s",
    "items": []
   },
   "network-requests": {
@@ -55,10 +55,10 @@
      "protocol": "h2",
      "cache": "none",
      "rendererStartTime": 0,
-     "networkRequestTime": 0.6290000000153668,
-     "networkEndTime": 48.273999999975786,
+     "networkRequestTime": 7.594999999993888,
+     "networkEndTime": 772.4569999999949,
      "finished": true,
-     "transferSize": 27247,
+     "transferSize": 27251,
      "resourceSize": 436351,
      "statusCode": 200,
      "mimeType": "text/html",
@@ -72,11 +72,11 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 59.63500000000931,
-     "networkRequestTime": 60.34299999999348,
-     "networkEndTime": 99.22899999999208,
+     "rendererStartTime": 885.0109999999986,
+     "networkRequestTime": 896.2479999999996,
+     "networkEndTime": 1196.953999999998,
      "finished": true,
-     "transferSize": 9294,
+     "transferSize": 9307,
      "resourceSize": 9080,
      "statusCode": 200,
      "mimeType": "font/woff",
@@ -91,11 +91,11 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 59.924000000057276,
-     "networkRequestTime": 60.63000000000466,
-     "networkEndTime": 96.25099999998929,
+     "rendererStartTime": 895.5369999999966,
+     "networkRequestTime": 896.5139999999956,
+     "networkEndTime": 1220.4559999999983,
      "finished": true,
-     "transferSize": 29018,
+     "transferSize": 28942,
      "resourceSize": 28732,
      "statusCode": 200,
      "mimeType": "font/woff",
@@ -110,9 +110,9 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 60.03099999995902,
-     "networkRequestTime": 60.853999999992084,
-     "networkEndTime": 105.5559999999823,
+     "rendererStartTime": 895.6759999999922,
+     "networkRequestTime": 896.7350000000006,
+     "networkEndTime": 1231.0639999999985,
      "finished": true,
      "transferSize": 28660,
      "resourceSize": 28448,
@@ -129,11 +129,11 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 60.1019999999553,
-     "networkRequestTime": 61.022999999986496,
-     "networkEndTime": 91.24800000002142,
+     "rendererStartTime": 895.7429999999949,
+     "networkRequestTime": 896.9389999999985,
+     "networkEndTime": 1201.3229999999967,
      "finished": true,
-     "transferSize": 23443,
+     "transferSize": 23430,
      "resourceSize": 23220,
      "statusCode": 200,
      "mimeType": "font/woff",
@@ -148,11 +148,11 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 60.15600000001723,
-     "networkRequestTime": 61.228000000002794,
-     "networkEndTime": 183.5119999999879,
+     "rendererStartTime": 895.8419999999969,
+     "networkRequestTime": 897.1440000000002,
+     "networkEndTime": 1058.8309999999983,
      "finished": true,
-     "transferSize": 12599,
+     "transferSize": 12580,
      "resourceSize": 12046,
      "statusCode": 200,
      "mimeType": "image/avif",
@@ -167,11 +167,11 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 60.240000000048894,
-     "networkRequestTime": 66.66899999999441,
-     "networkEndTime": 90.01199999998789,
+     "rendererStartTime": 895.9509999999937,
+     "networkRequestTime": 903.6389999999956,
+     "networkEndTime": 1247.0679999999993,
      "finished": true,
-     "transferSize": 12288,
+     "transferSize": 12289,
      "resourceSize": 58874,
      "statusCode": 200,
      "mimeType": "text/css",
@@ -185,9 +185,9 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 60.31699999998091,
-     "networkRequestTime": 67.08100000000559,
-     "networkEndTime": 92.82099999999627,
+     "rendererStartTime": 896.0639999999985,
+     "networkRequestTime": 971.9919999999984,
+     "networkEndTime": 1178.7189999999973,
      "finished": true,
      "transferSize": 9129,
      "resourceSize": 28102,
@@ -204,11 +204,11 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 60.368000000016764,
-     "networkRequestTime": 67.24400000000605,
-     "networkEndTime": 87.625,
+     "rendererStartTime": 896.1629999999932,
+     "networkRequestTime": 972.3249999999971,
+     "networkEndTime": 1208.090999999993,
      "finished": true,
-     "transferSize": 7686,
+     "transferSize": 7726,
      "resourceSize": 24147,
      "statusCode": 200,
      "mimeType": "application/javascript",
@@ -222,11 +222,11 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 60.42300000000978,
-     "networkRequestTime": 67.42999999999302,
-     "networkEndTime": 106.75800000003073,
+     "rendererStartTime": 896.2669999999925,
+     "networkRequestTime": 972.5569999999934,
+     "networkEndTime": 1253.8349999999919,
      "finished": true,
-     "transferSize": 40625,
+     "transferSize": 40622,
      "resourceSize": 147025,
      "statusCode": 200,
      "mimeType": "application/javascript",
@@ -240,11 +240,11 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 60.47399999998743,
-     "networkRequestTime": 67.625,
-     "networkEndTime": 127.65700000000652,
+     "rendererStartTime": 896.3859999999986,
+     "networkRequestTime": 972.8090000000011,
+     "networkEndTime": 1305.1649999999936,
      "finished": true,
-     "transferSize": 65574,
+     "transferSize": 65581,
      "resourceSize": 203393,
      "statusCode": 200,
      "mimeType": "application/javascript",
@@ -258,11 +258,11 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 60.52999999996973,
-     "networkRequestTime": 67.82099999999627,
-     "networkEndTime": 100.49299999995856,
+     "rendererStartTime": 896.4680000000008,
+     "networkRequestTime": 973.0679999999993,
+     "networkEndTime": 1255.7709999999934,
      "finished": true,
-     "transferSize": 9774,
+     "transferSize": 9773,
      "resourceSize": 44022,
      "statusCode": 200,
      "mimeType": "application/javascript",
@@ -276,11 +276,11 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 60.59200000000419,
-     "networkRequestTime": 68.32200000004377,
-     "networkEndTime": 81.68699999997625,
+     "rendererStartTime": 896.5509999999922,
+     "networkRequestTime": 973.3549999999959,
+     "networkEndTime": 1191.7569999999978,
      "finished": true,
-     "transferSize": 4820,
+     "transferSize": 4744,
      "resourceSize": 11053,
      "statusCode": 200,
      "mimeType": "application/javascript",
@@ -294,11 +294,11 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 60.6480000000447,
-     "networkRequestTime": 68.524000000034,
-     "networkEndTime": 96.07600000000093,
+     "rendererStartTime": 896.6599999999962,
+     "networkRequestTime": 973.544999999991,
+     "networkEndTime": 1165.0829999999987,
      "finished": true,
-     "transferSize": 1732,
+     "transferSize": 1756,
      "resourceSize": 3380,
      "statusCode": 200,
      "mimeType": "application/javascript",
@@ -312,9 +312,9 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 60.7039999999688,
-     "networkRequestTime": 68.69000000000233,
-     "networkEndTime": 84.5229999999865,
+     "rendererStartTime": 896.7099999999991,
+     "networkRequestTime": 973.7819999999992,
+     "networkEndTime": 1230.5299999999916,
      "finished": true,
      "transferSize": 13642,
      "resourceSize": 54763,
@@ -330,9 +330,9 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 60.7609999999986,
-     "networkRequestTime": 68.93700000003446,
-     "networkEndTime": 88.67400000005728,
+     "rendererStartTime": 896.7520000000004,
+     "networkRequestTime": 973.9909999999945,
+     "networkEndTime": 1193.492999999995,
      "finished": true,
      "transferSize": 8090,
      "resourceSize": 19709,
@@ -348,11 +348,11 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 60.84599999996135,
-     "networkRequestTime": 69.11100000003353,
-     "networkEndTime": 177.02600000001257,
+     "rendererStartTime": 896.8159999999916,
+     "networkRequestTime": 974.1859999999942,
+     "networkEndTime": 1232.9099999999962,
      "finished": true,
-     "transferSize": 13755,
+     "transferSize": 13749,
      "resourceSize": 34557,
      "statusCode": 200,
      "mimeType": "application/javascript",
@@ -366,11 +366,11 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 60.90799999999581,
-     "networkRequestTime": 69.27899999998044,
-     "networkEndTime": 87.00299999996787,
+     "rendererStartTime": 896.8739999999962,
+     "networkRequestTime": 974.4079999999958,
+     "networkEndTime": 1204.8399999999965,
      "finished": true,
-     "transferSize": 20618,
+     "transferSize": 20625,
      "resourceSize": 61343,
      "statusCode": 200,
      "mimeType": "application/javascript",
@@ -384,11 +384,11 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 60.961999999999534,
-     "networkRequestTime": 69.51399999996647,
-     "networkEndTime": 106.22200000000885,
+     "rendererStartTime": 896.9219999999987,
+     "networkRequestTime": 974.6999999999971,
+     "networkEndTime": 1226.2319999999963,
      "finished": true,
-     "transferSize": 51246,
+     "transferSize": 51354,
      "resourceSize": 151001,
      "statusCode": 200,
      "mimeType": "application/javascript",
@@ -402,9 +402,9 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 61.035000000032596,
-     "networkRequestTime": 69.67300000000978,
-     "networkEndTime": 104.18400000000838,
+     "rendererStartTime": 896.9699999999939,
+     "networkRequestTime": 974.9229999999952,
+     "networkEndTime": 1190.4229999999952,
      "finished": true,
      "transferSize": 10517,
      "resourceSize": 30913,
@@ -420,11 +420,11 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 116.09800000005635,
-     "networkRequestTime": 116.40299999999115,
-     "networkEndTime": 126.49799999996321,
+     "rendererStartTime": 1289.364999999998,
+     "networkRequestTime": 1289.6900000000023,
+     "networkEndTime": 1409.8410000000003,
      "finished": true,
-     "transferSize": 4842,
+     "transferSize": 4882,
      "resourceSize": 10195,
      "statusCode": 200,
      "mimeType": "image/svg+xml",
@@ -438,9 +438,9 @@
      "sessionTargetType": "page",
      "protocol": "data",
      "cache": "memory",
-     "rendererStartTime": 116.79500000004191,
-     "networkRequestTime": 116.79500000004191,
-     "networkEndTime": 116.87099999998463,
+     "rendererStartTime": 1341.1979999999967,
+     "networkRequestTime": 1341.1979999999967,
+     "networkEndTime": 1341.3169999999955,
      "finished": true,
      "transferSize": 0,
      "resourceSize": 862,
@@ -455,9 +455,9 @@
      "sessionTargetType": "page",
      "protocol": "data",
      "cache": "memory",
-     "rendererStartTime": 123.75099999998929,
-     "networkRequestTime": 123.75099999998929,
-     "networkEndTime": 123.86600000003818,
+     "rendererStartTime": 1410.5569999999934,
+     "networkRequestTime": 1410.5569999999934,
+     "networkEndTime": 1410.6939999999959,
      "finished": true,
      "transferSize": 0,
      "resourceSize": 1504,
@@ -472,11 +472,11 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 126.84700000000885,
-     "networkRequestTime": 127.19000000000233,
-     "networkEndTime": 218.16600000002654,
+     "rendererStartTime": 1429.6549999999988,
+     "networkRequestTime": 1430.0769999999975,
+     "networkEndTime": 1447.7869999999966,
      "finished": true,
-     "transferSize": 18149,
+     "transferSize": 18098,
      "resourceSize": 17901,
      "statusCode": 200,
      "mimeType": "image/avif",
@@ -490,11 +490,11 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 126.94500000000698,
-     "networkRequestTime": 127.38799999997718,
-     "networkEndTime": 256.0810000000056,
+     "rendererStartTime": 1429.8189999999959,
+     "networkRequestTime": 1430.9129999999932,
+     "networkEndTime": 1457.0859999999957,
      "finished": true,
-     "transferSize": 39809,
+     "transferSize": 39597,
      "resourceSize": 39393,
      "statusCode": 200,
      "mimeType": "image/avif",
@@ -508,11 +508,11 @@
      "sessionTargetType": "page",
      "protocol": "h2",
      "cache": "none",
-     "rendererStartTime": 213.53699999995297,
-     "networkRequestTime": 213.8969999999972,
-     "networkEndTime": 236.13099999999395,
+     "rendererStartTime": 1634.025999999998,
+     "networkRequestTime": 1634.4119999999966,
+     "networkEndTime": 1815.0279999999984,
      "finished": true,
-     "transferSize": 9558,
+     "transferSize": 9462,
      "resourceSize": 25931,
      "statusCode": 200,
      "mimeType": "image/vnd.microsoft.icon",
@@ -524,13 +524,13 @@
     {
      "url": "https://cdn.sanity.io/images/alsdve2t/production/c5ca4957c71d37d71d29caa6c2724f3b6608f526-313x417.png?w=1400&auto=format",
      "sessionTargetType": "page",
-     "protocol": "h2",
+     "protocol": "h3",
      "cache": "none",
-     "rendererStartTime": 255.61799999995856,
-     "networkRequestTime": 256.36999999999534,
-     "networkEndTime": 271.9920000000275,
+     "rendererStartTime": 1752.041999999994,
+     "networkRequestTime": 1752.6239999999962,
+     "networkEndTime": 1775.265999999996,
      "finished": true,
-     "transferSize": 35146,
+     "transferSize": 35044,
      "resourceSize": 35010,
      "statusCode": 200,
      "mimeType": "image/avif",
@@ -542,13 +542,13 @@
     {
      "url": "https://cdn.sanity.io/images/alsdve2t/production/7752200a6fd3514a40c7fe8584e58559c6d37f06-1250x1666.png?w=1400&auto=format",
      "sessionTargetType": "page",
-     "protocol": "h2",
+     "protocol": "h3",
      "cache": "none",
-     "rendererStartTime": 256.0250000000233,
-     "networkRequestTime": 256.98200000001816,
-     "networkEndTime": 285.75400000001537,
+     "rendererStartTime": 1752.551999999996,
+     "networkRequestTime": 1753.2359999999971,
+     "networkEndTime": 1787.3189999999959,
      "finished": true,
-     "transferSize": 105710,
+     "transferSize": 105584,
      "resourceSize": 105540,
      "statusCode": 200,
      "mimeType": "image/avif",
@@ -562,9 +562,9 @@
      "sessionTargetType": "page",
      "protocol": "data",
      "cache": "memory",
-     "rendererStartTime": 281.3869999999879,
-     "networkRequestTime": 281.3869999999879,
-     "networkEndTime": 281.6450000000186,
+     "rendererStartTime": 1830.3529999999955,
+     "networkRequestTime": 1830.3529999999955,
+     "networkEndTime": 1830.7419999999984,
      "finished": true,
      "transferSize": 0,
      "resourceSize": 732,
@@ -579,9 +579,9 @@
      "sessionTargetType": "page",
      "protocol": "data",
      "cache": "memory",
-     "rendererStartTime": 282.46000000002095,
-     "networkRequestTime": 282.46000000002095,
-     "networkEndTime": 282.80100000003586,
+     "rendererStartTime": 1835.8559999999998,
+     "networkRequestTime": 1835.8559999999998,
+     "networkEndTime": 1836.2089999999953,
      "finished": true,
      "transferSize": 0,
      "resourceSize": 378,
@@ -596,9 +596,9 @@
      "sessionTargetType": "page",
      "protocol": "data",
      "cache": "memory",
-     "rendererStartTime": 282.96000000002095,
-     "networkRequestTime": 282.96000000002095,
-     "networkEndTime": 283.26700000005076,
+     "rendererStartTime": 1836.3839999999982,
+     "networkRequestTime": 1836.3839999999982,
+     "networkEndTime": 1836.8609999999971,
      "finished": true,
      "transferSize": 0,
      "resourceSize": 435,
@@ -613,9 +613,9 @@
      "sessionTargetType": "page",
      "protocol": "data",
      "cache": "memory",
-     "rendererStartTime": 283.8489999999874,
-     "networkRequestTime": 283.8489999999874,
-     "networkEndTime": 284.08500000002095,
+     "rendererStartTime": 1837.479999999996,
+     "networkRequestTime": 1837.479999999996,
+     "networkEndTime": 1837.809000000001,
      "finished": true,
      "transferSize": 0,
      "resourceSize": 385,
@@ -630,9 +630,9 @@
      "sessionTargetType": "page",
      "protocol": "data",
      "cache": "memory",
-     "rendererStartTime": 284.1900000000023,
-     "networkRequestTime": 284.1900000000023,
-     "networkEndTime": 284.4560000000056,
+     "rendererStartTime": 1837.9389999999985,
+     "networkRequestTime": 1837.9389999999985,
+     "networkEndTime": 1838.2280000000028,
      "finished": true,
      "transferSize": 0,
      "resourceSize": 476,
@@ -647,9 +647,9 @@
      "sessionTargetType": "page",
      "protocol": "data",
      "cache": "memory",
-     "rendererStartTime": 284.68600000004517,
-     "networkRequestTime": 284.68600000004517,
-     "networkEndTime": 284.9320000000298,
+     "rendererStartTime": 1838.5299999999988,
+     "networkRequestTime": 1838.5299999999988,
+     "networkEndTime": 1838.8220000000001,
      "finished": true,
      "transferSize": 0,
      "resourceSize": 375,
@@ -664,9 +664,9 @@
      "sessionTargetType": "page",
      "protocol": "data",
      "cache": "memory",
-     "rendererStartTime": 285.26500000001397,
-     "networkRequestTime": 285.26500000001397,
-     "networkEndTime": 285.4859999999753,
+     "rendererStartTime": 1839.2439999999988,
+     "networkRequestTime": 1839.2439999999988,
+     "networkEndTime": 1839.5199999999968,
      "finished": true,
      "transferSize": 0,
      "resourceSize": 350,
@@ -681,9 +681,9 @@
      "sessionTargetType": "page",
      "protocol": "data",
      "cache": "memory",
-     "rendererStartTime": 291.5430000000051,
-     "networkRequestTime": 291.5430000000051,
-     "networkEndTime": 291.82400000002235,
+     "rendererStartTime": 1859.5179999999964,
+     "networkRequestTime": 1859.5179999999964,
+     "networkEndTime": 1859.9049999999988,
      "finished": true,
      "transferSize": 0,
      "resourceSize": 415,
@@ -698,9 +698,9 @@
      "sessionTargetType": "page",
      "protocol": "data",
      "cache": "memory",
-     "rendererStartTime": 292.3999999999651,
-     "networkRequestTime": 292.3999999999651,
-     "networkEndTime": 292.6390000000247,
+     "rendererStartTime": 1860.690999999999,
+     "networkRequestTime": 1860.690999999999,
+     "networkEndTime": 1861.0279999999984,
      "finished": true,
      "transferSize": 0,
      "resourceSize": 437,
@@ -715,9 +715,9 @@
      "sessionTargetType": "page",
      "protocol": "data",
      "cache": "memory",
-     "rendererStartTime": 293.0890000000363,
-     "networkRequestTime": 293.0890000000363,
-     "networkEndTime": 293.31200000003446,
+     "rendererStartTime": 1861.5459999999948,
+     "networkRequestTime": 1861.5459999999948,
+     "networkEndTime": 1861.8369999999923,
      "finished": true,
      "transferSize": 0,
      "resourceSize": 399,
@@ -732,9 +732,9 @@
      "sessionTargetType": "page",
      "protocol": "data",
      "cache": "memory",
-     "rendererStartTime": 293.4189999999944,
-     "networkRequestTime": 293.4189999999944,
-     "networkEndTime": 293.6470000000554,
+     "rendererStartTime": 1861.9579999999914,
+     "networkRequestTime": 1861.9579999999914,
+     "networkEndTime": 1862.2119999999995,
      "finished": true,
      "transferSize": 0,
      "resourceSize": 447,
@@ -749,9 +749,9 @@
      "sessionTargetType": "page",
      "protocol": "data",
      "cache": "memory",
-     "rendererStartTime": 293.94900000002235,
-     "networkRequestTime": 293.94900000002235,
-     "networkEndTime": 294.1689999999944,
+     "rendererStartTime": 1862.5529999999999,
+     "networkRequestTime": 1862.5529999999999,
+     "networkEndTime": 1862.8459999999977,
      "finished": true,
      "transferSize": 0,
      "resourceSize": 431,
@@ -769,31 +769,31 @@
    "items": [
     {
      "url": "https://cdn.sanity.io/images/alsdve2t/production/7752200a6fd3514a40c7fe8584e58559c6d37f06-1250x1666.png?w=1400&auto=format",
-     "totalBytes": 105710
+     "totalBytes": 105584
     },
     {
      "url": "https://sundayred.vercel.app/_next/static/chunks/2ejk_26znfoeu.js",
-     "totalBytes": 65574
+     "totalBytes": 65581
     },
     {
      "url": "https://sundayred.vercel.app/_next/static/chunks/00x342mog13us.js",
-     "totalBytes": 51246
+     "totalBytes": 51354
     },
     {
      "url": "https://sundayred.vercel.app/_next/static/chunks/0vjik02ehetm8.js",
-     "totalBytes": 40625
+     "totalBytes": 40622
     },
     {
      "url": "https://cdn.sanity.io/images/alsdve2t/production/7752200a6fd3514a40c7fe8584e58559c6d37f06-1250x1666.png?w=768&auto=format",
-     "totalBytes": 39809
+     "totalBytes": 39597
     },
     {
      "url": "https://cdn.sanity.io/images/alsdve2t/production/c5ca4957c71d37d71d29caa6c2724f3b6608f526-313x417.png?w=1400&auto=format",
-     "totalBytes": 35146
+     "totalBytes": 35044
     },
     {
      "url": "https://sundayred.vercel.app/_next/static/media/MaisonNeue_Book-s.p.1ubv_taxyr6_i.woff",
-     "totalBytes": 29018
+     "totalBytes": 28942
     },
     {
      "url": "https://sundayred.vercel.app/_next/static/media/MaisonNeue_Medium-s.p.3y608iqh93p1p.woff",
@@ -801,88 +801,106 @@
     },
     {
      "url": "https://sundayred.vercel.app/",
-     "totalBytes": 27247
+     "totalBytes": 27251
     },
     {
      "url": "https://sundayred.vercel.app/_next/static/media/MaisonNeue_Mono-s.p.3uh75a5j1g3v2.woff",
-     "totalBytes": 23443
+     "totalBytes": 23430
     }
    ]
   },
   "bootup-time": {
    "score": 0,
-   "displayValue": "2.1 s",
+   "displayValue": "4.1 s",
    "items": [
     {
      "url": "https://sundayred.vercel.app/_next/static/chunks/2ejk_26znfoeu.js",
-     "total": 1651.2799999999834,
-     "scripting": 1335.4479999999833,
-     "scriptParseCompile": 12.360000000000001
-    },
-    {
-     "url": "https://sundayred.vercel.app/_next/static/chunks/00x342mog13us.js",
-     "total": 743.8359999999873,
-     "scripting": 598.8359999999872,
-     "scriptParseCompile": 11.404
-    },
-    {
-     "url": "https://sundayred.vercel.app/_next/static/chunks/2up-j5ogz0hld.js",
-     "total": 441.7840000000011,
-     "scripting": 82.76800000000077,
-     "scriptParseCompile": 4.828
+     "total": 2837.1639999999657,
+     "scripting": 2399.5559999999655,
+     "scriptParseCompile": 15.244
     },
     {
      "url": "https://sundayred.vercel.app/",
-     "total": 208.0599999999999,
-     "scripting": 18.991999999999926,
-     "scriptParseCompile": 29.527999999999977
+     "total": 1286.8520000000003,
+     "scripting": 14.807999999999923,
+     "scriptParseCompile": 26.55599999999998
+    },
+    {
+     "url": "https://sundayred.vercel.app/_next/static/chunks/00x342mog13us.js",
+     "total": 1113.9079999999517,
+     "scripting": 864.7119999999514,
+     "scriptParseCompile": 11.952
     },
     {
      "url": "Unattributable",
-     "total": 182.06400000000065,
-     "scripting": 5.912,
+     "total": 1074.7839999999883,
+     "scripting": 46.96,
      "scriptParseCompile": 0
+    },
+    {
+     "url": "https://sundayred.vercel.app/_next/static/chunks/2up-j5ogz0hld.js",
+     "total": 833.888000000001,
+     "scripting": 294.7320000000008,
+     "scriptParseCompile": 7.123999999999999
+    },
+    {
+     "url": "https://sundayred.vercel.app/_next/static/chunks/0vjik02ehetm8.js",
+     "total": 170.01200000000003,
+     "scripting": 137.64000000000004,
+     "scriptParseCompile": 13.732000000000001
+    },
+    {
+     "url": "https://sundayred.vercel.app/_next/static/chunks/turbopack-02x5qw1kd2ogh.js",
+     "total": 169.344,
+     "scripting": 167.936,
+     "scriptParseCompile": 1.268
+    },
+    {
+     "url": "https://sundayred.vercel.app/_next/static/chunks/2yl1jv4w6po1z.js",
+     "total": 76.76,
+     "scripting": 22.708000000000002,
+     "scriptParseCompile": 32.176
     }
    ]
   },
   "mainthread-work-breakdown": {
    "score": 0,
-   "displayValue": "3.4 s",
+   "displayValue": "7.7 s",
    "items": [
     {
      "group": "scriptEvaluation",
      "groupLabel": "Script Evaluation",
-     "duration": 2124.923999999985
+     "duration": 4000.187999999937
     },
     {
      "group": "other",
      "groupLabel": "Other",
-     "duration": 691.8759999999963
+     "duration": 1890.1959999999815
     },
     {
      "group": "styleLayout",
      "groupLabel": "Style & Layout",
-     "duration": 274.348
-    },
-    {
-     "group": "scriptParseCompile",
-     "groupLabel": "Script Parsing & Compilation",
-     "duration": 94.60799999999998
-    },
-    {
-     "group": "garbageCollection",
-     "groupLabel": "Garbage Collection",
-     "duration": 76.25199999999998
-    },
-    {
-     "group": "paintCompositeRender",
-     "groupLabel": "Rendering",
-     "duration": 56.78400000000006
+     "duration": 1007.0080000000002
     },
     {
      "group": "parseHTML",
      "groupLabel": "Parse HTML & CSS",
-     "duration": 53.02400000000001
+     "duration": 413.30799999999994
+    },
+    {
+     "group": "paintCompositeRender",
+     "groupLabel": "Rendering",
+     "duration": 200.36399999999995
+    },
+    {
+     "group": "scriptParseCompile",
+     "groupLabel": "Script Parsing & Compilation",
+     "duration": 136.81599999999992
+    },
+    {
+     "group": "garbageCollection",
+     "groupLabel": "Garbage Collection",
+     "duration": 60.112
     }
    ]
   },
@@ -893,14 +911,14 @@
     {
      "url": "https://sundayred.vercel.app/_next/static/chunks/00x342mog13us.js",
      "totalBytes": 51103,
-     "wastedBytes": 25343,
-     "wastedPercent": 49.59172455811551
+     "wastedBytes": 25349,
+     "wastedPercent": 49.60364500897345
     },
     {
      "url": "https://sundayred.vercel.app/_next/static/chunks/2ejk_26znfoeu.js",
      "totalBytes": 65434,
-     "wastedBytes": 20579,
-     "wastedPercent": 31.44995157158801
+     "wastedBytes": 20928,
+     "wastedPercent": 31.983893250996836
     }
    ]
   },
@@ -912,16 +930,16 @@
      "value": {
       "type": "network-tree",
       "chains": {
-       "3FBEFC333B3582346DCC81C92DFB16B5": {
+       "A0F554B7BD58485C14930768F034A9D4": {
         "url": "https://sundayred.vercel.app/",
-        "navStartToEndTime": 74,
-        "transferSize": 27247,
+        "navStartToEndTime": 969,
+        "transferSize": 27251,
         "isLongest": true,
         "children": {
-         "2221.7": {
+         "2401.7": {
           "url": "https://sundayred.vercel.app/_next/static/chunks/0nw3samcl-sfl.css",
-          "navStartToEndTime": 93,
-          "transferSize": 12288,
+          "navStartToEndTime": 1257,
+          "transferSize": 12289,
           "isLongest": true,
           "children": {}
          }
@@ -929,7 +947,7 @@
        }
       },
       "longestChain": {
-       "duration": 93
+       "duration": 1257
       }
      }
     },
@@ -999,6 +1017,65 @@
   "image-delivery-insight": {
    "score": 1,
    "items": []
+  },
+  "lcp-breakdown-insight": {
+   "id": "lcp-breakdown-insight",
+   "title": "LCP breakdown",
+   "description": "Each [subpart has specific improvement strategies](https://developer.chrome.com/docs/performance/insights/lcp-breakdown). Ideally, most of the LCP time should be spent on loading the resources, not within delays.",
+   "score": 0,
+   "scoreDisplayMode": "numeric",
+   "metricSavings": {
+    "LCP": 0
+   },
+   "details": {
+    "type": "list",
+    "items": [
+     {
+      "type": "table",
+      "headings": [
+       {
+        "key": "label",
+        "valueType": "text",
+        "label": "Subpart"
+       },
+       {
+        "key": "duration",
+        "valueType": "ms",
+        "label": "Duration"
+       }
+      ],
+      "items": [
+       {
+        "subpart": "timeToFirstByte",
+        "label": "Time to first byte",
+        "duration": 81.479
+       },
+       {
+        "subpart": "elementRenderDelay",
+        "label": "Element render delay",
+        "duration": 3113.945
+       }
+      ]
+     },
+     {
+      "type": "node",
+      "lhId": "page-0-SPAN",
+      "path": "1,HTML,1,BODY,1,DIV,2,MAIN,0,DIV,0,DIV,0,SECTION,0,A,1,DIV,0,DIV,0,DIV,0,DIV,0,DIV,1,SPAN",
+      "selector": "div.flex > div.hero-cta > div.flex > span.font-display",
+      "boundingRect": {
+       "top": 635,
+       "bottom": 673,
+       "left": 96,
+       "right": 316,
+       "width": 220,
+       "height": 38
+      },
+      "snippet": "<span class=\"font-display text-headline-lg\" style=\"opacity: 1;\">",
+      "nodeLabel": "Spring Traditions"
+     }
+    ]
+   },
+   "guidanceLevel": 3
   }
  }
 }

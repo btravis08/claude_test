@@ -173,6 +173,9 @@ export function Hero({
           center={headline}
           right={primaryCta}
           stack="button"
+          /* the hero headline is the mobile LCP element — its fade
+             must not wait for hydration (CSS reveal, see globals) */
+          priority
         />
       </a>
     </section>

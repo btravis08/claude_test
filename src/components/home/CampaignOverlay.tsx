@@ -33,11 +33,17 @@ export function CampaignOverlay({
   center,
   right,
   stack,
+  priority = false,
 }: {
   left?: string;
   center?: string;
   right?: string;
   stack?: "button" | "link";
+  /* the LCP instance (homepage hero): the texts fade via the CSS
+     .sdr-text-reveal animation instead of Motion, so the headline —
+     the page's LCP element on mobile — paints without waiting for
+     hydration. Same delay/duration/ease as the Motion fade. */
+  priority?: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.2 });
@@ -52,11 +58,14 @@ export function CampaignOverlay({
 
   if (!left && !center && !right) return null;
 
-  const fade = {
-    initial: { opacity: 0 },
-    animate: { opacity: go ? 1 : 0 },
-    transition: SPREAD,
-  } as const;
+  const fade = priority
+    ? {}
+    : ({
+        initial: { opacity: 0 },
+        animate: { opacity: go ? 1 : 0 },
+        transition: SPREAD,
+      } as const);
+  const fadeClass = priority ? "sdr-text-reveal " : "";
 
   return (
     <div ref={ref} className="pointer-events-none absolute inset-0">
@@ -72,12 +81,12 @@ export function CampaignOverlay({
             <div className="hero-cta sticky flex w-full flex-col items-center gap-6">
               <div className="flex flex-col items-center gap-4 text-center">
                 {left !== undefined && (
-                  <m.span {...fade} className="label font-medium">
+                  <m.span {...fade} className={`${fadeClass}label font-medium`}>
                     {left}
                   </m.span>
                 )}
                 {center !== undefined && (
-                  <m.span {...fade} className="font-display text-headline-lg">
+                  <m.span {...fade} className={`${fadeClass}font-display text-headline-lg`}>
                     {center}
                   </m.span>
                 )}
@@ -85,7 +94,7 @@ export function CampaignOverlay({
               {right !== undefined && (
                 <m.span
                   {...fade}
-                  className="label flex h-[2.875rem] w-full items-center justify-center rounded-xs bg-btn font-medium text-btn-fg"
+                  className={`${fadeClass}label flex h-[2.875rem] w-full items-center justify-center rounded-xs bg-btn font-medium text-btn-fg`}
                 >
                   {right}
                 </m.span>
@@ -102,17 +111,17 @@ export function CampaignOverlay({
           <div className="flex h-full items-end justify-between gap-4 p-4">
             <div className="flex min-w-0 flex-col gap-3">
               {left !== undefined && (
-                <m.span {...fade} className="label font-medium">
+                <m.span {...fade} className={`${fadeClass}label font-medium`}>
                   {left}
                 </m.span>
               )}
               {center !== undefined && (
-                <m.span {...fade} className="font-display text-headline-lg">
+                <m.span {...fade} className={`${fadeClass}font-display text-headline-lg`}>
                   {center}
                 </m.span>
               )}
             </div>
-            <m.span {...fade} className="shrink-0">
+            <m.span {...fade} className={`${fadeClass}shrink-0`}>
               <ArrowInViewPlay className="flex size-10 items-center justify-center rounded-xs bg-white text-[#161716]">
                 <ArrowSwap dx={1} dy={-1}>
                   <ArrowUpRight />
@@ -139,10 +148,8 @@ export function CampaignOverlay({
           {left !== undefined && (
             <m.span
               layout="position"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: go ? 1 : 0 }}
-              transition={SPREAD}
-              className="label col-start-1 justify-self-start font-medium"
+              {...fade}
+              className={`${fadeClass}label col-start-1 justify-self-start font-medium`}
             >
               {left}
             </m.span>
@@ -150,10 +157,8 @@ export function CampaignOverlay({
           {center !== undefined && (
             <m.span
               layout="position"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: go ? 1 : 0 }}
-              transition={SPREAD}
-              className="col-start-2 justify-self-center font-display text-headline-lg"
+              {...fade}
+              className={`${fadeClass}col-start-2 justify-self-center font-display text-headline-lg`}
             >
               {center}
             </m.span>
@@ -161,10 +166,8 @@ export function CampaignOverlay({
           {right !== undefined && (
             <m.span
               layout="position"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: go ? 1 : 0 }}
-              transition={SPREAD}
-              className="label relative col-start-3 justify-self-end font-medium"
+              {...fade}
+              className={`${fadeClass}label relative col-start-3 justify-self-end font-medium`}
             >
               {right}
               {/* nav-style underline, driven by hovering the whole section */}

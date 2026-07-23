@@ -324,6 +324,32 @@ body {
   }
 }
 
+/*
+  Hero overlay text reveal — CSS, not Motion, ON PURPOSE: the hero
+  headline is the page's LCP element on mobile, and a JS-driven fade
+  makes its paint wait for hydration (measured: ~3s of elementRender-
+  Delay under Lighthouse's 4x CPU throttle). A CSS animation starts
+  the moment styles apply — same 300ms delay + 700ms ease-in-out the
+  Motion fade used, no hydration dependency. Below-fold overlays keep
+  the Motion fade (they need the in-view gate; they're never the LCP).
+*/
+.sdr-text-reveal {
+  animation: sdr-text-reveal 0.7s ease-in-out 0.3s backwards;
+}
+@keyframes sdr-text-reveal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sdr-text-reveal {
+    animation: none;
+  }
+}
+
 /* Media overlay: 20% scrim + bottom gradient (Figma content-overlay mask) */
 @utility media-overlay {
   position: absolute;

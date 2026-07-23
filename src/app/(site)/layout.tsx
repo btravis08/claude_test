@@ -1,3 +1,5 @@
+import { SpeedInsights } from "@vercel/speed-insights/next";
+
 import { CartProvider } from "@/components/cart/CartContext";
 import { LazyCartFlyout } from "@/components/cart/LazyCartFlyout";
 import { Navigation } from "@/components/Navigation";
@@ -99,6 +101,8 @@ export default async function SiteLayout({
       </div>
       <SiteFooter />
       <LazyCartFlyout />
+      {/* real-user Core Web Vitals (enable Speed Insights in Vercel) */}
+      <SpeedInsights />
       </FooterTaglineProvider>
       </CartProvider>
     </SmoothScroll>

@@ -258,8 +258,35 @@ export default async function ProductPage({
     color: item.colorway,
   }));
 
+  /* Product structured data → rich results; CMS products only */
+  const jsonLd = product
+    ? {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        name: product.title,
+        image: heroImages.filter(Boolean),
+        sku: product.variants?.[0]?.sku,
+        brand: { "@type": "Brand", name: product.vendor ?? "Sun Day Red" },
+        offers:
+          typeof product.pricing?.price === "number"
+            ? {
+                "@type": "Offer",
+                price: product.pricing.price,
+                priceCurrency: "USD",
+                availability: "https://schema.org/InStock",
+              }
+            : undefined,
+      }
+    : null;
+
   return (
     <div data-mode="light" className="flex w-full flex-col bg-surface text-ink">
+      {jsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      )}
       {product?.showFooterTagline && <FooterTagline />}
 
       {/* required: hero carousel + affixed purchase bar */}

@@ -1,6 +1,6 @@
 "use client";
 
-import { LazyMotion, domAnimation } from "motion/react";
+import { LazyMotion, MotionConfig, domAnimation } from "motion/react";
 
 /*
   App-wide LazyMotion: every component uses the slim `m.*` primitives,
@@ -12,5 +12,11 @@ import { LazyMotion, domAnimation } from "motion/react";
   and slider drags are hand-rolled on motion values.)
 */
 export function MotionProvider({ children }: { children: React.ReactNode }) {
-  return <LazyMotion features={domAnimation}>{children}</LazyMotion>;
+  return (
+    <LazyMotion features={domAnimation}>
+      {/* honors the OS prefers-reduced-motion setting: transforms
+          snap instead of animating, opacity fades remain */}
+      <MotionConfig reducedMotion="user">{children}</MotionConfig>
+    </LazyMotion>
+  );
 }

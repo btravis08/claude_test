@@ -19,7 +19,13 @@ import {
   TechSpecs,
   ThreeDViewer,
 } from "@/components/home/sections";
-import { SliderShell } from "@/components/home/SliderShell";
+import dynamic from "next/dynamic";
+
+/* same split chunk the sections use — the pairs rail hydrates off the
+   PDP's critical path (below the fold on mobile) */
+const SliderShell = dynamic(() =>
+  import("@/components/home/SliderShell").then((m) => m.SliderShell),
+);
 import { SectionRenderer, activeOnly, toCards } from "@/components/SectionRenderer";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { urlFor } from "@/sanity/lib/image";

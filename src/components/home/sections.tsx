@@ -1,18 +1,38 @@
+import dynamic from "next/dynamic";
+
 import { AnimatedMedia } from "@/components/home/AnimatedMedia";
 import { ArrowInViewPlay, ArrowLink, ArrowSwap } from "@/components/home/ArrowHover";
 import { CampaignOverlay } from "@/components/home/CampaignOverlay";
-import {
-  AutoplayVideo,
-  ShopTheLook,
-  VideoPlayerBlock,
-} from "@/components/home/MediaBlock";
 import type { LookProductData } from "@/components/home/MediaBlock";
-import { ProductCard } from "@/components/home/ProductCard";
 import type { ProductCardData } from "@/components/home/ProductCard";
 import { SectionReveal, RevealLine, RevealText } from "@/components/home/SectionReveal";
-import { SliderShell } from "@/components/home/SliderShell";
-import { StatDials } from "@/components/home/StatDial";
 import { ArrowUpRight } from "@/components/icons";
+
+/* Heavy interactive client components load as their own chunks
+   (next/dynamic, SSR intact): the HTML still streams complete, but
+   their JS parses and hydrates off the critical path — they all live
+   below the fold, and bundling them with the route made hydration the
+   page's biggest main-thread cost (measured: 1.9s script eval in one
+   chunk under PSI's 4x throttle). The hero path (AnimatedMedia,
+   CampaignOverlay) stays eagerly bundled — it IS the critical path. */
+const SliderShell = dynamic(() =>
+  import("@/components/home/SliderShell").then((m) => m.SliderShell),
+);
+const ProductCard = dynamic(() =>
+  import("@/components/home/ProductCard").then((m) => m.ProductCard),
+);
+const StatDials = dynamic(() =>
+  import("@/components/home/StatDial").then((m) => m.StatDials),
+);
+const AutoplayVideo = dynamic(() =>
+  import("@/components/home/MediaBlock").then((m) => m.AutoplayVideo),
+);
+const ShopTheLook = dynamic(() =>
+  import("@/components/home/MediaBlock").then((m) => m.ShopTheLook),
+);
+const VideoPlayerBlock = dynamic(() =>
+  import("@/components/home/MediaBlock").then((m) => m.VideoPlayerBlock),
+);
 
 /*
   Presentational sections from the Figma SDR library. Content and color
@@ -382,7 +402,9 @@ export function ProductSlider({
 
 /* ---------- Carousel (client, interactive) ---------- */
 
-export { Carousel } from "@/components/home/Carousel";
+export const Carousel = dynamic(() =>
+  import("@/components/home/Carousel").then((m) => m.Carousel),
+);
 export type { CarouselProps } from "@/components/home/Carousel";
 
 /* ---------- 50/50 ---------- */

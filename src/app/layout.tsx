@@ -34,6 +34,10 @@ const maisonMono = localFont({
   weight: "400",
   variable: "--font-maison-mono",
   display: "swap",
+  /* only the PDP mini-cards use the mono cut — don't spend 22KB of
+     high-priority preload bandwidth on it on every page; it lazy-
+     fetches where font-mono is actually rendered */
+  preload: false,
 });
 
 export const metadata: Metadata = {

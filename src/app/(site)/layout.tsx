@@ -1,6 +1,5 @@
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { draftMode } from "next/headers";
-import { VisualEditing } from "next-sanity/visual-editing";
 
 import { CartProvider } from "@/components/cart/CartContext";
 import { LazyCartFlyout } from "@/components/cart/LazyCartFlyout";
@@ -9,6 +8,7 @@ import type { MenuItem, NavData, NavLink } from "@/components/Navigation";
 import { FooterTaglineProvider } from "@/components/FooterTagline";
 import { PageTransition } from "@/components/PageTransition";
 import { LegacyBand, SiteFooter } from "@/components/SiteFooter";
+import { LiveVisualEditing } from "@/components/LiveVisualEditing";
 import { MotionProvider } from "@/components/MotionProvider";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { sanityFetch } from "@/sanity/lib/fetch";
@@ -114,7 +114,7 @@ export default async function SiteLayout({
       {/* click-to-edit overlays + live refresh, ONLY inside the
           Studio's Presentation preview (draft mode); ordinary
           visitors never load this */}
-      {isDraft && <VisualEditing />}
+      {isDraft && <LiveVisualEditing />}
       </FooterTaglineProvider>
       </CartProvider>
     </SmoothScroll>

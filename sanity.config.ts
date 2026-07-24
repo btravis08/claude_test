@@ -115,6 +115,10 @@ export default defineConfig({
         /* opening one of these documents jumps the preview to its page */
         mainDocuments: defineDocuments([
           {
+            route: "/",
+            filter: `_type == "page" && slug.current == "home"`,
+          },
+          {
             route: "/products/:slug",
             filter: `_type == "product" && slug.current == $slug`,
           },

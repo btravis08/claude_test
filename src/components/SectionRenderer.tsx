@@ -184,17 +184,27 @@ function toLookCards(products?: Array<SliderProduct | null>): LookProductData[] 
 /* Sliders source products manually, from a collection, or by tag
    (newest post date first) */
 async function ProductSliderSection({ section }: { section: SectionProductSlider }) {
-  const [settings, discounts] = await Promise.all([
+  /* one round trip, not two: settings/discounts and the product
+     source resolve together (draft-mode refreshes re-run all of this
+     uncached, so every serial hop is felt in the preview latency) */
+  const productsPromise: Promise<SliderProduct[]> =
+    section.source === "manual"
+      ? Promise.resolve(activeOnly(section.products ?? []))
+      : section.source === "collection"
+        ? productsForCollection(section.collection)
+        : sanityFetch<SliderProduct[]>(
+            productsByTagQuery,
+            { productTag: section.tag ?? "all" },
+            [],
+          );
+  const [settings, discounts, sourced] = await Promise.all([
     sanityFetch<StoreSettings | null>(storeSettingsQuery, {}, null),
     sanityFetch<Discount[]>(automaticDiscountsQuery, {}, []),
+    productsPromise,
   ]);
-  let products: SliderProduct[] = [];
-  if (section.source === "manual") {
-    products = activeOnly(section.products ?? []);
-  } else if (section.source === "collection") {
-    products = await productsForCollection(section.collection);
-  }
-  if (products.length === 0 && section.source !== "collection") {
+  let products = sourced;
+  /* a manual list that resolved empty still tops up by tag */
+  if (products.length === 0 && section.source === "manual") {
     products = await sanityFetch<SliderProduct[]>(
       productsByTagQuery,
       { productTag: section.tag ?? "all" },

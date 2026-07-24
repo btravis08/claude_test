@@ -24,7 +24,10 @@ export function LiveVisualEditing() {
       if (payload.source === "mutation" || payload.source === "manual") {
         router.refresh();
       }
-      return new Promise((resolve) => setTimeout(resolve, 1000));
+      /* short settle: Presentation queues the next refresh behind
+         this promise, so a long window makes consecutive edits chain
+         slowly — 300ms keeps rapid typing snappy */
+      return new Promise((resolve) => setTimeout(resolve, 300));
     },
     [router],
   );

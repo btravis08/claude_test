@@ -9,7 +9,7 @@ import { client } from "@/sanity/lib/client";
    tell a missing token from an unreadable one without leaking the
    secret value. */
 export async function GET() {
-  const hasToken = Boolean(readToken);
+  const token = readToken ?? "";
   let secretRead: string;
   try {
     const doc = await client
@@ -19,5 +19,15 @@ export async function GET() {
   } catch (error) {
     secretRead = `THREW: ${error instanceof Error ? error.message : String(error)}`;
   }
-  return NextResponse.json({ hasToken, secretRead });
+  /* shape only — never the value: distinguishes a corrupted paste
+     (whitespace / wrong length / missing sk prefix) from a clean-but-
+     wrong token (right shape, still rejected → wrong project/revoked) */
+  return NextResponse.json({
+    hasToken: Boolean(readToken),
+    tokenLength: token.length,
+    startsWithSk: token.startsWith("sk"),
+    hasWhitespace: /\s/.test(token),
+    hasQuotes: /["']/.test(token),
+    secretRead,
+  });
 }

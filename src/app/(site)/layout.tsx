@@ -76,6 +76,7 @@ export default async function SiteLayout({
   children: React.ReactNode;
 }>) {
   const navDoc = await sanityFetch<NavigationDoc | null>(navigationQuery, {}, null);
+  const { isEnabled: isDraft } = await draftMode();
 
   return (
     <MotionProvider>
@@ -97,7 +98,12 @@ export default async function SiteLayout({
       >
         <Navigation data={toNavData(navDoc)} />
         <main className="flex-1">
-          <PageTransition>{children}</PageTransition>
+          {/* draft mode (Presentation preview) skips the transition
+              wrapper: its FrozenRouter freezes the router context so
+              exiting pages keep their old content — which also eats
+              router.refresh(), so live edits never landed on the
+              page. Editors get edits; visitors keep the fade. */}
+          {isDraft ? children : <PageTransition>{children}</PageTransition>}
         </main>
         <LegacyBand />
       </div>
@@ -108,7 +114,7 @@ export default async function SiteLayout({
       {/* click-to-edit overlays + live refresh, ONLY inside the
           Studio's Presentation preview (draft mode); ordinary
           visitors never load this */}
-      {(await draftMode()).isEnabled && <VisualEditing />}
+      {isDraft && <VisualEditing />}
       </FooterTaglineProvider>
       </CartProvider>
     </SmoothScroll>

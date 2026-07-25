@@ -84,7 +84,14 @@ function launchFieldFlip(
         width: `${from.width}px`,
         height: `${from.height}px`,
       },
-      { left: "0px", top: "0px", width: "100vw", height: "100svh" },
+      /* px, not vh/svh — viewport units in WAAPI keyframes are shaky
+         on older iOS */
+      {
+        left: "0px",
+        top: "0px",
+        width: `${window.innerWidth}px`,
+        height: `${window.innerHeight}px`,
+      },
     ],
     /* CSS twin of EASE_DRAMATIC */
     { duration: 750, easing: "cubic-bezier(0.85, 0, 0.15, 1)", fill: "forwards" },
@@ -392,8 +399,10 @@ export function JournalGrid() {
       if (e.timeStamp - lastPointer.t > 120) vel.x = vel.y = 0;
       if (reduced) vel.x = vel.y = 0;
       /* a press that never travelled is a click — open the tile's
-         article (same cell math as the shader, in CSS px) */
-      if (travelled < 6) {
+         article (same cell math as the shader, in CSS px). Fingers
+         wobble: a touch tap gets far more slop than a mouse click. */
+      const slop = e.pointerType === "mouse" ? 6 : 16;
+      if (travelled < slop) {
         const rect = canvas.getBoundingClientRect();
         const px = e.clientX - rect.left + offset.x;
         const py = e.clientY - rect.top + offset.y;
@@ -415,16 +424,21 @@ export function JournalGrid() {
           const entry = ENTRIES[idx];
           const slug = entry.href.split("/").pop()!;
           /* FLIP the tile into the article's fullscreen hero (skipped
-             under reduced motion — plain navigation instead) */
+             under reduced motion — plain navigation instead). The
+             overlay is decoration: it must never block navigation. */
           if (!reduced) {
-            setFieldEntry({ slug, src: entry.src });
-            const colShift = (((c % 2) + 2) % 2) * stride * 0.5;
-            launchFieldFlip(entry.src, {
-              left: rect.left + c * stride + pad - offset.x,
-              top: rect.top + r * stride + pad - colShift - offset.y,
-              width: cellCss,
-              height: cellCss,
-            });
+            try {
+              setFieldEntry({ slug, src: entry.src });
+              const colShift = (((c % 2) + 2) % 2) * stride * 0.5;
+              launchFieldFlip(entry.src, {
+                left: rect.left + c * stride + pad - offset.x,
+                top: rect.top + r * stride + pad - colShift - offset.y,
+                width: cellCss,
+                height: cellCss,
+              });
+            } catch {
+              /* navigate plainly */
+            }
           }
           router.push(entry.href);
         }

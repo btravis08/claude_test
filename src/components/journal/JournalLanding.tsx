@@ -197,8 +197,9 @@ function Stream({
           imageHovered.current = false;
         }}
         onClick={(e) => {
-          /* a drag that travelled isn't a click */
-          if (dragged.current > 6) e.preventDefault();
+          /* a drag that travelled isn't a click — but thumbs wobble,
+             so taps get generous slop */
+          if (dragged.current > 16) e.preventDefault();
         }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}

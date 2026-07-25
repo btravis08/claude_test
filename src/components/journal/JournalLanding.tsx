@@ -330,6 +330,40 @@ export function JournalLanding() {
      activated section stays open — nothing ever closes to zero */
   const [active, setActive] = useState(0);
 
+  /* touch devices don't hover — there the scroll position drives the
+     accordion instead: whichever section's top most recently crossed
+     the middle of the viewport is the open one (the last section
+     activates on the way down and stays open at the page bottom) */
+  const listRef = useRef<HTMLDivElement>(null);
+  const [hoverCapable, setHoverCapable] = useState(true);
+  useEffect(() => {
+    const mq = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const update = () => setHoverCapable(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+  useEffect(() => {
+    if (hoverCapable) return;
+    const list = listRef.current;
+    if (!list) return;
+    const onScroll = () => {
+      const mid = window.innerHeight / 2;
+      let next = 0;
+      list.querySelectorAll("section").forEach((section, i) => {
+        if (section.getBoundingClientRect().top <= mid) next = i;
+      });
+      setActive(next);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [hoverCapable]);
+
   return (
     <div data-mode="light" className="bg-surface text-ink">
       {/* masthead: HJ script monogram + mission line */}
@@ -350,7 +384,7 @@ export function JournalLanding() {
         </p>
       </header>
 
-      <div className="flex flex-col pb-32 pt-[4.5rem]">
+      <div ref={listRef} className="flex flex-col pb-32 pt-[4.5rem]">
         {SECTIONS.map((section, i) => (
           <JournalSection
             key={section.title}

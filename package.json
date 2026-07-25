@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@sanity/image-url": "^2.1.1",
+    "@sanity/react-loader": "^2.1.2",
     "@sanity/vision": "^6.5.0",
     "@tailwindcss/typography": "^0.5.20",
     "@vercel/speed-insights": "^2.0.0",

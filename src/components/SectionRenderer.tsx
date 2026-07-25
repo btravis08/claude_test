@@ -223,6 +223,45 @@ async function ProductSliderSection({ section }: { section: SectionProductSlider
   );
 }
 
+/* Server-side resolver for the draft-mode preview shell: product
+   cards per slider section, keyed by section _key — the client
+   preview can't fetch, so this hands it ready-made cards. */
+export async function buildSliderCardMap(
+  sections: PageSection[],
+): Promise<Record<string, ProductCardData[]>> {
+  const sliders = sections.filter(
+    (section): section is SectionProductSlider =>
+      section._type === "sectionProductSlider",
+  );
+  if (sliders.length === 0) return {};
+  const [settings, discounts] = await Promise.all([
+    sanityFetch<StoreSettings | null>(storeSettingsQuery, {}, null),
+    sanityFetch<Discount[]>(automaticDiscountsQuery, {}, []),
+  ]);
+  const entries = await Promise.all(
+    sliders.map(async (section) => {
+      let products: SliderProduct[] = [];
+      if (section.source === "manual") {
+        products = activeOnly(section.products ?? []);
+      } else if (section.source === "collection") {
+        products = await productsForCollection(section.collection);
+      }
+      if (products.length === 0 && section.source !== "collection") {
+        products = await sanityFetch<SliderProduct[]>(
+          productsByTagQuery,
+          { productTag: section.tag ?? "all" },
+          [],
+        );
+      }
+      const cards = products
+        .flatMap((product) => toCards(product, discounts, settings))
+        .slice(0, 24);
+      return [section._key, cards] as const;
+    }),
+  );
+  return Object.fromEntries(entries);
+}
+
 /* CMS padding sizes -> fluid tokens (S 16→32, M 24→64, L 48→96
    across the 428→1440 frames) */
 const PAD_TOP = {

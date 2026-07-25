@@ -1,5 +1,7 @@
+import { draftMode } from "next/headers";
+
 import { FooterTagline } from "@/components/FooterTagline";
-import { SectionRenderer } from "@/components/SectionRenderer";
+import { buildSliderCardMap, SectionRenderer } from "@/components/SectionRenderer";
 import {
   Carousel,
   FiftyFifty,
@@ -26,6 +28,16 @@ export default async function Home() {
     { slug: "home" },
     null,
   );
+
+  /* Presentation preview: render through the live client shell so
+     edits stream in before saving (instant preview). Only in draft
+     mode — visitors get the server-rendered path below untouched. */
+  const { isEnabled: isDraft } = await draftMode();
+  if (isDraft && page) {
+    const { PreviewGate } = await import("@/components/preview/PreviewGate");
+    const sliderCards = await buildSliderCardMap(page.sections ?? []);
+    return <PreviewGate initial={page} sliderCards={sliderCards} />;
+  }
 
   /* the first section's image is the LCP — preload it with the same
      URL SectionRenderer will generate (urlFor + width 2000) */

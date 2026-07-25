@@ -101,8 +101,8 @@ function launchFieldFlip(
   img.src = src;
   img.alt = "";
   img.style.cssText =
-    `position:absolute;left:0;top:0;width:${W}px;height:${H}px;` +
-    "object-fit:cover;transform-origin:center;will-change:transform;";
+    "position:absolute;left:50%;top:50%;" +
+    "transform-origin:center;will-change:transform;";
   wrap.appendChild(img);
   document.body.appendChild(wrap);
 
@@ -118,13 +118,15 @@ function launchFieldFlip(
   const start = () => {
     if (started) return;
     started = true;
-    /* crop-zoom: the tile shows the image's square cover crop, the
-       fullscreen end state its viewport cover crop — z morphs one
-       into the other */
+    /* the image sits at its natural size and, per frame, is scaled to
+       be exactly the COVER of the current window — so it can never
+       underfill (no dark edges) and its on-screen scale stays uniform
+       (no stretch). Frame one is the tile's own square crop; the last
+       frame is the article hero's viewport crop. */
     const iw = img.naturalWidth || 1000;
     const ih = img.naturalHeight || 1000;
-    const coverScale = Math.max(W / iw, H / ih);
-    const z0 = from.width / Math.min(iw, ih) / coverScale;
+    img.style.width = `${iw}px`;
+    img.style.height = `${ih}px`;
     const ease = bezier(0.85, 0, 0.15, 1); // EASE_DRAMATIC
     const N = 40;
     const wrapFrames = [];
@@ -135,16 +137,15 @@ function launchFieldFlip(
       const sy = sy0 + (1 - sy0) * p;
       const tx = from.left * (1 - p);
       const ty = from.top * (1 - p);
-      const z = z0 + (1 - z0) * p;
+      /* uniform screen-space cover scale of the current window */
+      const k = Math.max((W * sx) / iw, (H * sy) / ih);
       wrapFrames.push({
         transform: `translate(${tx}px, ${ty}px) scale(${sx}, ${sy})`,
       });
       imgFrames.push({
-        transform: `translate(-50%, -50%) scale(${z / sx}, ${z / sy})`,
+        transform: `translate(-50%, -50%) scale(${k / sx}, ${k / sy})`,
       });
     }
-    img.style.left = "50%";
-    img.style.top = "50%";
     img.style.opacity = "1";
     const timing = { duration: 750, easing: "linear", fill: "forwards" } as const;
     expansion = wrap.animate(wrapFrames, timing);
@@ -196,10 +197,6 @@ uniform float uCount;
 uniform vec2 uVel;
 uniform sampler2D uTex;
 
-float cellHash(vec2 cr) {
-  return fract(sin(dot(cr, vec2(127.1, 311.7))) * 43758.5453);
-}
-
 vec2 atlasUv(float idx, vec2 t) {
   vec2 cell = vec2(mod(idx, ${ATLAS_GRID}.0), floor(idx / ${ATLAS_GRID}.0));
   /* inset keeps warped samples inside the cell */
@@ -231,8 +228,11 @@ void main() {
   vec3 col = vec3(${BG});
   if (t.x > 0.0 && t.x < 1.0 && t.y > 0.0 && t.y < 1.0) {
     /* lattice keeps neighbours distinct; block jitter breaks the
-       periodicity so the field doesn't read as diagonal stripes */
-    float jitter = floor(cellHash(floor(vec2(c, r) / 4.0)) * uCount);
+       periodicity so the field doesn't read as diagonal stripes.
+       Integer arithmetic ONLY — the JS hit-test must land on the
+       same image, and GPU sin() drifts from Math.sin on far cells */
+    vec2 b = floor(vec2(c, r) / 4.0);
+    float jitter = mod(b.x * 13.0 + b.y * 29.0 + b.x * b.y * 7.0, uCount);
     float idx = mod(c * 5.0 + r * 7.0 + jitter, uCount);
     /* cloth response: while the field moves, each image bows in the
        motion direction — the middle of the tile trails like fabric
@@ -476,12 +476,12 @@ export function JournalGrid() {
         const lx = px - c * stride - pad;
         const ly = shifted - r * stride - pad;
         if (lx > 0 && lx < cellCss && ly > 0 && ly < cellCss) {
-          /* mirror of the shader's lattice + block-jitter cell hash */
+          /* mirror of the shader's lattice + block-jitter cell hash
+             (pure integers, so GPU and JS agree on every cell) */
           const n = ENTRIES.length;
-          const bh =
-            Math.sin(Math.floor(c / 4) * 127.1 + Math.floor(r / 4) * 311.7) *
-            43758.5453;
-          const jitter = Math.floor((bh - Math.floor(bh)) * n);
+          const bx = Math.floor(c / 4);
+          const by = Math.floor(r / 4);
+          const jitter = ((((bx * 13 + by * 29 + bx * by * 7) % n) + n) % n);
           const idx = ((((c * 5 + r * 7 + jitter) % n) + n) % n);
           const entry = ENTRIES[idx];
           const slug = entry.href.split("/").pop()!;

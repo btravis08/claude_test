@@ -224,6 +224,14 @@ body {
   overflow-x: clip;
 }
 
+/* dark journal routes (field + articles): hold the page wrapper and
+   body dark so route fades between dark pages never blink light
+   (Navigation stamps the attribute by pathname) */
+html[data-journal-dark] body,
+html[data-journal-dark] #top {
+  background: #0b0b0b;
+}
+
 body {
   background: var(--surface);
   color: var(--ink);

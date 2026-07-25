@@ -427,6 +427,14 @@ export function Navigation({ data }: { data?: NavData | null }) {
   /* the field + articles are dark surfaces; the landing is light */
   const minimizedDark = minimized && pathname !== "/journal";
 
+  /* the page wrapper behind every route is light bg-surface — during
+     a route fade between two dark journal pages it blinked through.
+     Flag the root so CSS can hold the wrapper dark on those routes. */
+  useEffect(() => {
+    document.documentElement.toggleAttribute("data-journal-dark", minimizedDark);
+    return () => document.documentElement.removeAttribute("data-journal-dark");
+  }, [minimizedDark]);
+
   const [hidden, setHidden] = useState(false);
   const [overHero, setOverHero] = useState(hasFullHero);
   /* non-home pages: transparent (light mode) until scrolling starts */

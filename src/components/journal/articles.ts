@@ -52,32 +52,37 @@ const CAROUSEL = [
   { title: "Jupiter", image: "/figma/campaign.jpg" },
 ];
 
-/* article factory: rotates the stream pool + heroes so neighbouring
-   articles never share a lead image */
+/* article factory. `hero` is the article's COVER — unique per article
+   (two late articles reuse one, see below): the grid field shows
+   covers, so the tile you click, the FLIP, the article hero, and any
+   refresh are all the same photo. */
 const article = (
   slug: string,
   title: string,
-  heroIdx: number,
+  hero: string,
   imgs: [number, number, number],
   ratios: [StreamRatio, StreamRatio, StreamRatio],
 ): JournalArticle => ({
   slug,
   title,
-  hero: HERO(heroIdx),
+  hero,
   stream: imgs.map((n, i) => ({ src: J(n), ratio: ratios[i] })),
   pair: [J(imgs[1]), J(imgs[2])],
   carousel: CAROUSEL,
 });
 
+/* NOTE: hero-0X files are 1600px re-exports of streams 05/06/09/10/11
+   — never use those five stream files as covers or the grid would
+   show the same photo under two different articles */
 export const JOURNAL_CATEGORIES: JournalCategory[] = [
   {
     slug: "ambassadors",
     title: "Ambassadors",
     label: "The players & partners",
     articles: [
-      article("next-in-line", "Next in Line", 1, [2, 8, 14], ["3 / 4", "1 / 1", "4 / 5"]),
-      article("inside-the-team-room", "Inside the Team Room", 2, [1, 12, 5], ["1 / 1", "3 / 4", "4 / 5"]),
-      article("the-first-signing", "The First Signing", 3, [16, 3, 9], ["3 / 4", "4 / 5", "1 / 1"]),
+      article("next-in-line", "Next in Line", HERO(1), [2, 8, 14], ["3 / 4", "1 / 1", "4 / 5"]),
+      article("inside-the-team-room", "Inside the Team Room", J(2), [1, 12, 5], ["1 / 1", "3 / 4", "4 / 5"]),
+      article("the-first-signing", "The First Signing", J(16), [16, 3, 9], ["3 / 4", "4 / 5", "1 / 1"]),
     ],
   },
   {
@@ -85,9 +90,9 @@ export const JOURNAL_CATEGORIES: JournalCategory[] = [
     title: "Stories from the Course",
     label: "People, ideas, & culture",
     articles: [
-      article("sunday-at-augusta", "Sunday at Augusta", 4, [4, 6, 11], ["3 / 4", "1 / 1", "4 / 5"]),
-      article("the-back-nine-wind", "The Back Nine Wind", 5, [10, 15, 2], ["1 / 1", "4 / 5", "3 / 4"]),
-      article("a-caddies-eye", "Through a Caddie's Eye", 1, [7, 13, 8], ["4 / 5", "1 / 1", "3 / 4"]),
+      article("sunday-at-augusta", "Sunday at Augusta", HERO(2), [4, 6, 11], ["3 / 4", "1 / 1", "4 / 5"]),
+      article("the-back-nine-wind", "The Back Nine Wind", HERO(5), [10, 15, 2], ["1 / 1", "4 / 5", "3 / 4"]),
+      article("a-caddies-eye", "Through a Caddie's Eye", J(7), [7, 13, 8], ["4 / 5", "1 / 1", "3 / 4"]),
     ],
   },
   {
@@ -95,9 +100,9 @@ export const JOURNAL_CATEGORIES: JournalCategory[] = [
     title: "On Craft and Culture",
     label: "Design, materials, & making",
     articles: [
-      article("anatomy-of-a-polo", "The Anatomy of a Polo", 2, [12, 1, 16], ["3 / 4", "1 / 1", "4 / 5"]),
-      article("cashmere-on-course", "Why Cashmere Belongs on Course", 3, [5, 9, 3], ["4 / 5", "1 / 1", "3 / 4"]),
-      article("building-the-presidio", "Building the Presidio", 4, [14, 4, 10], ["4 / 5", "3 / 4", "1 / 1"]),
+      article("anatomy-of-a-polo", "The Anatomy of a Polo", J(12), [12, 1, 16], ["3 / 4", "1 / 1", "4 / 5"]),
+      article("cashmere-on-course", "Why Cashmere Belongs on Course", J(3), [5, 9, 3], ["4 / 5", "1 / 1", "3 / 4"]),
+      article("building-the-presidio", "Building the Presidio", HERO(4), [14, 4, 10], ["4 / 5", "3 / 4", "1 / 1"]),
     ],
   },
   {
@@ -105,9 +110,9 @@ export const JOURNAL_CATEGORIES: JournalCategory[] = [
     title: "In the Press",
     label: "Coverage & conversation",
     articles: [
-      article("a-year-of-red", "A Year of Red", 5, [6, 2, 15], ["1 / 1", "3 / 4", "4 / 5"]),
-      article("what-theyre-saying", "What They're Saying", 1, [11, 8, 1], ["4 / 5", "1 / 1", "3 / 4"]),
-      article("majors-season", "Majors Season, Reviewed", 2, [13, 16, 7], ["1 / 1", "3 / 4", "4 / 5"]),
+      article("a-year-of-red", "A Year of Red", J(15), [6, 2, 15], ["1 / 1", "3 / 4", "4 / 5"]),
+      article("what-theyre-saying", "What They're Saying", J(8), [11, 8, 1], ["4 / 5", "1 / 1", "3 / 4"]),
+      article("majors-season", "Majors Season, Reviewed", J(13), [13, 16, 7], ["1 / 1", "3 / 4", "4 / 5"]),
     ],
   },
   {
@@ -115,9 +120,9 @@ export const JOURNAL_CATEGORIES: JournalCategory[] = [
     title: "From Tiger",
     label: "In his words",
     articles: [
-      article("why-sunday-red", "Why Sunday Red", 3, [3, 10, 12], ["3 / 4", "1 / 1", "4 / 5"]),
-      article("the-meaning-of-the-tiger", "The Meaning of the Tiger", 4, [9, 5, 4], ["1 / 1", "4 / 5", "3 / 4"]),
-      article("letters-from-the-founder", "Letters from the Founder", 5, [15, 14, 6], ["4 / 5", "3 / 4", "1 / 1"]),
+      article("why-sunday-red", "Why Sunday Red", HERO(3), [3, 10, 12], ["3 / 4", "1 / 1", "4 / 5"]),
+      article("the-meaning-of-the-tiger", "The Meaning of the Tiger", J(4), [9, 5, 4], ["1 / 1", "4 / 5", "3 / 4"]),
+      article("letters-from-the-founder", "Letters from the Founder", J(14), [15, 14, 6], ["4 / 5", "3 / 4", "1 / 1"]),
     ],
   },
   {
@@ -125,9 +130,11 @@ export const JOURNAL_CATEGORIES: JournalCategory[] = [
     title: "Beyond the Red",
     label: "Off the course",
     articles: [
-      article("golf-after-dark", "Golf After Dark", 1, [8, 7, 2], ["1 / 1", "4 / 5", "3 / 4"]),
-      article("training-days", "Training Days", 2, [4, 11, 13], ["3 / 4", "4 / 5", "1 / 1"]),
-      article("the-travel-kit", "The Travel Kit", 3, [1, 6, 16], ["4 / 5", "1 / 1", "3 / 4"]),
+      article("golf-after-dark", "Golf After Dark", J(1), [8, 7, 2], ["1 / 1", "4 / 5", "3 / 4"]),
+      /* the pool ran out of unique photos — these two share covers
+         with earlier articles, so they don't get their own grid tile */
+      article("training-days", "Training Days", J(4), [4, 11, 13], ["3 / 4", "4 / 5", "1 / 1"]),
+      article("the-travel-kit", "The Travel Kit", J(7), [1, 6, 16], ["4 / 5", "1 / 1", "3 / 4"]),
     ],
   },
 ];

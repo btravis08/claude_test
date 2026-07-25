@@ -35,14 +35,18 @@ interface GridEntry {
   href: string;
 }
 
-/* one entry per unique image across the fake articles */
+/* one tile per article COVER: the tile you click, the FLIP, the
+   article hero, and any refresh are all the same photo (articles
+   sharing a cover with an earlier one don't get their own tile) */
 const ENTRIES: GridEntry[] = (() => {
   const seen = new Map<string, GridEntry>();
   for (const category of JOURNAL_CATEGORIES)
     for (const article of category.articles)
-      for (const image of article.stream)
-        if (!seen.has(image.src))
-          seen.set(image.src, { src: image.src, href: `/journal/${article.slug}` });
+      if (!seen.has(article.hero))
+        seen.set(article.hero, {
+          src: article.hero,
+          href: `/journal/${article.slug}`,
+        });
   return [...seen.values()];
 })();
 
@@ -158,7 +162,15 @@ function launchFieldFlip(
     }
     const timing = { duration: 750, easing: "linear", fill: "forwards" } as const;
     expansion = wrap.animate(wrapFrames, timing);
-    img.animate(imgFrames, timing);
+    const inner = img.animate(imgFrames, timing);
+    /* the pair are exact inverses ONLY at the same progress — pin
+       both to one start time so they can never drift a frame apart */
+    if (expansion.startTime !== null && typeof expansion.startTime === "number")
+      inner.startTime = expansion.startTime;
+    else {
+      expansion.startTime = document.timeline.currentTime as number;
+      inner.startTime = expansion.startTime;
+    }
   };
   if (size) startWith(size.w, size.h);
   else if (img.complete && img.naturalWidth)

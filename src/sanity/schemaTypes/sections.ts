@@ -213,7 +213,11 @@ export const sectionInfoSlider = defineType({
   type: "object",
   fields: [
     ...paddingFields(),
-    colorMode("light"),
+    /* dark by default: new sliders arrive as the framed Features /
+       Technology design (cards pre-filled WITH body copy — body text
+       is what selects the framed variant; clear it for the full-bleed
+       category look) */
+    colorMode("dark"),
     defineField({ name: "title", type: "string", initialValue: "Lorem Ipsum Slider" }),
     defineField({
       name: "cards",
@@ -227,7 +231,7 @@ export const sectionInfoSlider = defineType({
             defineField({
               name: "body",
               title: "Body",
-              description: "Optional — used by info cards (e.g. Features / Technology).",
+              description: "Body copy switches the whole slider to the framed info-card design (Features / Technology). Clear every card\u2019s body for the full-bleed category look.",
               type: "text",
               rows: 3,
             }),
@@ -243,7 +247,8 @@ export const sectionInfoSlider = defineType({
         return [1, 2, 3, 4].map((n) => ({
           _type: "infoCard",
           _key: key(),
-          title: `Lorem Card ${n}`,
+          title: `Lorem Ipsum Dolor Sit \u00ae`,
+          body: "Torsional Traction Plate for benefit lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.",
           ...(img ? { image: img } : {}),
         }));
       },

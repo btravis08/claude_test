@@ -322,12 +322,13 @@ export function InfoSlider({
               videoUrl={card.videoUrl}
             />
           );
-          /* info cards (with body copy — Features / Technology) frame
-             the image with padding and use the serif title; category
-             cards keep the full-bleed portrait look */
+          /* the FRAMED variant applies to every card once the section
+             is framed (any body copy anywhere) — a card missing its
+             body must not fall back to the full-bleed category look
+             mid-slider */
           return {
             key: card._key ?? String(i),
-            card: card.body ? (
+            card: framed ? (
               <a
                 href="#"
                 /* border-b only: the header row above already draws
@@ -336,7 +337,7 @@ export function InfoSlider({
               >
                 {media}
                 <p className="font-display text-title-xs text-ink">{card.title}</p>
-                <p className="text-body-sm text-ink-2">{card.body}</p>
+                {card.body && <p className="text-body-sm text-ink-2">{card.body}</p>}
               </a>
             ) : (
               <a href="#" className="group flex w-full flex-col gap-[1.125rem] bg-surface pb-16">

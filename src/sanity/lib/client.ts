@@ -24,6 +24,7 @@ const STEGA_COPY_FIELDS = new Set([
   "secondaryCta",
   "description",
   "summary",
+  "body",
   "text",
   "label",
   "ctaLabel",

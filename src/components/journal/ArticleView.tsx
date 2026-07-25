@@ -47,8 +47,10 @@ export function ArticleView({
 }) {
   /* the normal hero is the page's LCP: preloaded, eager, never faded */
   preload(article.hero, { as: "image", fetchPriority: "high" });
+  /* dark throughout — articles continue the journal field's dark
+     ground so the tile-expand illusion never breaks below the hero */
   return (
-    <div data-mode="light" className="bg-surface text-ink">
+    <div data-mode="dark" className="bg-[#0b0b0b] text-ink">
       <ArticleTop
         slug={article.slug}
         title={article.title}
@@ -57,13 +59,13 @@ export function ArticleView({
       />
       <TextBlock lead={ARTICLE_LEAD} body={[ARTICLE_BODY[0]]} />
       <FiftyFifty
-        mode="light"
+        mode="dark"
         ratio="5:4"
         panels={article.pair.map((image) => ({ image }))}
       />
       <TextBlock lead={ARTICLE_LEAD} body={[ARTICLE_BODY[1]]} />
       <Carousel
-        mode="light"
+        mode="dark"
         eyebrow="Shop the Story"
         items={article.carousel.map((item) => ({
           ...item,
@@ -71,7 +73,7 @@ export function ArticleView({
         }))}
       />
       <TextBlock lead={ARTICLE_LEAD} body={ARTICLE_BODY} />
-      <ProductSlider mode="light" title="New Arrivals" products={sliderProducts} />
+      <ProductSlider mode="dark" title="New Arrivals" products={sliderProducts} />
     </div>
   );
 }

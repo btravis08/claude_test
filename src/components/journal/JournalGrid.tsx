@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { JOURNAL_CATEGORIES } from "@/components/journal/articles";
 import {
@@ -261,6 +261,10 @@ void main() {
 
 export function JournalGrid() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  /* reveal overlay: the field fades in once the atlas has substance
+     (surface-colored cover fading OUT — the canvas itself never
+     fades, per the LCP ground rules) */
+  const [revealed, setRevealed] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -325,11 +329,16 @@ export function JournalGrid() {
        needs them synchronously at click time (a wrong assumed box
        stretches the overlay image) */
     const imageDims = new Map<string, { w: number; h: number }>();
+    let loadedCount = 0;
+    /* reveal even if the network crawls */
+    const revealTimer = window.setTimeout(() => setRevealed(true), 1600);
     ENTRIES.forEach((entry, i) => {
       const img = new Image();
       img.decoding = "async";
       img.onload = () => {
         if (disposed) return;
+        loadedCount += 1;
+        if (loadedCount >= Math.min(6, ENTRIES.length)) setRevealed(true);
         imageDims.set(entry.src, {
           w: img.naturalWidth,
           h: img.naturalHeight,
@@ -539,6 +548,7 @@ export function JournalGrid() {
 
     return () => {
       disposed = true;
+      window.clearTimeout(revealTimer);
       cancelAnimationFrame(raf);
       ro.disconnect();
       canvas.removeEventListener("pointerdown", onDown);
@@ -561,6 +571,14 @@ export function JournalGrid() {
         ref={canvasRef}
         aria-label="Honors Journal image field — drag to explore, click a tile to open its article"
         className="size-full cursor-grab touch-none select-none active:cursor-grabbing"
+      />
+      {/* entrance: a field-colored cover fades out over the canvas
+          once the atlas has substance (CSS twin of EASE_OUT) */}
+      <div
+        aria-hidden
+        className={`pointer-events-none absolute inset-0 bg-[#0b0b0b] transition-opacity duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          revealed ? "opacity-0" : "opacity-100"
+        }`}
       />
       {/* the same articles as real links, for keyboards and crawlers */}
       <ul className="sr-only">

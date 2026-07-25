@@ -53,49 +53,108 @@ const MOBILE_CELL = 140;
 const GAP_RATIO = 0.62;
 const BG = 0.043; // near-black field (#0b0b0b)
 
+/* sampled CSS cubic-bezier — the FLIP bakes its ease into linear
+   keyframes so wrap and image stay exact inverses mid-flight */
+function bezier(x1: number, y1: number, x2: number, y2: number) {
+  const cx = (t: number) =>
+    3 * (1 - t) ** 2 * t * x1 + 3 * (1 - t) * t * t * x2 + t ** 3;
+  const cy = (t: number) =>
+    3 * (1 - t) ** 2 * t * y1 + 3 * (1 - t) * t * t * y2 + t ** 3;
+  return (x: number) => {
+    let lo = 0;
+    let hi = 1;
+    for (let i = 0; i < 24; i++) {
+      const mid = (lo + hi) / 2;
+      if (cx(mid) < x) lo = mid;
+      else hi = mid;
+    }
+    return cy((lo + hi) / 2);
+  };
+}
+
 /*
   Hand-rolled FLIP: an imperative overlay (plain DOM, so it survives
   the route change) expands the clicked tile's image from its rect to
-  the full viewport with the house dramatic ease, holds while the
-  article mounts its identical fullscreen hero underneath, then fades
-  out over the same pixels.
+  the full viewport while the article loads underneath, then fades
+  out over the article's identical fullscreen hero.
+
+  Transforms ONLY: the route change keeps the main thread busy
+  hydrating the article, and left/top/width/height tweens run on the
+  main thread — on phones they simply froze. The wrap is laid out at
+  its final fullscreen size and scaled DOWN to the tile; the inner
+  image counter-scales (plus a crop-zoom term so frame one matches
+  the tile's square crop), with the ease baked into dense linear
+  keyframes so the pair stay exact inverses on the compositor.
 */
 function launchFieldFlip(
   src: string,
   from: { left: number; top: number; width: number; height: number },
 ) {
+  const W = window.innerWidth;
+  const H = window.innerHeight;
   const wrap = document.createElement("div");
   wrap.style.cssText =
-    `position:fixed;left:${from.left}px;top:${from.top}px;` +
-    `width:${from.width}px;height:${from.height}px;` +
-    "z-index:80;overflow:hidden;pointer-events:none;background:#0b0b0b;";
+    `position:fixed;left:0;top:0;width:${W}px;height:${H}px;` +
+    "z-index:80;overflow:hidden;pointer-events:none;background:#0b0b0b;" +
+    "transform-origin:0 0;will-change:transform;";
   const img = document.createElement("img");
   img.src = src;
   img.alt = "";
-  img.style.cssText = "width:100%;height:100%;object-fit:cover;";
+  img.style.cssText =
+    `position:absolute;left:0;top:0;width:${W}px;height:${H}px;` +
+    "object-fit:cover;transform-origin:center;will-change:transform;";
   wrap.appendChild(img);
   document.body.appendChild(wrap);
 
-  const expand = wrap.animate(
-    [
-      {
-        left: `${from.left}px`,
-        top: `${from.top}px`,
-        width: `${from.width}px`,
-        height: `${from.height}px`,
-      },
-      /* px, not vh/svh — viewport units in WAAPI keyframes are shaky
-         on older iOS */
-      {
-        left: "0px",
-        top: "0px",
-        width: `${window.innerWidth}px`,
-        height: `${window.innerHeight}px`,
-      },
-    ],
-    /* CSS twin of EASE_DRAMATIC */
-    { duration: 750, easing: "cubic-bezier(0.85, 0, 0.15, 1)", fill: "forwards" },
-  );
+  const sx0 = from.width / W;
+  const sy0 = from.height / H;
+  /* park the overlay on the tile until the (cached) image reports its
+     dimensions — one frame at most */
+  wrap.style.transform = `translate(${from.left}px, ${from.top}px) scale(${sx0}, ${sy0})`;
+  img.style.opacity = "0";
+
+  let expansion: Animation | null = null;
+  let started = false;
+  const start = () => {
+    if (started) return;
+    started = true;
+    /* crop-zoom: the tile shows the image's square cover crop, the
+       fullscreen end state its viewport cover crop — z morphs one
+       into the other */
+    const iw = img.naturalWidth || 1000;
+    const ih = img.naturalHeight || 1000;
+    const coverScale = Math.max(W / iw, H / ih);
+    const z0 = from.width / Math.min(iw, ih) / coverScale;
+    const ease = bezier(0.85, 0, 0.15, 1); // EASE_DRAMATIC
+    const N = 40;
+    const wrapFrames = [];
+    const imgFrames = [];
+    for (let i = 0; i <= N; i++) {
+      const p = ease(i / N);
+      const sx = sx0 + (1 - sx0) * p;
+      const sy = sy0 + (1 - sy0) * p;
+      const tx = from.left * (1 - p);
+      const ty = from.top * (1 - p);
+      const z = z0 + (1 - z0) * p;
+      wrapFrames.push({
+        transform: `translate(${tx}px, ${ty}px) scale(${sx}, ${sy})`,
+      });
+      imgFrames.push({
+        transform: `translate(-50%, -50%) scale(${z / sx}, ${z / sy})`,
+      });
+    }
+    img.style.left = "50%";
+    img.style.top = "50%";
+    img.style.opacity = "1";
+    const timing = { duration: 750, easing: "linear", fill: "forwards" } as const;
+    expansion = wrap.animate(wrapFrames, timing);
+    img.animate(imgFrames, timing);
+  };
+  if (img.complete && img.naturalWidth) start();
+  else {
+    img.onload = start;
+    window.setTimeout(start, 80);
+  }
 
   let finished = false;
   const finish = () => {
@@ -107,10 +166,13 @@ function launchFieldFlip(
       fill: "forwards",
     });
     fade.onfinish = () => wrap.remove();
+    window.setTimeout(() => wrap.remove(), 600);
   };
   const onReady = () => {
     /* never fade before the expansion lands */
-    expand.finished.then(() => setTimeout(finish, 80)).catch(finish);
+    (expansion?.finished ?? Promise.resolve())
+      .then(() => setTimeout(finish, 80))
+      .catch(finish);
   };
   window.addEventListener(HERO_READY_EVENT, onReady);
   /* failsafe: a failed navigation must not leave the screen covered */

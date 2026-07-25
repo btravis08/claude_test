@@ -33,7 +33,7 @@
 :root,
 [data-mode="light"] {
   --surface: #f7f8f4;
-  --surface-2: #d3d1cc;
+  --surface-2: #e6e5e2;
   --ink: #161716;
   --ink-2: rgba(0, 0, 0, 0.5);
   --ink-3: #70716f;
@@ -50,7 +50,7 @@
    the Medium Dark pattern one step lighter (bg = gray-50, everything
    else light-mode treatment). Replace when the export lands. */
 [data-mode="light-mid"] {
-  --surface: #d3d1cc;
+  --surface: #e1e1de;
   --surface-2: #f7f8f4;
   --ink: #161716;
   --ink-2: rgba(0, 0, 0, 0.5);
@@ -67,7 +67,7 @@
 /* Medium Dark Mode: mid gray canvas, light-mode content treatment */
 [data-mode="dark-mid"] {
   --surface: #cacbc8;
-  --surface-2: #d3d1cc;
+  --surface-2: #e1e1de;
   --ink: #161716;
   --ink-2: rgba(0, 0, 0, 0.5);
   --ink-3: #70716f;

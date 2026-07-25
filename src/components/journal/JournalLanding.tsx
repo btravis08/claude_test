@@ -53,7 +53,17 @@ const RESUME_DELAY_MS = 600;
 /* fastest flick momentum carried out of a touch swipe (px/s) */
 const MAX_FLICK = 3500;
 
-function Stream({ images, open }: { images: StreamImage[]; open: boolean }) {
+function Stream({
+  images,
+  open,
+  cruise,
+}: {
+  images: StreamImage[];
+  open: boolean;
+  /* signed loop speed in px/s — desktop drifts left → right, mobile
+     right → left at half pace */
+  cruise: number;
+}) {
   const copyRef = useRef<HTMLDivElement>(null);
   const copyW = useRef(0);
   const x = useMotionValue(0);
@@ -87,9 +97,24 @@ function Stream({ images, open }: { images: StreamImage[]; open: boolean }) {
     return nx;
   };
 
+  /* six streams can be open at once on mobile — only the one(s) on
+     screen spend frames */
+  const [inView, setInView] = useState(false);
+  const railRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    if (!open || reduced) return;
-    target.current = BASE_SPEED;
+    const el = railRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { rootMargin: "100px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!open || !inView || reduced) return;
+    target.current = cruise;
     speed.current = 0;
     let raf = 0;
     let last = performance.now();
@@ -109,7 +134,7 @@ function Stream({ images, open }: { images: StreamImage[]; open: boolean }) {
          decays it gradually to the constant loop speed */
       const parked =
         imageHovered.current || now - lastScrub.current < RESUME_DELAY_MS;
-      target.current = parked ? 0 : BASE_SPEED;
+      target.current = parked ? 0 : cruise;
       speed.current +=
         (target.current - speed.current) * (1 - Math.exp(-dt / SPEED_TAU));
       /* the ease is asymptotic — settle to a true standstill */
@@ -120,12 +145,11 @@ function Stream({ images, open }: { images: StreamImage[]; open: boolean }) {
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [open, reduced, x]);
+  }, [open, inView, reduced, cruise, x]);
 
   /* manual horizontal scrub: trackpad/shift-wheel moves the stream
      directly (parked, then resuming after quiet); a touch swipe rides
      the finger 1:1 and releases with native-feeling momentum. */
-  const railRef = useRef<HTMLDivElement>(null);
   const dragging = useRef(false);
   const dragX = useRef(0);
   const dragged = useRef(0);
@@ -158,6 +182,9 @@ function Stream({ images, open }: { images: StreamImage[]; open: boolean }) {
         /* staggered fade-up sweeping left → right on open */
         delay: open ? 0.2 + i * 0.07 : 0,
       }}
+      /* mobile panels are always expanded — keep cards painted from
+         the first (server) frame instead of waiting on hydration */
+      className="max-md:transform-none! max-md:opacity-100!"
     >
       <SmartLink
         href={image.href}
@@ -251,28 +278,28 @@ function JournalSection({
   label,
   images,
   open,
+  alwaysOpen,
   onActivate,
 }: {
   title: string;
   label: string;
   images: StreamImage[];
   open: boolean;
+  /* touch layout: every section stays expanded */
+  alwaysOpen: boolean;
   onActivate: () => void;
 }) {
+  const expanded = open || alwaysOpen;
   return (
     <section
       onMouseEnter={onActivate}
+      onFocus={onActivate}
       className="w-full border-t border-line"
     >
-      {/* the whole space between the hairlines is the hit area; the
-          button keeps touch + keyboard working where hover can't */}
-      <button
-        type="button"
-        aria-expanded={open}
-        onClick={onActivate}
-        onFocus={onActivate}
-        className="grid w-full cursor-default grid-cols-[1fr_auto_1fr] items-center gap-4 px-6 py-12 text-left max-md:cursor-pointer"
-      >
+      {/* desktop: eyebrow | centered display title | view-all, the
+          whole row part of the hover hit area. Mobile: a 20px
+          left-set title with the view-all link bottom-aligned right */}
+      <div className="flex w-full items-end justify-between gap-4 px-6 py-8 md:grid md:grid-cols-[1fr_auto_1fr] md:items-center md:py-12">
         <m.p
           initial={false}
           animate={{ opacity: open ? 1 : 0 }}
@@ -281,7 +308,7 @@ function JournalSection({
         >
           {label}
         </m.p>
-        <h2 className="text-center font-display text-headline-lg text-ink">
+        <h2 className="font-display text-headline-lg text-ink max-md:text-[1.25rem] max-md:leading-[1.2] md:text-center">
           {title}
         </h2>
         <m.span
@@ -305,20 +332,31 @@ function JournalSection({
             </ArrowSwap>
           </ArrowLink>
         </m.span>
-      </button>
+        <SmartLink
+          href="#"
+          className="label flex shrink-0 items-center gap-1.5 text-ink underline decoration-1 underline-offset-4 md:hidden"
+        >
+          VIEW ALL
+          <ArrowUpRight size={10} />
+        </SmartLink>
+      </div>
 
       {/* open/close share one duration + ease, so the section handing
-          its height to the next keeps the stack's total constant */}
+          its height to the next keeps the stack's total constant;
+          mobile forces every panel open in CSS so the always-expanded
+          layout is right from the very first (server) paint */}
       <m.div
         initial={false}
         animate={{ height: open ? "auto" : 0 }}
         transition={{ duration: 0.65, ease: [...EASE_DRAMATIC] }}
-        className="overflow-hidden"
+        className="overflow-hidden max-md:h-auto!"
       >
-        {/* mobile stacks the eyebrow under the title (no view-all) */}
-        <p className="label pb-2 text-center text-ink md:hidden">{label}</p>
-        <div className="py-16 md:py-[11.25rem]">
-          <Stream images={images} open={open} />
+        <div className="pb-8 md:py-[11.25rem]">
+          <Stream
+            images={images}
+            open={expanded}
+            cruise={alwaysOpen ? -BASE_SPEED / 2 : BASE_SPEED}
+          />
         </div>
       </m.div>
     </section>
@@ -330,11 +368,9 @@ export function JournalLanding() {
      activated section stays open — nothing ever closes to zero */
   const [active, setActive] = useState(0);
 
-  /* touch devices don't hover — there the scroll position drives the
-     accordion instead: whichever section's top most recently crossed
-     the middle of the viewport is the open one (the last section
-     activates on the way down and stays open at the page bottom) */
-  const listRef = useRef<HTMLDivElement>(null);
+  /* touch devices don't hover — there every section simply stays
+     expanded (the panels are also forced open in CSS so the layout is
+     right before hydration) */
   const [hoverCapable, setHoverCapable] = useState(true);
   useEffect(() => {
     const mq = window.matchMedia("(hover: hover) and (pointer: fine)");
@@ -343,26 +379,6 @@ export function JournalLanding() {
     mq.addEventListener("change", update);
     return () => mq.removeEventListener("change", update);
   }, []);
-  useEffect(() => {
-    if (hoverCapable) return;
-    const list = listRef.current;
-    if (!list) return;
-    const onScroll = () => {
-      const mid = window.innerHeight / 2;
-      let next = 0;
-      list.querySelectorAll("section").forEach((section, i) => {
-        if (section.getBoundingClientRect().top <= mid) next = i;
-      });
-      setActive(next);
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
-  }, [hoverCapable]);
 
   return (
     <div data-mode="light" className="bg-surface text-ink">
@@ -384,11 +400,12 @@ export function JournalLanding() {
         </p>
       </header>
 
-      <div ref={listRef} className="flex flex-col pb-32 pt-[4.5rem]">
+      <div className="flex flex-col pb-32 pt-[4.5rem]">
         {SECTIONS.map((section, i) => (
           <JournalSection
             key={section.title}
             open={active === i}
+            alwaysOpen={!hoverCapable}
             onActivate={() => setActive(i)}
             {...section}
           />

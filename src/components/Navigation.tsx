@@ -418,14 +418,16 @@ export function Navigation({ data }: { data?: NavData | null }) {
   const nav = data ?? DEFAULT_NAV;
   const pathname = usePathname();
   const isHome = pathname === "/";
-  /* pages with a full-viewport hero the nav floats transparently over:
-     the homepage (dark imagery) and product pages (light gray canvas) */
-  const hasFullHero = isHome || pathname.startsWith("/products/");
-  /* journal surfaces run the minimized nav — just the PDP-style
-     hamburger chip top right (mobile keeps its bottom control bar) */
+  /* journal surfaces keep the sticky top nav and swap the mobile
+     control bar for one PDP-dock hamburger chip pinned bottom right */
   const minimized = pathname === "/journal" || pathname.startsWith("/journal/");
   /* the field + articles are dark surfaces; the landing is light */
   const minimizedDark = minimized && pathname !== "/journal";
+  /* pages with a full-bleed hero the nav floats transparently over:
+     the homepage (dark imagery), product pages (light gray canvas),
+     and the dark journal surfaces (field + article heroes) */
+  const hasFullHero =
+    isHome || pathname.startsWith("/products/") || minimizedDark;
 
   /* the page wrapper behind every route is light bg-surface — during
      a route fade between two dark journal pages it blinked through.
@@ -632,13 +634,13 @@ export function Navigation({ data }: { data?: NavData | null }) {
 
   return (
     <>
-      {/* minimized (journal): a lone hamburger chip, PDP-dock style,
-          opening the full-screen sheet on every breakpoint */}
+      {/* journal: the PDP dock's hamburger chip, pinned bottom right
+          on every breakpoint, opening the full-screen sheet */}
       {minimized && (
         <div
           data-navbar
           data-mode={mobileOpen || !minimizedDark ? "light" : "dark"}
-          className="fixed right-6 top-3 z-[70] hidden md:block"
+          className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] right-4 z-[70] md:right-6"
         >
           <button
             type="button"
@@ -651,9 +653,8 @@ export function Navigation({ data }: { data?: NavData | null }) {
           </button>
         </div>
       )}
-      {!minimized && (
       <m.header
-        data-mode={transparent && isHome ? "dark" : "light"}
+        data-mode={transparent && (isHome || minimizedDark) ? "dark" : "light"}
         data-nav-root
         initial={false}
         /* mobile: the logo bar is absolute at the page top and simply
@@ -729,7 +730,6 @@ export function Navigation({ data }: { data?: NavData | null }) {
           )}
         </AnimatePresence>
       </m.header>
-      )}
 
       {/* 30% scrim over the page while the meganav is open — fades in
           place rather than sliding with the panel */}
@@ -747,9 +747,8 @@ export function Navigation({ data }: { data?: NavData | null }) {
         )}
       </AnimatePresence>
 
-      {/* content offset on pages without a full-bleed hero (none in
-          minimized mode — journal pages own their top spacing) */}
-      {!hasFullHero && !minimized && <div style={{ height: NAV_H }} />}
+      {/* content offset on pages without a full-bleed hero */}
+      {!hasFullHero && <div style={{ height: NAV_H }} />}
 
       {/* mobile sheet */}
       <AnimatePresence>
@@ -797,7 +796,7 @@ export function Navigation({ data }: { data?: NavData | null }) {
         data-navbar
         data-mode={mobileOpen ? "light" : barMode}
         className={`fixed inset-x-4 bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] z-[70] md:hidden ${
-          hasFullHero && !isHome && !mobileOpen ? "hidden" : ""
+          minimized || (hasFullHero && !isHome && !mobileOpen) ? "hidden" : ""
         }`}
       >
         {/* every item binds text-ink directly (icons included): each

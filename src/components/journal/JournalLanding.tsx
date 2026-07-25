@@ -384,7 +384,8 @@ export function JournalLanding() {
   return (
     <div data-mode="light" className="bg-surface text-ink">
       {/* masthead: HJ script monogram + mission line */}
-      <header className="flex flex-col items-center justify-end gap-12 px-6 pb-8 pt-[8.75rem] md:pt-[12.5rem]">
+      {/* 140px here + the 60px nav offset = the design's 200px */}
+      <header className="flex flex-col items-center justify-end gap-12 px-6 pb-8 pt-[8.75rem]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/figma/journal/hj-monogram.svg"

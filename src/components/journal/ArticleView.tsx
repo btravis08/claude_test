@@ -55,24 +55,25 @@ export function ArticleView({
         title={article.title}
         categoryTitle={category.title}
         heroSrc={article.hero}
-      />
-      <TextBlock lead={ARTICLE_LEAD} body={[ARTICLE_BODY[0]]} />
-      <FiftyFifty
-        mode="dark"
-        ratio="5:4"
-        panels={article.pair.map((image) => ({ image }))}
-      />
-      <TextBlock lead={ARTICLE_LEAD} body={[ARTICLE_BODY[1]]} />
-      <Carousel
-        mode="dark"
-        eyebrow="Shop the Story"
-        items={article.carousel.map((item) => ({
-          ...item,
-          description: ARTICLE_BODY[1].slice(0, 170),
-        }))}
-      />
-      <TextBlock lead={ARTICLE_LEAD} body={ARTICLE_BODY} />
-      <ProductSlider mode="dark" title="New Arrivals" products={sliderProducts} />
+      >
+        <TextBlock lead={ARTICLE_LEAD} body={[ARTICLE_BODY[0]]} />
+        <FiftyFifty
+          mode="dark"
+          ratio="5:4"
+          panels={article.pair.map((image) => ({ image }))}
+        />
+        <TextBlock lead={ARTICLE_LEAD} body={[ARTICLE_BODY[1]]} />
+        <Carousel
+          mode="dark"
+          eyebrow="Shop the Story"
+          items={article.carousel.map((item) => ({
+            ...item,
+            description: ARTICLE_BODY[1].slice(0, 170),
+          }))}
+        />
+        <TextBlock lead={ARTICLE_LEAD} body={ARTICLE_BODY} />
+        <ProductSlider mode="dark" title="New Arrivals" products={sliderProducts} />
+      </ArticleTop>
     </div>
   );
 }

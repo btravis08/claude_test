@@ -101,7 +101,9 @@ function launchFieldFlip(
   size: { w: number; h: number } | undefined,
 ) {
   const W = window.innerWidth;
-  const H = window.innerHeight;
+  /* the FLIP lands on the article hero, which fills 70svh — the lead
+     copy fades in below it */
+  const H = Math.round(window.innerHeight * 0.7);
   const wrap = document.createElement("div");
   /* TRANSPARENT on purpose: until the overlay image has painted, the
      identical canvas tile shows through — a background here covered

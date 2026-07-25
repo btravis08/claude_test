@@ -44,11 +44,15 @@ export function ArticleTop({
   title,
   categoryTitle,
   heroSrc,
+  children,
 }: {
   slug: string;
   title: string;
   categoryTitle: string;
   heroSrc: string;
+  /* the article body — fades up after the hero lands on field entry,
+     rendered fully visible on direct loads */
+  children: React.ReactNode;
 }) {
   /* visible immediately (SSR/direct loads); a live transition flips
      these off before the first client paint */
@@ -96,9 +100,11 @@ export function ArticleTop({
   }, [live]);
 
   return (
+    <>
     <div
       data-mode="dark"
-      className="relative h-svh w-full overflow-hidden bg-[#0b0b0b]"
+      /* 70svh: the lead copy peeks below the hero from first paint */
+      className="relative h-[70svh] w-full overflow-hidden bg-[#0b0b0b]"
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
@@ -115,7 +121,9 @@ export function ArticleTop({
           aria-label="Breadcrumb"
           initial={false}
           animate={{ opacity: ready ? 1 : 0, y: ready ? 0 : 18 }}
-          transition={{ duration: 0.55, ease: [...EASE_OUT] }}
+          /* hide instantly when a live transition claims the page —
+             only the reveal is eased */
+          transition={{ duration: ready ? 0.55 : 0, ease: [...EASE_OUT] }}
           className="flex items-center gap-3"
         >
           <span className="flex items-center gap-1.5">
@@ -127,12 +135,30 @@ export function ArticleTop({
         <m.h1
           initial={false}
           animate={{ opacity: ready ? 1 : 0, y: ready ? 0 : 26 }}
-          transition={{ duration: 0.65, ease: [...EASE_OUT], delay: 0.09 }}
+          transition={
+            ready
+              ? { duration: 0.65, ease: [...EASE_OUT], delay: 0.09 }
+              : { duration: 0 }
+          }
           className="mt-3 font-display text-display-xl text-ink"
         >
           {title}
         </m.h1>
       </div>
     </div>
+    {/* body: rises with the copy once the hero has landed (hides
+        instantly when a live transition claims the page) */}
+    <m.div
+      initial={false}
+      animate={{ opacity: ready ? 1 : 0, y: ready ? 0 : 24 }}
+      transition={
+        ready
+          ? { duration: 0.6, ease: [...EASE_OUT], delay: 0.12 }
+          : { duration: 0 }
+      }
+    >
+      {children}
+    </m.div>
+    </>
   );
 }

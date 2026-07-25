@@ -154,12 +154,17 @@ const DEFAULT_NAV: NavData = {
       layout: "cards",
       cards: [
         { title: "The Legacy", image: "/figma/legacy-video.jpg", url: "#" },
-        { title: "Honors Journal", image: "/figma/campaign.jpg", url: "#" },
+        { title: "Honors Journal", image: "/figma/campaign.jpg", url: "/journal" },
         { title: "Team Sunday Red", image: "/figma/media-portrait.jpg", url: "#" },
       ],
     },
   ],
-  company: L(["The Legacy", "Honors Journal", "Team Sun Day Red", "Careers"]),
+  company: [
+    { label: "The Legacy", url: "#" },
+    { label: "Honors Journal", url: "/journal" },
+    { label: "Team Sun Day Red", url: "#" },
+    { label: "Careers", url: "#" },
+  ],
 };
 
 const NAV_H = "3.75rem";

@@ -9,18 +9,33 @@ import { NavTextLink } from "@/components/NavTextLink";
 import { Plus } from "@/components/icons";
 import { EASE_OUT } from "@/lib/motion";
 
-const columns: { heading: string; links: string[] }[] = [
+interface FooterLink {
+  label: string;
+  href?: string;
+}
+
+const columns: { heading: string; links: FooterLink[] }[] = [
   {
     heading: "Support",
-    links: ["Help & FAQs", "Returns & Exchanges", "Warranty", "Contact Us"],
+    links: [
+      { label: "Help & FAQs" },
+      { label: "Returns & Exchanges" },
+      { label: "Warranty" },
+      { label: "Contact Us" },
+    ],
   },
   {
     heading: "Company",
-    links: ["The Legacy", "TEAM SUN DAY RED", "Honors Journal", "Careers"],
+    links: [
+      { label: "The Legacy" },
+      { label: "TEAM SUN DAY RED" },
+      { label: "Honors Journal", href: "/journal" },
+      { label: "Careers" },
+    ],
   },
   {
     heading: "More",
-    links: ["Gift Cards", "ID.me"],
+    links: [{ label: "Gift Cards" }, { label: "ID.me" }],
   },
 ];
 
@@ -28,7 +43,7 @@ const social = ["FB", "TT", "IG", "X", "TW"];
 
 /* mobile link groups collapse into accordions; the + rotates into an
    x while the panel's height eases open */
-function FooterAccordion({ heading, links }: { heading: string; links: string[] }) {
+function FooterAccordion({ heading, links }: { heading: string; links: FooterLink[] }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="border-b border-line">
@@ -54,7 +69,7 @@ function FooterAccordion({ heading, links }: { heading: string; links: string[] 
       >
         <div className="flex flex-col items-start gap-3 px-4 pb-6">
           {links.map((link) => (
-            <NavTextLink key={link} label={link.toUpperCase()} />
+            <NavTextLink key={link.label} label={link.label.toUpperCase()} href={link.href} />
           ))}
         </div>
       </m.div>
@@ -200,7 +215,7 @@ export function SiteFooter() {
             <p className="label font-medium opacity-70">{col.heading}</p>
             <div className="flex flex-col items-start gap-[0.5625rem]">
               {col.links.map((link) => (
-                <NavTextLink key={link} label={link.toUpperCase()} />
+                <NavTextLink key={link.label} label={link.label.toUpperCase()} href={link.href} />
               ))}
             </div>
           </div>

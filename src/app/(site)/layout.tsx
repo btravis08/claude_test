@@ -26,15 +26,29 @@ function img(source: SanityImageSource | undefined | null, width = 1400) {
   }
 }
 
+/* Site-owned routes for CMS links that predate their pages: entries in
+   the navigation document still pointing at "#" get routed here by
+   label, so the journal is reachable without a dataset edit */
+const OWNED_ROUTES: [RegExp, string][] = [[/honors\s*journal/i, "/journal"]];
+
+function ownedUrl(label: string, url: string): string {
+  if (url && url !== "#") return url;
+  return OWNED_ROUTES.find(([re]) => re.test(label))?.[1] ?? url;
+}
+
 /* Resolve CMS links: a linked collection supplies the label fallback
    and routes to its collection page */
 function toLink(link: NavLinkDoc): NavLink {
   const collectionUrl = link.collection?.slug
     ? `/collections/${link.collection.slug}`
     : undefined;
+  const label = link.label ?? link.collection?.title ?? "";
   return {
-    label: link.label ?? link.collection?.title ?? "",
-    url: (link.url && link.url !== "#" ? link.url : undefined) ?? collectionUrl ?? "#",
+    label,
+    url: ownedUrl(
+      label,
+      (link.url && link.url !== "#" ? link.url : undefined) ?? collectionUrl ?? "#",
+    ),
   };
 }
 
@@ -56,7 +70,7 @@ function toNavData(doc: NavigationDoc | null): NavData | undefined {
     cards: item.cards?.map((card) => ({
       title: card.title ?? "",
       image: img(card.image, 1100),
-      url: card.url || "#",
+      url: ownedUrl(card.title ?? "", card.url || "#"),
     })),
     /* image card: collection first, overrides win */
     image: img(item.image, 1100) ?? img(item.imageCollection?.image, 1100),

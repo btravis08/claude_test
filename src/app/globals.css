@@ -185,6 +185,10 @@
   /* 24 → 32 */
   --text-headline-sm: clamp(1.5rem, 1.2885rem + 0.7905vw, 2rem);
   --text-headline-sm--line-height: 1.1875;
+  /* 32 → 40 — Headline Medium/Regular (journal article titles) */
+  --text-headline-md: clamp(2rem, 1.7885rem + 0.7905vw, 2.5rem);
+  --text-headline-md--line-height: 1.1;
+  --text-headline-md--letter-spacing: -0.02em;
   /* 32 → 48 */
   --text-headline-lg: clamp(2rem, 1.5771rem + 1.581vw, 3rem);
   --text-headline-lg--line-height: 1.2;

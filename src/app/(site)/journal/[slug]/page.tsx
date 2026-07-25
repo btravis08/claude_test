@@ -1,0 +1,66 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+
+import { ArticleView } from "@/components/journal/ArticleView";
+import {
+  ARTICLE_LEAD,
+  JOURNAL_CATEGORIES,
+  findArticle,
+} from "@/components/journal/articles";
+import { toCards } from "@/sanity/lib/cards";
+import { sanityFetch } from "@/sanity/lib/fetch";
+import {
+  automaticDiscountsQuery,
+  productsByTagQuery,
+  storeSettingsQuery,
+} from "@/sanity/lib/queries";
+import type { Discount, SliderProduct, StoreSettings } from "@/sanity/types";
+
+export function generateStaticParams() {
+  return JOURNAL_CATEGORIES.flatMap((category) =>
+    category.articles.map((article) => ({ slug: article.slug })),
+  );
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const hit = findArticle(slug);
+  if (!hit) return { title: "Honors Journal" };
+  return {
+    title: `${hit.article.title} — Honors Journal`,
+    description: ARTICLE_LEAD,
+  };
+}
+
+export default async function JournalArticlePage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const hit = findArticle(slug);
+  if (!hit) notFound();
+
+  /* the closing "New Arrivals" slider — real catalog cards when the
+     CMS is reachable, the component's Figma defaults otherwise */
+  const [settings, discounts, products] = await Promise.all([
+    sanityFetch<StoreSettings | null>(storeSettingsQuery, {}, null),
+    sanityFetch<Discount[]>(automaticDiscountsQuery, {}, []),
+    sanityFetch<SliderProduct[]>(productsByTagQuery, { productTag: "all" }, []),
+  ]);
+  const cards = products
+    .flatMap((product) => toCards(product, discounts, settings))
+    .slice(0, 12);
+
+  return (
+    <ArticleView
+      article={hit.article}
+      category={hit.category}
+      sliderProducts={cards.length ? cards : undefined}
+    />
+  );
+}

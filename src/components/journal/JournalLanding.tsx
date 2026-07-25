@@ -5,76 +5,51 @@ import { useEffect, useRef, useState } from "react";
 
 import { ArrowLink, ArrowSwap } from "@/components/home/ArrowHover";
 import { ArrowUpRight } from "@/components/icons";
+import { SmartLink } from "@/components/SmartLink";
+import { JOURNAL_CATEGORIES } from "@/components/journal/articles";
 import { EASE_DRAMATIC, EASE_OUT } from "@/lib/motion";
 
 /*
   Honors Journal landing (Figma "Blog Landing Page V2", node
-  33996:98494). A stack of category titles between hairlines; hovering
-  anywhere inside a section's borders opens it to an endless stream of
-  editorial imagery drifting left → right. Hovering an image eases the
-  drift to a stop and breathes a little extra spacing around it;
-  leaving the section closes it back to just the word.
-*/
+  33996:98494). A stack of category titles between hairlines behaving
+  as an always-one-open accordion: Ambassadors starts open, hovering
+  another section hands the open state over (the closing and opening
+  panels animate together so the stack's height never jumps), and the
+  last activated section simply stays open.
 
-type Ratio = "1 / 1" | "4 / 5" | "3 / 4";
+  Each open section is an endless stream of top-aligned editorial
+  imagery drifting left → right. Hovering an image eases the drift to
+  a standstill; the wheel (or a touch drag) scrubs the stream by hand,
+  and once the input goes quiet the drift resumes its original speed
+  gracefully. Cards link to their articles.
+*/
 
 interface StreamImage {
   src: string;
-  ratio: Ratio;
+  ratio: string;
+  href: string;
 }
 
-/* the editorial pool from the design's stream (public/figma/journal);
-   every card is 1:1, 4:5, or 3:4 per the design's media ratios */
-const RATIOS: Ratio[] = [
-  "1 / 1",
-  "3 / 4",
-  "4 / 5",
-  "3 / 4",
-  "1 / 1",
-  "4 / 5",
-  "3 / 4",
-  "1 / 1",
-  "4 / 5",
-  "1 / 1",
-  "3 / 4",
-  "4 / 5",
-  "1 / 1",
-  "3 / 4",
-  "4 / 5",
-  "3 / 4",
-];
-
-const POOL: StreamImage[] = RATIOS.map((ratio, i) => ({
-  src: `/figma/journal/stream-${String(i + 1).padStart(2, "0")}.jpg`,
-  ratio,
+/* each category streams its articles' imagery (1:1, 4:5, 3:4 cards);
+   clicking a card opens that article */
+const SECTIONS = JOURNAL_CATEGORIES.map((category) => ({
+  title: category.title,
+  label: category.label,
+  images: category.articles.flatMap((article): StreamImage[] =>
+    article.stream.map((image) => ({
+      ...image,
+      href: `/journal/${article.slug}`,
+    })),
+  ),
 }));
-
-/* each section streams its own rotation of the pool */
-const slice = (start: number, count = 8): StreamImage[] =>
-  Array.from({ length: count }, (_, i) => POOL[(start + i) % POOL.length]);
-
-const SECTIONS = [
-  { title: "Ambassadors", label: "The players & partners", images: slice(0) },
-  {
-    title: "Stories from the Course",
-    label: "People, ideas, & culture",
-    images: slice(3),
-  },
-  {
-    title: "On Craft and Culture",
-    label: "Design, materials, & making",
-    images: slice(6),
-  },
-  { title: "In the Press", label: "Coverage & conversation", images: slice(9) },
-  { title: "From Tiger", label: "In his words", images: slice(12) },
-  { title: "Beyond the Red", label: "Off the course", images: slice(14) },
-];
 
 /* stream drift in px/s (left → right) */
 const BASE_SPEED = 70;
 /* seconds for the drift to ease toward its target speed — the "slow
-   easing" stop/restart when an image is hovered */
+   easing" stop on image hover and the graceful resume after scrubbing */
 const SPEED_TAU = 0.7;
+/* quiet time after manual scrubbing before the drift resumes */
+const RESUME_DELAY_MS = 600;
 
 function Stream({ images, open }: { images: StreamImage[]; open: boolean }) {
   const copyRef = useRef<HTMLDivElement>(null);
@@ -82,11 +57,13 @@ function Stream({ images, open }: { images: StreamImage[]; open: boolean }) {
   const x = useMotionValue(0);
   const speed = useRef(0);
   const target = useRef(0);
-  const [hovered, setHovered] = useState<number | null>(null);
+  /* timestamp of the last manual scrub — drift stays parked until
+     the input has been quiet for RESUME_DELAY_MS */
+  const lastScrub = useRef(0);
+  const imageHovered = useRef(false);
   const reduced = useReducedMotion();
 
-  /* width of one copy (its own padding-right carries the seam gap);
-     hover spacing changes it, so observe rather than measure once */
+  /* width of one copy (its own padding-right carries the seam gap) */
   useEffect(() => {
     const el = copyRef.current;
     if (!el) return;
@@ -97,12 +74,19 @@ function Stream({ images, open }: { images: StreamImage[]; open: boolean }) {
     return () => ro.disconnect();
   }, []);
 
+  /* keep x in [-W, 0) — two copies back to back, seam never shows
+     whichever way the stream travels */
+  const wrap = (value: number) => {
+    const w = copyW.current;
+    if (w <= 0) return value;
+    let nx = value;
+    while (nx >= 0) nx -= w;
+    while (nx < -w) nx += w;
+    return nx;
+  };
+
   useEffect(() => {
-    if (!open) {
-      setHovered(null);
-      return;
-    }
-    if (reduced) return;
+    if (!open || reduced) return;
     target.current = BASE_SPEED;
     speed.current = 0;
     let raf = 0;
@@ -110,74 +94,117 @@ function Stream({ images, open }: { images: StreamImage[]; open: boolean }) {
     const tick = (now: number) => {
       const dt = Math.min((now - last) / 1000, 0.05);
       last = now;
+      /* while scrubbing (and shortly after), or over a hovered image,
+         the drift aims for 0; otherwise it aims for cruise speed */
+      const parked =
+        imageHovered.current || now - lastScrub.current < RESUME_DELAY_MS;
+      target.current = parked ? 0 : BASE_SPEED;
       speed.current +=
         (target.current - speed.current) * (1 - Math.exp(-dt / SPEED_TAU));
       /* the ease is asymptotic — settle to a true standstill */
       if (target.current === 0 && Math.abs(speed.current) < 1.5)
         speed.current = 0;
-      let nx = x.get() + speed.current * dt;
-      /* two copies back to back: keep x in [-W, 0) so the seam never
-         shows while drifting rightward */
-      const w = copyW.current;
-      if (w > 0 && nx >= 0) nx -= w;
-      x.set(nx);
+      x.set(wrap(x.get() + speed.current * dt));
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, [open, reduced, x]);
 
-  const card = (image: StreamImage, i: number, copy: number) => {
-    const key = copy * images.length + i;
-    return (
-      <div
-        key={key}
-        /* the "breathing room" on hover — a slow margin ease that
-           nudges neighbours aside (CSS twin of EASE_OUT) */
-        className="transition-[margin] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
-        style={{ marginInline: hovered === key ? "1.5rem" : "0rem" }}
+  /* manual horizontal scrub: trackpad/shift-wheel moves the stream
+     directly; touch drags it. Both park the drift, which then eases
+     back to cruise once the input goes quiet. */
+  const railRef = useRef<HTMLDivElement>(null);
+  const dragX = useRef<number | null>(null);
+  const dragged = useRef(0);
+  useEffect(() => {
+    const el = railRef.current;
+    if (!el || !open) return;
+    const onWheel = (e: WheelEvent) => {
+      const dx = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : 0;
+      if (dx === 0) return;
+      e.preventDefault();
+      lastScrub.current = performance.now();
+      speed.current = 0;
+      x.set(wrap(x.get() - dx));
+    };
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, [open, x]);
+
+  const card = (image: StreamImage, i: number, copy: number) => (
+    <m.div
+      key={copy * images.length + i}
+      initial={false}
+      animate={open ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
+      transition={{
+        duration: 0.55,
+        ease: [...EASE_OUT],
+        /* staggered fade-up sweeping left → right on open */
+        delay: open ? 0.2 + i * 0.07 : 0,
+      }}
+    >
+      <SmartLink
+        href={image.href}
+        className="block"
+        draggable={false}
+        onMouseEnter={() => {
+          imageHovered.current = true;
+        }}
+        onMouseLeave={() => {
+          imageHovered.current = false;
+        }}
+        onClick={(e) => {
+          /* a drag that travelled isn't a click */
+          if (dragged.current > 6) e.preventDefault();
+        }}
       >
-        <m.div
-          initial={false}
-          animate={open ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
-          transition={{
-            duration: 0.55,
-            ease: [...EASE_OUT],
-            /* staggered fade-up sweeping left → right on open */
-            delay: open ? 0.2 + i * 0.07 : 0,
-          }}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={image.src}
-            alt=""
-            loading="lazy"
-            decoding="async"
-            draggable={false}
-            onMouseEnter={() => {
-              setHovered(key);
-              target.current = 0;
-            }}
-            onMouseLeave={() => {
-              setHovered((current) => (current === key ? null : current));
-              target.current = BASE_SPEED;
-            }}
-            className="w-[14.3125rem] bg-surface-2 object-cover"
-            style={{ aspectRatio: image.ratio }}
-          />
-        </m.div>
-      </div>
-    );
-  };
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={image.src}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          draggable={false}
+          className="w-[14.3125rem] bg-surface-2 object-cover"
+          style={{ aspectRatio: image.ratio }}
+        />
+      </SmartLink>
+    </m.div>
+  );
 
   return (
-    <div className="w-full overflow-hidden">
-      <m.div style={{ x }} className="flex w-max items-center">
+    <div
+      ref={railRef}
+      className="w-full touch-pan-y overflow-hidden"
+      onPointerDown={(e) => {
+        if (e.pointerType === "mouse") return;
+        dragX.current = e.clientX;
+        dragged.current = 0;
+      }}
+      onPointerMove={(e) => {
+        if (dragX.current === null) return;
+        const dx = e.clientX - dragX.current;
+        dragX.current = e.clientX;
+        dragged.current += Math.abs(dx);
+        lastScrub.current = performance.now();
+        speed.current = 0;
+        x.set(wrap(x.get() + dx));
+      }}
+      onPointerUp={() => {
+        dragX.current = null;
+      }}
+      onPointerCancel={() => {
+        dragX.current = null;
+      }}
+    >
+      {/* top-aligned rows — mixed ratios hang from a common top edge */}
+      <m.div style={{ x }} className="flex w-max items-start">
         {[0, 1].map((copy) => (
           <div
             key={copy}
             ref={copy === 0 ? copyRef : undefined}
-            className="flex items-center gap-8 pr-8 md:gap-[4.5rem] md:pr-[4.5rem]"
+            className="flex items-start gap-8 pr-8 md:gap-[4.5rem] md:pr-[4.5rem]"
           >
             {images.map((image, i) => card(image, i, copy))}
           </div>
@@ -191,19 +218,18 @@ function JournalSection({
   title,
   label,
   images,
-  hoverCapable,
+  open,
+  onActivate,
 }: {
   title: string;
   label: string;
   images: StreamImage[];
-  hoverCapable: boolean;
+  open: boolean;
+  onActivate: () => void;
 }) {
-  const [open, setOpen] = useState(false);
-
   return (
     <section
-      onMouseEnter={hoverCapable ? () => setOpen(true) : undefined}
-      onMouseLeave={hoverCapable ? () => setOpen(false) : undefined}
+      onMouseEnter={onActivate}
       className="w-full border-t border-line"
     >
       {/* the whole space between the hairlines is the hit area; the
@@ -211,8 +237,8 @@ function JournalSection({
       <button
         type="button"
         aria-expanded={open}
-        onClick={hoverCapable ? undefined : () => setOpen((v) => !v)}
-        onFocus={hoverCapable ? () => setOpen(true) : undefined}
+        onClick={onActivate}
+        onFocus={onActivate}
         className="grid w-full cursor-default grid-cols-[1fr_auto_1fr] items-center gap-4 px-6 py-12 text-left max-md:cursor-pointer"
       >
         <m.p
@@ -249,6 +275,8 @@ function JournalSection({
         </m.span>
       </button>
 
+      {/* open/close share one duration + ease, so the section handing
+          its height to the next keeps the stack's total constant */}
       <m.div
         initial={false}
         animate={{ height: open ? "auto" : 0 }}
@@ -266,15 +294,9 @@ function JournalSection({
 }
 
 export function JournalLanding() {
-  /* hover opens sections only where hover is real — touch taps */
-  const [hoverCapable, setHoverCapable] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(hover: hover) and (pointer: fine)");
-    const update = () => setHoverCapable(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
+  /* always-one-open accordion: Ambassadors by default, and the last
+     activated section stays open — nothing ever closes to zero */
+  const [active, setActive] = useState(0);
 
   return (
     <div data-mode="light" className="bg-surface text-ink">
@@ -297,10 +319,11 @@ export function JournalLanding() {
       </header>
 
       <div className="flex flex-col pb-32 pt-[4.5rem]">
-        {SECTIONS.map((section) => (
+        {SECTIONS.map((section, i) => (
           <JournalSection
             key={section.title}
-            hoverCapable={hoverCapable}
+            open={active === i}
+            onActivate={() => setActive(i)}
             {...section}
           />
         ))}

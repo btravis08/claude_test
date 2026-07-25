@@ -210,6 +210,16 @@ html {
   font-size: max(100%, 0.83333vw);
 }
 
+/* The window NEVER scrolls sideways (desktop or mobile): every
+   intended horizontal scroll lives inside a rail's own track
+   (overflow-x-auto). clip, not hidden — hidden would turn html/body
+   into scroll containers and break position: sticky (hero CTA hold,
+   PDP arrows). */
+html,
+body {
+  overflow-x: clip;
+}
+
 body {
   background: var(--surface);
   color: var(--ink);

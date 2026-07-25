@@ -102,12 +102,13 @@ export default defineConfig({
   dataset,
   schema: { types: schemaTypes },
   plugins: [
-    structureTool({ structure }),
+    structureTool({ structure, title: "Content" }),
     /* Presentation: live preview of the real site (drafts included)
        with click-to-edit overlays. The site and Studio share an
        origin, so the default previewUrl just works; the enable route
        flips Next draft mode before loading the page. */
     presentationTool({
+      title: "Preview",
       previewUrl: {
         previewMode: { enable: "/api/draft-mode/enable" },
       },

@@ -16,7 +16,11 @@ fetch() {
     return 0
   fi
   echo "→ $1"
-  curl -fsSL -o "$1" "https://www.figma.com/api/mcp/asset/$2"
+  # tolerate expired URLs (assets already shipped in an earlier run)
+  curl -fsSL -o "$1" "https://www.figma.com/api/mcp/asset/$2" || {
+    echo "⚠ $1 failed (URL expired?)"
+    rm -f "$1"
+  }
 }
 
 # fetch + downscale/compress for shipped content imagery (≤300KB rule):
@@ -27,7 +31,10 @@ fetch_jpg() {
     return 0
   fi
   echo "→ $1 (compressed)"
-  curl -fsSL -o /tmp/figma-asset.tmp "https://www.figma.com/api/mcp/asset/$2"
+  curl -fsSL -o /tmp/figma-asset.tmp "https://www.figma.com/api/mcp/asset/$2" || {
+    echo "⚠ $1 failed (URL expired?)"
+    return 0
+  }
   if command -v convert >/dev/null 2>&1; then
     convert /tmp/figma-asset.tmp -auto-orient -resize "${3:-1000}x${3:-1000}>" \
       -strip -interlace Plane -quality 78 "$1"

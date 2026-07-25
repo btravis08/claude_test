@@ -48,8 +48,10 @@ const BASE_SPEED = 70;
 /* seconds for the drift to ease toward its target speed — the "slow
    easing" stop on image hover and the graceful resume after scrubbing */
 const SPEED_TAU = 0.7;
-/* quiet time after manual scrubbing before the drift resumes */
+/* quiet time after wheel scrubbing before the drift resumes */
 const RESUME_DELAY_MS = 600;
+/* fastest flick momentum carried out of a touch swipe (px/s) */
+const MAX_FLICK = 3500;
 
 function Stream({ images, open }: { images: StreamImage[]; open: boolean }) {
   const copyRef = useRef<HTMLDivElement>(null);
@@ -94,8 +96,17 @@ function Stream({ images, open }: { images: StreamImage[]; open: boolean }) {
     const tick = (now: number) => {
       const dt = Math.min((now - last) / 1000, 0.05);
       last = now;
-      /* while scrubbing (and shortly after), or over a hovered image,
-         the drift aims for 0; otherwise it aims for cruise speed */
+      /* while a finger owns the stream, the loop just idles — x is
+         driven directly by pointermove */
+      if (dragging.current) {
+        raf = requestAnimationFrame(tick);
+        return;
+      }
+      /* over a hovered image (or briefly after a wheel scrub) the
+         drift aims for 0; otherwise it aims for cruise — which is
+         also what carries flick momentum back down: a released swipe
+         seeds speed with the finger's velocity and this same ease
+         decays it gradually to the constant loop speed */
       const parked =
         imageHovered.current || now - lastScrub.current < RESUME_DELAY_MS;
       target.current = parked ? 0 : BASE_SPEED;
@@ -112,11 +123,15 @@ function Stream({ images, open }: { images: StreamImage[]; open: boolean }) {
   }, [open, reduced, x]);
 
   /* manual horizontal scrub: trackpad/shift-wheel moves the stream
-     directly; touch drags it. Both park the drift, which then eases
-     back to cruise once the input goes quiet. */
+     directly (parked, then resuming after quiet); a touch swipe rides
+     the finger 1:1 and releases with native-feeling momentum. */
   const railRef = useRef<HTMLDivElement>(null);
-  const dragX = useRef<number | null>(null);
+  const dragging = useRef(false);
+  const dragX = useRef(0);
   const dragged = useRef(0);
+  /* smoothed finger velocity (px/s) — the momentum seed on release */
+  const flickVel = useRef(0);
+  const lastMoveTs = useRef(0);
   useEffect(() => {
     const el = railRef.current;
     if (!el || !open) return;
@@ -166,7 +181,7 @@ function Stream({ images, open }: { images: StreamImage[]; open: boolean }) {
           loading="lazy"
           decoding="async"
           draggable={false}
-          className="w-[14.3125rem] bg-surface-2 object-cover"
+          className="w-[10rem] bg-surface-2 object-cover md:w-[14.3125rem]"
           style={{ aspectRatio: image.ratio }}
         />
       </SmartLink>
@@ -179,23 +194,40 @@ function Stream({ images, open }: { images: StreamImage[]; open: boolean }) {
       className="w-full touch-pan-y overflow-hidden"
       onPointerDown={(e) => {
         if (e.pointerType === "mouse") return;
+        dragging.current = true;
         dragX.current = e.clientX;
         dragged.current = 0;
+        flickVel.current = 0;
+        lastMoveTs.current = e.timeStamp;
+        speed.current = 0;
       }}
       onPointerMove={(e) => {
-        if (dragX.current === null) return;
+        if (!dragging.current) return;
         const dx = e.clientX - dragX.current;
         dragX.current = e.clientX;
         dragged.current += Math.abs(dx);
-        lastScrub.current = performance.now();
-        speed.current = 0;
+        /* smoothed instantaneous velocity, so the release carries the
+           flick rather than the last jittery sample */
+        const dt = (e.timeStamp - lastMoveTs.current) / 1000;
+        lastMoveTs.current = e.timeStamp;
+        if (dt > 0)
+          flickVel.current = flickVel.current * 0.7 + (dx / dt) * 0.3;
         x.set(wrap(x.get() + dx));
       }}
-      onPointerUp={() => {
-        dragX.current = null;
+      onPointerUp={(e) => {
+        if (!dragging.current) return;
+        dragging.current = false;
+        /* a fast swipe leaves fast, then the loop's ease gradually
+           brings it back to cruise speed — a stale flick sample dies
+           if the finger paused before lifting */
+        const stale = e.timeStamp - lastMoveTs.current > 120;
+        speed.current = stale
+          ? 0
+          : Math.max(-MAX_FLICK, Math.min(MAX_FLICK, flickVel.current));
       }}
       onPointerCancel={() => {
-        dragX.current = null;
+        dragging.current = false;
+        speed.current = 0;
       }}
     >
       {/* top-aligned rows — mixed ratios hang from a common top edge */}

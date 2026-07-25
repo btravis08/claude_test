@@ -58,6 +58,8 @@ const FRAG = `
 precision highp float;
 uniform vec2 uRes;
 uniform vec2 uOffset;
+uniform vec2 uLag;
+uniform vec2 uGrab;
 uniform float uCell;
 uniform float uStride;
 uniform float uCount;
@@ -70,12 +72,25 @@ float cellHash(vec2 cr) {
 
 vec2 atlasUv(float idx, vec2 t) {
   vec2 cell = vec2(mod(idx, ${ATLAS_GRID}.0), floor(idx / ${ATLAS_GRID}.0));
-  /* inset keeps aberration samples inside the cell */
+  /* inset keeps warped samples inside the cell */
   return (cell + clamp(t, 0.015, 0.985)) / ${ATLAS_GRID}.0;
 }
 
 void main() {
-  vec2 p = vec2(gl_FragCoord.x, uRes.y - gl_FragCoord.y) + uOffset;
+  vec2 fragPx = vec2(gl_FragCoord.x, uRes.y - gl_FragCoord.y);
+
+  /* elastic field: fragments near the grab point ride the live
+     offset; the further out, the more they blend toward the spring's
+     trailing offset — distant tiles drag into place a beat later.
+     Stretch is capped well inside the gutter so tiles never tear. */
+  float d = clamp(distance(fragPx, uGrab) / (0.75 * length(uRes)), 0.0, 1.0);
+  float lagW = pow(smoothstep(0.0, 1.0, d), 1.3);
+  vec2 stretch = (uLag - uOffset) * lagW;
+  float maxS = (uStride - uCell) * 0.35;
+  float sl = length(stretch);
+  if (sl > maxS) stretch *= maxS / sl;
+
+  vec2 p = fragPx + uOffset + stretch;
   float c = floor(p.x / uStride);
   float shifted = p.y + mod(c, 2.0) * uStride * 0.5;
   float r = floor(shifted / uStride);
@@ -89,16 +104,17 @@ void main() {
        periodicity so the field doesn't read as diagonal stripes */
     float jitter = floor(cellHash(floor(vec2(c, r) / 4.0)) * uCount);
     float idx = mod(c * 5.0 + r * 7.0 + jitter, uCount);
-    /* subtle motion response: tiles trail the drag a touch and the
-       channels split with velocity, all fading to zero at rest */
-    vec2 vel = clamp(uVel / 3000.0, -1.0, 1.0);
-    vec2 lag = vel * 0.018;
-    vec2 chroma = vel * 0.010;
-    vec2 base = t * 0.96 + 0.02 + lag;
-    float rC = texture2D(uTex, atlasUv(idx, base + chroma)).r;
-    float gC = texture2D(uTex, atlasUv(idx, base)).g;
-    float bC = texture2D(uTex, atlasUv(idx, base - chroma)).b;
-    col = vec3(rC, gC, bC);
+    /* cloth response: while the field moves, each image bows in the
+       motion direction — the middle of the tile trails like fabric
+       pulled by its edges, settling flat at rest */
+    float speedN = clamp(length(uVel) / 3000.0, 0.0, 1.0);
+    vec2 base = t * 0.94 + 0.03;
+    if (speedN > 0.001) {
+      vec2 dir = normalize(uVel);
+      float bulge = 1.0 - 4.0 * dot(t - 0.5, t - 0.5);
+      base += dir * (speedN * 0.05) * max(bulge, 0.0);
+    }
+    col = texture2D(uTex, atlasUv(idx, base)).rgb;
   }
   gl_FragColor = vec4(col, 1.0);
 }
@@ -141,6 +157,8 @@ export function JournalGrid() {
     const U = (name: string) => gl.getUniformLocation(program, name);
     const uRes = U("uRes");
     const uOffset = U("uOffset");
+    const uLag = U("uLag");
+    const uGrab = U("uGrab");
     const uCell = U("uCell");
     const uStride = U("uStride");
     const uCount = U("uCount");
@@ -187,6 +205,13 @@ export function JournalGrid() {
     let dpr = Math.min(window.devicePixelRatio || 1, 2);
     let cellCss = DESKTOP_CELL;
     const offset = { x: 0, y: 0 };
+    /* the elastic trailing offset — a critically damped spring chasing
+       offset; distant tiles render from it, so they ease into place */
+    const lag = { x: 0, y: 0 };
+    const lagVel = { x: 0, y: 0 };
+    const SPRING_K = 90;
+    const SPRING_C = 2 * Math.sqrt(SPRING_K);
+    const grab = { x: 0, y: 0 }; // CSS px, last drag anchor
     const vel = { x: 0, y: 0 }; // px/s, released momentum
     const shownVel = { x: 0, y: 0 }; // eased copy driving the shader
     let dragging = false;
@@ -209,6 +234,12 @@ export function JournalGrid() {
     const draw = () => {
       gl.uniform2f(uRes, canvas.width, canvas.height);
       gl.uniform2f(uOffset, offset.x * dpr, offset.y * dpr);
+      gl.uniform2f(
+        uLag,
+        (reduced ? offset.x : lag.x) * dpr,
+        (reduced ? offset.y : lag.y) * dpr,
+      );
+      gl.uniform2f(uGrab, grab.x * dpr, grab.y * dpr);
       gl.uniform1f(uCell, cellCss * dpr);
       gl.uniform1f(uStride, cellCss * (1 + GAP_RATIO) * dpr);
       gl.uniform1f(uCount, ENTRIES.length);
@@ -231,6 +262,12 @@ export function JournalGrid() {
         offset.x -= vel.x * dt;
         offset.y -= vel.y * dt;
       }
+      /* critically damped spring: the lag layer chases the live
+         offset on a smooth S-curve — the bezier feel of the settle */
+      lagVel.x += (SPRING_K * (offset.x - lag.x) - SPRING_C * lagVel.x) * dt;
+      lagVel.y += (SPRING_K * (offset.y - lag.y) - SPRING_C * lagVel.y) * dt;
+      lag.x += lagVel.x * dt;
+      lag.y += lagVel.y * dt;
       /* the shader's motion response eases after the real velocity */
       const k = 1 - Math.exp(-dt / 0.12);
       shownVel.x += (vel.x - shownVel.x) * k;
@@ -240,9 +277,13 @@ export function JournalGrid() {
         !dragging &&
         vel.x === 0 &&
         vel.y === 0 &&
-        Math.hypot(shownVel.x, shownVel.y) < 2;
+        Math.hypot(shownVel.x, shownVel.y) < 2 &&
+        Math.hypot(offset.x - lag.x, offset.y - lag.y) < 0.5;
       if (still) {
         shownVel.x = shownVel.y = 0;
+        lag.x = offset.x;
+        lag.y = offset.y;
+        lagVel.x = lagVel.y = 0;
         draw();
         running = false;
         return;
@@ -261,6 +302,9 @@ export function JournalGrid() {
       dragging = true;
       travelled = 0;
       vel.x = vel.y = 0;
+      const rect = canvas.getBoundingClientRect();
+      grab.x = e.clientX - rect.left;
+      grab.y = e.clientY - rect.top;
       lastPointer = { x: e.clientX, y: e.clientY, t: e.timeStamp };
       canvas.setPointerCapture(e.pointerId);
       requestRender();

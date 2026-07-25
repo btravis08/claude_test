@@ -2,7 +2,7 @@
 
 import { visionTool } from "@sanity/vision";
 import { defineConfig } from "sanity";
-import { defineDocuments, presentationTool } from "sanity/presentation";
+import { defineDocuments, defineLocations, presentationTool } from "sanity/presentation";
 import { structureTool } from "sanity/structure";
 import type { StructureResolver } from "sanity/structure";
 
@@ -112,6 +112,47 @@ export default defineConfig({
         previewMode: { enable: "/api/draft-mode/enable" },
       },
       resolve: {
+        /* the reverse direction: documents show a "used on page"
+           banner that jumps Presentation to their URL */
+        locations: {
+          product: defineLocations({
+            select: { title: "title", slug: "slug.current" },
+            resolve: (doc) => ({
+              locations: [
+                {
+                  title: doc?.title ?? "Product",
+                  href: `/products/${doc?.slug}`,
+                },
+              ],
+            }),
+          }),
+          collection: defineLocations({
+            select: { title: "title", slug: "slug.current" },
+            resolve: (doc) => ({
+              locations: [
+                {
+                  title: doc?.title ?? "Collection",
+                  href: `/collections/${doc?.slug}`,
+                },
+              ],
+            }),
+          }),
+          page: defineLocations({
+            select: { title: "title", slug: "slug.current" },
+            resolve: (doc) => ({
+              locations: [
+                {
+                  title: doc?.title ?? "Page",
+                  href: doc?.slug === "home" ? "/" : `/${doc?.slug}`,
+                },
+              ],
+            }),
+          }),
+          /* singleton: static state, no fields to select */
+          navigation: {
+            locations: [{ title: "Site navigation", href: "/" }],
+          },
+        },
         /* opening one of these documents jumps the preview to its page */
         mainDocuments: defineDocuments([
           {

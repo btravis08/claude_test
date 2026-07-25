@@ -11,11 +11,10 @@ import {
 } from "@/components/journal/articles";
 
 /*
-  Honors Journal article (Figma "Blog Category Page", node 33598:52325):
-  breadcrumbed header + full-bleed hero (or the fullscreen field-entry
-  hero when arriving from /journal/alt — see ArticleTop), then text
-  blocks interleaved with the site's existing 50/50, carousel, and
-  product slider sections.
+  Honors Journal article: fullscreen dark hero with the breadcrumb +
+  title over its lower edge (one design for every entry path — see
+  ArticleTop), then text blocks interleaved with the site's existing
+  50/50, carousel, and product slider sections, all in dark mode.
 */
 
 /* centered 800px reading column: serif lead + body copy */

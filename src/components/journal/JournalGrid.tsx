@@ -117,9 +117,17 @@ function launchFieldFlip(
      paint lands with pixels, not a blank frame */
   img.decoding = "sync";
   /* object-fit is a no-op once the element carries the image's own
-     dimensions, and it makes every fallback distortion-proof */
+     dimensions, and it makes every fallback distortion-proof.
+     Centering is static px left/top (set in startWith) so the
+     animated transform is a PURE scale — Safari won't composite a
+     percentage translate inside animated keyframes, which dropped
+     this animation to the jammed main thread while the wrap ran on
+     the compositor: the pair desynced and the image squished. */
+  /* max-width:none: the global img reset clamps to the containing
+     block (the viewport) — that silently shrank any cover wider than
+     the screen and the counter-scale then distorted it (the squish) */
   img.style.cssText =
-    "position:absolute;left:50%;top:50%;object-fit:cover;" +
+    "position:absolute;object-fit:cover;max-width:none;max-height:none;" +
     "transform-origin:center;will-change:transform;";
   wrap.appendChild(img);
   document.body.appendChild(wrap);
@@ -141,6 +149,9 @@ function launchFieldFlip(
     started = true;
     img.style.width = `${iw}px`;
     img.style.height = `${ih}px`;
+    /* center the natural box in the wrap with px, not % */
+    img.style.left = `${(W - iw) / 2}px`;
+    img.style.top = `${(H - ih) / 2}px`;
     const ease = bezier(0.85, 0, 0.15, 1); // EASE_DRAMATIC
     const N = 40;
     const wrapFrames = [];
@@ -157,7 +168,7 @@ function launchFieldFlip(
         transform: `translate(${tx}px, ${ty}px) scale(${sx}, ${sy})`,
       });
       imgFrames.push({
-        transform: `translate(-50%, -50%) scale(${k / sx}, ${k / sy})`,
+        transform: `scale(${k / sx}, ${k / sy})`,
       });
     }
     const timing = { duration: 750, easing: "linear", fill: "forwards" } as const;

@@ -103,8 +103,7 @@ export function ArticleTop({
     <>
     <div
       data-mode="dark"
-      /* 70svh: the lead copy peeks below the hero from first paint */
-      className="relative h-[70svh] w-full overflow-hidden bg-[#0b0b0b]"
+      className="relative h-svh w-full overflow-hidden bg-[#0b0b0b]"
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img

@@ -9,17 +9,10 @@ import { pageBySlugQuery } from "@/sanity/lib/queries";
 import type { Page } from "@/sanity/types";
 
 /*
-  Draft-mode homepage shell: renders the SAME section components as
-  the server path, but from a live query subscription. Inside the
-  Studio's Presentation tool, useLiveMode connects to the Studio over
-  a message channel and streams edits into useQuery results BEFORE
-  they save — the preview updates as the editor types.
-
-  Only ever rendered when draft mode is on, so none of this (or the
-  loader library) reaches ordinary visitors. In the browser this
-  module's previewClient carries NO token (the env var is server-only
-  and compiles to undefined) — data access flows through the Studio's
-  own session.
+  Draft-mode shell for any page-builder page (home + /[slug]): renders
+  the SAME section components as the server path, but from a live
+  query subscription — inside Presentation, edits stream in BEFORE
+  they save. Never rendered outside draft mode.
 */
 
 function LiveMode() {
@@ -27,16 +20,18 @@ function LiveMode() {
   return null;
 }
 
-export function HomePreview({
+export function PagePreview({
+  slug,
   initial,
   sliderCards,
 }: {
+  slug: string;
   initial: Page;
   sliderCards: Record<string, ProductCardData[]>;
 }) {
   const { data } = useQuery<Page | null>(
     pageBySlugQuery,
-    { slug: "home" },
+    { slug },
     { initial: { data: initial, sourceMap: undefined, perspective: "drafts" } },
   );
   const page = data ?? initial;

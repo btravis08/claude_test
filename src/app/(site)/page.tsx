@@ -36,7 +36,7 @@ export default async function Home() {
   if (isDraft && page) {
     const { PreviewGate } = await import("@/components/preview/PreviewGate");
     const sliderCards = await buildSliderCardMap(page.sections ?? []);
-    return <PreviewGate initial={page} sliderCards={sliderCards} />;
+    return <PreviewGate kind="page" slug="home" initial={page} sliderCards={sliderCards} />;
   }
 
   /* the first section's image is the LCP — preload it with the same

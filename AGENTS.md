@@ -262,6 +262,35 @@ Motion / JS
   route segment configs) — but measure with lighthouse.yml before
   keeping it.
 
+Visual editing / draft preview (Presentation tool)
+- Draft mode = the Studio's Presentation preview. The published path
+  must never change behavior or gain bytes from preview features.
+  PROOF, not assumption: fingerprint the non-draft network waterfall
+  for preview/loader code after touching this area.
+- Next preloads every statically-analyzable client reference of a
+  page — even conditionally rendered ones. The ONLY form that
+  withholds a chunk is an ssr:false dynamic inside a client gate
+  (PreviewGate; LazyCartFlyout pattern). Static imports, server-side
+  next/dynamic, and branch-local await import() all shipped the
+  loader library to visitors.
+- Instant (pre-save) editing: PagePreview/ProductPreview shells
+  render the SAME components from @sanity/react-loader useQuery +
+  useLiveMode (client:false — the browser never holds a token).
+  SectionList is the client-safe twin of SectionRenderer's switch:
+  KEEP THEM IN SYNC. Card math lives in src/sanity/lib/cards.ts
+  (client-safe, no fetch imports) — SectionRenderer re-exports it.
+- Refresh-mode surfaces (collections) rely on LiveVisualEditing: the
+  next-sanity default refresh handler deliberately IGNORES mutations
+  — a custom refresh prop calling router.refresh() is required.
+- FrozenRouter (PageTransition) eats router.refresh() — draft mode
+  renders WITHOUT the transition wrapper ((site)/layout).
+- Stega is enabled ONLY on the copy-field allowlist in client.ts:
+  encoding corrupts strings compared to literals or rendered into
+  attributes (colorMode → data-mode selectors, mediaKind/ratio).
+- The draft-mode enable route must read the preview secret with
+  useCdn:false — the CDN is too stale to see a secret created
+  milliseconds ago ("Invalid secret", stuck handshake).
+
 GROQ / data
 - GROQ comments are `//` ONLY. A `/* */` inside a query string fails
   silently site-wide (every fetch falls back — the site looks like

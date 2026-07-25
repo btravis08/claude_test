@@ -3,8 +3,10 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { PortableText } from "next-sanity";
 
+import { draftMode } from "next/headers";
+
 import { FooterTagline } from "@/components/FooterTagline";
-import { SectionRenderer } from "@/components/SectionRenderer";
+import { buildSliderCardMap, SectionRenderer } from "@/components/SectionRenderer";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { urlFor } from "@/sanity/lib/image";
 import { pageBySlugQuery } from "@/sanity/lib/queries";
@@ -30,6 +32,14 @@ export default async function CmsPage({
   const page = await sanityFetch<Page | null>(pageBySlugQuery, { slug }, null);
 
   if (!page) notFound();
+
+  /* Presentation preview: live client shell, edits stream pre-save */
+  const { isEnabled: isDraft } = await draftMode();
+  if (isDraft && page.sections?.length) {
+    const { PreviewGate } = await import("@/components/preview/PreviewGate");
+    const sliderCards = await buildSliderCardMap(page.sections ?? []);
+    return <PreviewGate kind="page" slug={slug} initial={page} sliderCards={sliderCards} />;
+  }
 
   // Section-built page
   if (page.sections?.length) {

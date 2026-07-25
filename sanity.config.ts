@@ -4,6 +4,7 @@ import { visionTool } from "@sanity/vision";
 import { defineConfig } from "sanity";
 import { defineDocuments, defineLocations, presentationTool } from "sanity/presentation";
 import { structureTool } from "sanity/structure";
+import { media } from "sanity-plugin-media";
 import type { StructureResolver } from "sanity/structure";
 
 import { apiVersion, dataset, projectId } from "@/sanity/env";
@@ -175,6 +176,10 @@ export default defineConfig({
         ]),
       },
     }),
+    /* Media library: searchable, taggable browser for every asset in
+       the dataset — image pickers across the Studio gain a "Media"
+       source too */
+    media(),
     visionTool({ defaultApiVersion: apiVersion }),
   ],
 });

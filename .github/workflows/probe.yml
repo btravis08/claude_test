@@ -7,10 +7,9 @@ jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
-      - name: Test the revalidate endpoint
+      - name: Who owns the handle "presidio"?
         run: |
-          echo "=== wrong secret (expect 401) ==="
-          curl -s -o /dev/null -w "%{http_code}\n" -X POST "https://sundayred.vercel.app/api/revalidate?secret=wrong"
-          echo "=== correct secret (expect ok:true) ==="
-          curl -s -X POST "https://sundayred.vercel.app/api/revalidate?secret=sdr-revalidate"
-          echo ""
+          curl -sS "https://alsdve2t.api.sanity.io/v2026-07-01/data/query/production?query=*%5Bslug.current%20%3D%3D%20%22presidio%22%5D%7B_id%2C%20_type%2C%20title%2C%20status%2C%20%22slug%22%3A%20slug.current%7D" | python3 -m json.tool
+      - name: And "the-presidio"?
+        run: |
+          curl -sS "https://alsdve2t.api.sanity.io/v2026-07-01/data/query/production?query=*%5Bslug.current%20%3D%3D%20%22the-presidio%22%5D%7B_id%2C%20_type%2C%20title%2C%20status%2C%20%22slug%22%3A%20slug.current%7D" | python3 -m json.tool

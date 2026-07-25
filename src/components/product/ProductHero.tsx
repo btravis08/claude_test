@@ -562,7 +562,10 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
           <m.div
             key="purchase-dock"
             data-purchase-dock
-            data-mode={barMode}
+            /* desktop dock is ALWAYS dark treatment (black bar, white
+               text) — the sampled mode read weak over light sections;
+               the mobile bar below keeps sampling */
+            data-mode="dark"
             initial={{ y: "120%" }}
             animate={{ y: "0%" }}
             exit={{ y: "120%" }}

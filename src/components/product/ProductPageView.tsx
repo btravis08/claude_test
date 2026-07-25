@@ -228,7 +228,7 @@ function MiniProductCard({ card, first }: { card: ProductCardData; first?: boole
          line. sm+ anchors the track at the gutter with the flush
          first card instead. */
       className={`group flex w-full flex-col gap-[1.125rem] border-b border-r border-line bg-surface p-4 pb-16 md:p-6 md:pb-16 ${
-        first ? "sm:pl-0" : ""
+        first ? "sm:pl-0 md:pl-0" : ""
       }`}
     >
       <div className="relative aspect-[236/301] w-full overflow-hidden rounded-xs bg-surface-2">

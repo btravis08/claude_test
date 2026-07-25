@@ -503,7 +503,7 @@ function FilterPanel({
                         <span
                           aria-hidden
                           className="size-3 rounded-full border border-line-2"
-                          style={{ backgroundColor: color.hex ?? "#e1e1de" }}
+                          style={{ backgroundColor: color.hex ?? "#d3d1cc" }}
                         />
                         {color.label.toUpperCase()}
                       </button>

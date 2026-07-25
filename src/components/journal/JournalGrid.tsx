@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react";
 
 import { JOURNAL_CATEGORIES } from "@/components/journal/articles";
 import {
+  FLIP_COVERED_EVENT,
   HERO_READY_EVENT,
   setFieldEntry,
 } from "@/components/journal/field-transition";
@@ -166,12 +167,16 @@ function launchFieldFlip(
     if (finished) return;
     finished = true;
     window.removeEventListener(HERO_READY_EVENT, onReady);
+    /* the screen is covered — the article may now show its hero
+       beneath; the fade then crosses identical pixels */
+    window.dispatchEvent(new CustomEvent(FLIP_COVERED_EVENT));
     const fade = wrap.animate([{ opacity: 1 }, { opacity: 0 }], {
       duration: 350,
+      delay: 60,
       fill: "forwards",
     });
     fade.onfinish = () => wrap.remove();
-    window.setTimeout(() => wrap.remove(), 600);
+    window.setTimeout(() => wrap.remove(), 700);
   };
   const onReady = () => {
     /* never fade before the expansion lands */

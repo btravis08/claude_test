@@ -25,6 +25,11 @@ export function takeFieldEntry(slug: string): FieldEntry | null {
   return entry;
 }
 
-/* the article hero announces it has painted the fullscreen image so
-   the grid's expansion overlay can fade out over identical pixels */
+/* the article hero announces it has mounted so the grid's expansion
+   overlay knows the page beneath is ready */
 export const HERO_READY_EVENT = "sdr:article-hero-ready";
+
+/* the overlay announces it covers the whole viewport — only then may
+   the article show its fullscreen hero (any earlier and the hero is
+   visible around the still-expanding tile, breaking the reveal) */
+export const FLIP_COVERED_EVENT = "sdr:field-flip-covered";

@@ -54,6 +54,10 @@ const MOBILE_CELL = 140;
 const GAP_RATIO = 0.62;
 const BG = 0.043; // near-black field (#0b0b0b)
 
+/* one transition at a time: further clicks are ignored while an
+   overlay is in flight (they stacked replays of the animation) */
+let flipInFlight = false;
+
 /* sampled CSS cubic-bezier — the FLIP bakes its ease into linear
    keyframes so wrap and image stay exact inverses mid-flight */
 function bezier(x1: number, y1: number, x2: number, y2: number) {
@@ -170,6 +174,7 @@ function launchFieldFlip(
   const finish = () => {
     if (finished) return;
     finished = true;
+    flipInFlight = false;
     window.removeEventListener(HERO_READY_EVENT, onReady);
     /* the screen is covered — the article may now show its hero
        beneath; the fade then crosses identical pixels */
@@ -505,6 +510,7 @@ export function JournalGrid() {
         const pad = (stride - cellCss) / 2;
         const lx = px - c * stride - pad;
         const ly = shifted - r * stride - pad;
+        if (flipInFlight) return;
         if (lx > 0 && lx < cellCss && ly > 0 && ly < cellCss) {
           /* mirror of the shader's lattice + block-jitter cell hash
              (pure integers, so GPU and JS agree on every cell) */
@@ -520,6 +526,11 @@ export function JournalGrid() {
              overlay is decoration: it must never block navigation. */
           if (!reduced) {
             try {
+              flipInFlight = true;
+              /* safety: an aborted navigation must not lock the grid */
+              window.setTimeout(() => {
+                flipInFlight = false;
+              }, 3500);
               setFieldEntry({ slug, src: entry.src });
               const colShift = (((c % 2) + 2) % 2) * stride * 0.5;
               launchFieldFlip(

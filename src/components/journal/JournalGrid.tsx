@@ -4,6 +4,10 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 
 import { JOURNAL_CATEGORIES } from "@/components/journal/articles";
+import {
+  HERO_READY_EVENT,
+  setFieldEntry,
+} from "@/components/journal/field-transition";
 
 /*
   Alt journal landing: an infinite drag-anywhere masonry field.
@@ -48,6 +52,63 @@ const DESKTOP_CELL = 240;
 const MOBILE_CELL = 140;
 const GAP_RATIO = 0.62;
 const BG = 0.043; // near-black field (#0b0b0b)
+
+/*
+  Hand-rolled FLIP: an imperative overlay (plain DOM, so it survives
+  the route change) expands the clicked tile's image from its rect to
+  the full viewport with the house dramatic ease, holds while the
+  article mounts its identical fullscreen hero underneath, then fades
+  out over the same pixels.
+*/
+function launchFieldFlip(
+  src: string,
+  from: { left: number; top: number; width: number; height: number },
+) {
+  const wrap = document.createElement("div");
+  wrap.style.cssText =
+    `position:fixed;left:${from.left}px;top:${from.top}px;` +
+    `width:${from.width}px;height:${from.height}px;` +
+    "z-index:80;overflow:hidden;pointer-events:none;background:#0b0b0b;";
+  const img = document.createElement("img");
+  img.src = src;
+  img.alt = "";
+  img.style.cssText = "width:100%;height:100%;object-fit:cover;";
+  wrap.appendChild(img);
+  document.body.appendChild(wrap);
+
+  const expand = wrap.animate(
+    [
+      {
+        left: `${from.left}px`,
+        top: `${from.top}px`,
+        width: `${from.width}px`,
+        height: `${from.height}px`,
+      },
+      { left: "0px", top: "0px", width: "100vw", height: "100svh" },
+    ],
+    /* CSS twin of EASE_DRAMATIC */
+    { duration: 750, easing: "cubic-bezier(0.85, 0, 0.15, 1)", fill: "forwards" },
+  );
+
+  let finished = false;
+  const finish = () => {
+    if (finished) return;
+    finished = true;
+    window.removeEventListener(HERO_READY_EVENT, onReady);
+    const fade = wrap.animate([{ opacity: 1 }, { opacity: 0 }], {
+      duration: 350,
+      fill: "forwards",
+    });
+    fade.onfinish = () => wrap.remove();
+  };
+  const onReady = () => {
+    /* never fade before the expansion lands */
+    expand.finished.then(() => setTimeout(finish, 80)).catch(finish);
+  };
+  window.addEventListener(HERO_READY_EVENT, onReady);
+  /* failsafe: a failed navigation must not leave the screen covered */
+  window.setTimeout(finish, 3000);
+}
 
 const VERT = `
 attribute vec2 aPos;
@@ -351,7 +412,21 @@ export function JournalGrid() {
             43758.5453;
           const jitter = Math.floor((bh - Math.floor(bh)) * n);
           const idx = ((((c * 5 + r * 7 + jitter) % n) + n) % n);
-          router.push(ENTRIES[idx].href);
+          const entry = ENTRIES[idx];
+          const slug = entry.href.split("/").pop()!;
+          /* FLIP the tile into the article's fullscreen hero (skipped
+             under reduced motion — plain navigation instead) */
+          if (!reduced) {
+            setFieldEntry({ slug, src: entry.src });
+            const colShift = (((c % 2) + 2) % 2) * stride * 0.5;
+            launchFieldFlip(entry.src, {
+              left: rect.left + c * stride + pad - offset.x,
+              top: rect.top + r * stride + pad - colShift - offset.y,
+              width: cellCss,
+              height: cellCss,
+            });
+          }
+          router.push(entry.href);
         }
       }
       requestRender();

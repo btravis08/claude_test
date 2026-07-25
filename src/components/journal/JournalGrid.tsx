@@ -89,6 +89,7 @@ function bezier(x1: number, y1: number, x2: number, y2: number) {
 function launchFieldFlip(
   src: string,
   from: { left: number; top: number; width: number; height: number },
+  size: { w: number; h: number } | undefined,
 ) {
   const W = window.innerWidth;
   const H = window.innerHeight;
@@ -100,31 +101,30 @@ function launchFieldFlip(
   const img = document.createElement("img");
   img.src = src;
   img.alt = "";
+  /* object-fit is a no-op once the element carries the image's own
+     dimensions, and it makes every fallback distortion-proof */
   img.style.cssText =
-    "position:absolute;left:50%;top:50%;" +
+    "position:absolute;left:50%;top:50%;object-fit:cover;" +
     "transform-origin:center;will-change:transform;";
   wrap.appendChild(img);
   document.body.appendChild(wrap);
 
   const sx0 = from.width / W;
   const sy0 = from.height / H;
-  /* park the overlay on the tile until the (cached) image reports its
-     dimensions — one frame at most */
+  /* park the overlay on the tile until dimensions are known */
   wrap.style.transform = `translate(${from.left}px, ${from.top}px) scale(${sx0}, ${sy0})`;
   img.style.opacity = "0";
 
   let expansion: Animation | null = null;
   let started = false;
-  const start = () => {
+  /* the image element carries the given box and, per frame, is scaled
+     to be exactly the COVER of that frame's window — it can never
+     underfill (no dark edges) and its on-screen scale stays uniform
+     (no stretch). With the natural box, frame one is the tile's own
+     square crop and the last frame the article hero's viewport crop. */
+  const startWith = (iw: number, ih: number) => {
     if (started) return;
     started = true;
-    /* the image sits at its natural size and, per frame, is scaled to
-       be exactly the COVER of the current window — so it can never
-       underfill (no dark edges) and its on-screen scale stays uniform
-       (no stretch). Frame one is the tile's own square crop; the last
-       frame is the article hero's viewport crop. */
-    const iw = img.naturalWidth || 1000;
-    const ih = img.naturalHeight || 1000;
     img.style.width = `${iw}px`;
     img.style.height = `${ih}px`;
     const ease = bezier(0.85, 0, 0.15, 1); // EASE_DRAMATIC
@@ -151,10 +151,14 @@ function launchFieldFlip(
     expansion = wrap.animate(wrapFrames, timing);
     img.animate(imgFrames, timing);
   };
-  if (img.complete && img.naturalWidth) start();
+  if (size) startWith(size.w, size.h);
+  else if (img.complete && img.naturalWidth)
+    startWith(img.naturalWidth, img.naturalHeight);
   else {
-    img.onload = start;
-    window.setTimeout(start, 80);
+    img.onload = () => startWith(img.naturalWidth, img.naturalHeight);
+    /* dims never arrived: a viewport-box cover still never distorts
+       or underfills — it just skips the square-crop starting frame */
+    window.setTimeout(() => startWith(W, H), 300);
   }
 
   let finished = false;
@@ -312,11 +316,19 @@ export function JournalGrid() {
     uploadAtlas();
 
     let disposed = false;
+    /* true image dimensions, captured as the atlas loads — the FLIP
+       needs them synchronously at click time (a wrong assumed box
+       stretches the overlay image) */
+    const imageDims = new Map<string, { w: number; h: number }>();
     ENTRIES.forEach((entry, i) => {
       const img = new Image();
       img.decoding = "async";
       img.onload = () => {
         if (disposed) return;
+        imageDims.set(entry.src, {
+          w: img.naturalWidth,
+          h: img.naturalHeight,
+        });
         const s = Math.min(img.width, img.height);
         const sx = (img.width - s) / 2;
         const sy = (img.height - s) / 2;
@@ -492,12 +504,16 @@ export function JournalGrid() {
             try {
               setFieldEntry({ slug, src: entry.src });
               const colShift = (((c % 2) + 2) % 2) * stride * 0.5;
-              launchFieldFlip(entry.src, {
-                left: rect.left + c * stride + pad - offset.x,
-                top: rect.top + r * stride + pad - colShift - offset.y,
-                width: cellCss,
-                height: cellCss,
-              });
+              launchFieldFlip(
+                entry.src,
+                {
+                  left: rect.left + c * stride + pad - offset.x,
+                  top: rect.top + r * stride + pad - colShift - offset.y,
+                  width: cellCss,
+                  height: cellCss,
+                },
+                imageDims.get(entry.src),
+              );
             } catch {
               /* navigate plainly */
             }

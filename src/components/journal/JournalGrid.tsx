@@ -95,13 +95,19 @@ function launchFieldFlip(
   const W = window.innerWidth;
   const H = window.innerHeight;
   const wrap = document.createElement("div");
+  /* TRANSPARENT on purpose: until the overlay image has painted, the
+     identical canvas tile shows through — a background here covered
+     the tile with a dark box for the first frames (visible flash) */
   wrap.style.cssText =
     `position:fixed;left:0;top:0;width:${W}px;height:${H}px;` +
-    "z-index:80;overflow:hidden;pointer-events:none;background:#0b0b0b;" +
+    "z-index:80;overflow:hidden;pointer-events:none;" +
     "transform-origin:0 0;will-change:transform;";
   const img = document.createElement("img");
   img.src = src;
   img.alt = "";
+  /* sync decode: the file is small and warm from the atlas — first
+     paint lands with pixels, not a blank frame */
+  img.decoding = "sync";
   /* object-fit is a no-op once the element carries the image's own
      dimensions, and it makes every fallback distortion-proof */
   img.style.cssText =
@@ -114,7 +120,6 @@ function launchFieldFlip(
   const sy0 = from.height / H;
   /* park the overlay on the tile until dimensions are known */
   wrap.style.transform = `translate(${from.left}px, ${from.top}px) scale(${sx0}, ${sy0})`;
-  img.style.opacity = "0";
 
   let expansion: Animation | null = null;
   let started = false;
@@ -147,7 +152,6 @@ function launchFieldFlip(
         transform: `translate(-50%, -50%) scale(${k / sx}, ${k / sy})`,
       });
     }
-    img.style.opacity = "1";
     const timing = { duration: 750, easing: "linear", fill: "forwards" } as const;
     expansion = wrap.animate(wrapFrames, timing);
     img.animate(imgFrames, timing);

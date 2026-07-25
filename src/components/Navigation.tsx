@@ -421,6 +421,11 @@ export function Navigation({ data }: { data?: NavData | null }) {
   /* pages with a full-viewport hero the nav floats transparently over:
      the homepage (dark imagery) and product pages (light gray canvas) */
   const hasFullHero = isHome || pathname.startsWith("/products/");
+  /* journal surfaces run the minimized nav — just the PDP-style
+     hamburger chip top right (mobile keeps its bottom control bar) */
+  const minimized = pathname === "/journal" || pathname.startsWith("/journal/");
+  /* the field + articles are dark surfaces; the landing is light */
+  const minimizedDark = minimized && pathname !== "/journal";
 
   const [hidden, setHidden] = useState(false);
   const [overHero, setOverHero] = useState(hasFullHero);
@@ -619,6 +624,26 @@ export function Navigation({ data }: { data?: NavData | null }) {
 
   return (
     <>
+      {/* minimized (journal): a lone hamburger chip, PDP-dock style,
+          opening the full-screen sheet on every breakpoint */}
+      {minimized && (
+        <div
+          data-navbar
+          data-mode={mobileOpen || !minimizedDark ? "light" : "dark"}
+          className="fixed right-6 top-3 z-[70] hidden md:block"
+        >
+          <button
+            type="button"
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            aria-expanded={mobileOpen}
+            onClick={() => setMobileOpen((v) => !v)}
+            className="flex size-[2.875rem] items-center justify-center rounded-xs bg-wash text-ink backdrop-blur-md"
+          >
+            <MenuX open={mobileOpen} className="text-ink" />
+          </button>
+        </div>
+      )}
+      {!minimized && (
       <m.header
         data-mode={transparent && isHome ? "dark" : "light"}
         data-nav-root
@@ -696,6 +721,7 @@ export function Navigation({ data }: { data?: NavData | null }) {
           )}
         </AnimatePresence>
       </m.header>
+      )}
 
       {/* 30% scrim over the page while the meganav is open — fades in
           place rather than sliding with the panel */}
@@ -713,8 +739,9 @@ export function Navigation({ data }: { data?: NavData | null }) {
         )}
       </AnimatePresence>
 
-      {/* content offset on pages without a full-bleed hero */}
-      {!hasFullHero && <div style={{ height: NAV_H }} />}
+      {/* content offset on pages without a full-bleed hero (none in
+          minimized mode — journal pages own their top spacing) */}
+      {!hasFullHero && !minimized && <div style={{ height: NAV_H }} />}
 
       {/* mobile sheet */}
       <AnimatePresence>
@@ -727,7 +754,9 @@ export function Navigation({ data }: { data?: NavData | null }) {
             animate={{ y: "0%" }}
             exit={{ y: "100%" }}
             transition={{ duration: 0.6, ease: [...MEDIA_EASE] }}
-            className="fixed inset-0 z-[60] flex flex-col overflow-y-auto bg-surface text-ink md:hidden"
+            className={`fixed inset-0 z-[60] flex flex-col overflow-y-auto bg-surface text-ink ${
+              minimized ? "" : "md:hidden"
+            }`}
           >
             <div className="p-6">
               <Link href="/" aria-label="Home" onClick={() => setMobileOpen(false)}>

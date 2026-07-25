@@ -568,8 +568,9 @@ export function JournalGrid() {
   return (
     <div
       data-mode="dark"
-      /* pull the field under the fixed nav so it's a full-bleed canvas */
-      className="relative -mt-[3.75rem] h-svh w-full overflow-hidden bg-[#0b0b0b] text-white"
+      /* full-bleed canvas — the journal runs the minimized nav (a
+         lone hamburger chip), so nothing sits above this */
+      className="relative h-svh w-full overflow-hidden bg-[#0b0b0b] text-white"
     >
       <canvas
         ref={canvasRef}

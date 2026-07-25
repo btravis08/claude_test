@@ -98,7 +98,7 @@ export function ArticleTop({
   return (
     <div
       data-mode="dark"
-      className="relative -mt-[3.75rem] h-svh w-full overflow-hidden bg-[#0b0b0b]"
+      className="relative h-svh w-full overflow-hidden bg-[#0b0b0b]"
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img

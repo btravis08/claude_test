@@ -7,14 +7,16 @@ jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
-      - name: Which article layout does prod serve (SSR HTML)?
+      - name: Does the deployed field bundle contain the clamp fix?
         run: |
-          html=$(curl -sSL "https://sundayred.vercel.app/journal/sunday-at-augusta")
-          echo "data-field-hero (unified fullscreen layout): $(echo "$html" | grep -c 'data-field-hero' || true)"
-          echo "old breadcrumb header pt-[10rem]: $(echo "$html" | grep -c 'pt-\[10rem\]' || true)"
-          echo "old 16/9 hero: $(echo "$html" | grep -c 'sm:aspect-\[16/9\]' || true)"
-          echo "--- response headers ---"
-          curl -sSI "https://sundayred.vercel.app/journal/sunday-at-augusta" | grep -iE 'x-vercel|^age|cache-control|etag' || true
-      - name: Landing serves minimized nav?
-        run: |
-          echo "minimized chip on /journal: $(curl -sSL 'https://sundayred.vercel.app/journal' | grep -c 'Open menu' || true)"
+          html=$(curl -sSL "https://sundayred.vercel.app/journal/alt")
+          chunks=$(echo "$html" | grep -oE '/_next/static/chunks/[^"]+\.js' | sort -u)
+          echo "chunks referenced: $(echo "$chunks" | wc -l)"
+          found=0
+          for c in $chunks; do
+            if curl -sSL "https://sundayred.vercel.app$c" | grep -q "max-height:none"; then
+              echo "clamp fix FOUND in $c"
+              found=1
+            fi
+          done
+          echo "clamp-fix-present: $found"

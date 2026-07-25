@@ -1,7 +1,9 @@
+import { icons } from "@sanity/icons";
 import { defineField, defineType } from "sanity";
 
 export const siteSettings = defineType({
   name: "siteSettings",
+  icon: icons["controls"],
   title: "Site settings",
   type: "document",
   fields: [

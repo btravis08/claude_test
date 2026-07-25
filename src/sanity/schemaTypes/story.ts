@@ -1,3 +1,4 @@
+import { icons } from "@sanity/icons";
 import { defineArrayMember, defineField, defineType } from "sanity";
 
 /*
@@ -24,6 +25,7 @@ export const STORY_TAGS = [
 
 export const story = defineType({
   name: "story",
+  icon: icons["book"],
   title: "Story card",
   type: "document",
   fields: [

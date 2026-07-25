@@ -1,3 +1,4 @@
+import { icons } from "@sanity/icons";
 import { defineArrayMember, defineField, defineType } from "sanity";
 
 /*
@@ -25,6 +26,7 @@ export const RULE_OPERATORS = [
 
 export const collection = defineType({
   name: "collection",
+  icon: icons["folder"],
   title: "Collection",
   type: "document",
   fields: [

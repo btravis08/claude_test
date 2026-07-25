@@ -5,6 +5,7 @@ import { defineConfig } from "sanity";
 import { defineDocuments, defineLocations, presentationTool } from "sanity/presentation";
 import { structureTool } from "sanity/structure";
 import { media } from "sanity-plugin-media";
+import { icons } from "@sanity/icons";
 import type { StructureResolver } from "sanity/structure";
 
 import { apiVersion, dataset, projectId } from "@/sanity/env";
@@ -37,6 +38,7 @@ const structure: StructureResolver = (S) =>
     .items([
       S.listItem()
         .title("Products")
+        .icon(icons["package"])
         .schemaType("product")
         .child(
           S.list()
@@ -62,36 +64,44 @@ const structure: StructureResolver = (S) =>
         ),
       S.listItem()
         .title("Collections")
+        .icon(icons["folder"])
         .schemaType("collection")
         .child(S.documentTypeList("collection").title("Collections")),
       S.listItem()
         .title("Stories")
+        .icon(icons["book"])
         .schemaType("story")
         .child(S.documentTypeList("story").title("Stories")),
       S.listItem()
         .title("Discounts")
+        .icon(icons["tag"])
         .schemaType("discount")
         .child(S.documentTypeList("discount").title("Discounts")),
       S.divider(),
       S.listItem()
         .title("Pages")
+        .icon(icons["documents"])
         .schemaType("page")
         .child(S.documentTypeList("page").title("Pages")),
       S.listItem()
         .title("Navigation")
+        .icon(icons["menu"])
         .child(S.document().schemaType("navigation").documentId("navigation")),
       S.listItem()
         .title("Projects")
+        .icon(icons["case"])
         .schemaType("project")
         .child(S.documentTypeList("project").title("Projects")),
       S.divider(),
       S.listItem()
         .title("Store settings")
+        .icon(icons["cog"])
         .child(
           S.document().schemaType("storeSettings").documentId("storeSettings"),
         ),
       S.listItem()
         .title("Site settings")
+        .icon(icons["controls"])
         .child(
           S.document().schemaType("siteSettings").documentId("siteSettings"),
         ),

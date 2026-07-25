@@ -1,3 +1,4 @@
+import { icons } from "@sanity/icons";
 import { defineArrayMember, defineField, defineType } from "sanity";
 
 /*
@@ -31,6 +32,7 @@ const money = (name: string, title: string, description?: string, group?: string
 
 export const product = defineType({
   name: "product",
+  icon: icons["package"],
   title: "Product",
   type: "document",
   groups: [

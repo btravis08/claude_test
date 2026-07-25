@@ -1,8 +1,10 @@
+import { icons } from "@sanity/icons";
 import { defineField, defineType } from "sanity";
 
 /* Store-wide commerce settings (Shopify's Settings → Store details) */
 export const storeSettings = defineType({
   name: "storeSettings",
+  icon: icons["cog"],
   title: "Store settings",
   type: "document",
   fields: [

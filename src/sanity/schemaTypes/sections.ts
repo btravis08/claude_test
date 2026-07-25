@@ -1,3 +1,4 @@
+import { icons } from "@sanity/icons";
 import { defineArrayMember, defineField, defineType } from "sanity";
 import type { SanityClient } from "sanity";
 
@@ -177,6 +178,7 @@ const campaignFields = () => [
 
 export const sectionHero = defineType({
   name: "sectionHero",
+  icon: icons["image"],
   title: "Hero",
   type: "object",
   fields: [
@@ -193,6 +195,7 @@ export const sectionHero = defineType({
 
 export const sectionFullWidth = defineType({
   name: "sectionFullWidth",
+  icon: icons["presentation"],
   title: "Full Width",
   type: "object",
   fields: [
@@ -209,6 +212,7 @@ export const sectionFullWidth = defineType({
 
 export const sectionInfoSlider = defineType({
   name: "sectionInfoSlider",
+  icon: icons["master-detail"],
   title: "Info Card Slider",
   type: "object",
   fields: [
@@ -262,6 +266,7 @@ export const sectionInfoSlider = defineType({
 
 export const sectionProductSlider = defineType({
   name: "sectionProductSlider",
+  icon: icons["package"],
   title: "Product Slider",
   type: "object",
   fields: [
@@ -331,6 +336,7 @@ export const sectionProductSlider = defineType({
 
 export const sectionCarousel = defineType({
   name: "sectionCarousel",
+  icon: icons["ellipsis-horizontal"],
   title: "Carousel",
   type: "object",
   fields: [
@@ -376,6 +382,7 @@ export const sectionCarousel = defineType({
 
 export const sectionFiftyFifty = defineType({
   name: "sectionFiftyFifty",
+  icon: icons["split-vertical"],
   title: "50/50",
   type: "object",
   fields: [
@@ -483,6 +490,7 @@ export const sectionFiftyFifty = defineType({
 
 export const sectionRichText = defineType({
   name: "sectionRichText",
+  icon: icons["block-content"],
   title: "Rich Text",
   type: "object",
   fields: [
@@ -511,6 +519,7 @@ export const sectionRichText = defineType({
    Specifications", usable on any page) */
 export const sectionTechSpecs = defineType({
   name: "sectionTechSpecs",
+  icon: icons["ulist"],
   title: "Technical Specifications",
   type: "object",
   fields: [
@@ -597,6 +606,7 @@ export const sectionTechSpecs = defineType({
    the carousel height; every slide is a full media block. */
 export const sectionGallery = defineType({
   name: "sectionGallery",
+  icon: icons["images"],
   title: "Gallery",
   type: "object",
   fields: [
@@ -640,6 +650,7 @@ export const sectionGallery = defineType({
 /* Yotpo reviews — placeholder until the widget is wired up */
 export const sectionReviews = defineType({
   name: "sectionReviews",
+  icon: icons["star"],
   title: "Reviews (Yotpo)",
   type: "object",
   fields: [
@@ -655,6 +666,7 @@ export const sectionReviews = defineType({
 /* FIBL interactive 3D viewer — placeholder until the integration */
 export const sectionThreeD = defineType({
   name: "sectionThreeD",
+  icon: icons["cube"],
   title: "3D Viewer (FIBL)",
   type: "object",
   fields: [

@@ -1,3 +1,4 @@
+import { icons } from "@sanity/icons";
 import { defineArrayMember, defineField, defineType } from "sanity";
 
 /*
@@ -44,6 +45,7 @@ const link = defineArrayMember({
 
 export const navigation = defineType({
   name: "navigation",
+  icon: icons["menu"],
   title: "Navigation",
   type: "document",
   fields: [

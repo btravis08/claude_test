@@ -1,0 +1,72 @@
+name: capture-reference
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install playwright-core
+        run: npm init -y >/dev/null 2>&1 && npm i playwright-core --no-save
+      - name: Capture photoyoshi.com
+        run: |
+          mkdir -p design/reference/photoyoshi
+          node <<'EOF'
+          const { chromium } = require("playwright-core");
+          (async () => {
+            const browser = await chromium.launch({ executablePath: "/usr/bin/google-chrome" });
+            const out = "design/reference/photoyoshi";
+            const fs = require("fs");
+
+            // desktop
+            const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+            await page.goto("https://photoyoshi.com", { waitUntil: "networkidle", timeout: 45000 }).catch(() => {});
+            await page.waitForTimeout(4000);
+            fs.writeFileSync(`${out}/home.html`, await page.content());
+            await page.screenshot({ path: `${out}/home-viewport.jpg`, quality: 80, type: "jpeg" });
+            await page.screenshot({ path: `${out}/home-full.jpg`, quality: 75, type: "jpeg", fullPage: true }).catch(() => {});
+            // capture after a scroll (reveals sticky/animation states)
+            await page.mouse.wheel(0, 1200);
+            await page.waitForTimeout(1500);
+            await page.screenshot({ path: `${out}/home-scrolled.jpg`, quality: 80, type: "jpeg" });
+
+            // collect internal links for a post/detail page
+            const links = await page.evaluate(() =>
+              [...document.querySelectorAll("a[href]")]
+                .map((a) => a.href)
+                .filter((h) => h.startsWith(location.origin) && h !== location.href)
+            );
+            fs.writeFileSync(`${out}/links.json`, JSON.stringify([...new Set(links)], null, 2));
+            const detail = links.find((h) => /\/(post|blog|journal|work|project|photo|p)\//i.test(h)) || links[0];
+            if (detail) {
+              await page.goto(detail, { waitUntil: "networkidle", timeout: 45000 }).catch(() => {});
+              await page.waitForTimeout(3500);
+              fs.writeFileSync(`${out}/detail.html`, await page.content());
+              await page.screenshot({ path: `${out}/detail-viewport.jpg`, quality: 80, type: "jpeg" });
+              await page.screenshot({ path: `${out}/detail-full.jpg`, quality: 75, type: "jpeg", fullPage: true }).catch(() => {});
+            }
+
+            // mobile
+            const mctx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1" });
+            const mp = await mctx.newPage();
+            await mp.goto("https://photoyoshi.com", { waitUntil: "networkidle", timeout: 45000 }).catch(() => {});
+            await mp.waitForTimeout(4000);
+            await mp.screenshot({ path: `${out}/home-mobile.jpg`, quality: 80, type: "jpeg" });
+            await mp.screenshot({ path: `${out}/home-mobile-full.jpg`, quality: 75, type: "jpeg", fullPage: true }).catch(() => {});
+            await browser.close();
+          })();
+          EOF
+      - name: Commit captures
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add design/reference/photoyoshi
+          git checkout -- package.json 2>/dev/null || true
+          git diff --cached --quiet && echo "No changes" && exit 0
+          git commit -m "Reference capture: photoyoshi.com (desktop, mobile, detail page)"
+          git push

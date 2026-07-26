@@ -421,23 +421,25 @@ export function Navigation({ data }: { data?: NavData | null }) {
   /* journal surfaces keep the sticky top nav and swap the mobile
      control bar for one PDP-dock hamburger chip pinned bottom right */
   const minimized = pathname === "/journal" || pathname.startsWith("/journal/");
-  /* the field + articles are dark surfaces; the landing is light */
-  const minimizedDark = minimized && pathname !== "/journal";
+  /* the cream photoyoshi-style field — full-bleed but light */
+  const lightField = pathname === "/journal/alt2";
+  /* the dark field + articles; the landings are light */
+  const minimizedDark = minimized && pathname !== "/journal" && !lightField;
   /* pages with a full-bleed hero the nav floats transparently over:
      the homepage (dark imagery), product pages (light gray canvas),
      and the dark journal surfaces (field + article heroes) */
   const hasFullHero =
-    isHome || pathname.startsWith("/products/") || minimizedDark;
+    isHome || pathname.startsWith("/products/") || minimizedDark || lightField;
 
   /* the page wrapper behind every route is light bg-surface — during
      a route fade between two dark journal pages it blinked through.
      Flag the root so CSS can hold the wrapper dark on those routes. */
   useEffect(() => {
     document.documentElement.toggleAttribute("data-journal-dark", minimizedDark);
-    /* the field page drops the legacy band + revealed footer */
+    /* the field pages drop the legacy band + revealed footer */
     document.documentElement.toggleAttribute(
       "data-journal-no-footer",
-      pathname === "/journal/alt",
+      pathname === "/journal/alt" || pathname === "/journal/alt2",
     );
     return () => {
       document.documentElement.removeAttribute("data-journal-dark");

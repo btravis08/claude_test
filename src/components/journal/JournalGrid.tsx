@@ -3,12 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-import { JOURNAL_CATEGORIES } from "@/components/journal/articles";
-import {
-  FLIP_COVERED_EVENT,
-  HERO_READY_EVENT,
-  setFieldEntry,
-} from "@/components/journal/field-transition";
+import { ENTRIES, flipToArticle } from "@/components/journal/field-flip";
 
 /*
   Alt journal landing: an infinite drag-anywhere masonry field.
@@ -30,26 +25,6 @@ import {
   (the same cell hash runs in JS for hit-testing).
 */
 
-interface GridEntry {
-  src: string;
-  href: string;
-}
-
-/* one tile per article COVER: the tile you click, the FLIP, the
-   article hero, and any refresh are all the same photo (articles
-   sharing a cover with an earlier one don't get their own tile) */
-const ENTRIES: GridEntry[] = (() => {
-  const seen = new Map<string, GridEntry>();
-  for (const category of JOURNAL_CATEGORIES)
-    for (const article of category.articles)
-      if (!seen.has(article.hero))
-        seen.set(article.hero, {
-          src: article.hero,
-          href: `/journal/${article.slug}`,
-        });
-  return [...seen.values()];
-})();
-
 const ATLAS_GRID = 4; // 4x4 atlas
 const ATLAS_CELL = 512;
 /* gap ≈ 0.62 of the tile, per the reference */
@@ -57,169 +32,6 @@ const DESKTOP_CELL = 240;
 const MOBILE_CELL = 140;
 const GAP_RATIO = 0.62;
 const BG = 0.043; // near-black field (#0b0b0b)
-
-/* one transition at a time: further clicks are ignored while an
-   overlay is in flight (they stacked replays of the animation) */
-let flipInFlight = false;
-
-/* sampled CSS cubic-bezier — the FLIP bakes its ease into linear
-   keyframes so wrap and image stay exact inverses mid-flight */
-function bezier(x1: number, y1: number, x2: number, y2: number) {
-  const cx = (t: number) =>
-    3 * (1 - t) ** 2 * t * x1 + 3 * (1 - t) * t * t * x2 + t ** 3;
-  const cy = (t: number) =>
-    3 * (1 - t) ** 2 * t * y1 + 3 * (1 - t) * t * t * y2 + t ** 3;
-  return (x: number) => {
-    let lo = 0;
-    let hi = 1;
-    for (let i = 0; i < 24; i++) {
-      const mid = (lo + hi) / 2;
-      if (cx(mid) < x) lo = mid;
-      else hi = mid;
-    }
-    return cy((lo + hi) / 2);
-  };
-}
-
-/*
-  Hand-rolled FLIP: an imperative overlay (plain DOM, so it survives
-  the route change) expands the clicked tile's image from its rect to
-  the full viewport while the article loads underneath, then fades
-  out over the article's identical fullscreen hero.
-
-  Transforms ONLY: the route change keeps the main thread busy
-  hydrating the article, and left/top/width/height tweens run on the
-  main thread — on phones they simply froze. The wrap is laid out at
-  its final fullscreen size and scaled DOWN to the tile; the inner
-  image counter-scales (plus a crop-zoom term so frame one matches
-  the tile's square crop), with the ease baked into dense linear
-  keyframes so the pair stay exact inverses on the compositor.
-*/
-function launchFieldFlip(
-  src: string,
-  from: { left: number; top: number; width: number; height: number },
-  size: { w: number; h: number } | undefined,
-) {
-  const W = window.innerWidth;
-  const H = window.innerHeight;
-  const wrap = document.createElement("div");
-  /* TRANSPARENT on purpose: until the overlay image has painted, the
-     identical canvas tile shows through — a background here covered
-     the tile with a dark box for the first frames (visible flash) */
-  wrap.style.cssText =
-    `position:fixed;left:0;top:0;width:${W}px;height:${H}px;` +
-    "z-index:80;overflow:hidden;pointer-events:none;" +
-    "transform-origin:0 0;will-change:transform;";
-  const img = document.createElement("img");
-  img.src = src;
-  img.alt = "";
-  /* sync decode: the file is small and warm from the atlas — first
-     paint lands with pixels, not a blank frame */
-  img.decoding = "sync";
-  /* object-fit is a no-op once the element carries the image's own
-     dimensions, and it makes every fallback distortion-proof.
-     Centering is static px left/top (set in startWith) so the
-     animated transform is a PURE scale — Safari won't composite a
-     percentage translate inside animated keyframes, which dropped
-     this animation to the jammed main thread while the wrap ran on
-     the compositor: the pair desynced and the image squished. */
-  /* max-width:none: the global img reset clamps to the containing
-     block (the viewport) — that silently shrank any cover wider than
-     the screen and the counter-scale then distorted it (the squish) */
-  img.style.cssText =
-    "position:absolute;object-fit:cover;max-width:none;max-height:none;" +
-    "transform-origin:center;will-change:transform;";
-  wrap.appendChild(img);
-  document.body.appendChild(wrap);
-
-  const sx0 = from.width / W;
-  const sy0 = from.height / H;
-  /* park the overlay on the tile until dimensions are known */
-  wrap.style.transform = `translate(${from.left}px, ${from.top}px) scale(${sx0}, ${sy0})`;
-
-  let expansion: Animation | null = null;
-  let started = false;
-  /* the image element carries the given box and, per frame, is scaled
-     to be exactly the COVER of that frame's window — it can never
-     underfill (no dark edges) and its on-screen scale stays uniform
-     (no stretch). With the natural box, frame one is the tile's own
-     square crop and the last frame the article hero's viewport crop. */
-  const startWith = (iw: number, ih: number) => {
-    if (started) return;
-    started = true;
-    img.style.width = `${iw}px`;
-    img.style.height = `${ih}px`;
-    /* center the natural box in the wrap with px, not % */
-    img.style.left = `${(W - iw) / 2}px`;
-    img.style.top = `${(H - ih) / 2}px`;
-    const ease = bezier(0.85, 0, 0.15, 1); // EASE_DRAMATIC
-    const N = 40;
-    const wrapFrames = [];
-    const imgFrames = [];
-    for (let i = 0; i <= N; i++) {
-      const p = ease(i / N);
-      const sx = sx0 + (1 - sx0) * p;
-      const sy = sy0 + (1 - sy0) * p;
-      const tx = from.left * (1 - p);
-      const ty = from.top * (1 - p);
-      /* uniform screen-space cover scale of the current window */
-      const k = Math.max((W * sx) / iw, (H * sy) / ih);
-      wrapFrames.push({
-        transform: `translate(${tx}px, ${ty}px) scale(${sx}, ${sy})`,
-      });
-      imgFrames.push({
-        transform: `scale(${k / sx}, ${k / sy})`,
-      });
-    }
-    const timing = { duration: 750, easing: "linear", fill: "forwards" } as const;
-    expansion = wrap.animate(wrapFrames, timing);
-    const inner = img.animate(imgFrames, timing);
-    /* the pair are exact inverses ONLY at the same progress — pin
-       both to one start time so they can never drift a frame apart */
-    if (expansion.startTime !== null && typeof expansion.startTime === "number")
-      inner.startTime = expansion.startTime;
-    else {
-      expansion.startTime = document.timeline.currentTime as number;
-      inner.startTime = expansion.startTime;
-    }
-  };
-  if (size) startWith(size.w, size.h);
-  else if (img.complete && img.naturalWidth)
-    startWith(img.naturalWidth, img.naturalHeight);
-  else {
-    img.onload = () => startWith(img.naturalWidth, img.naturalHeight);
-    /* dims never arrived: a viewport-box cover still never distorts
-       or underfills — it just skips the square-crop starting frame */
-    window.setTimeout(() => startWith(W, H), 300);
-  }
-
-  let finished = false;
-  const finish = () => {
-    if (finished) return;
-    finished = true;
-    flipInFlight = false;
-    window.removeEventListener(HERO_READY_EVENT, onReady);
-    /* the screen is covered — the article may now show its hero
-       beneath; the fade then crosses identical pixels */
-    window.dispatchEvent(new CustomEvent(FLIP_COVERED_EVENT));
-    const fade = wrap.animate([{ opacity: 1 }, { opacity: 0 }], {
-      duration: 350,
-      delay: 60,
-      fill: "forwards",
-    });
-    fade.onfinish = () => wrap.remove();
-    window.setTimeout(() => wrap.remove(), 700);
-  };
-  const onReady = () => {
-    /* never fade before the expansion lands */
-    (expansion?.finished ?? Promise.resolve())
-      .then(() => setTimeout(finish, 80))
-      .catch(finish);
-  };
-  window.addEventListener(HERO_READY_EVENT, onReady);
-  /* failsafe: a failed navigation must not leave the screen covered */
-  window.setTimeout(finish, 3000);
-}
 
 const VERT = `
 attribute vec2 aPos;
@@ -533,7 +345,6 @@ export function JournalGrid() {
         const pad = (stride - cellCss) / 2;
         const lx = px - c * stride - pad;
         const ly = shifted - r * stride - pad;
-        if (flipInFlight) return;
         if (lx > 0 && lx < cellCss && ly > 0 && ly < cellCss) {
           /* mirror of the shader's lattice + block-jitter cell hash
              (pure integers, so GPU and JS agree on every cell) */
@@ -542,35 +353,19 @@ export function JournalGrid() {
           const by = Math.floor(r / 4);
           const jitter = ((((bx * 13 + by * 29 + bx * by * 7) % n) + n) % n);
           const idx = ((((c * 5 + r * 7 + jitter) % n) + n) % n);
-          const entry = ENTRIES[idx];
-          const slug = entry.href.split("/").pop()!;
-          /* FLIP the tile into the article's fullscreen hero (skipped
-             under reduced motion — plain navigation instead). The
-             overlay is decoration: it must never block navigation. */
-          if (!reduced) {
-            try {
-              flipInFlight = true;
-              /* safety: an aborted navigation must not lock the grid */
-              window.setTimeout(() => {
-                flipInFlight = false;
-              }, 3500);
-              setFieldEntry({ slug, src: entry.src });
-              const colShift = (((c % 2) + 2) % 2) * stride * 0.5;
-              launchFieldFlip(
-                entry.src,
-                {
-                  left: rect.left + c * stride + pad - offset.x,
-                  top: rect.top + r * stride + pad - colShift - offset.y,
-                  width: cellCss,
-                  height: cellCss,
-                },
-                imageDims.get(entry.src),
-              );
-            } catch {
-              /* navigate plainly */
-            }
-          }
-          router.push(entry.href);
+          const colShift = (((c % 2) + 2) % 2) * stride * 0.5;
+          flipToArticle(
+            ENTRIES[idx],
+            {
+              left: rect.left + c * stride + pad - offset.x,
+              top: rect.top + r * stride + pad - colShift - offset.y,
+              width: cellCss,
+              height: cellCss,
+            },
+            imageDims.get(ENTRIES[idx].src),
+            (href) => router.push(href),
+            reduced,
+          );
         }
       }
       requestRender();

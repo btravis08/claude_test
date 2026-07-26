@@ -18,18 +18,32 @@ jobs:
           mkdir -p design/reference/photoyoshi
           curl -sSL "https://photoyoshi.com/assets/js/script.js" -o design/reference/photoyoshi/script.js
           wc -c design/reference/photoyoshi/script.js
-      - name: Record intro + interactions on video
+      - name: Record intro + interactions via CDP screencast
         run: |
-          mkdir -p /tmp/vid design/reference/photoyoshi/frames
+          mkdir -p design/reference/photoyoshi/frames
           node <<'EOF'
           const { chromium } = require("playwright-core");
+          const fs = require("fs");
           (async () => {
             const browser = await chromium.launch({ executablePath: "/usr/bin/google-chrome" });
-            const ctx = await browser.newContext({
-              viewport: { width: 1440, height: 900 },
-              recordVideo: { dir: "/tmp/vid", size: { width: 1440, height: 900 } },
-            });
+            const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
             const page = await ctx.newPage();
+            const cdp = await ctx.newCDPSession(page);
+            let n = 0;
+            let last = 0;
+            cdp.on("Page.screencastFrame", ({ data, sessionId, metadata }) => {
+              /* throttle to ~8fps so the frame set stays reviewable */
+              const t = metadata.timestamp || 0;
+              if (t - last >= 0.12) {
+                last = t;
+                fs.writeFileSync(
+                  `design/reference/photoyoshi/frames/s${String(n++).padStart(3, "0")}.jpg`,
+                  Buffer.from(data, "base64"),
+                );
+              }
+              cdp.send("Page.screencastFrameAck", { sessionId }).catch(() => {});
+            });
+            await cdp.send("Page.startScreencast", { format: "jpeg", quality: 62, maxWidth: 720, maxHeight: 450, everyNthFrame: 1 });
             await page.goto("https://photoyoshi.com", { waitUntil: "commit", timeout: 45000 }).catch(() => {});
             // intro plays untouched
             await page.waitForTimeout(9000);
@@ -43,12 +57,11 @@ jobs:
             await page.waitForTimeout(1400);
             for (let i = 0; i < 5; i++) { await page.mouse.wheel(0, -600); await page.waitForTimeout(120); }
             await page.waitForTimeout(1600);
-            await ctx.close();
+            await cdp.send("Page.stopScreencast").catch(() => {});
             await browser.close();
+            console.log("frames:", n);
           })();
           EOF
-          f=$(ls /tmp/vid/*.webm | head -1)
-          ffmpeg -hide_banner -loglevel error -i "$f" -vf "fps=8,scale=720:-1" -q:v 6 design/reference/photoyoshi/frames/v%03d.jpg
           ls design/reference/photoyoshi/frames | wc -l
       - name: Commit captures
         run: |

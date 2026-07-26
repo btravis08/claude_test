@@ -89,7 +89,7 @@ function FooterAccordion({ heading, links }: { heading: string; links: FooterLin
    Rendered inside the page wrapper, above the fixed footer. */
 export function LegacyBand() {
   return (
-    <div data-mode="dark" className="relative h-[26.75rem] w-full overflow-hidden bg-black">
+    <div data-mode="dark" data-legacy-band className="relative h-[26.75rem] w-full overflow-hidden bg-black">
       {/* a real lazy <img>: as a CSS background this downloaded on
           every page load despite being the last thing on the page */}
       {/* eslint-disable-next-line @next/next/no-img-element */}

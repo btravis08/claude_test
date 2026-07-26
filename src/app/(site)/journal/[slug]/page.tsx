@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
 
 import { ArticleView } from "@/components/journal/ArticleView";
@@ -15,6 +15,9 @@ import {
   storeSettingsQuery,
 } from "@/sanity/lib/queries";
 import type { Discount, SliderProduct, StoreSettings } from "@/sanity/types";
+
+/* dark article surfaces — keep iOS bar chrome dark from first paint */
+export const viewport: Viewport = { themeColor: "#0b0b0b" };
 
 export function generateStaticParams() {
   return JOURNAL_CATEGORIES.flatMap((category) =>

@@ -434,8 +434,16 @@ export function Navigation({ data }: { data?: NavData | null }) {
      Flag the root so CSS can hold the wrapper dark on those routes. */
   useEffect(() => {
     document.documentElement.toggleAttribute("data-journal-dark", minimizedDark);
-    return () => document.documentElement.removeAttribute("data-journal-dark");
-  }, [minimizedDark]);
+    /* the field page drops the legacy band + revealed footer */
+    document.documentElement.toggleAttribute(
+      "data-journal-no-footer",
+      pathname === "/journal/alt",
+    );
+    return () => {
+      document.documentElement.removeAttribute("data-journal-dark");
+      document.documentElement.removeAttribute("data-journal-no-footer");
+    };
+  }, [minimizedDark, pathname]);
 
   const [hidden, setHidden] = useState(false);
   const [overHero, setOverHero] = useState(hasFullHero);

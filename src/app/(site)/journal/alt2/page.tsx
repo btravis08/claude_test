@@ -8,8 +8,8 @@ export const metadata: Metadata = {
     "A quiet field of stories from Sun Day Red — scroll to wander, the light follows you.",
 };
 
-/* cream surface — keep iOS bar chrome matched from first paint */
-export const viewport: Viewport = { themeColor: "#f7f8f4" };
+/* the reference's exact cream — keep iOS bars matched from first paint */
+export const viewport: Viewport = { themeColor: "#f1efe7" };
 
 /* design experiment #2: photoyoshi-style ghosted lattice with a
    cursor spotlight (static /journal/alt2 wins over the [slug] route) */

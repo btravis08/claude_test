@@ -421,8 +421,10 @@ export function Navigation({ data }: { data?: NavData | null }) {
   /* journal surfaces keep the sticky top nav and swap the mobile
      control bar for one PDP-dock hamburger chip pinned bottom right */
   const minimized = pathname === "/journal" || pathname.startsWith("/journal/");
-  /* the cream photoyoshi-style field — full-bleed but light */
-  const lightField = pathname === "/journal/alt2";
+  /* the photoyoshi recreation carries its OWN header — the site's
+     chrome (bar, chip, mobile pill) stays out of its way entirely */
+  const lightField =
+    pathname === "/journal/alt2" || pathname === "/journal/alt2/about";
   /* the dark field + articles; the landings are light */
   const minimizedDark = minimized && pathname !== "/journal" && !lightField;
   /* pages with a full-bleed hero the nav floats transparently over:
@@ -439,7 +441,7 @@ export function Navigation({ data }: { data?: NavData | null }) {
     /* the field pages drop the legacy band + revealed footer */
     document.documentElement.toggleAttribute(
       "data-journal-no-footer",
-      pathname === "/journal/alt" || pathname === "/journal/alt2",
+      pathname === "/journal/alt" || pathname.startsWith("/journal/alt2"),
     );
     return () => {
       document.documentElement.removeAttribute("data-journal-dark");
@@ -645,8 +647,9 @@ export function Navigation({ data }: { data?: NavData | null }) {
   return (
     <>
       {/* journal: the PDP dock's hamburger chip, pinned bottom right
-          on every breakpoint, opening the full-screen sheet */}
-      {minimized && (
+          on every breakpoint, opening the full-screen sheet (the
+          photoyoshi recreation brings its own header instead) */}
+      {minimized && !lightField && (
         <div
           data-navbar
           data-mode={mobileOpen || !minimizedDark ? "light" : "dark"}
@@ -663,6 +666,7 @@ export function Navigation({ data }: { data?: NavData | null }) {
           </button>
         </div>
       )}
+      {!lightField && (
       <m.header
         data-mode={transparent && (isHome || minimizedDark) ? "dark" : "light"}
         data-nav-root
@@ -740,6 +744,7 @@ export function Navigation({ data }: { data?: NavData | null }) {
           )}
         </AnimatePresence>
       </m.header>
+      )}
 
       {/* 30% scrim over the page while the meganav is open — fades in
           place rather than sliding with the panel */}

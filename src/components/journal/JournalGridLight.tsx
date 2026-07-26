@@ -1,9 +1,12 @@
 "use client";
 
+import { m } from "motion/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import { ENTRIES, flipToArticle } from "@/components/journal/field-flip";
+import { PhotoHeader } from "@/components/journal/PhotoHeader";
+import { EASE_OUT } from "@/lib/motion";
 
 /*
   Alt journal landing v2 — after photoyoshi.com: a cream field of
@@ -33,7 +36,10 @@ const DESKTOP_STRIDE = 180;
 const MOBILE_STRIDE = 132;
 /* the largest a tile's long edge gets, as a fraction of stride */
 const TILE_MAX = 0.78;
-const CREAM = "#f7f8f4";
+/* the reference's exact ground: rgb(241, 239, 231) */
+const CREAM = "#f1efe7";
+/* the intro must breathe even on a warm cache */
+const INTRO_MIN_MS = 2300;
 
 const VERT = `
 attribute vec2 aPos;
@@ -51,7 +57,7 @@ uniform float uStride;
 uniform float uCount;
 uniform sampler2D uTex;
 
-const vec3 CREAM = vec3(0.9686, 0.9725, 0.9569);
+const vec3 CREAM = vec3(0.9451, 0.9373, 0.9059);
 
 vec2 atlasUv(float idx, vec2 t) {
   vec2 cell = vec2(mod(idx, ${ATLAS_GRID}.0), floor(idx / ${ATLAS_GRID}.0));
@@ -105,10 +111,84 @@ void main() {
 }
 `;
 
+/* the reference's preloader: giant wordmark over the cream, a small
+   photo slowly zooming at center, +marks at the edges, a caption, a
+   house label bottom left, and the load counter bottom right. When
+   the count lands the wordmark rolls up and the field fades in. */
+function Intro({ progress, done }: { progress: number; done: boolean }) {
+  /* state-driven zoom — mount animations are suppressed under the
+     page transition's presence context */
+  const [zoomed, setZoomed] = useState(false);
+  useEffect(() => {
+    const t = window.setTimeout(() => setZoomed(true), 60);
+    return () => window.clearTimeout(t);
+  }, []);
+  return (
+    <div
+      aria-hidden
+      className={`absolute inset-0 z-[60] bg-[#f1efe7] text-[#252726] transition-opacity duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        done ? "pointer-events-none opacity-0" : "opacity-100"
+      }`}
+    >
+      {/* photo, dead center, breathing outward through the sequence */}
+      <div className="absolute left-1/2 top-1/2 w-[7.5rem] -translate-x-1/2 -translate-y-1/2 overflow-hidden md:w-[8.5rem]">
+        <m.img
+          src="/figma/journal/hero-01.jpg"
+          alt=""
+          initial={false}
+          animate={{ scale: zoomed ? 1.22 : 1 }}
+          transition={{ duration: 3.4, ease: [...EASE_OUT] }}
+          className="aspect-[2/3] w-full object-cover"
+        />
+      </div>
+      {/* wordmark: rolls out through a mask when the count lands */}
+      <div className="absolute inset-x-0 top-[30%] overflow-hidden">
+        <div
+          className={`whitespace-nowrap text-center font-medium leading-[0.94] tracking-[-0.03em] text-[10.4vw] transition-transform duration-[900ms] ease-[cubic-bezier(0.85,0,0.15,1)] ${
+            done ? "-translate-y-[112%]" : "translate-y-0"
+          }`}
+          style={{ WebkitTextStroke: "0.032em #252726" }}
+        >
+          HONORS JOURNAL
+        </div>
+      </div>
+      {/* edge marks */}
+      <span className="absolute left-6 top-1/2 -translate-y-1/2 text-[0.625rem]">+</span>
+      <span className="absolute right-6 top-1/2 -translate-y-1/2 text-[0.625rem]">+</span>
+      {/* caption */}
+      <p className="absolute inset-x-0 bottom-14 mx-auto max-w-[24rem] text-center text-[0.625rem] font-medium leading-[1.5]">
+        The Honors Journal is the field notes of Sun Day Red — a word that
+        combines &ldquo;honors&rdquo; and &ldquo;journal.&rdquo;
+      </p>
+      {/* house label + live counter */}
+      <p className="absolute bottom-6 left-6 text-[0.625rem] font-medium">
+        HONORS JOURNAL&nbsp;|*|&nbsp;SUN DAY RED
+      </p>
+      <p className="absolute bottom-6 right-6 text-[0.8125rem] font-medium tabular-nums">
+        {Math.min(progress, 100)}
+      </p>
+    </div>
+  );
+}
+
 export function JournalGridLight() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [revealed, setRevealed] = useState(false);
+  /* atlas load percentage drives the intro counter */
+  const [progress, setProgress] = useState(0);
+  const [introDone, setIntroDone] = useState(false);
+  const mountAt = useRef(0);
   const router = useRouter();
+
+  /* the intro ends when the counter lands AND it has breathed */
+  useEffect(() => {
+    if (progress < 100 || introDone) return;
+    const elapsed = performance.now() - mountAt.current;
+    const t = window.setTimeout(() => {
+      setIntroDone(true);
+      window.dispatchEvent(new CustomEvent("hj:intro-done"));
+    }, Math.max(0, INTRO_MIN_MS - elapsed));
+    return () => window.clearTimeout(t);
+  }, [progress, introDone]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -165,20 +245,22 @@ export function JournalGridLight() {
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, atlas);
     uploadAtlas();
 
+    mountAt.current = performance.now();
     let disposed = false;
     const imageDims = new Map<string, { w: number; h: number }>();
     /* contain-fit rect of each image inside its atlas cell, as
        fractions — the FLIP starts from the photo, not the cell */
     const photoRect = new Map<string, { x: number; y: number; w: number; h: number }>();
     let loadedCount = 0;
-    const revealTimer = window.setTimeout(() => setRevealed(true), 1600);
+    /* the counter must land even if the network drags */
+    const revealTimer = window.setTimeout(() => setProgress(100), 3500);
     ENTRIES.forEach((entry, i) => {
       const img = new Image();
       img.decoding = "async";
       img.onload = () => {
         if (disposed) return;
         loadedCount += 1;
-        if (loadedCount >= Math.min(6, ENTRIES.length)) setRevealed(true);
+        setProgress(Math.round((loadedCount / ENTRIES.length) * 100));
         imageDims.set(entry.src, { w: img.naturalWidth, h: img.naturalHeight });
         const fit = Math.min(
           ATLAS_CELL / img.naturalWidth,
@@ -213,6 +295,32 @@ export function JournalGridLight() {
     let vel = 0; // px/s vertical momentum
     let shownVel = 0; // eased, drives the bend
     const focus = { x: -9999, y: -9999 };
+    /* entrance: after the intro, the spotlight hops a few random
+       tiles — pulses of color while the field settles (radial even
+       on touch for the duration) */
+    let pulsing = false;
+    let pulseTimer = 0;
+    const onIntroDone = () => {
+      let hops = 0;
+      pulsing = true;
+      const hop = () => {
+        focus.x = 50 + Math.random() * (canvas.clientWidth - 100);
+        focus.y = 80 + Math.random() * (canvas.clientHeight - 160);
+        requestRender();
+        hops += 1;
+        if (hops < 6) pulseTimer = window.setTimeout(hop, 280);
+        else {
+          pulsing = false;
+          if (touch) {
+            focus.x = -9999;
+            focus.y = -9999;
+          }
+          requestRender();
+        }
+      };
+      hop();
+    };
+    window.addEventListener("hj:intro-done", onIntroDone);
     let dragging = false;
     let lastPointer = { x: 0, y: 0, t: 0 };
     let flickVel = 0;
@@ -236,7 +344,7 @@ export function JournalGridLight() {
       gl.uniform1f(uScroll, scroll * dpr);
       gl.uniform1f(uVel, reduced ? 0 : shownVel * dpr);
       gl.uniform2f(uFocus, focus.x * dpr, focus.y * dpr);
-      gl.uniform1f(uTouchMode, touch ? 1 : 0);
+      gl.uniform1f(uTouchMode, touch && !pulsing ? 1 : 0);
       gl.uniform1f(uStride, strideCss * dpr);
       gl.uniform1f(uCount, ENTRIES.length);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
@@ -371,6 +479,8 @@ export function JournalGridLight() {
     return () => {
       disposed = true;
       window.clearTimeout(revealTimer);
+      window.clearTimeout(pulseTimer);
+      window.removeEventListener("hj:intro-done", onIntroDone);
       cancelAnimationFrame(raf);
       ro.disconnect();
       canvas.removeEventListener("wheel", onWheel);
@@ -387,20 +497,16 @@ export function JournalGridLight() {
   return (
     <div
       data-mode="light"
-      className="relative h-svh w-full overflow-hidden bg-[#f7f8f4] text-ink"
+      className="relative h-svh w-full overflow-hidden bg-[#f1efe7] text-[#252726]"
     >
       <canvas
         ref={canvasRef}
         aria-label="Honors Journal — scroll to explore, click a photo to open its article"
         className="size-full cursor-pointer touch-none select-none"
       />
-      {/* entrance: cream cover fades out once the atlas has substance */}
-      <div
-        aria-hidden
-        className={`pointer-events-none absolute inset-0 bg-[#f7f8f4] transition-opacity duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
-          revealed ? "opacity-0" : "opacity-100"
-        }`}
-      />
+      <PhotoHeader />
+      {/* the reference's preloader, counter and all */}
+      <Intro progress={progress} done={introDone} />
       {/* the same articles as real links, for keyboards and crawlers */}
       <ul className="sr-only">
         {ENTRIES.map((entry) => (

@@ -13,70 +13,43 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install playwright-core
         run: npm init -y >/dev/null 2>&1 && npm i playwright-core --no-save
-      - name: Capture photoyoshi.com intro + states
+      - name: Grab the site bundle (shader source lives in it)
         run: |
-          mkdir -p design/reference/photoyoshi/intro
+          mkdir -p design/reference/photoyoshi
+          curl -sSL "https://photoyoshi.com/assets/js/script.js" -o design/reference/photoyoshi/script.js
+          wc -c design/reference/photoyoshi/script.js
+      - name: Record intro + interactions on video
+        run: |
+          mkdir -p /tmp/vid design/reference/photoyoshi/frames
           node <<'EOF'
           const { chromium } = require("playwright-core");
           (async () => {
             const browser = await chromium.launch({ executablePath: "/usr/bin/google-chrome" });
-            const out = "design/reference/photoyoshi";
-            const fs = require("fs");
-
-            // INTRO: frames from navigation start, before anything settles
-            const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-            const nav = page.goto("https://photoyoshi.com", { waitUntil: "commit", timeout: 45000 }).catch(() => {});
-            for (let i = 0; i < 24; i++) {
-              await page.waitForTimeout(i < 12 ? 250 : 500);
-              await page.screenshot({ path: `${out}/intro/f${String(i).padStart(2, "0")}.jpg`, quality: 70, type: "jpeg" }).catch(() => {});
-            }
-            await nav;
-
-            // header details: computed styles + exact markup
-            const header = await page.evaluate(() => {
-              const h = document.querySelector("header") || document.body;
-              const pick = (el) => {
-                if (!el) return null;
-                const cs = getComputedStyle(el);
-                const r = el.getBoundingClientRect();
-                return { text: el.textContent.trim().slice(0, 60), font: cs.fontFamily, size: cs.fontSize, weight: cs.fontWeight, spacing: cs.letterSpacing, transform: cs.textTransform, color: cs.color, rect: [Math.round(r.x), Math.round(r.y), Math.round(r.width), Math.round(r.height)] };
-              };
-              return {
-                headerHTML: h.outerHTML.slice(0, 3000),
-                bodyBg: getComputedStyle(document.body).backgroundColor,
-                links: [...document.querySelectorAll("header a, nav a")].map(pick),
-                logo: pick(document.querySelector("header a, header svg, header img")),
-              };
+            const ctx = await browser.newContext({
+              viewport: { width: 1440, height: 900 },
+              recordVideo: { dir: "/tmp/vid", size: { width: 1440, height: 900 } },
             });
-            fs.writeFileSync(`${out}/header.json`, JSON.stringify(header, null, 2));
-
-            // hover states: move to a tile, capture, move elsewhere
-            await page.mouse.move(720, 450); await page.waitForTimeout(1200);
-            await page.screenshot({ path: `${out}/hover-center.jpg`, quality: 78, type: "jpeg" });
-            await page.mouse.move(200, 700); await page.waitForTimeout(1200);
-            await page.screenshot({ path: `${out}/hover-left.jpg`, quality: 78, type: "jpeg" });
-
-            // scroll burst: bend frames
-            for (let i = 0; i < 6; i++) { await page.mouse.wheel(0, 480); await page.waitForTimeout(60); }
-            await page.screenshot({ path: `${out}/scroll-bend.jpg`, quality: 78, type: "jpeg" });
+            const page = await ctx.newPage();
+            await page.goto("https://photoyoshi.com", { waitUntil: "commit", timeout: 45000 }).catch(() => {});
+            // intro plays untouched
+            await page.waitForTimeout(9000);
+            // slow horizontal hover sweep (column reveal behavior)
+            for (let x = 100; x <= 1340; x += 20) {
+              await page.mouse.move(x, 460);
+              await page.waitForTimeout(40);
+            }
+            // scroll bursts (bend behavior)
+            for (let i = 0; i < 5; i++) { await page.mouse.wheel(0, 600); await page.waitForTimeout(120); }
+            await page.waitForTimeout(1400);
+            for (let i = 0; i < 5; i++) { await page.mouse.wheel(0, -600); await page.waitForTimeout(120); }
             await page.waitForTimeout(1600);
-            await page.screenshot({ path: `${out}/scroll-settled.jpg`, quality: 78, type: "jpeg" });
-
-            // category page (Work filter)
-            await page.goto("https://photoyoshi.com/portrait", { waitUntil: "networkidle", timeout: 45000 }).catch(() => {});
-            await page.waitForTimeout(3500);
-            fs.writeFileSync(`${out}/category.html`, await page.content());
-            await page.screenshot({ path: `${out}/category-portrait.jpg`, quality: 78, type: "jpeg" });
-
-            // about page mobile too
-            const mctx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
-            const mp = await mctx.newPage();
-            await mp.goto("https://photoyoshi.com/about", { waitUntil: "networkidle", timeout: 45000 }).catch(() => {});
-            await mp.waitForTimeout(3000);
-            await mp.screenshot({ path: `${out}/about-mobile-full.jpg`, quality: 75, type: "jpeg", fullPage: true }).catch(() => {});
+            await ctx.close();
             await browser.close();
           })();
           EOF
+          f=$(ls /tmp/vid/*.webm | head -1)
+          ffmpeg -hide_banner -loglevel error -i "$f" -vf "fps=8,scale=720:-1" -q:v 6 design/reference/photoyoshi/frames/v%03d.jpg
+          ls design/reference/photoyoshi/frames | wc -l
       - name: Commit captures
         run: |
           git config user.name "github-actions[bot]"
@@ -84,5 +57,5 @@ jobs:
           git add design/reference/photoyoshi
           git checkout -- package.json 2>/dev/null || true
           git diff --cached --quiet && echo "No changes" && exit 0
-          git commit -m "Reference capture: photoyoshi intro frames, header, hover, bend, category, about"
+          git commit -m "Reference capture: photoyoshi bundle JS + video frames of intro/hover/scroll"
           git push

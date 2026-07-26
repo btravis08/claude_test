@@ -49,7 +49,7 @@ export function tryBeginFlip(): boolean {
 
 /* sampled CSS cubic-bezier — the FLIP bakes its ease into linear
    keyframes so wrap and image stay exact inverses mid-flight */
-function bezier(x1: number, y1: number, x2: number, y2: number) {
+export function bezier(x1: number, y1: number, x2: number, y2: number) {
   const cx = (t: number) =>
     3 * (1 - t) ** 2 * t * x1 + 3 * (1 - t) * t * t * x2 + t ** 3;
   const cy = (t: number) =>

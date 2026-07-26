@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-import { ENTRIES, flipToArticle } from "@/components/journal/field-flip";
+import { ENTRIES, bezier, flipToArticle } from "@/components/journal/field-flip";
 import { PhotoHeader } from "@/components/journal/PhotoHeader";
 
 /*
@@ -11,11 +11,14 @@ import { PhotoHeader } from "@/components/journal/PhotoHeader";
   reverse-engineered from its bundle's GLSL and a frame-by-frame
   screencast of the real site (design/reference/photoyoshi):
 
-  Intro: the wordmark fades in from ghost to ink over the cream while
-  a small centered photo breathes and the counter tracks the atlas
-  load. At 100 the wordmark ROLLS once, the photo mask-expands to
-  fullscreen, and the whole intro fades as the grid drifts in on a
-  bend wave that settles flat.
+  Intro: the grid starts ZOOMED IN on the centered tile — a lit
+  photo in the middle with its 8 ghosted neighbours bleeding off the
+  screen edges — while the wordmark fades ghost→ink and the counter
+  tracks the atlas load. At 100 the wordmark ROLLS once, then the
+  whole field zooms out to the resting wide view (a bend impulse
+  settles it) as the chrome fades. One column is always centered on
+  screen; a row is centered at load so the intro tile sits dead
+  center.
 
   Grid: 8-column lattice (measured off the 1440 capture), tiles at
   natural aspect. Ghost
@@ -41,6 +44,9 @@ const MOBILE_STRIDE = { x: 136, y: 124 };
 const TILE_MAX = 0.7;
 const CREAM = "#f1efe7";
 const INTRO_MIN_MS = 2400;
+/* intro zoom-out: duration + the dramatic ease shared with the FLIP */
+const ZOOM_MS = 1150;
+const ZOOM_EASE = bezier(0.85, 0, 0.15, 1);
 
 const VERT = `
 attribute vec2 aPos;
@@ -58,6 +64,15 @@ uniform vec2 uStride;
 uniform float uCount;
 uniform float uDwell;
 uniform float uTime;
+/* intro zoom-out: the grid renders scaled up around the screen
+   center; 1.0 = the resting wide view */
+uniform float uZoom;
+/* lattice shift that puts one column exactly on the screen's
+   vertical centerline */
+uniform float uXOff;
+/* during the intro only the exact center cell is lit */
+uniform vec2 uCenterCell;
+uniform float uIntroFocus;
 uniform sampler2D uTex;
 
 const vec3 CREAM = vec3(0.9451, 0.9373, 0.9059);
@@ -73,12 +88,14 @@ float hash2(vec2 p) {
 
 void main() {
   vec2 fragPx = vec2(gl_FragCoord.x, uRes.y - gl_FragCoord.y);
-  float xn = fragPx.x / uRes.x - 0.5;
+  /* intro zoom-out around the screen center */
+  vec2 g = (fragPx - 0.5 * uRes) / uZoom + 0.5 * uRes;
+  float xn = g.x / uRes.x - 0.5;
   float velN = clamp(uVel / 2600.0, -1.0, 1.0);
 
-  /* mild global bow — the entrance wave rides this too */
+  /* mild global bow — the settle wave rides this too */
   float bend = xn * xn * 4.0 * velN * 60.0;
-  vec2 p = vec2(fragPx.x, fragPx.y + uScroll + bend);
+  vec2 p = vec2(g.x - uXOff, g.y + uScroll + bend);
   float c = floor(p.x / uStride.x);
   float r = floor(p.y / uStride.y);
   vec2 local = p - vec2(c, r) * uStride;
@@ -113,6 +130,14 @@ void main() {
       float rad = uStride.y * (1.5 + uDwell * 2.6);
       focus = 1.0 - smoothstep(rad * 0.45, rad, dd);
     }
+    /* intro: only the exact center cell is lit; the 8 neighbours
+       stay ghosts until the zoom settles and the hand-off eases
+       this weight back to the pointer/band focus */
+    float cf =
+      (abs(c - uCenterCell.x) < 0.5 && abs(r - uCenterCell.y) < 0.5)
+        ? 1.0
+        : 0.0;
+    focus = mix(focus, cf, uIntroFocus);
 
     /* alpha marks the photo within its square cell (CONTAIN
        padding) — everything outside composites to plain cream, so
@@ -141,39 +166,22 @@ void main() {
 
 type IntroPhase = "count" | "roll" | "expand" | "out";
 
-/* the reference preloader, beat for beat: ghost→ink wordmark, small
-   photo breathing at center, +marks, caption, house label, counter;
-   at 100 the wordmark rolls once, the photo mask-expands fullscreen,
-   and everything fades over the entering grid. */
+/* the preloader chrome: ghost→ink wordmark, +marks, caption, house
+   label, counter. The photo itself lives on the canvas behind — the
+   grid starts zoomed to the center tile (its 8 neighbours bleeding
+   off the edges) and zooms out to the wide view at the hand-off. */
 function Intro({
   progress,
   phase,
-  box,
 }: {
   progress: number;
   phase: IntroPhase;
-  box: { w: number; h: number } | null;
 }) {
   const [inked, setInked] = useState(false);
-  const [breathe, setBreathe] = useState(false);
   useEffect(() => {
     const a = window.setTimeout(() => setInked(true), 80);
-    const b = window.setTimeout(() => setBreathe(true), 120);
-    return () => {
-      window.clearTimeout(a);
-      window.clearTimeout(b);
-    };
+    return () => window.clearTimeout(a);
   }, []);
-  /* the mask is the element's own inset: the small box shows a real
-     cover-fitted photo (not a zoomed window into a fullscreen image),
-     and expanding the inset re-crops it larger every frame while the
-     inner scale settles — the reference's mask-up reveal */
-  const inset =
-    box === null
-      ? "50% 50%"
-      : phase === "expand" || phase === "out"
-        ? "0px"
-        : `calc(50% - ${box.h / 2}px) calc(50% - ${box.w / 2}px)`;
   return (
     <div
       aria-hidden
@@ -182,27 +190,6 @@ function Intro({
         phase === "out" ? "pointer-events-none opacity-0" : "opacity-100"
       }`}
     >
-      <div className="absolute inset-0 bg-[#f1efe7]" />
-      {/* photo behind the wordmark: clip-masked to a small centered
-          box that expands to fullscreen at the handoff */}
-      <div
-        data-intro-photo
-        className="absolute overflow-hidden transition-[inset] duration-[1100ms] ease-[cubic-bezier(0.85,0,0.15,1)]"
-        style={{ inset }}
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/figma/journal/hero-01.jpg"
-          alt=""
-          className={`size-full object-cover transition-transform ease-[cubic-bezier(0.22,1,0.36,1)] ${
-            phase === "expand" || phase === "out"
-              ? "scale-100 duration-[1100ms]"
-              : breathe
-                ? "scale-[1.07] duration-[3400ms]"
-                : "scale-100 duration-0"
-          }`}
-        />
-      </div>
       {/* wordmark: ghost → ink, then one roll at 100 (the window is
           exactly one line tall so the second copy stays hidden) */}
       <div
@@ -247,16 +234,11 @@ export function JournalGridLight() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [progress, setProgress] = useState(0);
   const [phase, setPhase] = useState<IntroPhase>("count");
-  const [box, setBox] = useState<{ w: number; h: number } | null>(null);
   const mountAt = useRef(0);
   const router = useRouter();
 
   /* intro state machine: count → roll (wordmark tick) → expand
-     (photo mask fills the screen) → out (fade over the grid wave) */
-  useEffect(() => {
-    setBox({ w: 120, h: 160 });
-    return undefined;
-  }, []);
+     (the grid zooms out from the center tile) → out (chrome fades) */
   useEffect(() => {
     /* one timer per phase: scheduling the next step from a fresh
        effect run survives the cleanup that a nested-timer chain
@@ -275,10 +257,12 @@ export function JournalGridLight() {
       return () => window.clearTimeout(t);
     }
     if (phase === "expand") {
+      /* the zoom-out is canvas-driven — tell the GL loop to start */
+      window.dispatchEvent(new CustomEvent("hj:intro-zoom"));
       const t = window.setTimeout(() => {
         setPhase("out");
         window.dispatchEvent(new CustomEvent("hj:intro-done"));
-      }, 1150);
+      }, ZOOM_MS);
       return () => window.clearTimeout(t);
     }
   }, [progress, phase]);
@@ -322,6 +306,10 @@ export function JournalGridLight() {
     const uCount = U("uCount");
     const uDwell = U("uDwell");
     const uTime = U("uTime");
+    const uZoom = U("uZoom");
+    const uXOff = U("uXOff");
+    const uCenterCell = U("uCenterCell");
+    const uIntroFocus = U("uIntroFocus");
 
     /* ---------- atlas: natural aspect CONTAIN, alpha = photo mask
        (padding pixels keep cream rgb but zero alpha so the shader
@@ -429,10 +417,33 @@ export function JournalGridLight() {
     let travelled = 0;
     let lastScrub = 0;
 
+    /* intro zoom-out: the grid starts scaled so the centered tile
+       and its 8 neighbours (bleeding off the edges) fill the screen */
+    let xOff = 0;
+    const centerCell = { c: 0, r: 0 };
+    let zoom = 1;
+    let zooming = false;
+    let zoomFrom = 1;
+    let zoomStart = 0;
+    let introFocus = reduced ? 0 : 1;
+    let focusFading = false;
+    let focusFadeStart = 0;
+    let introSettled = reduced;
+
+    const onIntroZoom = () => {
+      if (reduced) return;
+      zooming = true;
+      zoomFrom = zoom;
+      zoomStart = performance.now();
+      requestRender();
+    };
+    window.addEventListener("hj:intro-zoom", onIntroZoom);
+
     const onIntroDone = () => {
-      /* entrance: the grid arrives on a bend wave that settles flat */
+      /* settle wave: a bend impulse without scroll drift, so the
+         centered column/row stays exactly where the zoom left it */
       if (!reduced) {
-        vel = 2300;
+        shownVel = 1600;
         requestRender();
       }
     };
@@ -444,6 +455,23 @@ export function JournalGridLight() {
       canvas.width = Math.round(canvas.clientWidth * dpr);
       canvas.height = Math.round(canvas.clientHeight * dpr);
       gl.viewport(0, 0, canvas.width, canvas.height);
+      const w = canvas.clientWidth;
+      const h = canvas.clientHeight;
+      /* one column always sits on the screen's vertical centerline */
+      const cc = Math.round(w / (2 * strideCss.x) - 0.5);
+      xOff = w / 2 - (cc + 0.5) * strideCss.x;
+      if (!introSettled && !zooming) {
+        /* while the intro holds, a row is centered too and the view
+           is zoomed to the center tile's 3x3 neighbourhood */
+        const rc = Math.round(h / (2 * strideCss.y) - 0.5);
+        scroll = (rc + 0.5) * strideCss.y - h / 2;
+        centerCell.c = cc;
+        centerCell.r = rc;
+        zoom = Math.min(
+          w / (1.7 * strideCss.x),
+          h / (1.7 * strideCss.y),
+        );
+      }
       requestRender();
     };
 
@@ -457,17 +485,43 @@ export function JournalGridLight() {
       gl.uniform2f(uRes, canvas.width, canvas.height);
       gl.uniform1f(uScroll, scroll * dpr);
       gl.uniform1f(uVel, reduced ? 0 : shownVel * dpr);
-      gl.uniform2f(uFocus, focus.x * dpr, focus.y * dpr);
+      /* uFocus compares against lattice-space tile centers, so the
+         column-centering shift comes off the pointer here */
+      gl.uniform2f(uFocus, (focus.x - xOff) * dpr, focus.y * dpr);
       gl.uniform1f(uTouchMode, touch ? 1 : 0);
       gl.uniform2f(uStride, strideCss.x * dpr, strideCss.y * dpr);
       gl.uniform1f(uCount, ENTRIES.length);
       gl.uniform1f(uDwell, dwell);
       gl.uniform1f(uTime, (now / 1000) % 1000);
+      gl.uniform1f(uZoom, zoom);
+      gl.uniform1f(uXOff, xOff * dpr);
+      gl.uniform2f(uCenterCell, centerCell.c, centerCell.r);
+      gl.uniform1f(uIntroFocus, introFocus);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
     };
     const step = (now: number) => {
       const dt = Math.min((now - lastT) / 1000, 0.05);
       lastT = now;
+      if (zooming) {
+        const t = Math.min(1, (now - zoomStart) / ZOOM_MS);
+        zoom = zoomFrom + (1 - zoomFrom) * ZOOM_EASE(t);
+        if (t >= 1) {
+          zooming = false;
+          zoom = 1;
+          introSettled = true;
+          /* ease the center tile back to pointer/band focus */
+          focusFading = true;
+          focusFadeStart = now;
+        }
+      }
+      if (focusFading) {
+        const t = Math.min(1, (now - focusFadeStart) / 700);
+        introFocus = 1 - t;
+        if (t >= 1) {
+          focusFading = false;
+          introFocus = 0;
+        }
+      }
       if (!dragging && now - lastScrub > 90) {
         vel *= Math.exp(-dt / 0.7);
         if (Math.abs(vel) < 4) vel = 0;
@@ -477,7 +531,12 @@ export function JournalGridLight() {
       shownVel += (vel - shownVel) * k;
       draw(now);
       const still =
-        !dragging && vel === 0 && Math.abs(shownVel) < 2 && !(hovering && !touch);
+        !dragging &&
+        !zooming &&
+        !focusFading &&
+        vel === 0 &&
+        Math.abs(shownVel) < 2 &&
+        !(hovering && !touch);
       if (still) {
         shownVel = 0;
         draw(now);
@@ -537,7 +596,11 @@ export function JournalGridLight() {
       vel = 0;
       flickVel = 0;
       lastPointer = { x: e.clientX, y: e.clientY, t: e.timeStamp };
-      canvas.setPointerCapture(e.pointerId);
+      try {
+        canvas.setPointerCapture(e.pointerId);
+      } catch {
+        /* a pointer released between event and capture is fine */
+      }
       requestRender();
     };
     const onUp = (e: PointerEvent) => {
@@ -548,7 +611,7 @@ export function JournalGridLight() {
       const slop = e.pointerType === "mouse" ? 6 : 16;
       if (travelled < slop) {
         const rect = canvas.getBoundingClientRect();
-        const px = e.clientX - rect.left;
+        const px = e.clientX - rect.left - xOff;
         const py = e.clientY - rect.top + scroll;
         const c = Math.floor(px / strideCss.x);
         const r = Math.floor(py / strideCss.y);
@@ -572,7 +635,7 @@ export function JournalGridLight() {
           const idx = m(c * 5 + r * 7 + jitter, n);
           const entry = ENTRIES[idx];
           const pr = photoRect.get(entry.src) ?? { x: 0, y: 0, w: 1, h: 1 };
-          const tileLeft = rect.left + c * strideCss.x + padX;
+          const tileLeft = rect.left + c * strideCss.x + padX + xOff;
           const tileTop = r * strideCss.y + padY - scroll + rect.top;
           flipToArticle(
             entry,
@@ -605,6 +668,7 @@ export function JournalGridLight() {
     return () => {
       disposed = true;
       window.clearTimeout(progressTimer);
+      window.removeEventListener("hj:intro-zoom", onIntroZoom);
       window.removeEventListener("hj:intro-done", onIntroDone);
       cancelAnimationFrame(raf);
       ro.disconnect();
@@ -632,7 +696,7 @@ export function JournalGridLight() {
         className="size-full cursor-pointer touch-none select-none"
       />
       <PhotoHeader />
-      <Intro progress={progress} phase={phase} box={box} />
+      <Intro progress={progress} phase={phase} />
       {/* the same articles as real links, for keyboards and crawlers */}
       <ul className="sr-only">
         {ENTRIES.map((entry) => (

@@ -89,3 +89,9 @@ fetch_jpg journal/stream-15.jpg 3ab4abee-7d3b-40d1-991d-8367c6698bf5 1000
 fetch_jpg journal/stream-16.jpg fb3c21b6-79c8-4901-b638-65e671b3cbc0 1000
 
 echo "Done."
+
+# Footer "SUN DAY RED" word marks (Figma 33981:107495/107496/107501,
+# exported as SVGs — rendered via CSS mask so they take the ink color)
+fetch sdr-word-sun.svg 2886f4a9-a41b-40c0-8fcb-0388db2a8637
+fetch sdr-word-day.svg 9c216349-634b-4887-8838-48a825e6743c
+fetch sdr-word-red.svg 54958702-e814-42e4-9cba-970c70313403

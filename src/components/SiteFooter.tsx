@@ -6,7 +6,7 @@ import { useLayoutEffect, useRef, useState } from "react";
 import { useFooterTagline } from "@/components/FooterTagline";
 import { Logo } from "@/components/Logo";
 import { NavTextLink } from "@/components/NavTextLink";
-import { Plus } from "@/components/icons";
+import { ArrowUp, CurrencyDollar, Plus } from "@/components/icons";
 import { EASE_OUT } from "@/lib/motion";
 
 interface FooterLink {
@@ -28,8 +28,8 @@ const columns: { heading: string; links: FooterLink[] }[] = [
     heading: "Company",
     links: [
       { label: "The Legacy" },
-      { label: "TEAM SUN DAY RED" },
       { label: "Honors Journal", href: "/journal" },
+      { label: "TEAM SUN DAY RED" },
       { label: "Careers" },
     ],
   },
@@ -39,7 +39,40 @@ const columns: { heading: string; links: FooterLink[] }[] = [
   },
 ];
 
+const BLURB =
+  "Pursue better always. Maecenas suspendisse ultrices pellentesque et ornare dui nisl. Eget convallis lorem faucibus tortor in.";
+
 const social = ["FB", "TT", "IG", "X", "TW"];
+
+const legalLinks = [
+  "Privacy Policy",
+  "Website Terms & Conditions of Use",
+  "Terms & Conditions of Purchase",
+  "Gift Card Terms & Conditions",
+  "Supplier Responsibility",
+  "Accessibility Statement",
+];
+
+/* the big spelled-out wordmark band: SUN / DAY / RED word vectors
+   (public/figma/sdr-word-*.svg) rendered through CSS masks so they
+   take the section ink color. Sizes are the Figma exports' own
+   boxes (desktop 52.5px tall; mobile is the same art at 0.576x). */
+function WordMark({ file, className }: { file: string; className: string }) {
+  return (
+    <span
+      aria-hidden
+      className={`inline-block bg-current ${className}`}
+      style={{
+        maskImage: `url(/figma/${file})`,
+        maskSize: "100% 100%",
+        maskRepeat: "no-repeat",
+        WebkitMaskImage: `url(/figma/${file})`,
+        WebkitMaskSize: "100% 100%",
+        WebkitMaskRepeat: "no-repeat",
+      }}
+    />
+  );
+}
 
 /* mobile link groups collapse into accordions; the + rotates into an
    x while the panel's height eases open */
@@ -51,11 +84,11 @@ function FooterAccordion({ heading, links }: { heading: string; links: FooterLin
         type="button"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
-        className="flex h-[4.625rem] w-full items-center justify-between px-4 text-left"
+        className="flex w-full items-center justify-between py-[0.6875rem] text-left"
       >
-        <span className="text-body-md font-medium uppercase text-ink">{heading}</span>
+        <span className="text-[0.875rem] leading-5 text-ink">{heading.toUpperCase()}</span>
         <Plus
-          size={16}
+          size={20}
           className={`text-ink transition-transform duration-300 ${
             open ? "rotate-45" : ""
           }`}
@@ -67,7 +100,7 @@ function FooterAccordion({ heading, links }: { heading: string; links: FooterLin
         transition={{ duration: 0.4, ease: [...EASE_OUT] }}
         className="overflow-hidden"
       >
-        <div className="flex flex-col items-start gap-3 px-4 pb-6">
+        <div className="flex flex-col items-start gap-3 pb-6">
           {links.map((link) => (
             <NavTextLink key={link.label} label={link.label.toUpperCase()} href={link.href} />
           ))}
@@ -109,7 +142,7 @@ export function LegacyBand() {
 
 export function SiteFooter() {
   const ref = useRef<HTMLElement>(null);
-  /* "Earned Never Given" art — per-page CMS toggle, off by default */
+  /* "Pursue Better Always" art — per-page CMS toggle, off by default */
   const showTagline = useFooterTagline();
   /* painted only when the scroll position is within reveal range —
      SSR renders it invisible, so it can never flash on load, during
@@ -155,50 +188,46 @@ export function SiteFooter() {
         inRange ? "" : "invisible"
       }`}
     >
-      {/* Earned Never Given wordmark art */}
+      {/* Pursue Better Always wordmark art */}
       {showTagline && (
-        <div className="flex h-[32.875rem] w-full items-center justify-center overflow-hidden p-2.5">
-        <div className="relative h-[9.4375rem] w-[30.375rem] shrink-0 scale-75 sm:scale-100">
-          <p className="absolute left-[8.25rem] top-0 whitespace-nowrap font-display text-display-xl">
-            Earned
-          </p>
-          <p className="absolute left-0 top-[3.40625rem] whitespace-nowrap font-display text-display-xl">
-            Never
-          </p>
-          <p className="absolute left-[18.75rem] top-[3.59375rem] whitespace-nowrap font-display text-display-xl">
-            Given
-          </p>
-          <span
-            aria-hidden
-            className="absolute left-[12.125rem] top-[5.71875rem] inline-block h-[1.29375rem] w-[3.91875rem] bg-current"
-            style={{
-              maskImage: "url(/figma/union-swoosh.svg)",
-              maskSize: "100% 100%",
-              maskRepeat: "no-repeat",
-              WebkitMaskImage: "url(/figma/union-swoosh.svg)",
-              WebkitMaskSize: "100% 100%",
-              WebkitMaskRepeat: "no-repeat",
-            }}
-          />
-          <p className="label absolute left-0 top-[8.46875rem] font-medium">SUN DAY</p>
-          <p className="label absolute left-[8.9375rem] top-[8.46875rem] font-medium">EST</p>
-          <p className="label absolute left-[17.9375rem] top-[8.46875rem] font-medium">2024</p>
-          <p className="label absolute right-0 top-[8.46875rem] font-medium">RED</p>
+        <div className="flex w-full items-center justify-center overflow-hidden border-b border-line px-2.5 py-32 md:py-[11.25rem]">
+          <div className="relative h-[9.4375rem] w-[28.9375rem] shrink-0 scale-[0.7] sm:scale-100">
+            <p className="absolute left-[8.75rem] top-0 whitespace-nowrap font-display text-display-xl">
+              Pursue
+            </p>
+            <p className="absolute left-0 top-[3.40625rem] whitespace-nowrap font-display text-display-xl">
+              Better
+            </p>
+            <p className="absolute left-[17.9375rem] top-[3.59375rem] whitespace-nowrap font-display text-display-xl">
+              Always
+            </p>
+            <span
+              aria-hidden
+              className="absolute left-[12rem] top-[5.71875rem] inline-block h-[1.29375rem] w-[3.91875rem] bg-current"
+              style={{
+                maskImage: "url(/figma/union-swoosh.svg)",
+                maskSize: "100% 100%",
+                maskRepeat: "no-repeat",
+                WebkitMaskImage: "url(/figma/union-swoosh.svg)",
+                WebkitMaskSize: "100% 100%",
+                WebkitMaskRepeat: "no-repeat",
+              }}
+            />
+            <p className="label absolute left-0 top-[8.46875rem] font-medium">SUN</p>
+            <p className="label absolute left-[9.5rem] top-[8.46875rem] font-medium">DAY</p>
+            <p className="label absolute left-[17.8125rem] top-[8.46875rem] font-medium">RED</p>
+            <p className="label absolute right-0 top-[8.46875rem] font-medium">2026</p>
           </div>
         </div>
       )}
 
-      {/* mobile: logo + blurb over accordion link groups (per the
-          mobile footer comp); sm+ keeps the column grid below */}
+      {/* mobile: blurb over accordion link groups (per the mobile
+          footer comp); sm+ keeps the column grid below */}
       <div className="sm:hidden">
-        <div className="flex flex-col items-start gap-6 px-4 pb-8 pt-8">
-          <Logo />
-          <p className="text-[0.75rem] uppercase leading-[1.5]">
-            Maecenas suspendisse ultrices pellentesque et ornare dui nisl. Eget
-            convallis lorem faucibus tortor in.
-          </p>
+        <div className="pb-4 pl-4 pr-11 pt-6">
+          <p className="label font-medium">{BLURB}</p>
         </div>
-        <div className="flex flex-col border-t border-line">
+        <div className="flex flex-col px-4 pb-8 pt-4">
           {columns.map((col) => (
             <FooterAccordion key={col.heading} heading={col.heading} links={col.links} />
           ))}
@@ -206,7 +235,7 @@ export function SiteFooter() {
       </div>
 
       {/* link columns */}
-      <div className="hidden w-full grid-cols-1 border-t border-line sm:grid sm:grid-cols-2 lg:grid-cols-4">
+      <div className="hidden w-full grid-cols-1 border-t border-line sm:grid sm:grid-cols-2 md:grid-cols-4">
         {columns.map((col) => (
           <div
             key={col.heading}
@@ -220,17 +249,33 @@ export function SiteFooter() {
             </div>
           </div>
         ))}
-        <div className="flex flex-col gap-[1.125rem] border-b border-l border-line px-4 pb-16 pt-4 md:px-6 md:pt-6">
-          <Logo />
-          <p className="text-[0.75rem] uppercase leading-none">
-            Maecenas suspendisse ultrices pellentesque et ornare dui nisl. Eget
-            convallis lorem faucibus tortor in.
-          </p>
+        <div className="flex flex-col border-b border-l border-line px-4 pb-16 pt-4 md:px-6 md:pt-6">
+          <p className="label font-medium">{BLURB}</p>
         </div>
       </div>
 
+      {/* SUN DAY RED spelled-out band (word vectors from the comp) */}
+      <div
+        aria-label="Sun Day Red"
+        role="img"
+        className="flex w-full items-center justify-between p-4 sm:px-6 sm:py-8"
+      >
+        <WordMark
+          file="sdr-word-sun.svg"
+          className="h-[1.89rem] w-[5.1854rem] sm:h-[3.28125rem] sm:w-[9.0024rem]"
+        />
+        <WordMark
+          file="sdr-word-day.svg"
+          className="h-[1.8001rem] w-[4.9378rem] sm:h-[3.1252rem] sm:w-[8.5725rem]"
+        />
+        <WordMark
+          file="sdr-word-red.svg"
+          className="h-[1.8008rem] w-[5.0716rem] sm:h-[3.1263rem] sm:w-[8.8049rem]"
+        />
+      </div>
+
       {/* newsletter */}
-      <form className="flex w-full flex-col items-stretch gap-3 p-4 pt-10 sm:flex-row sm:gap-0 sm:pt-4 md:p-6">
+      <form className="flex w-full flex-col items-stretch gap-3 p-4 sm:flex-row sm:gap-0 md:p-6">
         {/* flex-1 only in the sm+ row layout — in the stacked mobile
             column it would become the vertical basis and squash the
             46px heights */}
@@ -250,23 +295,46 @@ export function SiteFooter() {
         </button>
       </form>
 
-      {/* bottom bar — mobile: socials and copyright share one line */}
-      <div className="flex w-full items-center justify-between px-4 pb-2 pt-6 sm:hidden">
-        {social.map((s) => (
-          <NavTextLink key={s} label={s} />
-        ))}
-        <p className="label font-medium">©2026 SUN DAY RED</p>
-      </div>
-      <div className="hidden w-full gap-8 px-4 py-8 sm:flex sm:h-[4.5rem] sm:items-start md:px-6">
-        <div className="flex flex-1 items-center">
-          <p className="label font-medium">©2026 SUN DAY RED</p>
+      {/* logo + socials row */}
+      <div className="flex w-full items-center gap-16 p-4 sm:gap-8 sm:px-6 sm:py-8">
+        <div className="flex items-center sm:flex-1">
+          <Logo />
         </div>
-        <div className="flex flex-1 items-center justify-between gap-4">
+        <div className="flex flex-1 items-center justify-between pr-6 sm:pr-0">
           {social.map((s) => (
             <NavTextLink key={s} label={s} />
           ))}
-          <NavTextLink href="#top" label="BACK TO TOP" />
+          <a
+            href="#top"
+            className="label group relative hidden items-center gap-1.5 font-medium text-ink sm:flex"
+          >
+            BACK TO TOP
+            <ArrowUp size={10} />
+            <span className="absolute inset-x-0 -bottom-0.5 h-px origin-right scale-x-0 bg-ink transition-transform duration-300 group-hover:origin-left group-hover:scale-x-100" />
+          </a>
         </div>
+      </div>
+
+      {/* legal row */}
+      <div className="flex w-full flex-col items-start gap-6 p-4 sm:flex-row sm:items-center sm:justify-between sm:gap-8 sm:p-6">
+        <p className="label font-medium text-ink-2">
+          ©2026 SUN DAY RED&nbsp;&nbsp;&nbsp;—&nbsp;{" "}
+          {legalLinks.map((label, i) => (
+            <span key={label}>
+              {i > 0 && <span className="whitespace-pre">{"  |  "}</span>}
+              <a href="#" className="transition-colors hover:text-ink">
+                {label}
+              </a>
+            </span>
+          ))}
+        </p>
+        <button
+          type="button"
+          className="label flex shrink-0 items-center gap-1.5 font-medium text-ink"
+        >
+          <span className="underline decoration-1 underline-offset-4">US / USD</span>
+          <CurrencyDollar size={10} />
+        </button>
       </div>
     </footer>
   );

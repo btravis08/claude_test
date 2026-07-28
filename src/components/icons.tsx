@@ -41,6 +41,22 @@ export function ArrowRight({ size, className }: { size?: number; className?: str
   );
 }
 
+export function ArrowUp({ size, className }: { size?: number; className?: string }) {
+  return (
+    <Base size={size} className={className}>
+      <path d="M12 20V4m0 0l-6 6m6-6l6 6" />
+    </Base>
+  );
+}
+
+export function CurrencyDollar({ size, className }: { size?: number; className?: string }) {
+  return (
+    <Base size={size} className={className}>
+      <path d="M6 16c0 2.21 2.686 4 6 4s6-1.79 6-4-2.686-4-6-4-6-1.79-6-4 2.686-4 6-4 6 1.79 6 4M12 2v20" />
+    </Base>
+  );
+}
+
 export function ArrowUpRight({ size, className }: { size?: number; className?: string }) {
   return (
     <Base size={size} className={className}>

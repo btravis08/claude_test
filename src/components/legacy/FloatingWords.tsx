@@ -3,7 +3,6 @@
 import {
   motion,
   useScroll,
-  useSpring,
   useTransform,
 } from "motion/react";
 import { useEffect, useRef, useState } from "react";
@@ -15,17 +14,17 @@ import { useEffect, useRef, useState } from "react";
 
   Every measurement scales from viewport HEIGHT (the comp's 1000px
   frame = 100vh), so the composition — card sizes, gaps, top and
-  bottom margins — holds at any viewport aspect. The travel is a
-  linear mapping of scroll progress passed through a spring, so it
-  glides instead of stepping; inner images lag their frames slightly
-  (clipped inner parallax).
+  bottom margins — holds at any viewport aspect. The travel is
+  locked linearly to the scroll (Lenis supplies the glide); inner
+  images visibly trail their frames (clipped inner parallax).
 */
 
 /* design px (1000-tall frame) → vh: divide by 10 */
 const vh = (d: number) => `${d / 10}vh`;
 const TRACK_D = 4166;
-/* inner-parallax amplitude (% of frame width) */
-const A = 7;
+/* inner-parallax amplitude (% of frame width) — generous enough that
+   the photo visibly trails its frame across the pass */
+const A = 14;
 
 interface Card {
   src: string;
@@ -96,21 +95,17 @@ export function FloatingWords() {
     target: ref,
     offset: ["start start", "end end"],
   });
-  /* the spring is the smoothing: scroll maps linearly, the spring
-     carries it without steps */
-  const sprung = useSpring(scrollYProgress, {
-    stiffness: 75,
-    damping: 24,
-    mass: 0.5,
-  });
-  const x = useTransform(() => -geom.overflow * sprung.get());
+  /* linear, locked to the scroll — Lenis provides the glide; any
+     smoothing layered on top detaches the travel from the input and
+     rushes to catch up */
+  const x = useTransform(() => -geom.overflow * scrollYProgress.get());
 
   return (
     <div ref={ref} data-mode="light" className="relative h-[550vh] w-full bg-surface text-ink">
       <div className="sticky top-0 h-screen w-full overflow-hidden border-y border-line">
         <motion.div style={{ x, width: vh(TRACK_D) }} className="relative h-full">
           {CARDS.map((card, i) => (
-            <GalleryCard key={i} sprung={sprung} geom={geom} card={card} />
+            <GalleryCard key={i} progress={scrollYProgress} geom={geom} card={card} />
           ))}
           {TEXTS.map((text) => (
             <p
@@ -133,11 +128,11 @@ export function FloatingWords() {
 }
 
 function GalleryCard({
-  sprung,
+  progress,
   geom,
   card,
 }: {
-  sprung: ReturnType<typeof useSpring>;
+  progress: import("motion/react").MotionValue<number>;
   geom: Geom;
   card: Card;
 }) {
@@ -148,7 +143,7 @@ function GalleryCard({
     const wPx = card.w * geom.scale;
     const a = Math.max(0, (leftPx - geom.vw) / geom.overflow);
     const b = Math.min(1, (leftPx + wPx) / geom.overflow);
-    const t = Math.min(1, Math.max(0, (sprung.get() - a) / (b - a)));
+    const t = Math.min(1, Math.max(0, (progress.get() - a) / (b - a)));
     return `${-A + 2 * A * t}%`;
   });
   return (

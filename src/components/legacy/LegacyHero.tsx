@@ -101,8 +101,13 @@ export function LegacyHero({
     };
   }, []);
 
-  /* The beat, then the split drive. */
+  /* The whole sequence is timer-driven (the enter tween is 2s) — no
+     reliance on animation callbacks, which some provider setups eat. */
   useEffect(() => {
+    if (phase === "enter" && !reduced) {
+      const t = setTimeout(() => setPhase("hold"), 2100);
+      return () => clearTimeout(t);
+    }
     if (phase === "hold") {
       const t = setTimeout(() => setPhase("split"), 1000);
       return () => clearTimeout(t);
@@ -117,7 +122,7 @@ export function LegacyHero({
       };
     }
     if (phase === "done") p.set(1);
-  }, [phase, measure, p]);
+  }, [phase, measure, p, reduced]);
 
   /* ---- the coupled geometry, evaluated per frame ---- */
   const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
@@ -234,9 +239,6 @@ export function LegacyHero({
             initial={{ y: "14vh", opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 2, ease: DRAMA }}
-            onAnimationComplete={() => {
-              setPhase((prev) => (prev === "enter" ? "hold" : prev));
-            }}
             className="flex w-full items-center justify-center gap-[0.35em]"
           >
             <p ref={leftRef} className={`${wordClass} text-ink`}>

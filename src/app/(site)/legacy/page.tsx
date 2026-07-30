@@ -48,14 +48,14 @@ function img(source: SanityImageSource | undefined, width: number) {
 export default async function LegacyPage() {
   const doc = await sanityFetch<LegacyPageDoc | null>(legacyPageQuery, {}, null);
 
-  const slides = doc?.slides
-    ?.map((s) => ({
-      title: s.title ?? "",
-      bg: img(s.background, 2000) ?? "",
-      media: img(s.media, 900) ?? "",
-      body: s.body ?? "",
-    }))
-    .filter((s) => s.title && s.bg && s.media);
+  /* partial by design — the carousel merges each field by position
+     onto its built-in deck, so one replaced image shows immediately */
+  const slides = doc?.slides?.map((s) => ({
+    title: s.title || undefined,
+    bg: img(s.background, 2000),
+    media: img(s.media, 900),
+    body: s.body || undefined,
+  }));
 
   return (
     <div className="flex w-full flex-col">

@@ -71,10 +71,22 @@ const SLIDES: Slide[] = [
 export function FullBleedCarousel({
   slides,
 }: {
-  /* CMS slides — the built-in set runs when absent or too short */
-  slides?: Slide[];
+  /* CMS slide content, merged by position onto the built-in deck —
+     any field left empty keeps the design content, so a single
+     replaced image shows without re-authoring every slide. Complete
+     slides beyond the built-in five extend the deck. */
+  slides?: Partial<Slide>[];
 }) {
-  const deck = slides && slides.length >= 2 ? slides : SLIDES;
+  const deck: Slide[] = SLIDES.map((s, i) => ({
+    title: slides?.[i]?.title || s.title,
+    bg: slides?.[i]?.bg || s.bg,
+    media: slides?.[i]?.media || s.media,
+    body: slides?.[i]?.body || s.body,
+  }));
+  for (let i = SLIDES.length; i < (slides?.length ?? 0); i++) {
+    const extra = slides?.[i];
+    if (extra?.title && extra.bg && extra.media) deck.push(extra as Slide);
+  }
   /* monotonic under autoplay — the rail travels leftward; clicking a
      neighbor title jumps straight to it */
   const [step, setStep] = useState(0);

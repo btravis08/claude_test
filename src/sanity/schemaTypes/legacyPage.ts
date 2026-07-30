@@ -141,7 +141,7 @@ export const legacyPage = defineType({
       type: "array",
       group: "carousel",
       description:
-        "The timed full-bleed carousel. Needs at least 2 slides to run; leave empty to keep the built-in set.",
+        "The timed full-bleed carousel. Slides fill the built-in five by position — set only what you want to change, and empty fields keep the design content. Fully-filled slides beyond the fifth extend the deck.",
       validation: (rule) => rule.min(0).max(8),
       of: [
         defineArrayMember({

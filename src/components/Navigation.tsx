@@ -676,7 +676,7 @@ export function Navigation({ data }: { data?: NavData | null }) {
         /* mobile: the logo bar is absolute at the page top and simply
            scrolls away (no links to keep around) — the slide-away/
            return animation is desktop-only */
-        animate={{ y: hidden && !mobileOpen && mdUp ? "-100%" : "0%" }}
+        animate={{ y: hidden && !isLegacy && !mobileOpen && mdUp ? "-100%" : "0%" }}
         transition={{ duration: 0.45, ease: [...MEDIA_EASE] }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => {

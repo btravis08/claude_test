@@ -33,7 +33,12 @@ export default function LegacyPage() {
       <LegacyHero />
       <SplitTextBlock eyebrow="Our Mantra" text={MANTRA} cta="Shop Sun Day Red" />
       <FloatingWords />
-      <SplitTextBlock eyebrow="Our Mantra" text={MANTRA} cta="Shop Sun Day Red" />
+      <SplitTextBlock
+        mode="light-mid"
+        eyebrow="Our Mantra"
+        text={MANTRA}
+        cta="Shop Sun Day Red"
+      />
       <FullBleedCarousel />
       <SplitTextBlock
         mode="light-mid"

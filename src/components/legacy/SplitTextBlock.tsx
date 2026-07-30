@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "motion/react";
+import { motion, useScroll, useSpring, useTransform } from "motion/react";
 import { useRef } from "react";
 
 import { ArrowUpRight } from "@/components/icons";
@@ -48,8 +48,8 @@ function Word({
     const p = progress.get();
     return Math.min(1, Math.max(0, (p - range[0]) / (range[1] - range[0])));
   };
-  const opacity = useTransform(() => 0.15 + 0.85 * t());
-  const filter = useTransform(() => `blur(${((1 - t()) * 6).toFixed(2)}px)`);
+  const opacity = useTransform(() => t());
+  const filter = useTransform(() => `blur(${((1 - t()) * 8).toFixed(2)}px)`);
   return (
     <motion.span style={{ opacity, filter }} className="inline-block">
       {children}&nbsp;
@@ -80,11 +80,14 @@ export function SplitTextBlock({
     offset: ["start 0.9", "center center"],
   });
   /* ...but the words hold until the paragraph itself is 40% up from
-     the viewport bottom, then resolve on its way to center. */
-  const { scrollYProgress: reveal } = useScroll({
+     the viewport bottom, then resolve over a long runway — and the
+     progress is sprung, so the cascade trails the scroll with its own
+     ease instead of tracking it 1:1. */
+  const { scrollYProgress: rawReveal } = useScroll({
     target: pRef,
-    offset: ["start 0.6", "start 0.35"],
+    offset: ["start 0.6", "start 0.2"],
   });
+  const reveal = useSpring(rawReveal, { stiffness: 55, damping: 22, mass: 0.8 });
   const words = text.split(/\s+/).filter(Boolean);
   const span = 0.75; // words finish resolving at 75% of the pass
   const per = span / words.length;

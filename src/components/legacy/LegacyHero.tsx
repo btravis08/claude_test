@@ -156,7 +156,11 @@ export function LegacyHero({
   /* A word's center offset: pushed ahead of the film's edge, pinned
      at its edge slot; never inside its phrase position. */
   const offsetFor = (half: number, initial: number, dir: 1 | -1, vw: number) => {
-    const pushed = filmW.get() / 2 + GUTTER + half;
+    /* the gutter can't exceed the word's distance from center, or the
+       push formula would exceed the phrase seat at film width 0 and
+       the word would jump the instant the split begins */
+    const g = Math.min(GUTTER, Math.max(0, Math.abs(initial) - half));
+    const pushed = filmW.get() / 2 + g + half;
     const max = vw / 2 - EDGE - half;
     return dir * Math.min(Math.max(pushed, Math.abs(initial)), max);
   };

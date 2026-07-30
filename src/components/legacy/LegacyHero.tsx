@@ -5,20 +5,21 @@ import { useLenis } from "lenis/react";
 import { useEffect, useState } from "react";
 
 /*
-  Legacy page introduction (Figma node 33982:60407) — a time-driven
-  title sequence with scroll locked until it resolves:
+  Legacy page introduction (Figma 33982:60407) — a time-driven title
+  sequence with scroll locked until it resolves:
 
     1. "A New Legacy" slides up into dead center (2s, dramatic bezier)
-    2. holds for 1s
+    2. holds for a beat
     3. the phrase splits — "A New" to the left edge, "Legacy" to the
-       right — while the 4:3 campaign image expands from between the
-       words until it fills the viewport; the text inverts to white
-       as the film passes beneath it
+       right — while the campaign image expands from between the words
+       until it fills the viewport; the words invert to white as the
+       film passes beneath them
     4. the page unlocks and scrolls normally
 
-  The resting hero (what the Figma frame freezes mid-animation) is the
-  full-bleed image with the split words at the edges, vertically
-  centered. Reduced-motion users get that resting state immediately.
+  The Figma frame freezes the split mid-flight (image at 743px between
+  the parted words); the resting hero is the full-bleed image with the
+  words at the edges, vertically centered, at 80% white. Reduced
+  motion goes straight to the resting state with no lock.
 */
 
 /* One dramatic curve for every phase — hard in, hard out. */
@@ -36,19 +37,20 @@ export function LegacyHero({
   image?: string;
 }) {
   const reduced = useReducedMotion();
-  const [phase, setPhase] = useState<Phase>(reduced ? "done" : "enter");
+  const [phase, setPhase] = useState<Phase>("enter");
   const lenis = useLenis();
+
+  useEffect(() => {
+    if (reduced) setPhase("done");
+  }, [reduced]);
 
   /* Scroll stays locked until the sequence resolves. */
   const locked = phase !== "done";
   useEffect(() => {
-    if (!locked) {
-      lenis?.start();
-      return;
-    }
+    if (!locked) return;
     window.scrollTo(0, 0);
     lenis?.stop();
-    /* Lenis intercepts wheel/touch; block keyboard scrolling too. */
+    /* Lenis owns wheel/touch; keyboard scrolling is blocked here. */
     const keys = new Set([
       " ", "ArrowDown", "ArrowUp", "PageDown", "PageUp", "Home", "End",
     ]);
@@ -62,39 +64,42 @@ export function LegacyHero({
     };
   }, [locked, lenis]);
 
-  /* The 1s hold between arrival and the split. */
+  /* The beat between arrival and the split, then the split's length. */
   useEffect(() => {
-    if (phase !== "hold") return;
-    const t = setTimeout(() => setPhase("split"), 1000);
-    return () => clearTimeout(t);
+    if (phase === "hold") {
+      const t = setTimeout(() => setPhase("split"), 1000);
+      return () => clearTimeout(t);
+    }
+    if (phase === "split") {
+      const t = setTimeout(() => setPhase("done"), 2400);
+      return () => clearTimeout(t);
+    }
   }, [phase]);
 
   const splitting = phase === "split" || phase === "done";
-  /* Words: one centered line that pulls apart to the padded edges.
-     justify-center + animated padding-free approach: the two words sit
-     in a full-width row; before the split they huddle at the center
-     (auto margins collapsed), after it they justify to the edges. */
+
   return (
     <section
-      data-mode={splitting ? "dark" : "light"}
-      className="relative h-screen w-full overflow-hidden bg-surface text-ink"
+      /* the surface stays light while the film expands over it; the
+         section only reads as dark once the image owns the viewport */
+      data-mode={phase === "done" ? "dark" : "light"}
+      className="relative h-screen w-full overflow-hidden bg-surface"
     >
-      {/* The film: expands from the inter-word box to full bleed. */}
+      {/* The film: grows from the slot between the words to full bleed. */}
       <motion.div
         className="absolute left-1/2 top-1/2 overflow-hidden"
         initial={false}
         animate={
           splitting
             ? { width: "100vw", height: "100vh", opacity: 1 }
-            : {
-                width: "min(51.7vw, 46rem)",
-                height: "min(38.75vw, 34.5rem)",
-                opacity: 0,
-              }
+            : { width: "26vw", height: "19.5vw", opacity: 0 }
         }
-        transition={{ duration: 2.2, ease: DRAMA }}
+        transition={{
+          duration: 2.4,
+          ease: DRAMA,
+          opacity: { duration: 0.5, ease: "easeOut" },
+        }}
         style={{ x: "-50%", y: "-50%" }}
-        aria-hidden={!splitting}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -106,59 +111,46 @@ export function LegacyHero({
         <div className="pointer-events-none absolute inset-0 bg-black/20" />
       </motion.div>
 
-      {/* The words. */}
-      <motion.div
-        className="absolute inset-x-0 top-1/2 flex -translate-y-1/2 items-center px-6"
-        initial={reduced ? false : { y: "14vh", opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 2, ease: DRAMA }}
-        onAnimationComplete={() => {
-          if (phase === "enter") setPhase("hold");
-        }}
-      >
-        <div className="relative flex w-full items-center justify-center">
-          {/* Each word travels from the center cluster to its edge. */}
+      {/* The words: one centered cluster that parts to the edges.
+          justify swap + FLIP layout animation carries the travel. */}
+      <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 px-6">
+        <motion.div
+          initial={reduced ? false : { y: "14vh", opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 2, ease: DRAMA }}
+          onAnimationComplete={() => {
+            setPhase((p) => (p === "enter" ? "hold" : p));
+          }}
+          className={`flex w-full items-center ${
+            splitting ? "justify-between" : "justify-center gap-[0.35em]"
+          }`}
+        >
           <motion.p
-            className="font-display text-headline-lg whitespace-nowrap"
-            initial={false}
-            animate={{
-              x: 0,
-              color: splitting ? "#ffffff" : "var(--ink)",
-              opacity: splitting ? 1 : 0.8,
-            }}
-            transition={{
-              duration: 2.2,
-              ease: DRAMA,
-              color: { duration: 0.9, delay: 0.9 },
-            }}
-            style={{
-              position: splitting ? undefined : "relative",
-              marginRight: "0.35em",
-            }}
             layout
+            transition={{
+              layout: { duration: 1.6, ease: DRAMA },
+              color: { duration: 0.8, delay: 1.3 },
+            }}
+            initial={false}
+            animate={{ color: splitting ? "#ffffff" : "#161716" }}
+            className="font-display text-headline-lg whitespace-nowrap opacity-80"
           >
             {left}
           </motion.p>
           <motion.p
-            className="font-display text-headline-lg whitespace-nowrap"
-            initial={false}
-            animate={{
-              color: splitting ? "#ffffff" : "var(--ink)",
-              opacity: splitting ? 1 : 0.8,
-            }}
-            transition={{ color: { duration: 0.9, delay: 0.9 } }}
             layout
+            transition={{
+              layout: { duration: 1.6, ease: DRAMA },
+              color: { duration: 0.8, delay: 1.3 },
+            }}
+            initial={false}
+            animate={{ color: splitting ? "#ffffff" : "#161716" }}
+            className="font-display text-headline-lg whitespace-nowrap opacity-80"
           >
             {right}
           </motion.p>
-          {/* Spacer that forces the words apart when splitting: grows
-              from 0 to full remaining width with the same curve. */}
-          <motion.span
-            className="order-first hidden"
-            aria-hidden
-          />
-        </div>
-      </motion.div>
+        </motion.div>
+      </div>
     </section>
   );
 }

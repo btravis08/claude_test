@@ -81,12 +81,23 @@ const structure: StructureResolver = (S) =>
       S.listItem()
         .title("Pages")
         .icon(icons["documents"])
-        .schemaType("page")
-        .child(S.documentTypeList("page").title("Pages")),
-      S.listItem()
-        .title("Legacy page")
-        .icon(icons["document"])
-        .child(S.document().schemaType("legacyPage").documentId("legacyPage")),
+        .child(
+          S.list()
+            .title("Pages")
+            .items([
+              S.listItem()
+                .title("All pages")
+                .schemaType("page")
+                .child(S.documentTypeList("page").title("All pages")),
+              S.divider(),
+              S.listItem()
+                .title("Legacy page")
+                .icon(icons["document"])
+                .child(
+                  S.document().schemaType("legacyPage").documentId("legacyPage"),
+                ),
+            ]),
+        ),
       S.listItem()
         .title("Navigation")
         .icon(icons["menu"])

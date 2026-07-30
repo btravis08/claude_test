@@ -430,8 +430,10 @@ export function Navigation({ data }: { data?: NavData | null }) {
   /* pages with a full-bleed hero the nav floats transparently over:
      the homepage (dark imagery), product pages (light gray canvas),
      and the dark journal surfaces (field + article heroes) */
+  /* the Legacy page's hero resolves to dark imagery like the home hero */
+  const isLegacy = pathname === "/legacy";
   const hasFullHero =
-    isHome || pathname.startsWith("/products/") || minimizedDark || lightField;
+    isHome || isLegacy || pathname.startsWith("/products/") || minimizedDark || lightField;
 
   /* the page wrapper behind every route is light bg-surface — during
      a route fade between two dark journal pages it blinked through.
@@ -668,7 +670,7 @@ export function Navigation({ data }: { data?: NavData | null }) {
       )}
       {!lightField && (
       <m.header
-        data-mode={transparent && (isHome || minimizedDark) ? "dark" : "light"}
+        data-mode={transparent && (isHome || isLegacy || minimizedDark) ? "dark" : "light"}
         data-nav-root
         initial={false}
         /* mobile: the logo bar is absolute at the page top and simply

@@ -1,6 +1,7 @@
 "use client";
 
 import { m } from "motion/react";
+import { usePathname } from "next/navigation";
 import { useLayoutEffect, useRef, useState } from "react";
 
 import { useFooterTagline } from "@/components/FooterTagline";
@@ -121,6 +122,9 @@ function FooterAccordion({ heading, links }: { heading: string; links: FooterLin
 /* Last scrolling element of the page — the reveal's curtain edge.
    Rendered inside the page wrapper, above the fixed footer. */
 export function LegacyBand() {
+  /* The Legacy page ends on the product swirl — no photo band there. */
+  const pathname = usePathname();
+  if (pathname === "/legacy") return null;
   return (
     <div data-mode="dark" data-legacy-band className="relative h-[26.75rem] w-full overflow-hidden bg-black">
       {/* a real lazy <img>: as a CSS background this downloaded on

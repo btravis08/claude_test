@@ -147,15 +147,26 @@ export function FloatingWords({
 
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start start", "end end"],
+    offset: ["start end", "end end"],
   });
-  /* linear, locked to the scroll */
-  const x = useTransform(() => -geom.overflow * scrollYProgress.get());
-  const surface = useTransform(
-    scrollYProgress,
-    [0.08, 0.92],
-    [SURFACE_FROM, SURFACE_TO],
+  /* The pass starts as the section enters the viewport: the first
+     100vh (of the 550vh wrapper) rides the stage into view with the
+     track already drifting right-to-left at the ride's own speed —
+     the slope is constant across entry and pin, so the opening
+     composition seats exactly as the container top reaches the top
+     of the screen, with no velocity kink. Linear, locked to the
+     scroll. */
+  const ENTRY = 100 / 550;
+  const x = useTransform(() => {
+    const preroll = geom.overflow * (ENTRY / (1 - ENTRY));
+    return preroll - (preroll + geom.overflow) * scrollYProgress.get();
+  });
+  /* pin-phase progress (0 at pin, 1 at release) — the card parallax
+     windows and the surface crossfade run on the pinned ride only */
+  const pinned = useTransform(() =>
+    Math.min(1, Math.max(0, (scrollYProgress.get() - ENTRY) / (1 - ENTRY))),
   );
+  const surface = useTransform(pinned, [0.08, 0.92], [SURFACE_FROM, SURFACE_TO]);
 
   const left = (d: number) => d * geom.scale * geom.stretch;
 
@@ -170,7 +181,7 @@ export function FloatingWords({
           className="relative h-full"
         >
           {mergedCards.map((card, i) => (
-            <GalleryCard key={i} progress={scrollYProgress} geom={geom} card={card} />
+            <GalleryCard key={i} progress={pinned} geom={geom} card={card} />
           ))}
           {mergedTexts.map((text) => (
             <p

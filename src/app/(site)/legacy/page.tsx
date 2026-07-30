@@ -4,7 +4,7 @@ import { FloatingWords } from "@/components/legacy/FloatingWords";
 import { LegacyHero } from "@/components/legacy/LegacyHero";
 import { ProductSwirl } from "@/components/legacy/ProductSwirl";
 import { SplitTextBlock } from "@/components/legacy/SplitTextBlock";
-import { StickyInfoSlider } from "@/components/legacy/StickyInfoSlider";
+import { FullBleedCarousel } from "@/components/legacy/FullBleedCarousel";
 
 /*
   The Legacy page (Figma node 33599:69683) — a scroll-driven brand
@@ -34,7 +34,7 @@ export default function LegacyPage() {
       <SplitTextBlock eyebrow="Our Mantra" text={MANTRA} cta="Shop Sun Day Red" />
       <FloatingWords />
       <SplitTextBlock eyebrow="Our Mantra" text={MANTRA} cta="Shop Sun Day Red" />
-      <StickyInfoSlider />
+      <FullBleedCarousel />
       <SplitTextBlock
         mode="light-mid"
         eyebrow="Our Mark"

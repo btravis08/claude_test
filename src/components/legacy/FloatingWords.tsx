@@ -95,6 +95,16 @@ export function FloatingWords() {
     vw: 1440,
   });
 
+  /* decode every image up front — cards otherwise decode as they
+     enter the viewport mid-travel, which stutters the ride */
+  useEffect(() => {
+    [...CARDS].forEach((card) => {
+      const img = new Image();
+      img.src = card.src;
+      img.decode?.().catch(() => {});
+    });
+  }, []);
+
   useEffect(() => {
     const measure = () => {
       const scale = window.innerHeight / FRAME_H;
@@ -132,7 +142,7 @@ export function FloatingWords() {
         className="sticky top-0 h-screen w-full overflow-hidden border-y border-line"
       >
         <motion.div
-          style={{ x, width: left(TRACK_D) }}
+          style={{ x, width: left(TRACK_D), willChange: "transform" }}
           className="relative h-full"
         >
           {CARDS.map((card, i) => (

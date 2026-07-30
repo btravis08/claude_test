@@ -1,30 +1,37 @@
 "use client";
 
-import {
-  motion,
-  useScroll,
-  useTransform,
-} from "motion/react";
+import { motion, useScroll, useTransform } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
 /*
   Legacy horizontal gallery (Figma 33599:72159 — "Floating Images"
   desktop symbol, a 4166×1000 canvas). The section pins and vertical
-  scroll slides the canvas right-to-left.
+  scroll slides the canvas right-to-left, locked linearly to the
+  scroll (Lenis supplies the glide).
 
-  Every measurement scales from viewport HEIGHT (the comp's 1000px
-  frame = 100vh), so the composition — card sizes, gaps, top and
-  bottom margins — holds at any viewport aspect. The travel is
-  locked linearly to the scroll (Lenis supplies the glide); inner
-  images visibly trail their frames (clipped inner parallax).
+  Scaling: sizes and vertical positions scale from viewport height
+  (the comp's 1000px frame = 100vh) so margins and card proportions
+  hold at any aspect; horizontal positions additionally stretch on
+  wide viewports (aspect > the comp's 1.44) so the opening
+  composition fills the width like the comp instead of clustering
+  left.
+
+  As the ride progresses the surface crossfades from Light to Medium
+  Light, landing on the next section's mode. Inner images are
+  oversized and translate slower than the travel — the swing is
+  computed in element units so the photo can never expose its frame.
 */
 
-/* design px (1000-tall frame) → vh: divide by 10 */
-const vh = (d: number) => `${d / 10}vh`;
+const FRAME_W = 1440;
+const FRAME_H = 1000;
 const TRACK_D = 4166;
-/* inner-parallax amplitude (% of frame width) — generous enough that
-   the photo visibly trails its frame across the pass */
-const A = 14;
+/* design px (1000-tall frame) → vh, for heights and sizes */
+const vh = (d: number) => `${d / 10}vh`;
+/* inner-parallax amplitude (% of frame width): the photo is 2A
+   oversize and slides ±A across the pass */
+const A = 18;
+/* translate % applies to the oversized element, not the frame */
+const A_EL = A / (1 + (2 * A) / 100);
 
 interface Card {
   src: string;
@@ -68,21 +75,34 @@ const TEXTS = [
 interface Geom {
   /* px the canvas overflows the viewport */
   overflow: number;
-  /* screen px per design px */
+  /* screen px per design px (height-based) */
   scale: number;
+  /* horizontal spread factor for wide viewports */
+  stretch: number;
   vw: number;
 }
 
+/* Light → Medium Light surfaces (globals.css light / light-mid) */
+const SURFACE_FROM = "#f7f8f4";
+const SURFACE_TO = "#e1e1de";
+
 export function FloatingWords() {
   const ref = useRef<HTMLDivElement>(null);
-  const [geom, setGeom] = useState<Geom>({ overflow: 1, scale: 0.9, vw: 1440 });
+  const [geom, setGeom] = useState<Geom>({
+    overflow: 1,
+    scale: 0.9,
+    stretch: 1,
+    vw: 1440,
+  });
 
   useEffect(() => {
     const measure = () => {
-      const scale = window.innerHeight / 1000;
+      const scale = window.innerHeight / FRAME_H;
+      const stretch = Math.max(1, window.innerWidth / (FRAME_W * scale));
       setGeom({
-        overflow: Math.max(1, TRACK_D * scale - window.innerWidth),
+        overflow: Math.max(1, TRACK_D * scale * stretch - window.innerWidth),
         scale,
+        stretch,
         vw: window.innerWidth,
       });
     };
@@ -95,15 +115,26 @@ export function FloatingWords() {
     target: ref,
     offset: ["start start", "end end"],
   });
-  /* linear, locked to the scroll — Lenis provides the glide; any
-     smoothing layered on top detaches the travel from the input and
-     rushes to catch up */
+  /* linear, locked to the scroll */
   const x = useTransform(() => -geom.overflow * scrollYProgress.get());
+  const surface = useTransform(
+    scrollYProgress,
+    [0.08, 0.92],
+    [SURFACE_FROM, SURFACE_TO],
+  );
+
+  const left = (d: number) => d * geom.scale * geom.stretch;
 
   return (
     <div ref={ref} data-mode="light" className="relative h-[550vh] w-full bg-surface text-ink">
-      <div className="sticky top-0 h-screen w-full overflow-hidden border-y border-line">
-        <motion.div style={{ x, width: vh(TRACK_D) }} className="relative h-full">
+      <motion.div
+        style={{ backgroundColor: surface }}
+        className="sticky top-0 h-screen w-full overflow-hidden border-y border-line"
+      >
+        <motion.div
+          style={{ x, width: left(TRACK_D) }}
+          className="relative h-full"
+        >
           {CARDS.map((card, i) => (
             <GalleryCard key={i} progress={scrollYProgress} geom={geom} card={card} />
           ))}
@@ -112,7 +143,7 @@ export function FloatingWords() {
               key={text.x}
               className="absolute font-display leading-[1.1] text-ink"
               style={{
-                left: vh(text.x),
+                left: left(text.x),
                 top: vh(text.y),
                 width: vh(460),
                 fontSize: vh(20),
@@ -122,7 +153,7 @@ export function FloatingWords() {
             </p>
           ))}
         </motion.div>
-      </div>
+      </motion.div>
     </div>
   );
 }
@@ -137,19 +168,24 @@ function GalleryCard({
   card: Card;
 }) {
   /* the frame's slice of the ride, from entering right to leaving
-     left — drives the inner image's lag */
+     left — drives the inner image's lag (element-relative %, so the
+     photo never exposes the frame) */
   const x = useTransform(() => {
-    const leftPx = card.x * geom.scale;
+    const leftPx = card.x * geom.scale * geom.stretch;
     const wPx = card.w * geom.scale;
     const a = Math.max(0, (leftPx - geom.vw) / geom.overflow);
     const b = Math.min(1, (leftPx + wPx) / geom.overflow);
     const t = Math.min(1, Math.max(0, (progress.get() - a) / (b - a)));
-    return `${-A + 2 * A * t}%`;
+    return `${-A_EL + 2 * A_EL * t}%`;
   });
   return (
     <div
       className="absolute"
-      style={{ left: vh(card.x), top: vh(card.y), width: vh(card.w) }}
+      style={{
+        left: card.x * geom.scale * geom.stretch,
+        top: vh(card.y),
+        width: vh(card.w),
+      }}
     >
       <p className="label mb-[1.26vh] font-medium text-ink-2">
         {card.meta.toUpperCase()}

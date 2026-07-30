@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useLayoutEffect, useRef } from "react";
 
 import { useFooterTagline } from "@/components/FooterTagline";
@@ -34,6 +35,9 @@ const social = ["FB", "TT", "IG", "X", "TW"];
 /* Last scrolling element of the page — the reveal's curtain edge.
    Rendered inside the page wrapper, above the fixed footer. */
 export function LegacyBand() {
+  /* The Legacy page ends on the product swirl — no photo band there. */
+  const pathname = usePathname();
+  if (pathname === "/legacy") return null;
   return (
     <div data-mode="dark" className="relative h-[26.75rem] w-full overflow-hidden bg-black">
       <div

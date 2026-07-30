@@ -378,9 +378,11 @@ export function Navigation({ data }: { data?: NavData | null }) {
   const nav = data ?? DEFAULT_NAV;
   const pathname = usePathname();
   const isHome = pathname === "/";
+  /* the Legacy page's hero resolves to dark imagery like the home hero */
+  const isLegacy = pathname === "/legacy";
   /* pages with a full-viewport hero the nav floats transparently over:
      the homepage (dark imagery) and product pages (light gray canvas) */
-  const hasFullHero = isHome || pathname.startsWith("/products/");
+  const hasFullHero = isHome || isLegacy || pathname.startsWith("/products/");
 
   const [hidden, setHidden] = useState(false);
   const [overHero, setOverHero] = useState(hasFullHero);
@@ -461,7 +463,7 @@ export function Navigation({ data }: { data?: NavData | null }) {
   return (
     <>
       <motion.header
-        data-mode={transparent && isHome ? "dark" : "light"}
+        data-mode={transparent && (isHome || isLegacy) ? "dark" : "light"}
         initial={false}
         animate={{ y: hidden && !mobileOpen ? "-100%" : "0%" }}
         transition={{ duration: 0.45, ease: [...MEDIA_EASE] }}

@@ -42,9 +42,16 @@ function Word({
   progress: import("motion/react").MotionValue<number>;
   range: [number, number];
 }) {
-  const opacity = useTransform(progress, range, [0.15, 1]);
+  /* fill AND focus: each word resolves from faint + blurred to full
+     ink and sharp as its slice of the reveal passes */
+  const t = () => {
+    const p = progress.get();
+    return Math.min(1, Math.max(0, (p - range[0]) / (range[1] - range[0])));
+  };
+  const opacity = useTransform(() => 0.15 + 0.85 * t());
+  const filter = useTransform(() => `blur(${((1 - t()) * 6).toFixed(2)}px)`);
   return (
-    <motion.span style={{ opacity }} className="inline-block">
+    <motion.span style={{ opacity, filter }} className="inline-block">
       {children}&nbsp;
     </motion.span>
   );
@@ -66,11 +73,17 @@ export function SplitTextBlock({
   markImage?: string;
 }) {
   const ref = useRef<HTMLElement>(null);
-  /* Words resolve across the middle of the section's pass through
-     the viewport; the rules draw over the full pass. */
+  const pRef = useRef<HTMLParagraphElement>(null);
+  /* The rules draw over the section's full pass... */
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start 0.9", "center center"],
+  });
+  /* ...but the words hold until the paragraph itself is 40% up from
+     the viewport bottom, then resolve on its way to center. */
+  const { scrollYProgress: reveal } = useScroll({
+    target: pRef,
+    offset: ["start 0.6", "start 0.35"],
   });
   const words = text.split(/\s+/).filter(Boolean);
   const span = 0.75; // words finish resolving at 75% of the pass
@@ -84,11 +97,11 @@ export function SplitTextBlock({
     >
       <Rule progress={scrollYProgress} origin="top" />
       <p className="label font-medium">{eyebrow.toUpperCase()}</p>
-      <p className="max-w-[43.75rem] text-center font-display text-title-md">
+      <p ref={pRef} className="max-w-[43.75rem] text-center font-display text-title-md">
         {words.map((word, i) => (
           <Word
             key={i}
-            progress={scrollYProgress}
+            progress={reveal}
             range={[i * per, i * per + per * 3]}
           >
             {word}

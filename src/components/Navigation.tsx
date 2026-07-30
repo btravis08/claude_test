@@ -675,7 +675,10 @@ export function Navigation({ data }: { data?: NavData | null }) {
         initial={false}
         /* mobile: the logo bar is absolute at the page top and simply
            scrolls away (no links to keep around) — the slide-away/
-           return animation is desktop-only */
+           return animation is desktop-only. The Legacy page does the
+           same on every breakpoint: the bar seats absolutely at the
+           top of the document, scrolls out with the hero, and is only
+           seen again back at the top. */
         animate={{ y: hidden && !isLegacy && !mobileOpen && mdUp ? "-100%" : "0%" }}
         transition={{ duration: 0.45, ease: [...MEDIA_EASE] }}
         onMouseEnter={() => setHovered(true)}
@@ -684,7 +687,9 @@ export function Navigation({ data }: { data?: NavData | null }) {
           setActive(null);
         }}
         ref={headerRef}
-        className="fixed top-0 z-50 flex w-full flex-col text-ink max-md:absolute"
+        className={`${
+          isLegacy ? "absolute" : "fixed"
+        } top-0 z-50 flex w-full flex-col text-ink max-md:absolute`}
       >
         {/* bar: transparent over the hero / at top, bg-primary once
             scrolled back in or engaged (hover / open dropdown). The

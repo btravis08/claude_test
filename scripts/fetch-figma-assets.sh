@@ -95,3 +95,35 @@ echo "Done."
 fetch sdr-word-sun.svg 2886f4a9-a41b-40c0-8fcb-0388db2a8637
 fetch sdr-word-day.svg 9c216349-634b-4887-8838-48a825e6743c
 fetch sdr-word-red.svg 54958702-e814-42e4-9cba-970c70313403
+
+# Legacy page (node 33599:69683) — hero campaign, floating images,
+# embossed tiger mark, info-card imagery, and the product-swirl planes
+# (pre-skewed PNG exports; mirrored copies are flipped in CSS).
+mkdir -p legacy
+fetch_jpg legacy/hero.jpg          d43ed65a-8242-4067-830a-a6191cbebab6 2200
+fetch_jpg legacy/float-putt.jpg    5670f4f5-183f-4a7c-a512-eceb5dee9147 1000
+fetch_jpg legacy/float-crowd.jpg   6a1fb2d2-5f87-4d5e-a236-8fa8e8047256 1200
+fetch_jpg legacy/float-shoes.jpg   1d71d7c2-34db-41af-b780-63548b206c0f 1200
+fetch legacy/mark-emboss.png       712727e2-5df6-4963-9d82-fb1f8e90a85b
+fetch_jpg legacy/info-precision.jpg   9a28af72-3e82-4a7b-9ff8-07336493ef94 1000
+fetch_jpg legacy/info-performance.jpg bdd27563-52a5-4313-bdc2-c7f9a627c10d 1000
+fetch_jpg legacy/info-quality.jpg     d34b5794-0161-46ee-9da5-8689ece28897 1000
+fetch_jpg legacy/info-quality-b.jpg   ac028f2e-a8a3-4295-ae00-ea717f06222c 1000
+fetch_jpg legacy/info-comfort.jpg     4121f710-9911-4344-88b4-07f5b36c9b64 1000
+fetch_jpg legacy/info-tech.jpg        294f9af0-278d-470f-8165-2ab5e72d8f96 800
+fetch legacy/swirl-628.png ca10d1e4-c5cc-40ef-9bf3-07cd4123a196
+fetch legacy/swirl-629.png eebf4de7-c6fd-4359-b803-520f0c6b98a8
+fetch legacy/swirl-630.png 7736fd17-9231-4f7b-888b-3e52dc684bd6
+fetch legacy/swirl-631.png c847285c-8db7-408d-9638-f7af733dbc21
+fetch legacy/swirl-632.png 0767dd43-53bc-4c59-b374-eb782a41f517
+fetch legacy/swirl-633.png c6d2ebce-8e6b-4afb-be5f-100cc216e132
+fetch legacy/swirl-634.png 9f1a2d33-6093-49af-87f9-651dea49b359
+fetch legacy/swirl-635.png 20d2c35d-9f56-4883-a8ad-c7a2ae763415
+fetch legacy/swirl-636.png 2597e08d-9c87-46bf-827d-a7ea366ce852
+fetch legacy/swirl-637.png a32399fa-a804-408a-be6c-050d2a1f0ba2
+fetch legacy/swirl-638.png 585f7a7c-4854-4562-9e01-056375e7e298
+fetch legacy/swirl-639.png fa5f6ff3-6649-4b24-987b-54856def73fa
+fetch legacy/swirl-640.png ab9f3195-e805-49cf-a118-46c717ead3d8
+fetch legacy/swirl-641.png 60cc012c-7724-4e53-a50a-57aaada4864e
+fetch legacy/swirl-642.png 033f41a9-e802-44bf-90e0-64a5e66c862a
+fetch legacy/swirl-643.png 515dc09e-3306-404b-b388-d97ff9baf2a9

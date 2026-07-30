@@ -26,7 +26,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 const DRAMA = [0.85, 0, 0.15, 1] as const;
 const EDGE = 24;   // the words' final inset, px
 const GUTTER = 20; // words ride this far ahead of the film's edge
-const SPLIT_S = 2.6;
+const SPLIT_S = 2.0;
 
 type Phase = "enter" | "hold" | "split" | "done";
 
@@ -63,6 +63,14 @@ export function LegacyHero({
   useEffect(() => {
     if (reduced) setPhase("done");
   }, [reduced]);
+
+  /* the film must be decoded before the split — a load-pop mid-
+     sequence shifts everything */
+  useEffect(() => {
+    const img = new Image();
+    img.src = image;
+    img.decode?.().catch(() => {});
+  }, [image]);
 
   /* Reloading mid-page restores a deep scroll position and would run
      the title sequence out of view behind a locked scroll — this page
@@ -137,18 +145,13 @@ export function LegacyHero({
   }, [phase, measure, p, reduced]);
 
   /* ---- the coupled geometry, evaluated per frame ---- */
-  const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
-  const film0 = (vw: number) => Math.max(96, vw * 0.09);
-
-  const filmW = useTransform(() => {
-    if (!m) return 0;
-    return lerp(film0(m.vw), m.vw, p.get());
-  });
+  const filmW = useTransform(() => (m ? m.vw * p.get() : 0));
+  /* 4:3 while small (the comp's ratio), guaranteed full cover at the
+     end regardless of viewport aspect */
   const filmH = useTransform(() => {
     if (!m) return 0;
-    return lerp(film0(m.vw) * 0.75, m.vh, p.get());
+    return Math.max(m.vw * p.get() * 0.75, m.vh * p.get());
   });
-  const filmOpacity = useTransform(() => (m ? Math.min(1, p.get() * 8) : 0));
 
   /* A word's center offset: pushed ahead of the film's edge, pinned
      at its edge slot; never inside its phrase position. */
@@ -196,7 +199,6 @@ export function LegacyHero({
         style={{
           width: filmW,
           height: filmH,
-          opacity: filmOpacity,
           x: "-50%",
           y: "-50%",
         }}

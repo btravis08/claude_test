@@ -1,63 +1,103 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "motion/react";
+import {
+  cubicBezier,
+  motion,
+  useScroll,
+  useTransform,
+  type MotionValue,
+} from "motion/react";
 import { useRef } from "react";
 
 import { Logo } from "@/components/Logo";
 
 /*
-  Legacy scatter field (art direction: landonorris.com's gallery
-  stream). A tall, normally-scrolling canvas of scattered images, each
-  with a small place/year caption, and a couple of serif quotes signed
-  with the tiger mark in between.
+  Legacy horizontal scatter strip (Figma: the wide lorem collage; art
+  direction: landonorris.com's gallery). The section pins and vertical
+  scroll slides a ~2.6-viewport-wide canvas of scattered, captioned
+  images right-to-left, with serif quote blocks set among them.
 
-  The containers do NOT parallax — they move with the page. The image
-  INSIDE each frame is oversized and translates slightly slower than
-  the scroll (clipped by its container), which gives every photo a
-  quiet drag as it passes.
+  The frames don't parallax against the canvas — they ride it 1:1.
+  The image INSIDE each frame is oversized and translates a touch
+  slower than the travel (clipped by its frame), so every photo drags
+  quietly as it crosses the screen.
 */
 
-/* inner-parallax amplitude: the image is 2A taller than its frame and
-   slides from -A to +A while the frame crosses the viewport */
-const A = 9; // percent
+const GLIDE = cubicBezier(0.22, 1, 0.36, 1);
+/* canvas geometry, in vw of the pinned stage */
+const TRACK = 260;
+const OVERFLOW = TRACK - 100;
+/* inner-parallax amplitude (% of frame width) */
+const A = 7;
 
-function ScatterImage({
-  src,
-  meta,
-  aspect,
-  width,
-  top,
-  left,
-  tone,
-}: {
+function slice(p: number, a: number, b: number, ease?: (t: number) => number) {
+  const t = Math.min(1, Math.max(0, (p - a) / (b - a)));
+  return ease ? ease(t) : t;
+}
+
+interface StripImage {
   src: string;
   meta: string;
   aspect: string;
-  width: string;
+  /* track position: left in vw, top in % of stage height */
+  left: number;
   top: string;
-  left: string;
-  /* a few frames carry the sage tint the reference uses */
+  width: string;
+  /* width in vw for the visibility window math */
+  w: number;
   tone?: "tint";
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
-  const y = useTransform(scrollYProgress, [0, 1], [`${-A}%`, `${A}%`]);
+}
 
+const IMAGES: StripImage[] = [
+  { src: "/figma/legacy/float-putt.jpg",  meta: "Practice Green, 2024", aspect: "aspect-[2/3]", left: 5,   top: "10%", width: "clamp(8rem, 12vw, 14rem)",  w: 12 },
+  { src: "/figma/journal/stream-03.jpg",  meta: "Fitting Room, 2024",   aspect: "aspect-[3/4]", left: 16,  top: "48%", width: "clamp(8rem, 13vw, 15rem)",  w: 13, tone: "tint" },
+  { src: "/figma/journal/stream-11.jpg",  meta: "Media Day, 2024",      aspect: "aspect-[3/4]", left: 36,  top: "22%", width: "clamp(15rem, 30vw, 34rem)", w: 30 },
+  { src: "/figma/legacy/float-crowd.jpg", meta: "Riviera, 2024",        aspect: "aspect-[4/3]", left: 84,  top: "10%", width: "clamp(9rem, 15vw, 17rem)",  w: 15 },
+  { src: "/figma/journal/stream-10.jpg",  meta: "St Andrews, 2022",     aspect: "aspect-[3/2]", left: 96,  top: "54%", width: "clamp(9rem, 16vw, 18rem)",  w: 16 },
+  { src: "/figma/legacy/float-shoes.jpg", meta: "Pebble Beach, 2024",   aspect: "aspect-[2/1]", left: 120, top: "34%", width: "clamp(11rem, 20vw, 22rem)", w: 20 },
+  { src: "/figma/legacy/hero.jpg",        meta: "Studio, 2024",         aspect: "aspect-[4/3]", left: 152, top: "10%", width: "clamp(16rem, 34vw, 38rem)", w: 34 },
+  { src: "/figma/journal/stream-06.jpg",  meta: "Sawgrass, 2024",       aspect: "aspect-[4/3]", left: 210, top: "9%",  width: "clamp(9rem, 15vw, 17rem)",  w: 15 },
+  { src: "/figma/journal/stream-05.jpg",  meta: "The Range, 2024",      aspect: "aspect-[4/3]", left: 233, top: "50%", width: "clamp(8rem, 13vw, 15rem)",  w: 13 },
+];
+
+const QUOTES = [
+  { text: "Pursue better. Always.", left: 34, top: "9%", width: "clamp(14rem, 22vw, 24rem)", w: 22 },
+  { text: "You carry the legacy of a champion.", left: 152, top: "66%", width: "clamp(15rem, 26vw, 28rem)", w: 26 },
+];
+
+/* an item's slice of the ride: from entering at the right edge to
+   leaving at the left */
+const windowFor = (left: number, w: number): [number, number] => [
+  Math.max(0, (left - 100) / OVERFLOW),
+  Math.min(1, (left + w) / OVERFLOW),
+];
+
+function StripFrame({
+  progress,
+  image,
+}: {
+  progress: MotionValue<number>;
+  image: StripImage;
+}) {
+  const [a, b] = windowFor(image.left, image.w);
+  /* the inner image lags the travel: it slides from -A to +A across
+     the frame's pass, opposite the canvas' leftward motion */
+  const x = useTransform(() => `${-A + 2 * A * slice(progress.get(), a, b)}%`);
   return (
-    <div ref={ref} className="absolute" style={{ top, left, width }}>
-      <p className="label mb-2 text-ink-2">{meta.toUpperCase()}</p>
-      <div className={`relative w-full overflow-hidden rounded-xs bg-surface-2 ${aspect}`}>
+    <div
+      className="absolute"
+      style={{ left: `${image.left}vw`, top: image.top, width: image.width }}
+    >
+      <p className="label mb-2 text-ink-2">{image.meta.toUpperCase()}</p>
+      <div className={`relative w-full overflow-hidden rounded-xs bg-surface-2 ${image.aspect}`}>
         <motion.div
-          style={{ y, top: `-${A}%`, height: `${100 + A * 2}%` }}
-          className="absolute inset-x-0"
+          style={{ x, left: `-${A}%`, width: `${100 + A * 2}%` }}
+          className="absolute inset-y-0"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={src} alt="" className="h-full w-full object-cover" />
+          <img src={image.src} alt="" className="h-full w-full object-cover" />
         </motion.div>
-        {tone === "tint" && (
+        {image.tone === "tint" && (
           <div className="pointer-events-none absolute inset-0 bg-surface/45 mix-blend-color" aria-hidden />
         )}
       </div>
@@ -65,54 +105,37 @@ function ScatterImage({
   );
 }
 
-function ScatterQuote({
-  children,
-  top,
-  left,
-  width,
-}: {
-  children: React.ReactNode;
-  top: string;
-  left: string;
-  width: string;
-}) {
-  return (
-    <div className="absolute flex flex-col gap-5" style={{ top, left, width }}>
-      <p className="font-display text-headline-sm leading-snug text-ink">{children}</p>
-      {/* the tiger mark signs each quote */}
-      <Logo className="h-4 w-auto text-ink" />
-    </div>
-  );
-}
-
-/* Layout tuned against the reference frames: alternating columns,
-   varied scales, generous air. Tops are % of the 380vh canvas. */
-const IMAGES = [
-  { src: "/figma/legacy/float-putt.jpg",   meta: "Practice Green, 2024", aspect: "aspect-[2/3]", width: "clamp(11rem, 22vw, 24rem)", top: "1.5%", left: "20vw" },
-  { src: "/figma/legacy/float-crowd.jpg",  meta: "Riviera, 2024",        aspect: "aspect-[4/3]", width: "clamp(15rem, 38vw, 42rem)", top: "9%",   left: "55vw" },
-  { src: "/figma/journal/stream-03.jpg",   meta: "Fitting Room, 2024",   aspect: "aspect-[3/4]", width: "clamp(9rem, 16vw, 17rem)",  top: "25%",  left: "30vw", tone: "tint" as const },
-  { src: "/figma/journal/stream-06.jpg",   meta: "Sawgrass, 2024",       aspect: "aspect-[4/3]", width: "clamp(15rem, 42vw, 46rem)", top: "36%",  left: "8vw" },
-  { src: "/figma/journal/stream-11.jpg",   meta: "Media Day, 2024",      aspect: "aspect-[3/4]", width: "clamp(9rem, 16vw, 17rem)",  top: "33%",  left: "76vw", tone: "tint" as const },
-  { src: "/figma/journal/stream-10.jpg",   meta: "St Andrews, 2022",     aspect: "aspect-[3/2]", width: "clamp(11rem, 20vw, 22rem)", top: "56%",  left: "42vw" },
-  { src: "/figma/legacy/float-shoes.jpg",  meta: "Pebble Beach, 2024",   aspect: "aspect-[2/1]", width: "clamp(14rem, 30vw, 33rem)", top: "71%",  left: "12vw" },
-  { src: "/figma/legacy/hero.jpg",         meta: "Studio, 2024",         aspect: "aspect-[4/3]", width: "clamp(15rem, 40vw, 44rem)", top: "81%",  left: "34vw" },
-];
-
 export function FloatingWords() {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end end"],
+  });
+  const x = useTransform(
+    () => `${-OVERFLOW * slice(scrollYProgress.get(), 0.02, 0.98, GLIDE)}vw`,
+  );
+
   return (
-    <div
-      data-mode="light"
-      className="relative h-[380vh] w-full overflow-hidden border-y border-line bg-surface text-ink"
-    >
-      {IMAGES.map((image) => (
-        <ScatterImage key={image.src} {...image} />
-      ))}
-      <ScatterQuote top="4%" left="60vw" width="clamp(14rem, 26vw, 28rem)">
-        Pursue better. Always.
-      </ScatterQuote>
-      <ScatterQuote top="62%" left="66vw" width="clamp(15rem, 26vw, 30rem)">
-        You carry the legacy of a champion.
-      </ScatterQuote>
+    <div ref={ref} data-mode="light" className="relative h-[400vh] w-full bg-surface text-ink">
+      <div className="sticky top-0 h-screen w-full overflow-hidden border-y border-line">
+        <motion.div style={{ x, width: `${TRACK}vw` }} className="relative h-full">
+          {IMAGES.map((image) => (
+            <StripFrame key={`${image.src}-${image.left}`} progress={scrollYProgress} image={image} />
+          ))}
+          {QUOTES.map((quote) => (
+            <div
+              key={quote.text}
+              className="absolute flex flex-col gap-5"
+              style={{ left: `${quote.left}vw`, top: quote.top, width: quote.width }}
+            >
+              <p className="font-display text-headline-sm leading-snug text-ink">
+                {quote.text}
+              </p>
+              <Logo className="h-4 w-auto text-ink" />
+            </div>
+          ))}
+        </motion.div>
+      </div>
     </div>
   );
 }

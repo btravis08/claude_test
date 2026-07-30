@@ -231,6 +231,25 @@ export const pageBySlugQuery = groq`
   }
 `;
 
+// The Legacy page singleton — content only; the page's choreography
+// and geometry live in code, and missing fields fall back to the
+// built-in design content
+export const legacyPageQuery = groq`
+  *[_type == "legacyPage"][0] {
+    hero { wordLeft, wordRight, image },
+    mantraTop { eyebrow, copy, cta },
+    gallery {
+      cards[] { _key, image, meta },
+      textLeft,
+      textRight
+    },
+    mantraBottom { eyebrow, copy, cta },
+    slides[] { _key, title, background, media, body },
+    mark { eyebrow, copy, image },
+    swirl { centerImage, cta }
+  }
+`;
+
 export const siteSettingsQuery = groq`
   *[_type == "siteSettings"][0] {
     companyName,

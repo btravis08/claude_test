@@ -371,3 +371,39 @@ export interface SiteSettings {
   email?: string;
   address?: string;
 }
+
+/* The Legacy page singleton (/legacy) — content only; geometry and
+   choreography are code-owned with built-in fallbacks per field */
+export interface LegacyTextBlockDoc {
+  eyebrow?: string;
+  copy?: string;
+  cta?: string;
+}
+
+export interface LegacyGalleryCardDoc {
+  _key?: string;
+  image?: SanityImageSource;
+  meta?: string;
+}
+
+export interface LegacySlideDoc {
+  _key?: string;
+  title?: string;
+  background?: SanityImageSource;
+  media?: SanityImageSource;
+  body?: string;
+}
+
+export interface LegacyPageDoc {
+  hero?: { wordLeft?: string; wordRight?: string; image?: SanityImageSource };
+  mantraTop?: LegacyTextBlockDoc;
+  gallery?: {
+    cards?: LegacyGalleryCardDoc[];
+    textLeft?: string;
+    textRight?: string;
+  };
+  mantraBottom?: LegacyTextBlockDoc;
+  slides?: LegacySlideDoc[];
+  mark?: { eyebrow?: string; copy?: string; image?: SanityImageSource };
+  swirl?: { centerImage?: SanityImageSource; cta?: string };
+}

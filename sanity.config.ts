@@ -84,6 +84,10 @@ const structure: StructureResolver = (S) =>
         .schemaType("page")
         .child(S.documentTypeList("page").title("Pages")),
       S.listItem()
+        .title("Legacy page")
+        .icon(icons["document"])
+        .child(S.document().schemaType("legacyPage").documentId("legacyPage")),
+      S.listItem()
         .title("Navigation")
         .icon(icons["menu"])
         .child(S.document().schemaType("navigation").documentId("navigation")),
@@ -160,9 +164,12 @@ export default defineConfig({
               ],
             }),
           }),
-          /* singleton: static state, no fields to select */
+          /* singletons: static state, no fields to select */
           navigation: {
             locations: [{ title: "Site navigation", href: "/" }],
+          },
+          legacyPage: {
+            locations: [{ title: "A New Legacy", href: "/legacy" }],
           },
         },
         /* opening one of these documents jumps the preview to its page */
@@ -178,6 +185,10 @@ export default defineConfig({
           {
             route: "/collections/:slug",
             filter: `_type == "collection" && slug.current == $slug`,
+          },
+          {
+            route: "/legacy",
+            filter: `_type == "legacyPage"`,
           },
           {
             route: "/:slug",

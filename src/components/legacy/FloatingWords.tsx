@@ -86,7 +86,20 @@ interface Geom {
 const SURFACE_FROM = "#f7f8f4";
 const SURFACE_TO = "#e1e1de";
 
-export function FloatingWords() {
+export interface GalleryCardContent {
+  src?: string;
+  meta?: string;
+}
+
+export function FloatingWords({
+  cards,
+  texts,
+}: {
+  /* CMS overrides, merged by position onto the code-owned layout
+     slots — an empty slot keeps the built-in imagery/caption */
+  cards?: GalleryCardContent[];
+  texts?: (string | undefined)[];
+}) {
   const ref = useRef<HTMLDivElement>(null);
   const [geom, setGeom] = useState<Geom>({
     overflow: 1,
@@ -95,15 +108,26 @@ export function FloatingWords() {
     vw: 1440,
   });
 
+  const mergedCards = CARDS.map((card, i) => ({
+    ...card,
+    src: cards?.[i]?.src || card.src,
+    meta: cards?.[i]?.meta || card.meta,
+  }));
+  const mergedTexts = TEXTS.map((text, i) => ({
+    ...text,
+    copy: texts?.[i] || text.copy,
+  }));
+
   /* decode every image up front — cards otherwise decode as they
      enter the viewport mid-travel, which stutters the ride */
+  const srcKey = mergedCards.map((c) => c.src).join("|");
   useEffect(() => {
-    [...CARDS].forEach((card) => {
+    srcKey.split("|").forEach((src) => {
       const img = new Image();
-      img.src = card.src;
+      img.src = src;
       img.decode?.().catch(() => {});
     });
-  }, []);
+  }, [srcKey]);
 
   useEffect(() => {
     const measure = () => {
@@ -145,10 +169,10 @@ export function FloatingWords() {
           style={{ x, width: left(TRACK_D), willChange: "transform" }}
           className="relative h-full"
         >
-          {CARDS.map((card, i) => (
+          {mergedCards.map((card, i) => (
             <GalleryCard key={i} progress={scrollYProgress} geom={geom} card={card} />
           ))}
-          {TEXTS.map((text) => (
+          {mergedTexts.map((text) => (
             <p
               key={text.x}
               className="absolute font-display leading-[1.1] text-ink"

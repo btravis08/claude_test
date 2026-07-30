@@ -28,7 +28,7 @@ const DRAMA = [0.85, 0, 0.15, 1] as const;
 /* headline slot spacing: 765.67px / 1440 */
 const SLOT = 53.17; // vw
 
-interface Slide {
+export interface Slide {
   title: string;
   bg: string;
   media: string;
@@ -68,11 +68,17 @@ const SLIDES: Slide[] = [
   },
 ];
 
-export function FullBleedCarousel() {
+export function FullBleedCarousel({
+  slides,
+}: {
+  /* CMS slides — the built-in set runs when absent or too short */
+  slides?: Slide[];
+}) {
+  const deck = slides && slides.length >= 2 ? slides : SLIDES;
   /* monotonic under autoplay — the rail travels leftward; clicking a
      neighbor title jumps straight to it */
   const [step, setStep] = useState(0);
-  const slide = SLIDES[((step % SLIDES.length) + SLIDES.length) % SLIDES.length];
+  const slide = deck[((step % deck.length) + deck.length) % deck.length];
 
   useEffect(() => {
     const t = setTimeout(() => setStep((s) => s + 1), DWELL_S * 1000);
@@ -80,15 +86,14 @@ export function FullBleedCarousel() {
   }, [step]);
 
   /* decode everything up front so advances never decode-jank */
+  const srcKey = deck.flatMap((s) => [s.bg, s.media]).join("|");
   useEffect(() => {
-    SLIDES.forEach((s) => {
-      [s.bg, s.media].forEach((src) => {
-        const img = new Image();
-        img.src = src;
-        img.decode?.().catch(() => {});
-      });
+    srcKey.split("|").forEach((src) => {
+      const img = new Image();
+      img.src = src;
+      img.decode?.().catch(() => {});
     });
-  }, []);
+  }, [srcKey]);
 
   /* the rail renders a window around the current step */
   const rail: number[] = [];
@@ -134,7 +139,7 @@ export function FullBleedCarousel() {
               exit={{ y: "110%", transition: { duration: 1.2, ease: DRAMA } }}
               className="absolute inset-0"
             >
-              {String((((step % SLIDES.length) + SLIDES.length) % SLIDES.length) + 1).padStart(2, "0")}
+              {String((((step % deck.length) + deck.length) % deck.length) + 1).padStart(2, "0")}
             </motion.span>
           </AnimatePresence>
         </span>
@@ -148,7 +153,7 @@ export function FullBleedCarousel() {
           />
         </span>
         <span className="label font-medium text-white/70">
-          {String(SLIDES.length).padStart(2, "0")}
+          {String(deck.length).padStart(2, "0")}
         </span>
       </div>
 
@@ -175,7 +180,7 @@ export function FullBleedCarousel() {
                 lineHeight: 1.2,
               }}
             >
-              {SLIDES[((i % SLIDES.length) + SLIDES.length) % SLIDES.length].title}
+              {deck[((i % deck.length) + deck.length) % deck.length].title}
             </motion.p>
           ))}
         </motion.div>

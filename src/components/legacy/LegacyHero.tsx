@@ -64,6 +64,18 @@ export function LegacyHero({
     if (reduced) setPhase("done");
   }, [reduced]);
 
+  /* Reloading mid-page restores a deep scroll position and would run
+     the title sequence out of view behind a locked scroll — this page
+     always opens at the top instead. */
+  useEffect(() => {
+    const prev = window.history.scrollRestoration;
+    window.history.scrollRestoration = "manual";
+    window.scrollTo(0, 0);
+    return () => {
+      window.history.scrollRestoration = prev;
+    };
+  }, []);
+
   /* Scroll stays locked until the sequence resolves. */
   const locked = phase !== "done" && !reduced;
   useEffect(() => {

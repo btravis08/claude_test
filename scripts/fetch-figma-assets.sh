@@ -89,3 +89,33 @@ fetch_jpg journal/stream-15.jpg 3ab4abee-7d3b-40d1-991d-8367c6698bf5 1000
 fetch_jpg journal/stream-16.jpg fb3c21b6-79c8-4901-b638-65e671b3cbc0 1000
 
 echo "Done."
+
+# Footer "SUN DAY RED" word marks (Figma 33981:107495/107496/107501,
+# exported as SVGs — rendered via CSS mask so they take the ink color)
+fetch sdr-word-sun.svg 2886f4a9-a41b-40c0-8fcb-0388db2a8637
+fetch sdr-word-day.svg 9c216349-634b-4887-8838-48a825e6743c
+fetch sdr-word-red.svg 54958702-e814-42e4-9cba-970c70313403
+
+# Legacy page (node 33599:69683) — hero campaign, floating images,
+# embossed tiger mark, info-card imagery, and the product-swirl planes
+# (pre-skewed PNG exports; mirrored copies are flipped in CSS).
+mkdir -p legacy
+fetch_jpg legacy/hero.jpg          d43ed65a-8242-4067-830a-a6191cbebab6 2200
+fetch_jpg legacy/float-putt.jpg    5670f4f5-183f-4a7c-a512-eceb5dee9147 1000
+fetch_jpg legacy/float-crowd.jpg   6a1fb2d2-5f87-4d5e-a236-8fa8e8047256 1200
+fetch_jpg legacy/float-shoes.jpg   1d71d7c2-34db-41af-b780-63548b206c0f 1200
+fetch legacy/mark-emboss.svg       712727e2-5df6-4963-9d82-fb1f8e90a85b
+fetch_jpg legacy/info-precision.jpg   9a28af72-3e82-4a7b-9ff8-07336493ef94 1000
+fetch_jpg legacy/info-performance.jpg bdd27563-52a5-4313-bdc2-c7f9a627c10d 1000
+fetch_jpg legacy/info-quality.jpg     d34b5794-0161-46ee-9da5-8689ece28897 1000
+fetch_jpg legacy/info-comfort.jpg     4121f710-9911-4344-88b4-07f5b36c9b64 1000
+fetch_jpg legacy/info-tech.jpg        294f9af0-278d-470f-8165-2ab5e72d8f96 800
+
+# Product swirl planes are skewed vectors whose image fills don't
+# export — these are rendered node screenshots (contents-only PNGs).
+fetch legacy/swirl-arc-low.png  309f7dc7-ac2f-46b1-bc4c-f1fa2e504c3f
+fetch legacy/swirl-arc-high.png bcd51aeb-7420-48f9-9ab5-7a11d8e6bd88
+fetch legacy/swirl-sliver-r.png 8de6e748-e3b8-4023-bf1c-3f7188746244
+fetch legacy/swirl-table.png    4475d916-6119-4b13-a746-477d68d109c8
+fetch legacy/swirl-sliver-l.png f59ebd2a-e8fe-4859-aa81-cfdba3d4c526
+fetch legacy/swirl-hoodie.png   0469ada9-8076-49cf-adcb-b8bae72141f3

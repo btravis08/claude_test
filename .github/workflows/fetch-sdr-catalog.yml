@@ -14,6 +14,16 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      # sundayred.com sits behind Akamai; node's fetch got connection-level
+      # failures from a runner. Probe with curl to tell an IP block (curl
+      # fails too) from a TLS-fingerprint block (curl gets an HTTP status).
+      - name: Probe sundayred.com reachability
+        run: |
+          curl -sS -o /dev/null -w "sitemap_index via curl: HTTP %{http_code}\n" --max-time 20 \
+            https://www.sundayred.com/sitemap_index.xml || echo "curl sitemap failed: exit $?"
+          curl -sS -o /dev/null -w "homepage via curl+UA: HTTP %{http_code}\n" --max-time 20 \
+            -A "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15" \
+            https://www.sundayred.com/ || echo "curl homepage failed: exit $?"
       - name: Capture the SDR product catalog
         run: node scripts/fetch-sdr-catalog.mjs
       - name: Commit catalog

@@ -22,6 +22,8 @@ import { useEffect, useState } from "react";
 */
 
 const DWELL_S = 6;
+/* every slide transition rides the dramatic bezier for 2s */
+const TRANS_S = 2;
 const DRAMA = [0.85, 0, 0.15, 1] as const;
 /* headline slot spacing: 765.67px / 1440 */
 const SLOT = 53.17; // vw
@@ -67,9 +69,10 @@ const SLIDES: Slide[] = [
 ];
 
 export function FullBleedCarousel() {
-  /* monotonic step — the headline rail never rewinds */
+  /* monotonic under autoplay — the rail travels leftward; clicking a
+     neighbor title jumps straight to it */
   const [step, setStep] = useState(0);
-  const slide = SLIDES[step % SLIDES.length];
+  const slide = SLIDES[((step % SLIDES.length) + SLIDES.length) % SLIDES.length];
 
   useEffect(() => {
     const t = setTimeout(() => setStep((s) => s + 1), DWELL_S * 1000);
@@ -89,20 +92,24 @@ export function FullBleedCarousel() {
 
   /* the rail renders a window around the current step */
   const rail: number[] = [];
-  for (let i = step - 2; i <= step + 2; i++) if (i >= 0) rail.push(i);
+  for (let i = step - 2; i <= step + 2; i++) rail.push(i);
 
   return (
     <section
       data-mode="dark"
-      className="relative h-screen w-full overflow-hidden bg-black text-ink"
+      className="relative h-screen w-full overflow-hidden bg-black text-ink md:h-[90vh]"
     >
       {/* background: quick crossfade, incoming above outgoing */}
       <AnimatePresence initial={false}>
         <motion.div
           key={step}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1, transition: { duration: 0.6, ease: "easeOut" } }}
-          exit={{ opacity: 1, transition: { duration: 0.7 } }}
+          initial={{ opacity: 0, scale: 1.04 }}
+          animate={{
+            opacity: 1,
+            scale: 1,
+            transition: { duration: TRANS_S, ease: DRAMA },
+          }}
+          exit={{ opacity: 0, transition: { duration: TRANS_S, ease: DRAMA } }}
           className="absolute inset-0"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -118,8 +125,18 @@ export function FullBleedCarousel() {
 
       {/* timer: number · filling hairline · total */}
       <div className="absolute inset-x-0 top-8 flex items-center justify-center gap-[0.4375rem] text-white">
-        <span className="label font-medium">
-          {String((step % SLIDES.length) + 1).padStart(2, "0")}
+        <span className="label relative block h-[1em] w-[2ch] overflow-hidden font-medium">
+          <AnimatePresence initial={false}>
+            <motion.span
+              key={step}
+              initial={{ y: "-110%" }}
+              animate={{ y: "0%", transition: { duration: 1.2, ease: DRAMA } }}
+              exit={{ y: "110%", transition: { duration: 1.2, ease: DRAMA } }}
+              className="absolute inset-0"
+            >
+              {String((((step % SLIDES.length) + SLIDES.length) % SLIDES.length) + 1).padStart(2, "0")}
+            </motion.span>
+          </AnimatePresence>
         </span>
         <span className="relative h-px w-[5.125rem] bg-white/30">
           <motion.span
@@ -139,22 +156,26 @@ export function FullBleedCarousel() {
       <div className="absolute left-1/2 top-[42.2%]">
         <motion.div
           animate={{ x: `${-step * SLOT}vw` }}
-          transition={{ duration: 1, ease: DRAMA }}
+          transition={{ duration: TRANS_S, ease: DRAMA }}
           className="relative"
         >
           {rail.map((i) => (
             <motion.p
               key={i}
               animate={{ opacity: i === step ? 1 : 0.35 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="absolute -translate-x-1/2 whitespace-nowrap font-display text-white"
+              transition={{ duration: TRANS_S * 0.8, ease: DRAMA }}
+              onClick={() => i !== step && setStep(i)}
+              role={i !== step ? "button" : undefined}
+              className={`absolute -translate-x-1/2 whitespace-nowrap font-display text-white ${
+                i === step ? "" : "cursor-pointer"
+              }`}
               style={{
                 left: `${i * SLOT}vw`,
                 fontSize: "min(5.2vw, 4.7rem)",
                 lineHeight: 1.2,
               }}
             >
-              {SLIDES[i % SLIDES.length].title}
+              {SLIDES[((i % SLIDES.length) + SLIDES.length) % SLIDES.length].title}
             </motion.p>
           ))}
         </motion.div>
@@ -176,8 +197,8 @@ export function FullBleedCarousel() {
           <motion.div
             key={step}
             initial={{ x: "105%" }}
-            animate={{ x: "0%", transition: { duration: 0.9, ease: DRAMA } }}
-            exit={{ x: "-105%", transition: { duration: 0.9, ease: DRAMA } }}
+            animate={{ x: "0%", transition: { duration: TRANS_S, ease: DRAMA } }}
+            exit={{ x: "-105%", transition: { duration: TRANS_S, ease: DRAMA } }}
             className="absolute inset-0"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -196,7 +217,7 @@ export function FullBleedCarousel() {
         <motion.p
           key={step}
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1, transition: { duration: 0.6, delay: 0.4 } }}
+          animate={{ opacity: 1, transition: { duration: 0.8, delay: TRANS_S * 0.5 } }}
           exit={{ opacity: 0, transition: { duration: 0.25 } }}
           className="absolute bottom-8 left-8 w-72 text-body-sm text-white/90"
         >

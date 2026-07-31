@@ -256,6 +256,24 @@ Entries live in `src/library/registry.tsx`: **add a section there
 whenever you build one**, with its Sanity `schemaType` when it's
 CMS-composable. The route is noindex and carries no site chrome.
 
+An entry also carries `figmaNodeId` — the section's frame in the
+library file, which deep-links the viewer's FIGMA link and is the
+node to pull `get_design_context` from when working on that section.
+Where a comp has been exported, the viewer's compare bar overlays it
+on the live build: OVERLAY ghosts the design over the build, and
+DIFFERENCE blends them so a mismatch lights up and a perfect match
+goes black, with an opacity slider and 1px nudge to find alignment.
+**Diff a section this way before calling it done.**
+
+Adding a comp: mint a render with the Figma MCP `get_screenshot`
+(maxDimension 1440 for viewport frames), append a `fetch_jpg
+comps/<slug>.jpg <asset-id> 1440` line to
+`scripts/fetch-figma-assets.sh`, push, and dispatch the
+fetch-figma-assets workflow — it commits the file back. The runner
+may lack ImageMagick and commit a near-raw export, so re-compress
+with sharp afterwards (q72, ≤1440w) and set the entry's `comp`
+dimensions to the render's natural size.
+
 ### Checking the result
 
 Load any page with `?inspect=1` (or press **Alt+T**) for the token

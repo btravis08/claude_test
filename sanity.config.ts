@@ -10,6 +10,7 @@ import type { StructureResolver } from "sanity/structure";
 
 import { apiVersion, dataset, projectId } from "@/sanity/env";
 import { schemaTypes } from "@/sanity/schemaTypes";
+import { designTokensTool } from "@/sanity/tools/DesignTokens";
 
 /*
   Studio sidebar modeled on the Shopify admin: Products (with status,
@@ -214,4 +215,6 @@ export default defineConfig({
     media(),
     visionTool({ defaultApiVersion: apiVersion }),
   ],
+  /* read-only design-system reference alongside Content/Preview */
+  tools: (prev) => [...prev, designTokensTool],
 });

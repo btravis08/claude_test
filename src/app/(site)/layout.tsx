@@ -9,6 +9,7 @@ import { FooterTaglineProvider } from "@/components/FooterTagline";
 import { PageTransition } from "@/components/PageTransition";
 import { LegacyBand, SiteFooter } from "@/components/SiteFooter";
 import { LiveVisualEditing } from "@/components/LiveVisualEditing";
+import { TokenInspectorGate } from "@/components/dev/TokenInspectorGate";
 import { MotionProvider } from "@/components/MotionProvider";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { sanityFetch } from "@/sanity/lib/fetch";
@@ -129,6 +130,9 @@ export default async function SiteLayout({
           Studio's Presentation preview (draft mode); ordinary
           visitors never load this */}
       {isDraft && <LiveVisualEditing />}
+      {/* Figma-Dev-Mode-style token readout: Alt+T or ?inspect=1.
+          Off by default and its chunk stays unloaded until then */}
+      <TokenInspectorGate />
       </FooterTaglineProvider>
       </CartProvider>
     </SmoothScroll>

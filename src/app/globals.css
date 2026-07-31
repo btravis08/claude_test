@@ -126,6 +126,14 @@
   --spacing-md: 0.5rem; /* 8 */
   --spacing-lg: 0.75rem; /* 12 */
   --spacing-xl: 1rem; /* 16 */
+  /* 24 — the page gutter, by far the most-used spacing value on the
+     site. Figma carries it as the variable "space/small" (a separate
+     group from the spacing-* ladder, and NOT the same thing as
+     spacing-sm = 6). It's mapped into the 2xl slot because that's
+     where 24 sits between xl and 4xl; if the library ever publishes
+     an explicit spacing-2xl with a different value, this mapping is
+     what needs revisiting. */
+  --spacing-2xl: 1.5rem; /* 24 — Figma "space/small" */
   --spacing-4xl: 2rem; /* 32 */
   --spacing-6xl: 3rem; /* 48 */
   --spacing-8xl: 5rem; /* 80 */

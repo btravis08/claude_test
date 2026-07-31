@@ -1,30 +1,19 @@
 {
-  "generatedAt": "2026-07-31T06:26:40.201Z",
+  "generatedAt": "2026-07-31T07:16:30.624Z",
   "sections": {
     "hero": {
       "comps": {},
       "tokens": {
         "elements": 14,
-        "offToken": 3,
+        "offToken": 1,
         "byKind": {
-          "surface": 1,
-          "padding": 2
+          "surface": 1
         },
         "examples": [
           {
             "selector": "a.group.block > div.relative.w-full > div.pointer-events-none.absolute",
             "kind": "surface",
             "value": "oklab(0 0 0 / 0.25)"
-          },
-          {
-            "selector": "div.pointer-events-none.absolute > div.absolute.inset-0 > div.grid.w-full",
-            "kind": "padding",
-            "value": "24px"
-          },
-          {
-            "selector": "div.pointer-events-none.absolute > div.absolute.inset-0 > div.grid.w-full",
-            "kind": "padding",
-            "value": "24px"
           }
         ]
       }
@@ -33,26 +22,15 @@
       "comps": {},
       "tokens": {
         "elements": 14,
-        "offToken": 3,
+        "offToken": 1,
         "byKind": {
-          "surface": 1,
-          "padding": 2
+          "surface": 1
         },
         "examples": [
           {
             "selector": "a.block.w-full > div.relative.w-full > div.media-overlay",
             "kind": "surface",
             "value": "rgba(0, 0, 0, 0.2)"
-          },
-          {
-            "selector": "div.pointer-events-none.absolute > div.absolute.inset-0 > div.grid.w-full",
-            "kind": "padding",
-            "value": "24px"
-          },
-          {
-            "selector": "div.pointer-events-none.absolute > div.absolute.inset-0 > div.grid.w-full",
-            "kind": "padding",
-            "value": "24px"
           }
         ]
       }
@@ -61,10 +39,9 @@
       "comps": {},
       "tokens": {
         "elements": 18,
-        "offToken": 10,
+        "offToken": 2,
         "byKind": {
-          "surface": 2,
-          "padding": 8
+          "surface": 2
         },
         "examples": [
           {
@@ -73,39 +50,9 @@
             "value": "rgba(0, 0, 0, 0.2)"
           },
           {
-            "selector": "section.grid.w-full > div.relative.overflow-hidden > div.pointer-events-none.absolute",
-            "kind": "padding",
-            "value": "24px"
-          },
-          {
-            "selector": "section.grid.w-full > div.relative.overflow-hidden > div.pointer-events-none.absolute",
-            "kind": "padding",
-            "value": "24px"
-          },
-          {
-            "selector": "section.grid.w-full > div.relative.overflow-hidden > div.pointer-events-none.absolute",
-            "kind": "padding",
-            "value": "24px"
-          },
-          {
-            "selector": "section.grid.w-full > div.relative.overflow-hidden > div.pointer-events-none.absolute",
-            "kind": "padding",
-            "value": "24px"
-          },
-          {
             "selector": "div.relative.overflow-hidden > div.relative.w-full > div.media-overlay",
             "kind": "surface",
             "value": "rgba(0, 0, 0, 0.2)"
-          },
-          {
-            "selector": "section.grid.w-full > div.relative.overflow-hidden > div.pointer-events-none.absolute",
-            "kind": "padding",
-            "value": "24px"
-          },
-          {
-            "selector": "section.grid.w-full > div.relative.overflow-hidden > div.pointer-events-none.absolute",
-            "kind": "padding",
-            "value": "24px"
           }
         ]
       }
@@ -114,33 +61,12 @@
       "comps": {},
       "tokens": {
         "elements": 45,
-        "offToken": 22,
+        "offToken": 10,
         "byKind": {
-          "padding": 12,
           "gap": 10
         },
         "examples": [
           {
-            "selector": "section.flex.w-full > div.flex.w-full > div.flex.w-full",
-            "kind": "padding",
-            "value": "24px"
-          },
-          {
-            "selector": "section.flex.w-full > div.flex.w-full > div.flex.w-full",
-            "kind": "padding",
-            "value": "24px"
-          },
-          {
-            "selector": "section.flex.w-full > div.flex.w-full > div.flex.w-full",
-            "kind": "padding",
-            "value": "24px"
-          },
-          {
-            "selector": "section.flex.w-full > div.flex.w-full > div.flex.w-full",
-            "kind": "padding",
-            "value": "24px"
-          },
-          {
             "selector": "section.flex.w-full > div.flex.w-full > div.no-scrollbar.w-full",
             "kind": "gap",
             "value": "1px"
@@ -149,6 +75,26 @@
             "selector": "section.flex.w-full > div.flex.w-full > div.no-scrollbar.w-full",
             "kind": "gap",
             "value": "1px"
+          },
+          {
+            "selector": "div.no-scrollbar.w-full > div.flex.min-w-0 > a.group.flex",
+            "kind": "gap",
+            "value": "18px"
+          },
+          {
+            "selector": "div.no-scrollbar.w-full > div.flex.min-w-0 > a.group.flex",
+            "kind": "gap",
+            "value": "18px"
+          },
+          {
+            "selector": "div.no-scrollbar.w-full > div.flex.min-w-0 > a.group.flex",
+            "kind": "gap",
+            "value": "18px"
+          },
+          {
+            "selector": "div.no-scrollbar.w-full > div.flex.min-w-0 > a.group.flex",
+            "kind": "gap",
+            "value": "18px"
           },
           {
             "selector": "div.no-scrollbar.w-full > div.flex.min-w-0 > a.group.flex",
@@ -167,33 +113,13 @@
       "comps": {},
       "tokens": {
         "elements": 382,
-        "offToken": 202,
+        "offToken": 54,
         "byKind": {
-          "padding": 152,
+          "padding": 4,
           "gap": 50
         },
         "examples": [
           {
-            "selector": "section.flex.w-full > div.flex.w-full > div.flex.w-full",
-            "kind": "padding",
-            "value": "24px"
-          },
-          {
-            "selector": "section.flex.w-full > div.flex.w-full > div.flex.w-full",
-            "kind": "padding",
-            "value": "24px"
-          },
-          {
-            "selector": "section.flex.w-full > div.flex.w-full > div.flex.w-full",
-            "kind": "padding",
-            "value": "24px"
-          },
-          {
-            "selector": "section.flex.w-full > div.flex.w-full > div.flex.w-full",
-            "kind": "padding",
-            "value": "24px"
-          },
-          {
             "selector": "div.flex.w-full > div.hidden.items-center > button.label.flex",
             "kind": "padding",
             "value": "14px"
@@ -212,6 +138,26 @@
             "selector": "div.flex.w-full > div.hidden.items-center > button.label.flex",
             "kind": "padding",
             "value": "14px"
+          },
+          {
+            "selector": "section.flex.w-full > div.flex.w-full > div.no-scrollbar.w-full",
+            "kind": "gap",
+            "value": "1px"
+          },
+          {
+            "selector": "section.flex.w-full > div.flex.w-full > div.no-scrollbar.w-full",
+            "kind": "gap",
+            "value": "1px"
+          },
+          {
+            "selector": "div.no-scrollbar.w-full > div.flex.min-w-0 > a.flex.w-full",
+            "kind": "gap",
+            "value": "18px"
+          },
+          {
+            "selector": "div.no-scrollbar.w-full > div.flex.min-w-0 > a.flex.w-full",
+            "kind": "gap",
+            "value": "18px"
           }
         ]
       }
@@ -220,32 +166,11 @@
       "comps": {},
       "tokens": {
         "elements": 18,
-        "offToken": 5,
+        "offToken": 1,
         "byKind": {
-          "padding": 4,
           "radius": 1
         },
         "examples": [
-          {
-            "selector": "section.grid.w-full > div.relative.hidden > div.absolute.inset-0",
-            "kind": "padding",
-            "value": "24px"
-          },
-          {
-            "selector": "section.grid.w-full > div.relative.hidden > div.absolute.inset-0",
-            "kind": "padding",
-            "value": "24px"
-          },
-          {
-            "selector": "section.grid.w-full > div.relative.hidden > div.absolute.inset-0",
-            "kind": "padding",
-            "value": "24px"
-          },
-          {
-            "selector": "section.grid.w-full > div.relative.hidden > div.absolute.inset-0",
-            "kind": "padding",
-            "value": "24px"
-          },
           {
             "selector": "div.relative.hidden > div.absolute.inset-0 > button.flex.size-7",
             "kind": "radius",
@@ -258,32 +183,11 @@
       "comps": {},
       "tokens": {
         "elements": 39,
-        "offToken": 6,
+        "offToken": 2,
         "byKind": {
-          "padding": 4,
           "gap": 2
         },
         "examples": [
-          {
-            "selector": "section.flex.w-full > div.flex.w-full > div.flex.w-full",
-            "kind": "padding",
-            "value": "24px"
-          },
-          {
-            "selector": "section.flex.w-full > div.flex.w-full > div.flex.w-full",
-            "kind": "padding",
-            "value": "24px"
-          },
-          {
-            "selector": "section.flex.w-full > div.flex.w-full > div.flex.w-full",
-            "kind": "padding",
-            "value": "24px"
-          },
-          {
-            "selector": "section.flex.w-full > div.flex.w-full > div.flex.w-full",
-            "kind": "padding",
-            "value": "24px"
-          },
           {
             "selector": "section.flex.w-full > div.flex.w-full > div.no-scrollbar.w-full",
             "kind": "gap",
@@ -354,33 +258,9 @@
       "comps": {},
       "tokens": {
         "elements": 7,
-        "offToken": 4,
-        "byKind": {
-          "padding": 2,
-          "gap": 2
-        },
-        "examples": [
-          {
-            "selector": "div.min-h-screen.w-full > section.w-full.border-t > div.flex.flex-col",
-            "kind": "padding",
-            "value": "24px"
-          },
-          {
-            "selector": "div.min-h-screen.w-full > section.w-full.border-t > div.flex.flex-col",
-            "kind": "padding",
-            "value": "24px"
-          },
-          {
-            "selector": "div.min-h-screen.w-full > section.w-full.border-t > div.flex.flex-col",
-            "kind": "gap",
-            "value": "24px"
-          },
-          {
-            "selector": "div.min-h-screen.w-full > section.w-full.border-t > div.flex.flex-col",
-            "kind": "gap",
-            "value": "24px"
-          }
-        ]
+        "offToken": 0,
+        "byKind": {},
+        "examples": []
       }
     },
     "legacy-hero": {
@@ -430,21 +310,11 @@
       },
       "tokens": {
         "elements": 33,
-        "offToken": 4,
+        "offToken": 2,
         "byKind": {
-          "padding": 4
+          "padding": 2
         },
         "examples": [
-          {
-            "selector": "body.min-h-full > div.min-h-screen.w-full > section.flex.h-screen",
-            "kind": "padding",
-            "value": "24px"
-          },
-          {
-            "selector": "body.min-h-full > div.min-h-screen.w-full > section.flex.h-screen",
-            "kind": "padding",
-            "value": "24px"
-          },
           {
             "selector": "div.min-h-screen.w-full > section.flex.h-screen > a.label.flex",
             "kind": "padding",

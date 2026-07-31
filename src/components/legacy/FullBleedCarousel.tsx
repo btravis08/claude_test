@@ -136,11 +136,15 @@ export function FullBleedCarousel({
             className="h-full w-full object-cover"
             draggable={false}
           />
-          <div className="absolute inset-0 bg-black/35" aria-hidden />
+          {/* the comp's scrim is 15% black (rgba(0,0,0,0.15)) — it was
+              built at 35%, which sat the imagery darker than designed */}
+          <div className="absolute inset-0 bg-black/15" aria-hidden />
         </motion.div>
       </AnimatePresence>
 
       {/* timer: number · filling hairline · total */}
+      {/* 7px gap and the 82px rule are the comp's own raw values — no
+          token exists for either, so the audit flags them by design */}
       <div className="absolute inset-x-0 top-8 flex items-center justify-center gap-[0.4375rem] text-white">
         <span className="label relative block h-[1em] w-[2ch] overflow-hidden font-medium">
           <AnimatePresence initial={false}>
@@ -186,10 +190,17 @@ export function FullBleedCarousel({
               className={`absolute -translate-x-1/2 whitespace-nowrap font-display text-white ${
                 i === step ? "" : "cursor-pointer"
               }`}
+              /* the comp's Display Medium: 72px / 90px line-height /
+                 -1.44px tracking (-0.02em). Kept fluid below 1440 and
+                 frozen at the design size above it. NOTE: 72px has no
+                 step in the site's type scale (which tops out at
+                 display-xl = 64px), so this is an off-token value the
+                 audit flags on purpose until the scale gains it. */
               style={{
                 left: `${i * SLOT}vw`,
-                fontSize: "min(5.2vw, 4.7rem)",
-                lineHeight: 1.2,
+                fontSize: "min(5vw, 4.5rem)",
+                lineHeight: 1.25,
+                letterSpacing: "-0.02em",
               }}
             >
               {deck[((i % deck.length) + deck.length) % deck.length].title}

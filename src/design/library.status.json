@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-31T07:16:30.624Z",
+  "generatedAt": "2026-07-31T07:28:35.134Z",
   "sections": {
     "hero": {
       "comps": {},
@@ -361,12 +361,12 @@
     "full-bleed-carousel": {
       "comps": {
         "desktop": {
-          "pixel": 68.6,
-          "layout": 72.9
+          "pixel": 72.4,
+          "layout": 75.2
         },
         "mobile": {
-          "pixel": 57.5,
-          "layout": 57.4
+          "pixel": 63.1,
+          "layout": 63.5
         }
       },
       "tokens": {
@@ -382,7 +382,7 @@
           {
             "selector": "section.relative.h-screen > div.absolute.inset-0 > div.absolute.inset-0",
             "kind": "surface",
-            "value": "oklab(0 0 0 / 0.35)"
+            "value": "oklab(0 0 0 / 0.15)"
           },
           {
             "selector": "div.min-h-screen.w-full > section.relative.h-screen > div.absolute.inset-x-0",
@@ -402,22 +402,22 @@
           {
             "selector": "div.absolute.left-1/2 > div.relative > p.absolute.-translate-x-1/2",
             "kind": "type",
-            "value": "74.88px"
+            "value": "72px"
           },
           {
             "selector": "div.absolute.left-1/2 > div.relative > p.absolute.-translate-x-1/2",
             "kind": "type",
-            "value": "74.88px"
+            "value": "72px"
           },
           {
             "selector": "div.absolute.left-1/2 > div.relative > p.absolute.-translate-x-1/2",
             "kind": "type",
-            "value": "74.88px"
+            "value": "72px"
           },
           {
             "selector": "div.absolute.left-1/2 > div.relative > p.absolute.-translate-x-1/2",
             "kind": "type",
-            "value": "74.88px"
+            "value": "72px"
           }
         ]
       }

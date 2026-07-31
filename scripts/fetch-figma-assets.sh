@@ -145,3 +145,29 @@ fetch_jpg comps/floating-gallery-mobile.jpg     f26f15dc-72a5-4099-95f5-29e85206
 fetch_jpg comps/product-swirl-tablet.jpg        30443b7b-fd90-4628-a14f-50f757efb1ff 1024
 fetch_jpg comps/product-swirl-mobile.jpg        81b3e0f8-3d71-4d50-8c9b-ae2bd1c1a485 711
 fetch_jpg comps/full-bleed-carousel-mobile.jpg  cb25c903-feff-4e21-b379-148b10967146 754
+
+# Homepage section comps, found in the current file (Homepage — V2
+# Grid on "UI Design 7/27/26" + the section component sets on
+# "UI Design (WIP)") — desktop/tablet/mobile per section. Fills in
+# the eight page sections that previously had no working reference.
+fetch_jpg comps/hero.jpg                    4389d810-12bf-498c-94cd-501dd7498a0b 1440
+fetch_jpg comps/hero-tablet.jpg             97eed561-64b6-4a5e-87ba-b81250a7a1ff 1024
+fetch_jpg comps/hero-mobile.jpg             f426f67a-6d5d-496e-96b1-e745d11b4191 840
+fetch_jpg comps/full-width.jpg              d59a32b8-1b78-43c0-8d49-ec7505f7d762 1440
+fetch_jpg comps/full-width-tablet.jpg       39e24041-3574-4304-92a4-8a7ace405f03 1024
+fetch_jpg comps/full-width-mobile.jpg       69a1a18c-a4e0-4c8d-9850-7ffe3c65e675 642
+fetch_jpg comps/carousel.jpg                16ad76de-1a49-4a41-9033-b5ce85c10b5c 1440
+fetch_jpg comps/carousel-tablet.jpg         a53ad46c-1a9f-4d35-b632-87d4d98fe39d 1024
+fetch_jpg comps/carousel-mobile.jpg         a4df58d6-7c12-400c-8d28-9764ab9dcad7 967
+fetch_jpg comps/fifty-fifty.jpg             143cf3aa-8581-45a4-9431-963c35ad8005 1440
+fetch_jpg comps/fifty-fifty-tablet.jpg      997de010-0b48-489e-9ac0-740ca15215fd 1024
+fetch_jpg comps/fifty-fifty-mobile.jpg      9f23befa-6e8a-4d92-9d39-3cd9bb7302a9 1070
+fetch_jpg comps/product-slider.jpg          a42b4219-8f4d-46e4-8b62-64c75a814295 1440
+fetch_jpg comps/product-slider-tablet.jpg   0e170a0a-96c2-4046-b22b-413bc9d51788 1024
+fetch_jpg comps/product-slider-mobile.jpg   b9e956dd-33b0-4ffe-94bc-58c3191b1bc1 800
+fetch_jpg comps/info-slider.jpg             96cbacf7-a680-4014-85c4-f95bfbe0603e 1440
+fetch_jpg comps/info-slider-tablet.jpg      72b5d313-511c-4d3d-b95b-64f63a72492a 1024
+fetch_jpg comps/info-slider-mobile.jpg      b979006c-913e-4e58-ba86-e3c93c2ce071 923
+fetch_jpg comps/reviews.jpg                 78453348-91cc-4fcc-9ccb-50092ea4073d 1440
+fetch_jpg comps/reviews-tablet.jpg          b6bcb31f-201d-4011-a4d0-23ac0c404af5 1311
+fetch_jpg comps/reviews-mobile.jpg          89524d21-7483-48f3-9e4c-d67e0dddd4f5 1497

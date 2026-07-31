@@ -80,6 +80,12 @@ export const SECTIONS: SectionEntry[] = [
       "Full-bleed opening image or video with eyebrow, headline and a primary CTA. Carries the page's LCP.",
     modes: ["dark", "light"],
     tall: true,
+    figmaNodeId: "33585:48542",
+    comps: {
+      desktop: { width: 1440, height: 960 },
+      tablet: { width: 1024, height: 683 },
+      mobile: { width: 428, height: 840 },
+    },
     render: (mode) => <Hero mode={mode} />,
   },
   {
@@ -91,6 +97,12 @@ export const SECTIONS: SectionEntry[] = [
       "Edge-to-edge media block — image, shop-the-look, click-to-play or autoplay video — with overlaid copy.",
     modes: ["dark", "light"],
     tall: true,
+    figmaNodeId: "33638:56658",
+    comps: {
+      desktop: { width: 1440, height: 810 },
+      tablet: { width: 1024, height: 683 },
+      mobile: { width: 428, height: 642 },
+    },
     render: (mode) => <FullWidth mode={mode} />,
   },
   {
@@ -102,6 +114,12 @@ export const SECTIONS: SectionEntry[] = [
       "Two media columns side by side at a chosen ratio (5:4, 1:1, or full-height flex); stacks on mobile.",
     modes: ["dark", "light"],
     tall: true,
+    figmaNodeId: "33581:40068",
+    comps: {
+      desktop: { width: 1440, height: 900 },
+      tablet: { width: 1024, height: 640 },
+      mobile: { width: 428, height: 1070 },
+    },
     render: (mode) => <FiftyFifty mode={mode} />,
   },
   {
@@ -112,6 +130,12 @@ export const SECTIONS: SectionEntry[] = [
     description:
       "Horizontal rail of info cards with the shared slider chrome: arrow paging, progress bar, hairline variants.",
     modes: ["light", "dark"],
+    figmaNodeId: "33781:52010",
+    comps: {
+      desktop: { width: 1440, height: 953 },
+      tablet: { width: 1024, height: 762 },
+      mobile: { width: 428, height: 923 },
+    },
     render: (mode) => <InfoSlider mode={mode} />,
   },
   {
@@ -122,6 +146,12 @@ export const SECTIONS: SectionEntry[] = [
     description:
       "Product cards sourced by tag, collection, or manual picks, with the MENS/WOMENS filter and hover imagery.",
     modes: ["light", "dark"],
+    figmaNodeId: "33691:63690",
+    comps: {
+      desktop: { width: 1440, height: 660 },
+      tablet: { width: 1024, height: 513 },
+      mobile: { width: 428, height: 800 },
+    },
     render: (mode) => <ProductSlider mode={mode} title="Best Sellers" />,
   },
   {
@@ -131,6 +161,12 @@ export const SECTIONS: SectionEntry[] = [
     schemaType: "sectionCarousel",
     description: "Editorial image carousel — full-bleed slides with the slider chrome.",
     modes: ["light", "dark"],
+    figmaNodeId: "33298:30358",
+    comps: {
+      desktop: { width: 1440, height: 900 },
+      tablet: { width: 1024, height: 640 },
+      mobile: { width: 428, height: 967 },
+    },
     render: (mode) => <Carousel mode={mode} />,
   },
   {
@@ -164,6 +200,12 @@ export const SECTIONS: SectionEntry[] = [
     schemaType: "sectionReviews",
     description: "Customer review rail with rating summary.",
     modes: ["light", "dark"],
+    figmaNodeId: "33209:11159",
+    comps: {
+      desktop: { width: 1440, height: 1119 },
+      tablet: { width: 1024, height: 1311 },
+      mobile: { width: 428, height: 1497 },
+    },
     render: (mode) => <Reviews mode={mode} />,
   },
 

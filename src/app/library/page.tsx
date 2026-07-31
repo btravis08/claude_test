@@ -42,13 +42,15 @@ export default function LibraryIndex() {
                     <div className="flex flex-col gap-2 border-t border-line p-4">
                       <div className="flex items-center gap-3">
                         <h3 className="font-display text-title-sm">{entry.title}</h3>
-                        {entry.schemaType ? (
-                          <span className="label rounded-xs bg-wash px-2 py-1 font-medium text-ink-3">
-                            CMS
-                          </span>
-                        ) : (
-                          <span className="label rounded-xs bg-wash px-2 py-1 font-medium text-ink-3">
-                            FIXED
+                        <span className="label rounded-xs bg-wash px-2 py-1 font-medium text-ink-3">
+                          {entry.schemaType ? "CMS" : "FIXED"}
+                        </span>
+                        {entry.comp && (
+                          <span
+                            className="label rounded-xs border border-line px-2 py-1 font-medium text-ink-3"
+                            title="A Figma comp is available to diff against"
+                          >
+                            COMP
                           </span>
                         )}
                       </div>

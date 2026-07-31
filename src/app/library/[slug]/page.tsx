@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 
-import { bySlug, SECTIONS, type Mode } from "@/library/registry";
+import { bySlug, figmaUrl, SECTIONS, type Mode } from "@/library/registry";
 import { SectionViewer } from "@/library/SectionViewer";
 
 /*
@@ -43,6 +43,9 @@ export default async function SectionPage({
         schemaType: entry.schemaType,
         description: entry.description,
         modes: entry.modes,
+        figmaNodeId: entry.figmaNodeId,
+        figmaUrl: entry.figmaNodeId ? figmaUrl(entry.figmaNodeId) : undefined,
+        comp: entry.comp,
       }}
     />
   );

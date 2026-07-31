@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 
-import type { Mode } from "@/library/registry";
+import { compUrl, type Mode } from "@/library/registry";
 
 /* the serializable half of a registry entry — the viewer iframes the
    section rather than rendering it, so the render fn stays server-side
@@ -14,6 +14,9 @@ export interface ViewerEntry {
   schemaType?: string;
   description: string;
   modes: Mode[];
+  figmaNodeId?: string;
+  figmaUrl?: string;
+  comp?: { width: number; height: number };
 }
 
 /*
@@ -28,11 +31,23 @@ const VIEWPORTS = [
   { id: "mobile", label: "Mobile", width: 428 },
 ] as const;
 
+/* comp overlay modes: off, ghosted over the build, or difference-
+   blended so any mismatch lights up and a perfect match goes black */
+type Compare = "off" | "overlay" | "difference";
+
 export function SectionViewer({ entry }: { entry: ViewerEntry }) {
   const [mode, setMode] = useState<Mode>(entry.modes[0]);
   const [vp, setVp] = useState<(typeof VIEWPORTS)[number]["id"]>("desktop");
+  const [compare, setCompare] = useState<Compare>("off");
+  const [opacity, setOpacity] = useState(50);
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
   const width = VIEWPORTS.find((v) => v.id === vp)!.width;
   const src = `/library/${entry.slug}?frame=1&mode=${mode}`;
+  const hasComp = Boolean(entry.comp);
+
+  /* nudge the comp a pixel at a time to find true alignment */
+  const nudge = (dx: number, dy: number) =>
+    setOffset((o) => ({ x: o.x + dx, y: o.y + dy }));
 
   return (
     <div data-mode="light" className="flex h-screen w-full flex-col bg-surface text-ink">
@@ -44,6 +59,17 @@ export function SectionViewer({ entry }: { entry: ViewerEntry }) {
           <h1 className="font-display text-title-sm">{entry.title}</h1>
           {entry.schemaType && (
             <code className="label text-ink-3">{entry.schemaType}</code>
+          )}
+          {entry.figmaUrl && (
+            <a
+              href={entry.figmaUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="label font-medium text-ink-3 underline decoration-line underline-offset-4 hover:text-ink"
+              title={entry.figmaNodeId}
+            >
+              FIGMA ↗
+            </a>
           )}
         </div>
 
@@ -89,20 +115,117 @@ export function SectionViewer({ entry }: { entry: ViewerEntry }) {
         </div>
       </header>
 
+      {/* compare bar: the Figma comp over the live build */}
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-3 border-b border-line px-6 py-3">
+        {hasComp ? (
+          <>
+            <span className="label font-medium text-ink-3">COMP</span>
+            <div className="flex items-center gap-1">
+              {(
+                [
+                  ["off", "Off"],
+                  ["overlay", "Overlay"],
+                  ["difference", "Difference"],
+                ] as const
+              ).map(([id, label]) => (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => setCompare(id)}
+                  className={`label rounded-xs px-3 py-2 font-medium transition-colors ${
+                    compare === id
+                      ? "bg-btn text-btn-fg"
+                      : "bg-wash text-ink-3 hover:text-ink"
+                  }`}
+                >
+                  {label.toUpperCase()}
+                </button>
+              ))}
+            </div>
+
+            {compare !== "off" && (
+              <>
+                <label className="flex items-center gap-3">
+                  <span className="label text-ink-3">OPACITY</span>
+                  <input
+                    type="range"
+                    min={0}
+                    max={100}
+                    value={opacity}
+                    onChange={(e) => setOpacity(Number(e.currentTarget.value))}
+                    className="w-40 accent-black"
+                  />
+                  <span className="label w-10 text-ink-3">{opacity}%</span>
+                </label>
+
+                <div className="flex items-center gap-1">
+                  <span className="label text-ink-3">NUDGE</span>
+                  {(
+                    [
+                      ["←", -1, 0],
+                      ["→", 1, 0],
+                      ["↑", 0, -1],
+                      ["↓", 0, 1],
+                    ] as const
+                  ).map(([label, dx, dy]) => (
+                    <button
+                      key={label}
+                      type="button"
+                      onClick={() => nudge(dx, dy)}
+                      className="label rounded-xs bg-wash px-2 py-1 font-medium text-ink-3 hover:text-ink"
+                    >
+                      {label}
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => setOffset({ x: 0, y: 0 })}
+                    className="label ml-1 rounded-xs bg-wash px-2 py-1 font-medium text-ink-3 hover:text-ink"
+                  >
+                    {offset.x || offset.y ? `${offset.x},${offset.y} ✕` : "0,0"}
+                  </button>
+                </div>
+              </>
+            )}
+          </>
+        ) : (
+          <span className="label text-ink-3">
+            NO COMP EXPORTED FOR THIS SECTION YET
+          </span>
+        )}
+      </div>
+
       <p className="border-b border-line px-6 py-3 text-body-sm text-ink-2">
         {entry.description}
       </p>
 
       <div className="flex-1 overflow-auto bg-surface-2 p-6">
-        <iframe
-          /* remount on mode/viewport change so scroll-driven sections
-             re-measure from a clean state */
-          key={`${mode}-${vp}`}
-          src={src}
-          title={entry.title}
-          className="mx-auto block h-full border border-line bg-surface"
-          style={{ width, maxWidth: "100%" }}
-        />
+        <div className="relative mx-auto h-full" style={{ width, maxWidth: "100%" }}>
+          <iframe
+            /* remount on mode/viewport change so scroll-driven sections
+               re-measure from a clean state */
+            key={`${mode}-${vp}`}
+            src={src}
+            title={entry.title}
+            className="block h-full w-full border border-line bg-surface"
+          />
+          {hasComp && compare !== "off" && (
+            /* the comp, pinned over the build at the frame's true
+               scale — difference blending turns any mismatch into
+               visible edges and a perfect match into black */
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={compUrl(entry.slug)}
+              alt=""
+              className="pointer-events-none absolute left-0 top-0 w-full"
+              style={{
+                opacity: opacity / 100,
+                transform: `translate(${offset.x}px, ${offset.y}px)`,
+                mixBlendMode: compare === "difference" ? "difference" : "normal",
+              }}
+            />
+          )}
+        </div>
       </div>
     </div>
   );

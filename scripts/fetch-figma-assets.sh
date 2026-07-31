@@ -119,3 +119,16 @@ fetch legacy/swirl-sliver-r.png 8de6e748-e3b8-4023-bf1c-3f7188746244
 fetch legacy/swirl-table.png    4475d916-6119-4b13-a746-477d68d109c8
 fetch legacy/swirl-sliver-l.png f59ebd2a-e8fe-4859-aa81-cfdba3d4c526
 fetch legacy/swirl-hoodie.png   0469ada9-8076-49cf-adcb-b8bae72141f3
+
+# ---------------------------------------------------------------
+# Design comps for /library's compare mode: a flat render of each
+# section's Figma frame, overlaid on the live component to diff the
+# build against the design. Rendered node screenshots at frame width,
+# compressed hard (reference imagery, never shipped to a page).
+mkdir -p comps
+fetch_jpg comps/legacy-hero.jpg          8671e87f-fc32-4399-93aa-90ec47a4f79b 1440
+fetch_jpg comps/split-text.jpg           89a81617-d317-46f1-bd46-267506b0ce5d 1440
+fetch_jpg comps/full-bleed-carousel.jpg  49e78294-00dc-4c17-a207-e8daefb29ce5 1440
+fetch_jpg comps/product-swirl.jpg        4a726442-a45b-47ae-8f2a-b06bcf1f4444 1440
+fetch_jpg comps/floating-gallery.jpg     c36a0870-9ef3-4f68-a865-2a81629ff929 1440
+fetch_jpg comps/tech-specs.jpg           c89d37b8-4b7a-4ac7-a057-68351e3260c7 1440

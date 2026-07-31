@@ -41,8 +41,24 @@ export interface SectionEntry {
   modes: Mode[];
   /* full-viewport sections want a taller thumbnail frame */
   tall?: boolean;
+  /* the section's frame in the Figma library — deep-links the card,
+     and is what `get_design_context` should be pulled from when this
+     section is worked on */
+  figmaNodeId?: string;
+  /* flat render of that frame (public/figma/comps/<slug>.jpg, fetched
+     by the fetch-figma-assets workflow) + its natural size, so the
+     viewer can overlay comp on build at true scale */
+  comp?: { width: number; height: number };
   render: (mode: Mode) => ReactNode;
 }
+
+/* the design library file every node id below lives in */
+export const FIGMA_FILE = "CMeh0gCtTQAnIRc9iXjGbr";
+
+export const figmaUrl = (nodeId: string) =>
+  `https://www.figma.com/design/${FIGMA_FILE}/?node-id=${nodeId.replace(":", "-")}`;
+
+export const compUrl = (slug: string) => `/figma/comps/${slug}.jpg`;
 
 export const SECTIONS: SectionEntry[] = [
   {
@@ -125,6 +141,8 @@ export const SECTIONS: SectionEntry[] = [
     description:
       "Specification table with description and stat callouts, opened by the comp's heavy rule.",
     modes: ["light", "dark"],
+    figmaNodeId: "33298:30224",
+    comp: { width: 1440, height: 1105 },
     render: (mode) => <TechSpecs mode={mode} />,
   },
   {
@@ -146,6 +164,8 @@ export const SECTIONS: SectionEntry[] = [
       "Scroll-locked title sequence: the phrase rises, splits, and the campaign film expands between the words to full bleed, inverting each word as it passes.",
     modes: ["light"],
     tall: true,
+    figmaNodeId: "33982:60407",
+    comp: { width: 1440, height: 1000 },
     render: () => <LegacyHero />,
   },
   {
@@ -156,6 +176,8 @@ export const SECTIONS: SectionEntry[] = [
       "Centered Feature Deck statement between drawn hairlines; words resolve blur-to-sharp on a timed 2s pass when the paragraph reaches 30% from the bottom.",
     modes: ["light", "light-mid"],
     tall: true,
+    figmaNodeId: "33599:71930",
+    comp: { width: 1440, height: 1000 },
     render: (mode) => (
       <SplitTextBlock
         mode={mode === "light-mid" ? "light-mid" : "light"}
@@ -173,6 +195,8 @@ export const SECTIONS: SectionEntry[] = [
       "Pinned horizontal ride: a 4166px canvas of captioned cards travels right-to-left as you scroll, images lagging inside their frames, surface fading Light → Medium Light.",
     modes: ["light"],
     tall: true,
+    figmaNodeId: "33599:72159",
+    comp: { width: 1440, height: 1000 },
     render: () => <FloatingWords />,
   },
   {
@@ -183,6 +207,8 @@ export const SECTIONS: SectionEntry[] = [
       "Timed slideshow: filling hairline timer, rolling slide number, headline rail sliding one slot per advance, portrait well sliding through, body copy fading in.",
     modes: ["dark"],
     tall: true,
+    figmaNodeId: "34346:77144",
+    comp: { width: 1440, height: 900 },
     render: () => <FullBleedCarousel />,
   },
   {
@@ -193,6 +219,8 @@ export const SECTIONS: SectionEntry[] = [
       "Black closing moment — product planes receding along a diagonal spiral with depth-scaled drift, campaign card and shop button centered.",
     modes: ["dark"],
     tall: true,
+    figmaNodeId: "34023:187310",
+    comp: { width: 1440, height: 1019 },
     render: () => <ProductSwirl />,
   },
 ];

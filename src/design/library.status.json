@@ -1,8 +1,21 @@
 {
-  "generatedAt": "2026-07-31T07:28:35.134Z",
+  "generatedAt": "2026-07-31T15:33:44.019Z",
   "sections": {
     "hero": {
-      "comps": {},
+      "comps": {
+        "desktop": {
+          "pixel": 89.9,
+          "layout": 89.9
+        },
+        "tablet": {
+          "pixel": 89.8,
+          "layout": 89.6
+        },
+        "mobile": {
+          "pixel": 86.5,
+          "layout": 85.3
+        }
+      },
       "tokens": {
         "elements": 14,
         "offToken": 1,
@@ -19,7 +32,20 @@
       }
     },
     "full-width": {
-      "comps": {},
+      "comps": {
+        "desktop": {
+          "pixel": 79.2,
+          "layout": 69.7
+        },
+        "tablet": {
+          "pixel": 73,
+          "layout": 66.3
+        },
+        "mobile": {
+          "pixel": 77.2,
+          "layout": 72.2
+        }
+      },
       "tokens": {
         "elements": 14,
         "offToken": 1,
@@ -36,7 +62,20 @@
       }
     },
     "fifty-fifty": {
-      "comps": {},
+      "comps": {
+        "desktop": {
+          "pixel": 75.4,
+          "layout": 72.7
+        },
+        "tablet": {
+          "pixel": 75.4,
+          "layout": 72
+        },
+        "mobile": {
+          "pixel": 76,
+          "layout": 77.5
+        }
+      },
       "tokens": {
         "elements": 18,
         "offToken": 2,
@@ -58,7 +97,20 @@
       }
     },
     "info-slider": {
-      "comps": {},
+      "comps": {
+        "desktop": {
+          "pixel": 91.5,
+          "layout": 82.7
+        },
+        "tablet": {
+          "pixel": 91.8,
+          "layout": 84.9
+        },
+        "mobile": {
+          "pixel": 92.1,
+          "layout": 87.4
+        }
+      },
       "tokens": {
         "elements": 45,
         "offToken": 10,
@@ -110,7 +162,20 @@
       }
     },
     "product-slider": {
-      "comps": {},
+      "comps": {
+        "desktop": {
+          "pixel": 98.4,
+          "layout": 83.3
+        },
+        "tablet": {
+          "pixel": 95.6,
+          "layout": 74.8
+        },
+        "mobile": {
+          "pixel": 97.5,
+          "layout": 86.8
+        }
+      },
       "tokens": {
         "elements": 382,
         "offToken": 54,
@@ -163,7 +228,20 @@
       }
     },
     "carousel": {
-      "comps": {},
+      "comps": {
+        "desktop": {
+          "pixel": 97.5,
+          "layout": 96.5
+        },
+        "tablet": {
+          "pixel": 96.8,
+          "layout": 95.5
+        },
+        "mobile": {
+          "pixel": 92.4,
+          "layout": 86.6
+        }
+      },
       "tokens": {
         "elements": 18,
         "offToken": 1,
@@ -205,7 +283,7 @@
       "comps": {
         "desktop": {
           "pixel": 98.3,
-          "layout": 93.2
+          "layout": 93.3
         }
       },
       "tokens": {
@@ -255,7 +333,20 @@
       }
     },
     "reviews": {
-      "comps": {},
+      "comps": {
+        "desktop": {
+          "pixel": 99,
+          "layout": 62.2
+        },
+        "tablet": {
+          "pixel": 98.9,
+          "layout": 80.4
+        },
+        "mobile": {
+          "pixel": 97.7,
+          "layout": 86.2
+        }
+      },
       "tokens": {
         "elements": 7,
         "offToken": 0,
@@ -275,7 +366,7 @@
         },
         "mobile": {
           "pixel": 63.4,
-          "layout": 66.9
+          "layout": 66.8
         }
       },
       "tokens": {
@@ -301,7 +392,7 @@
         },
         "tablet": {
           "pixel": 98.5,
-          "layout": 97.4
+          "layout": 97.5
         },
         "mobile": {
           "pixel": 94.5,

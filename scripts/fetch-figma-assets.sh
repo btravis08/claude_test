@@ -132,3 +132,16 @@ fetch_jpg comps/full-bleed-carousel.jpg  49e78294-00dc-4c17-a207-e8daefb29ce5 14
 fetch_jpg comps/product-swirl.jpg        4a726442-a45b-47ae-8f2a-b06bcf1f4444 1440
 fetch_jpg comps/floating-gallery.jpg     c36a0870-9ef3-4f68-a865-2a81629ff929 1440
 fetch_jpg comps/tech-specs.jpg           c89d37b8-4b7a-4ac7-a057-68351e3260c7 1440
+
+# Tablet (1024) and mobile (428) comps — the same section frames from
+# the Legacy Page's device=tablet / device=mobile symbols, so the
+# library can diff responsive behavior, not just desktop.
+fetch_jpg comps/legacy-hero-tablet.jpg          c6babfbe-a313-4ec2-890f-6f8e699cc29a 1024
+fetch_jpg comps/legacy-hero-mobile.jpg          f699c34c-2c51-452d-879b-6504c0d5c94f 862
+fetch_jpg comps/split-text-tablet.jpg           b6bf5e14-7b6a-4068-ac98-004065a07107 1024
+fetch_jpg comps/split-text-mobile.jpg           08933ea5-890e-4704-a1bc-67584d75aa61 840
+fetch_jpg comps/floating-gallery-tablet.jpg     a60dcb42-c9eb-4ce2-be01-801aa47ad31d 1024
+fetch_jpg comps/floating-gallery-mobile.jpg     f26f15dc-72a5-4099-95f5-29e85206c7f7 800
+fetch_jpg comps/product-swirl-tablet.jpg        30443b7b-fd90-4628-a14f-50f757efb1ff 1024
+fetch_jpg comps/product-swirl-mobile.jpg        81b3e0f8-3d71-4d50-8c9b-ae2bd1c1a485 711
+fetch_jpg comps/full-bleed-carousel-mobile.jpg  cb25c903-feff-4e21-b379-148b10967146 754

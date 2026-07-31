@@ -45,12 +45,17 @@ export interface SectionEntry {
      and is what `get_design_context` should be pulled from when this
      section is worked on */
   figmaNodeId?: string;
-  /* flat render of that frame (public/figma/comps/<slug>.jpg, fetched
-     by the fetch-figma-assets workflow) + its natural size, so the
-     viewer can overlay comp on build at true scale */
-  comp?: { width: number; height: number };
+  /* flat renders of that frame per breakpoint, fetched by the
+     fetch-figma-assets workflow into public/figma/comps — desktop is
+     <slug>.jpg, the others <slug>-<breakpoint>.jpg. The natural size
+     lets the viewer overlay comp on build at true scale. A missing
+     breakpoint means that device frame hasn't been exported (or
+     doesn't exist in the design yet). */
+  comps?: Partial<Record<Breakpoint, { width: number; height: number }>>;
   render: (mode: Mode) => ReactNode;
 }
+
+export type Breakpoint = "desktop" | "tablet" | "mobile";
 
 /* the design library file every node id below lives in */
 export const FIGMA_FILE = "CMeh0gCtTQAnIRc9iXjGbr";
@@ -58,7 +63,8 @@ export const FIGMA_FILE = "CMeh0gCtTQAnIRc9iXjGbr";
 export const figmaUrl = (nodeId: string) =>
   `https://www.figma.com/design/${FIGMA_FILE}/?node-id=${nodeId.replace(":", "-")}`;
 
-export const compUrl = (slug: string) => `/figma/comps/${slug}.jpg`;
+export const compUrl = (slug: string, bp: Breakpoint) =>
+  `/figma/comps/${slug}${bp === "desktop" ? "" : `-${bp}`}.jpg`;
 
 export const SECTIONS: SectionEntry[] = [
   {
@@ -142,7 +148,9 @@ export const SECTIONS: SectionEntry[] = [
       "Specification table with description and stat callouts, opened by the comp's heavy rule.",
     modes: ["light", "dark"],
     figmaNodeId: "33298:30224",
-    comp: { width: 1440, height: 1105 },
+    comps: {
+      desktop: { width: 1440, height: 1105 },
+    },
     render: (mode) => <TechSpecs mode={mode} />,
   },
   {
@@ -165,7 +173,11 @@ export const SECTIONS: SectionEntry[] = [
     modes: ["light"],
     tall: true,
     figmaNodeId: "33982:60407",
-    comp: { width: 1440, height: 1000 },
+    comps: {
+      desktop: { width: 1440, height: 1000 },
+      tablet: { width: 1024, height: 1000 },
+      mobile: { width: 428, height: 861 },
+    },
     render: () => <LegacyHero />,
   },
   {
@@ -177,7 +189,11 @@ export const SECTIONS: SectionEntry[] = [
     modes: ["light", "light-mid"],
     tall: true,
     figmaNodeId: "33599:71930",
-    comp: { width: 1440, height: 1000 },
+    comps: {
+      desktop: { width: 1440, height: 1000 },
+      tablet: { width: 1024, height: 800 },
+      mobile: { width: 428, height: 840 },
+    },
     render: (mode) => (
       <SplitTextBlock
         mode={mode === "light-mid" ? "light-mid" : "light"}
@@ -196,7 +212,11 @@ export const SECTIONS: SectionEntry[] = [
     modes: ["light"],
     tall: true,
     figmaNodeId: "33599:72159",
-    comp: { width: 1440, height: 1000 },
+    comps: {
+      desktop: { width: 1440, height: 1000 },
+      tablet: { width: 1024, height: 1000 },
+      mobile: { width: 428, height: 800 },
+    },
     render: () => <FloatingWords />,
   },
   {
@@ -208,7 +228,10 @@ export const SECTIONS: SectionEntry[] = [
     modes: ["dark"],
     tall: true,
     figmaNodeId: "34346:77144",
-    comp: { width: 1440, height: 900 },
+    comps: {
+      desktop: { width: 1440, height: 900 },
+      mobile: { width: 428, height: 754 },
+    },
     render: () => <FullBleedCarousel />,
   },
   {
@@ -220,7 +243,11 @@ export const SECTIONS: SectionEntry[] = [
     modes: ["dark"],
     tall: true,
     figmaNodeId: "34023:187310",
-    comp: { width: 1440, height: 1019 },
+    comps: {
+      desktop: { width: 1440, height: 1019 },
+      tablet: { width: 1024, height: 815 },
+      mobile: { width: 428, height: 711 },
+    },
     render: () => <ProductSwirl />,
   },
 ];

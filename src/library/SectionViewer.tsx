@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 
-import { compUrl, type Mode } from "@/library/registry";
+import { compUrl, type Breakpoint, type Mode } from "@/library/registry";
 
 /* the serializable half of a registry entry — the viewer iframes the
    section rather than rendering it, so the render fn stays server-side
@@ -16,7 +16,7 @@ export interface ViewerEntry {
   modes: Mode[];
   figmaNodeId?: string;
   figmaUrl?: string;
-  comp?: { width: number; height: number };
+  comps?: Partial<Record<Breakpoint, { width: number; height: number }>>;
 }
 
 /*
@@ -25,11 +25,11 @@ export interface ViewerEntry {
   the section's real responsive behavior (media queries, the vh-based
   canvases, touch layouts) instead of a simulated scale.
 */
-const VIEWPORTS = [
+const VIEWPORTS: { id: Breakpoint; label: string; width: number }[] = [
   { id: "desktop", label: "Desktop", width: 1440 },
   { id: "tablet", label: "Tablet", width: 1024 },
   { id: "mobile", label: "Mobile", width: 428 },
-] as const;
+];
 
 /* comp overlay modes: off, ghosted over the build, or difference-
    blended so any mismatch lights up and a perfect match goes black */
@@ -37,13 +37,15 @@ type Compare = "off" | "overlay" | "difference";
 
 export function SectionViewer({ entry }: { entry: ViewerEntry }) {
   const [mode, setMode] = useState<Mode>(entry.modes[0]);
-  const [vp, setVp] = useState<(typeof VIEWPORTS)[number]["id"]>("desktop");
+  const [vp, setVp] = useState<Breakpoint>("desktop");
   const [compare, setCompare] = useState<Compare>("off");
   const [opacity, setOpacity] = useState(50);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const width = VIEWPORTS.find((v) => v.id === vp)!.width;
   const src = `/library/${entry.slug}?frame=1&mode=${mode}`;
-  const hasComp = Boolean(entry.comp);
+  /* the comp for the breakpoint being viewed — responsive drift is
+     only visible when the design being diffed is the device frame */
+  const hasComp = Boolean(entry.comps?.[vp]);
 
   /* nudge the comp a pixel at a time to find true alignment */
   const nudge = (dx: number, dy: number) =>
@@ -190,7 +192,9 @@ export function SectionViewer({ entry }: { entry: ViewerEntry }) {
           </>
         ) : (
           <span className="label text-ink-3">
-            NO COMP EXPORTED FOR THIS SECTION YET
+            {entry.comps
+              ? `NO ${vp.toUpperCase()} COMP FOR THIS SECTION`
+              : "NO COMP EXPORTED FOR THIS SECTION YET"}
           </span>
         )}
       </div>
@@ -215,7 +219,7 @@ export function SectionViewer({ entry }: { entry: ViewerEntry }) {
                visible edges and a perfect match into black */
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={compUrl(entry.slug)}
+              src={compUrl(entry.slug, vp)}
               alt=""
               className="pointer-events-none absolute left-0 top-0 w-full"
               style={{

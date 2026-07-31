@@ -45,7 +45,7 @@ export default async function SectionPage({
         modes: entry.modes,
         figmaNodeId: entry.figmaNodeId,
         figmaUrl: entry.figmaNodeId ? figmaUrl(entry.figmaNodeId) : undefined,
-        comp: entry.comp,
+        comps: entry.comps,
       }}
     />
   );

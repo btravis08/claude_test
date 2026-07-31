@@ -45,12 +45,14 @@ export default function LibraryIndex() {
                         <span className="label rounded-xs bg-wash px-2 py-1 font-medium text-ink-3">
                           {entry.schemaType ? "CMS" : "FIXED"}
                         </span>
-                        {entry.comp && (
+                        {entry.comps && (
                           <span
                             className="label rounded-xs border border-line px-2 py-1 font-medium text-ink-3"
                             title="A Figma comp is available to diff against"
                           >
-                            COMP
+                            {Object.keys(entry.comps).length === 3
+                              ? "COMP ×3"
+                              : "COMP"}
                           </span>
                         )}
                       </div>

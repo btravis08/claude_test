@@ -245,6 +245,17 @@ Build from the tokens; never invent a value, never eyeball a comp.
 4. Match the comp exactly (see Working agreements) — using tokens is
    how you match it, not an excuse to approximate.
 
+### The section library
+
+`/library` is the catalogue of every composable section, rendered
+live from the same components production uses (no screenshots to go
+stale) — a grid of thumbnails, each opening a preview with color-mode
+and breakpoint switching (real iframes, so responsive behavior is
+genuine). The Studio embeds the same route as its **Sections** tool.
+Entries live in `src/library/registry.tsx`: **add a section there
+whenever you build one**, with its Sanity `schemaType` when it's
+CMS-composable. The route is noindex and carries no site chrome.
+
 ### Checking the result
 
 Load any page with `?inspect=1` (or press **Alt+T**) for the token

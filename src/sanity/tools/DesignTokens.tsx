@@ -185,7 +185,7 @@ function Group({
             </Text>
           )}
           <Box flex={1} />
-          <Badge tone="primary" fontSize={0}>
+          <Badge tone="default" fontSize={0}>
             {rows.length}
           </Badge>
         </Flex>
@@ -270,7 +270,7 @@ function DesignTokensPanel() {
         </Flex>
 
         {/* provenance — when the tokens were last re-uploaded */}
-        <Card padding={3} radius={2} tone="primary">
+        <Card padding={3} radius={2} tone="transparent">
           <Flex gap={5} wrap="wrap">
             <Stack space={2}>
               <Text size={0} muted weight="medium">
@@ -311,7 +311,7 @@ function DesignTokensPanel() {
               as="button"
               padding={3}
               radius={2}
-              tone={tab === id ? "primary" : "default"}
+              tone={tab === id ? "default" : "transparent"}
               shadow={tab === id ? 1 : 0}
               onClick={() => setTab(id)}
               style={{ cursor: "pointer", border: "none" }}

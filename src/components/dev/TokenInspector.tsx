@@ -231,8 +231,16 @@ const S = {
   },
   key: { color: "#7b7b7b", width: 62, flex: "none" as const },
   val: { color: "#eee", wordBreak: "break-all" as const, flex: 1 },
-  hit: { color: "#8ee6a0" },
-  miss: { color: "#ff8f6b" },
+  /* monochrome: a token hit reads bright, a miss inverts to a chip —
+     loud without spending a hue */
+  hit: { color: "#fff", fontWeight: 600 },
+  miss: {
+    background: "#fff",
+    color: "#111",
+    fontWeight: 600,
+    padding: "0 4px",
+    borderRadius: 2,
+  },
 };
 
 function Line({ label, m }: { label: string; m: Match }) {
@@ -339,8 +347,9 @@ export default function TokenInspector({ onExit }: { onExit: () => void }) {
             top: box.top,
             width: box.width,
             height: box.height,
-            outline: "1px solid #4c8dff",
-            background: "rgba(76,141,255,0.08)",
+            outline: "1px solid rgba(255,255,255,0.9)",
+            boxShadow: "0 0 0 1px rgba(0,0,0,0.55)",
+            background: "rgba(255,255,255,0.06)",
             zIndex: 2147483646,
             pointerEvents: "none",
           }}
@@ -349,7 +358,11 @@ export default function TokenInspector({ onExit }: { onExit: () => void }) {
             (["t", "r", "b", "l"] as const).map((side) => {
               const v = bands[side];
               if (!v) return null;
-              const common = { position: "absolute" as const, background: "rgba(122,224,140,0.28)" };
+              const common = {
+                position: "absolute" as const,
+                background:
+                  "repeating-linear-gradient(45deg, rgba(255,255,255,0.22) 0 3px, rgba(255,255,255,0.06) 3px 6px)",
+              };
               const style =
                 side === "t"
                   ? { ...common, left: 0, right: 0, top: 0, height: v }
@@ -371,7 +384,7 @@ export default function TokenInspector({ onExit }: { onExit: () => void }) {
             alignItems: "center",
             gap: 8,
             padding: "7px 10px",
-            background: pinned ? "#2c4a7c" : "#1c1c1c",
+            background: pinned ? "#3a3a3a" : "#1c1c1c",
             borderBottom: "1px solid #2a2a2a",
           }}
         >
@@ -404,7 +417,7 @@ export default function TokenInspector({ onExit }: { onExit: () => void }) {
           <div style={{ ...S.row, color: "#7b7b7b" }}>hover any element</div>
         ) : (
           <div style={{ padding: "6px 0" }}>
-            <div style={{ ...S.row, color: "#4c8dff" }}>
+            <div style={{ ...S.row, color: "#fff" }}>
               <span style={S.key}>element</span>
               <span style={S.val}>
                 {readout.tag}
@@ -413,7 +426,9 @@ export default function TokenInspector({ onExit }: { onExit: () => void }) {
             </div>
             <div style={S.row}>
               <span style={S.key}>mode</span>
-              <span style={{ ...S.val, color: "#8ee6a0" }}>{readout.mode}</span>
+              <span style={{ ...S.val, color: "#fff", fontWeight: 600 }}>
+                {readout.mode}
+              </span>
             </div>
 
             <Divider label="COLOR" />

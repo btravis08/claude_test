@@ -1,5 +1,8 @@
 import { notFound } from "next/navigation";
 
+import { TokenAuditBridge } from "@/components/dev/TokenAuditBridge";
+import { statusFor } from "@/library/status";
+
 import { bySlug, figmaUrl, SECTIONS, type Mode } from "@/library/registry";
 import { SectionViewer } from "@/library/SectionViewer";
 
@@ -19,10 +22,10 @@ export default async function SectionPage({
   searchParams,
 }: {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ frame?: string; mode?: string }>;
+  searchParams: Promise<{ frame?: string; mode?: string; audit?: string }>;
 }) {
   const { slug } = await params;
-  const { frame, mode } = await searchParams;
+  const { frame, mode, audit } = await searchParams;
   const entry = bySlug(slug);
   if (!entry) notFound();
 
@@ -31,6 +34,8 @@ export default async function SectionPage({
     return (
       <div data-mode={active} className="min-h-screen w-full bg-surface text-ink">
         {entry.render(active)}
+        {/* ?audit=1 exposes window.__sdrAudit() for the audit script */}
+        {audit === "1" && <TokenAuditBridge />}
       </div>
     );
   }
@@ -46,6 +51,9 @@ export default async function SectionPage({
         figmaNodeId: entry.figmaNodeId,
         figmaUrl: entry.figmaNodeId ? figmaUrl(entry.figmaNodeId) : undefined,
         comps: entry.comps,
+        timed: entry.timed,
+        match: statusFor(entry.slug)?.comps as never,
+        offToken: statusFor(entry.slug)?.tokens?.offToken,
       }}
     />
   );

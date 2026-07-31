@@ -17,6 +17,10 @@ export interface ViewerEntry {
   figmaNodeId?: string;
   figmaUrl?: string;
   comps?: Partial<Record<Breakpoint, { width: number; height: number }>>;
+  /* latest audit: per-breakpoint match scores + off-token count */
+  match?: Partial<Record<Breakpoint, { pixel: number; layout: number }>>;
+  offToken?: number;
+  timed?: boolean;
 }
 
 /*
@@ -122,6 +126,19 @@ export function SectionViewer({ entry }: { entry: ViewerEntry }) {
         {hasComp ? (
           <>
             <span className="label font-medium text-ink-3">COMP</span>
+            {entry.match?.[vp] && (
+              <span
+                className="label text-ink-3"
+                title={
+                  entry.timed
+                    ? "This section animates, so a still frame catches a different moment than the comp — indicative only"
+                    : "Layout match measured on 64px thumbnails; pixel match is full resolution and always lower (the comp's photography is not the site's)"
+                }
+              >
+                {entry.match[vp]!.layout}% LAYOUT · {entry.match[vp]!.pixel}% PIXEL
+                {entry.timed ? " · TIMED" : ""}
+              </span>
+            )}
             <div className="flex items-center gap-1">
               {(
                 [

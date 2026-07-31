@@ -10,7 +10,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "tokens": "node scripts/build-token-index.mjs"
+    "tokens": "node scripts/build-token-index.mjs",
+    "audit": "node scripts/audit-sections.mjs"
   },
   "dependencies": {
     "@sanity/image-url": "^2.1.1",

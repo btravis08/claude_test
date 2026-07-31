@@ -41,6 +41,10 @@ export interface SectionEntry {
   modes: Mode[];
   /* full-viewport sections want a taller thumbnail frame */
   tall?: boolean;
+  /* the section animates on a timer or scrub, so a still screenshot
+     catches a different moment than the comp froze — its diff score
+     is indicative, not a verdict */
+  timed?: boolean;
   /* the section's frame in the Figma library — deep-links the card,
      and is what `get_design_context` should be pulled from when this
      section is worked on */
@@ -172,6 +176,7 @@ export const SECTIONS: SectionEntry[] = [
       "Scroll-locked title sequence: the phrase rises, splits, and the campaign film expands between the words to full bleed, inverting each word as it passes.",
     modes: ["light"],
     tall: true,
+    timed: true,
     figmaNodeId: "33982:60407",
     comps: {
       desktop: { width: 1440, height: 1000 },
@@ -211,6 +216,7 @@ export const SECTIONS: SectionEntry[] = [
       "Pinned horizontal ride: a 4166px canvas of captioned cards travels right-to-left as you scroll, images lagging inside their frames, surface fading Light → Medium Light.",
     modes: ["light"],
     tall: true,
+    timed: true,
     figmaNodeId: "33599:72159",
     comps: {
       desktop: { width: 1440, height: 1000 },
@@ -227,6 +233,7 @@ export const SECTIONS: SectionEntry[] = [
       "Timed slideshow: filling hairline timer, rolling slide number, headline rail sliding one slot per advance, portrait well sliding through, body copy fading in.",
     modes: ["dark"],
     tall: true,
+    timed: true,
     figmaNodeId: "34346:77144",
     comps: {
       desktop: { width: 1440, height: 900 },

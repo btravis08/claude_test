@@ -1,0 +1,591 @@
+{
+  "generatedAt": "2026-07-31T06:26:40.201Z",
+  "sections": {
+    "hero": {
+      "comps": {},
+      "tokens": {
+        "elements": 14,
+        "offToken": 3,
+        "byKind": {
+          "surface": 1,
+          "padding": 2
+        },
+        "examples": [
+          {
+            "selector": "a.group.block > div.relative.w-full > div.pointer-events-none.absolute",
+            "kind": "surface",
+            "value": "oklab(0 0 0 / 0.25)"
+          },
+          {
+            "selector": "div.pointer-events-none.absolute > div.absolute.inset-0 > div.grid.w-full",
+            "kind": "padding",
+            "value": "24px"
+          },
+          {
+            "selector": "div.pointer-events-none.absolute > div.absolute.inset-0 > div.grid.w-full",
+            "kind": "padding",
+            "value": "24px"
+          }
+        ]
+      }
+    },
+    "full-width": {
+      "comps": {},
+      "tokens": {
+        "elements": 14,
+        "offToken": 3,
+        "byKind": {
+          "surface": 1,
+          "padding": 2
+        },
+        "examples": [
+          {
+            "selector": "a.block.w-full > div.relative.w-full > div.media-overlay",
+            "kind": "surface",
+            "value": "rgba(0, 0, 0, 0.2)"
+          },
+          {
+            "selector": "div.pointer-events-none.absolute > div.absolute.inset-0 > div.grid.w-full",
+            "kind": "padding",
+            "value": "24px"
+          },
+          {
+            "selector": "div.pointer-events-none.absolute > div.absolute.inset-0 > div.grid.w-full",
+            "kind": "padding",
+            "value": "24px"
+          }
+        ]
+      }
+    },
+    "fifty-fifty": {
+      "comps": {},
+      "tokens": {
+        "elements": 18,
+        "offToken": 10,
+        "byKind": {
+          "surface": 2,
+          "padding": 8
+        },
+        "examples": [
+          {
+            "selector": "div.relative.overflow-hidden > div.relative.w-full > div.media-overlay",
+            "kind": "surface",
+            "value": "rgba(0, 0, 0, 0.2)"
+          },
+          {
+            "selector": "section.grid.w-full > div.relative.overflow-hidden > div.pointer-events-none.absolute",
+            "kind": "padding",
+            "value": "24px"
+          },
+          {
+            "selector": "section.grid.w-full > div.relative.overflow-hidden > div.pointer-events-none.absolute",
+            "kind": "padding",
+            "value": "24px"
+          },
+          {
+            "selector": "section.grid.w-full > div.relative.overflow-hidden > div.pointer-events-none.absolute",
+            "kind": "padding",
+            "value": "24px"
+          },
+          {
+            "selector": "section.grid.w-full > div.relative.overflow-hidden > div.pointer-events-none.absolute",
+            "kind": "padding",
+            "value": "24px"
+          },
+          {
+            "selector": "div.relative.overflow-hidden > div.relative.w-full > div.media-overlay",
+            "kind": "surface",
+            "value": "rgba(0, 0, 0, 0.2)"
+          },
+          {
+            "selector": "section.grid.w-full > div.relative.overflow-hidden > div.pointer-events-none.absolute",
+            "kind": "padding",
+            "value": "24px"
+          },
+          {
+            "selector": "section.grid.w-full > div.relative.overflow-hidden > div.pointer-events-none.absolute",
+            "kind": "padding",
+            "value": "24px"
+          }
+        ]
+      }
+    },
+    "info-slider": {
+      "comps": {},
+      "tokens": {
+        "elements": 45,
+        "offToken": 22,
+        "byKind": {
+          "padding": 12,
+          "gap": 10
+        },
+        "examples": [
+          {
+            "selector": "section.flex.w-full > div.flex.w-full > div.flex.w-full",
+            "kind": "padding",
+            "value": "24px"
+          },
+          {
+            "selector": "section.flex.w-full > div.flex.w-full > div.flex.w-full",
+            "kind": "padding",
+            "value": "24px"
+          },
+          {
+            "selector": "section.flex.w-full > div.flex.w-full > div.flex.w-full",
+            "kind": "padding",
+            "value": "24px"
+          },
+          {
+            "selector": "section.flex.w-full > div.flex.w-full > div.flex.w-full",
+            "kind": "padding",
+            "value": "24px"
+          },
+          {
+            "selector": "section.flex.w-full > div.flex.w-full > div.no-scrollbar.w-full",
+            "kind": "gap",
+            "value": "1px"
+          },
+          {
+            "selector": "section.flex.w-full > div.flex.w-full > div.no-scrollbar.w-full",
+            "kind": "gap",
+            "value": "1px"
+          },
+          {
+            "selector": "div.no-scrollbar.w-full > div.flex.min-w-0 > a.group.flex",
+            "kind": "gap",
+            "value": "18px"
+          },
+          {
+            "selector": "div.no-scrollbar.w-full > div.flex.min-w-0 > a.group.flex",
+            "kind": "gap",
+            "value": "18px"
+          }
+        ]
+      }
+    },
+    "product-slider": {
+      "comps": {},
+      "tokens": {
+        "elements": 382,
+        "offToken": 202,
+        "byKind": {
+          "padding": 152,
+          "gap": 50
+        },
+        "examples": [
+          {
+            "selector": "section.flex.w-full > div.flex.w-full > div.flex.w-full",
+            "kind": "padding",
+            "value": "24px"
+          },
+          {
+            "selector": "section.flex.w-full > div.flex.w-full > div.flex.w-full",
+            "kind": "padding",
+            "value": "24px"
+          },
+          {
+            "selector": "section.flex.w-full > div.flex.w-full > div.flex.w-full",
+            "kind": "padding",
+            "value": "24px"
+          },
+          {
+            "selector": "section.flex.w-full > div.flex.w-full > div.flex.w-full",
+            "kind": "padding",
+            "value": "24px"
+          },
+          {
+            "selector": "div.flex.w-full > div.hidden.items-center > button.label.flex",
+            "kind": "padding",
+            "value": "14px"
+          },
+          {
+            "selector": "div.flex.w-full > div.hidden.items-center > button.label.flex",
+            "kind": "padding",
+            "value": "14px"
+          },
+          {
+            "selector": "div.flex.w-full > div.hidden.items-center > button.label.flex",
+            "kind": "padding",
+            "value": "14px"
+          },
+          {
+            "selector": "div.flex.w-full > div.hidden.items-center > button.label.flex",
+            "kind": "padding",
+            "value": "14px"
+          }
+        ]
+      }
+    },
+    "carousel": {
+      "comps": {},
+      "tokens": {
+        "elements": 18,
+        "offToken": 5,
+        "byKind": {
+          "padding": 4,
+          "radius": 1
+        },
+        "examples": [
+          {
+            "selector": "section.grid.w-full > div.relative.hidden > div.absolute.inset-0",
+            "kind": "padding",
+            "value": "24px"
+          },
+          {
+            "selector": "section.grid.w-full > div.relative.hidden > div.absolute.inset-0",
+            "kind": "padding",
+            "value": "24px"
+          },
+          {
+            "selector": "section.grid.w-full > div.relative.hidden > div.absolute.inset-0",
+            "kind": "padding",
+            "value": "24px"
+          },
+          {
+            "selector": "section.grid.w-full > div.relative.hidden > div.absolute.inset-0",
+            "kind": "padding",
+            "value": "24px"
+          },
+          {
+            "selector": "div.relative.hidden > div.absolute.inset-0 > button.flex.size-7",
+            "kind": "radius",
+            "value": "33554400px"
+          }
+        ]
+      }
+    },
+    "gallery": {
+      "comps": {},
+      "tokens": {
+        "elements": 39,
+        "offToken": 6,
+        "byKind": {
+          "padding": 4,
+          "gap": 2
+        },
+        "examples": [
+          {
+            "selector": "section.flex.w-full > div.flex.w-full > div.flex.w-full",
+            "kind": "padding",
+            "value": "24px"
+          },
+          {
+            "selector": "section.flex.w-full > div.flex.w-full > div.flex.w-full",
+            "kind": "padding",
+            "value": "24px"
+          },
+          {
+            "selector": "section.flex.w-full > div.flex.w-full > div.flex.w-full",
+            "kind": "padding",
+            "value": "24px"
+          },
+          {
+            "selector": "section.flex.w-full > div.flex.w-full > div.flex.w-full",
+            "kind": "padding",
+            "value": "24px"
+          },
+          {
+            "selector": "section.flex.w-full > div.flex.w-full > div.no-scrollbar.w-full",
+            "kind": "gap",
+            "value": "1px"
+          },
+          {
+            "selector": "section.flex.w-full > div.flex.w-full > div.no-scrollbar.w-full",
+            "kind": "gap",
+            "value": "1px"
+          }
+        ]
+      }
+    },
+    "tech-specs": {
+      "comps": {
+        "desktop": {
+          "pixel": 98.3,
+          "layout": 93.2
+        }
+      },
+      "tokens": {
+        "elements": 259,
+        "offToken": 7,
+        "byKind": {
+          "gap": 1,
+          "type": 6
+        },
+        "examples": [
+          {
+            "selector": "div.min-h-screen.w-full > section.w-full.bg-surface > div.grid.w-full",
+            "kind": "gap",
+            "value": "40px"
+          },
+          {
+            "selector": "div.flex.shrink-0 > div.flex.flex-col > p.max-w-32.text-ink",
+            "kind": "type",
+            "value": "11px"
+          },
+          {
+            "selector": "div.flex.shrink-0 > div.flex.flex-col > p.text-ink-3",
+            "kind": "type",
+            "value": "11px"
+          },
+          {
+            "selector": "div.flex.shrink-0 > div.flex.flex-col > p.max-w-32.text-ink",
+            "kind": "type",
+            "value": "11px"
+          },
+          {
+            "selector": "div.flex.shrink-0 > div.flex.flex-col > p.text-ink-3",
+            "kind": "type",
+            "value": "11px"
+          },
+          {
+            "selector": "div.flex.shrink-0 > div.flex.flex-col > p.max-w-32.text-ink",
+            "kind": "type",
+            "value": "11px"
+          },
+          {
+            "selector": "div.flex.shrink-0 > div.flex.flex-col > p.text-ink-3",
+            "kind": "type",
+            "value": "11px"
+          }
+        ]
+      }
+    },
+    "reviews": {
+      "comps": {},
+      "tokens": {
+        "elements": 7,
+        "offToken": 4,
+        "byKind": {
+          "padding": 2,
+          "gap": 2
+        },
+        "examples": [
+          {
+            "selector": "div.min-h-screen.w-full > section.w-full.border-t > div.flex.flex-col",
+            "kind": "padding",
+            "value": "24px"
+          },
+          {
+            "selector": "div.min-h-screen.w-full > section.w-full.border-t > div.flex.flex-col",
+            "kind": "padding",
+            "value": "24px"
+          },
+          {
+            "selector": "div.min-h-screen.w-full > section.w-full.border-t > div.flex.flex-col",
+            "kind": "gap",
+            "value": "24px"
+          },
+          {
+            "selector": "div.min-h-screen.w-full > section.w-full.border-t > div.flex.flex-col",
+            "kind": "gap",
+            "value": "24px"
+          }
+        ]
+      }
+    },
+    "legacy-hero": {
+      "comps": {
+        "desktop": {
+          "pixel": 37,
+          "layout": 39.2
+        },
+        "tablet": {
+          "pixel": 33.7,
+          "layout": 37.1
+        },
+        "mobile": {
+          "pixel": 63.4,
+          "layout": 66.9
+        }
+      },
+      "tokens": {
+        "elements": 7,
+        "offToken": 1,
+        "byKind": {
+          "surface": 1
+        },
+        "examples": [
+          {
+            "selector": "section.relative.h-screen > div.absolute.left-1/2 > div.pointer-events-none.absolute",
+            "kind": "surface",
+            "value": "oklab(0 0 0 / 0.2)"
+          }
+        ]
+      }
+    },
+    "split-text": {
+      "comps": {
+        "desktop": {
+          "pixel": 98.9,
+          "layout": 97
+        },
+        "tablet": {
+          "pixel": 98.5,
+          "layout": 97.4
+        },
+        "mobile": {
+          "pixel": 94.5,
+          "layout": 92.9
+        }
+      },
+      "tokens": {
+        "elements": 33,
+        "offToken": 4,
+        "byKind": {
+          "padding": 4
+        },
+        "examples": [
+          {
+            "selector": "body.min-h-full > div.min-h-screen.w-full > section.flex.h-screen",
+            "kind": "padding",
+            "value": "24px"
+          },
+          {
+            "selector": "body.min-h-full > div.min-h-screen.w-full > section.flex.h-screen",
+            "kind": "padding",
+            "value": "24px"
+          },
+          {
+            "selector": "div.min-h-screen.w-full > section.flex.h-screen > a.label.flex",
+            "kind": "padding",
+            "value": "18px"
+          },
+          {
+            "selector": "div.min-h-screen.w-full > section.flex.h-screen > a.label.flex",
+            "kind": "padding",
+            "value": "18px"
+          }
+        ]
+      }
+    },
+    "floating-gallery": {
+      "comps": {
+        "desktop": {
+          "pixel": 88.2,
+          "layout": 88
+        },
+        "tablet": {
+          "pixel": 77.1,
+          "layout": 76.5
+        },
+        "mobile": {
+          "pixel": 78.2,
+          "layout": 76.6
+        }
+      },
+      "tokens": {
+        "elements": 57,
+        "offToken": 1,
+        "byKind": {
+          "surface": 1
+        },
+        "examples": [
+          {
+            "selector": "div.absolute > div.relative.w-full > div.pointer-events-none.absolute",
+            "kind": "surface",
+            "value": "oklab(0.977202 -0.00247672 0.00477713 / 0.45)"
+          }
+        ]
+      }
+    },
+    "full-bleed-carousel": {
+      "comps": {
+        "desktop": {
+          "pixel": 68.6,
+          "layout": 72.9
+        },
+        "mobile": {
+          "pixel": 57.5,
+          "layout": 57.4
+        }
+      },
+      "tokens": {
+        "elements": 18,
+        "offToken": 10,
+        "byKind": {
+          "surface": 1,
+          "gap": 2,
+          "ink": 2,
+          "type": 5
+        },
+        "examples": [
+          {
+            "selector": "section.relative.h-screen > div.absolute.inset-0 > div.absolute.inset-0",
+            "kind": "surface",
+            "value": "oklab(0 0 0 / 0.35)"
+          },
+          {
+            "selector": "div.min-h-screen.w-full > section.relative.h-screen > div.absolute.inset-x-0",
+            "kind": "gap",
+            "value": "7px"
+          },
+          {
+            "selector": "div.min-h-screen.w-full > section.relative.h-screen > div.absolute.inset-x-0",
+            "kind": "gap",
+            "value": "7px"
+          },
+          {
+            "selector": "section.relative.h-screen > div.absolute.inset-x-0 > span.label.font-medium",
+            "kind": "ink",
+            "value": "oklab(0.999994 0.0000455677 0.0000200868 / 0.7)"
+          },
+          {
+            "selector": "div.absolute.left-1/2 > div.relative > p.absolute.-translate-x-1/2",
+            "kind": "type",
+            "value": "74.88px"
+          },
+          {
+            "selector": "div.absolute.left-1/2 > div.relative > p.absolute.-translate-x-1/2",
+            "kind": "type",
+            "value": "74.88px"
+          },
+          {
+            "selector": "div.absolute.left-1/2 > div.relative > p.absolute.-translate-x-1/2",
+            "kind": "type",
+            "value": "74.88px"
+          },
+          {
+            "selector": "div.absolute.left-1/2 > div.relative > p.absolute.-translate-x-1/2",
+            "kind": "type",
+            "value": "74.88px"
+          }
+        ]
+      }
+    },
+    "product-swirl": {
+      "comps": {
+        "desktop": {
+          "pixel": 94.9,
+          "layout": 95.4
+        },
+        "tablet": {
+          "pixel": 92.9,
+          "layout": 93.1
+        },
+        "mobile": {
+          "pixel": 85.6,
+          "layout": 86
+        }
+      },
+      "tokens": {
+        "elements": 21,
+        "offToken": 2,
+        "byKind": {
+          "padding": 2
+        },
+        "examples": [
+          {
+            "selector": "section.relative.h-screen > div.absolute.inset-0 > a.label.flex",
+            "kind": "padding",
+            "value": "18px"
+          },
+          {
+            "selector": "section.relative.h-screen > div.absolute.inset-0 > a.label.flex",
+            "kind": "padding",
+            "value": "18px"
+          }
+        ]
+      }
+    }
+  }
+}

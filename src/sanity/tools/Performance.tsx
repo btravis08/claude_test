@@ -122,6 +122,21 @@ function Sparkline({
   );
 }
 
+function DeviceGlyph({ kind }: { kind: "mobile" | "desktop" }) {
+  const stroke = { fill: "none", stroke: "currentColor", strokeWidth: 1.2 } as const;
+  return kind === "desktop" ? (
+    <svg width="14" height="14" viewBox="0 0 12 12" aria-label="Desktop" {...stroke}>
+      <rect x="1" y="2" width="10" height="6.5" rx="0.5" />
+      <path d="M4 10.5h4M6 8.5v2" />
+    </svg>
+  ) : (
+    <svg width="14" height="14" viewBox="0 0 12 12" aria-label="Mobile" {...stroke}>
+      <rect x="3.5" y="1.5" width="5" height="9" rx="1" />
+      <path d="M5.25 9.25h1.5" />
+    </svg>
+  );
+}
+
 function GradeChip({ label, value }: { label: string; value: number }) {
   return (
     <span
@@ -142,10 +157,12 @@ function GradeChip({ label, value }: { label: string; value: number }) {
 
 function Ticker({
   label,
+  kind,
   snaps,
   pick,
 }: {
   label: string;
+  kind: "mobile" | "desktop";
   snaps: Snap[];
   pick: (s: Snap) => Scores | null;
 }) {
@@ -168,10 +185,15 @@ function Ticker({
   const color = trendColor(delta);
   return (
     <Flex align="center" gap={3} style={{ width: 300, flex: "none" }}>
-      <Stack space={2} style={{ width: 56 }}>
-        <Text size={0} muted>
-          {label}
-        </Text>
+      <Stack space={2} style={{ width: 64 }}>
+        <Flex align="center" gap={2}>
+          <Text size={0} muted>
+            <DeviceGlyph kind={kind} />
+          </Text>
+          <Text size={0} muted>
+            {label}
+          </Text>
+        </Flex>
         <Text
           size={4}
           weight="semibold"
@@ -212,8 +234,8 @@ function PageRow({ page, snaps }: { page: string; snaps: Snap[] }) {
           </Stack>
         </Box>
 
-        <Ticker label="MOBILE" snaps={snaps} pick={(s) => mobileOf(s)} />
-        <Ticker label="DESKTOP" snaps={snaps} pick={desktopOf} />
+        <Ticker label="MOBILE" kind="mobile" snaps={snaps} pick={(s) => mobileOf(s)} />
+        <Ticker label="DESKTOP" kind="desktop" snaps={snaps} pick={desktopOf} />
 
         <Flex gap={2} wrap="wrap" style={{ flex: 1, minWidth: 200 }}>
           <GradeChip label="A11Y" value={m.a11y} />
@@ -263,22 +285,27 @@ function PerformancePanel() {
     .sort()
     .pop();
 
-  /* the site as one number: average of the latest MOBILE perf scores
-     (the stricter form factor — the one the perf ground rules target) */
-  const avg = pages.length
-    ? Math.round(
-        pages.reduce((sum, [, s]) => sum + mobileOf(s[s.length - 1]).perf, 0) /
-          pages.length,
-      )
-    : null;
-  const prevAvg =
-    pages.length && pages.every(([, s]) => s.length > 1)
-      ? Math.round(
-          pages.reduce((sum, [, s]) => sum + mobileOf(s[s.length - 2]).perf, 0) /
-            pages.length,
-        )
+  /* the site as two numbers: the average of the latest scores per
+     form factor (desktop averages only pages that have a desktop run) */
+  const average = (pick: (s: Snap) => Scores | null, back: number) => {
+    const scores = pages
+      .map(([, s]) => (s.length > back ? pick(s[s.length - 1 - back]) : null))
+      .filter((v): v is Scores => v !== null)
+      .map((v) => v.perf);
+    return scores.length
+      ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
       : null;
-  const avgDelta = avg !== null && prevAvg !== null ? avg - prevAvg : 0;
+  };
+  const site = (["mobile", "desktop"] as const).map((kind) => {
+    const pick = kind === "mobile" ? (s: Snap) => mobileOf(s) : desktopOf;
+    const now = average(pick, 0);
+    const prev = average(pick, 1);
+    return {
+      kind,
+      score: now,
+      delta: now !== null && prev !== null ? now - prev : 0,
+    };
+  });
 
   return (
     <Box padding={4} style={{ maxWidth: 1100, margin: "0 auto" }}>
@@ -291,27 +318,34 @@ function PerformancePanel() {
             <Text size={1} muted>
               Lighthouse against production, nightly (08:30 UTC), mobile and
               desktop. Green is improving, red is declining — scores are the
-              performance grade out of 100; the SITE number tracks mobile,
-              the stricter form factor.
+              performance grade out of 100. SITE shows both form factors.
             </Text>
           </Stack>
-          {avg !== null && (
-            <Flex align="center" gap={3}>
-              <Text size={1} muted>
-                SITE
-              </Text>
-              <Text
-                size={4}
-                weight="semibold"
-                style={{ fontFamily: MONO, color: bandColor(avg) }}
-              >
-                {avg}
-              </Text>
-              <Text size={1} weight="semibold" style={{ color: trendColor(avgDelta) }}>
-                {avgDelta > 0 ? "▲" : avgDelta < 0 ? "▼" : "▬"}
-              </Text>
-            </Flex>
-          )}
+          <Flex align="center" gap={4}>
+            <Text size={1} muted>
+              SITE
+            </Text>
+            {site.map(
+              ({ kind, score, delta }) =>
+                score !== null && (
+                  <Flex key={kind} align="center" gap={2}>
+                    <Text size={1} muted>
+                      <DeviceGlyph kind={kind} />
+                    </Text>
+                    <Text
+                      size={4}
+                      weight="semibold"
+                      style={{ fontFamily: MONO, color: bandColor(score) }}
+                    >
+                      {score}
+                    </Text>
+                    <Text size={1} weight="semibold" style={{ color: trendColor(delta) }}>
+                      {delta > 0 ? "▲" : delta < 0 ? "▼" : "▬"}
+                    </Text>
+                  </Flex>
+                ),
+            )}
+          </Flex>
         </Flex>
 
         {latestRun && (

@@ -93,6 +93,42 @@
           },
           "opportunities": []
         }
+      },
+      {
+        "t": "2026-08-01T21:08:15.330Z",
+        "mobile": {
+          "perf": 60,
+          "a11y": 95,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 3530.302499999998,
+          "cls": 0,
+          "tbt": 1433.1294999999986,
+          "lcpElement": {
+            "selector": "div.flex > div.hero-cta > div.flex > span.sdr-text-reveal",
+            "snippet": "<span class=\"sdr-text-reveal font-display text-headline-lg\">"
+          },
+          "opportunities": [
+            {
+              "id": "unused-javascript",
+              "savingsMs": 160
+            }
+          ]
+        },
+        "desktop": {
+          "perf": 99,
+          "a11y": 91,
+          "bp": 96,
+          "seo": 100,
+          "lcp": 753.625,
+          "cls": 0.00007076977349911941,
+          "tbt": 7.5,
+          "lcpElement": {
+            "selector": "div.relative > div.absolute > div.absolute > img.absolute",
+            "snippet": "<img src=\"https://cdn.sanity.io/images/alsdve2t/production/3dea0f6ed4ff73e87b03c6f56…\" srcset=\"https://cdn.sanity.io/images/alsdve2t/production/3dea0f6ed4ff73e8"
+          },
+          "opportunities": []
+        }
       }
     ],
     "/legacy": [
@@ -191,6 +227,46 @@
           "opportunities": [
             {
               "id": "uses-responsive-images",
+              "savingsMs": 80
+            }
+          ]
+        }
+      },
+      {
+        "t": "2026-08-01T21:09:19.878Z",
+        "mobile": {
+          "perf": 92,
+          "a11y": 100,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 3179.764,
+          "cls": 0,
+          "tbt": 53.5,
+          "lcpElement": {
+            "selector": "div.absolute > div.flex > p.font-display",
+            "snippet": "<p class=\"font-display text-headline-lg whitespace-nowrap opacity-80 transition-colo…\">"
+          },
+          "opportunities": []
+        },
+        "desktop": {
+          "perf": 97,
+          "a11y": 91,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 1296.161,
+          "cls": 0.0003561684616058138,
+          "tbt": 0,
+          "lcpElement": {
+            "selector": "div.absolute > div.flex > p.font-display",
+            "snippet": "<p class=\"font-display text-headline-lg whitespace-nowrap opacity-80 transition-colo…\">"
+          },
+          "opportunities": [
+            {
+              "id": "uses-responsive-images",
+              "savingsMs": 120
+            },
+            {
+              "id": "modern-image-formats",
               "savingsMs": 80
             }
           ]
@@ -296,6 +372,42 @@
           "bp": 100,
           "seo": 100,
           "lcp": 884.2205599365232,
+          "cls": 0,
+          "tbt": 0,
+          "lcpElement": {
+            "selector": "a.flex > div.group/well > div.absolute > img.absolute",
+            "snippet": "<img src=\"https://cdn.sanity.io/images/alsdve2t/production/320a119f5e96ace9328c9ec96…\" alt=\"3D Merino Wool Hoodie\" loading=\"lazy\" decoding=\"async\" draggable=\"fa"
+          },
+          "opportunities": []
+        }
+      },
+      {
+        "t": "2026-08-01T21:09:55.019Z",
+        "mobile": {
+          "perf": 84,
+          "a11y": 91,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 4492.666559936524,
+          "cls": 0,
+          "tbt": 64,
+          "lcpElement": {
+            "selector": "a.flex > div.group/well > div.absolute > img.absolute",
+            "snippet": "<img src=\"https://cdn.sanity.io/images/alsdve2t/production/320a119f5e96ace9328c9ec96…\" alt=\"3D Merino Wool Hoodie\" loading=\"lazy\" decoding=\"async\" draggable=\"fa"
+          },
+          "opportunities": [
+            {
+              "id": "uses-responsive-images",
+              "savingsMs": 100
+            }
+          ]
+        },
+        "desktop": {
+          "perf": 99,
+          "a11y": 87,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 989.1770599365236,
           "cls": 0,
           "tbt": 0,
           "lcpElement": {
@@ -413,6 +525,47 @@
             "snippet": "<div role=\"img\" aria-label=\"Presidio — image 1\" class=\"absolute inset-0 bg-[length:100%_auto] bg-center bg-no-repeat md:inset-x-[…\" style=\"background-image: url"
           },
           "opportunities": []
+        }
+      },
+      {
+        "t": "2026-08-01T21:10:33.384Z",
+        "mobile": {
+          "perf": 81,
+          "a11y": 91,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 4642.839499999998,
+          "cls": 0,
+          "tbt": 114,
+          "lcpElement": {
+            "selector": "div.no-scrollbar > div.relative > div.absolute > img.absolute",
+            "snippet": "<img src=\"https://cdn.sanity.io/images/alsdve2t/production/7f86dd3c7ab4db2f36eba353b…\" alt=\"Presidio — image 5\" loading=\"lazy\" decoding=\"async\" draggable=\"false"
+          },
+          "opportunities": [
+            {
+              "id": "uses-responsive-images",
+              "savingsMs": 150
+            }
+          ]
+        },
+        "desktop": {
+          "perf": 98,
+          "a11y": 86,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 971.0139999999999,
+          "cls": 0,
+          "tbt": 0,
+          "lcpElement": {
+            "selector": "div.no-scrollbar > div.relative > div.absolute > img.absolute",
+            "snippet": "<img src=\"https://cdn.sanity.io/images/alsdve2t/production/7f86dd3c7ab4db2f36eba353b…\" alt=\"Presidio — image 5\" loading=\"lazy\" decoding=\"async\" draggable=\"false"
+          },
+          "opportunities": [
+            {
+              "id": "uses-responsive-images",
+              "savingsMs": 80
+            }
+          ]
         }
       }
     ],
@@ -547,6 +700,42 @@
               "savingsMs": 160
             }
           ]
+        }
+      },
+      {
+        "t": "2026-08-01T21:11:16.744Z",
+        "mobile": {
+          "perf": 95,
+          "a11y": 96,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 2885.068,
+          "cls": 0,
+          "tbt": 108.5,
+          "lcpElement": {
+            "selector": "div.flex > div.max-md:transform-none! > a.block > img.w-[10rem]",
+            "snippet": "<img src=\"/figma/journal/stream-02.thumb.jpg\" alt=\"\" loading=\"eager\" fetchpriority=\"high\" decoding=\"async\" draggable=\"false\" class=\"w-[10rem] bg-surface-2 objec"
+          },
+          "opportunities": [
+            {
+              "id": "uses-responsive-images",
+              "savingsMs": 150
+            }
+          ]
+        },
+        "desktop": {
+          "perf": 100,
+          "a11y": 91,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 530.927,
+          "cls": 0,
+          "tbt": 0,
+          "lcpElement": {
+            "selector": "div > div.bg-surface > header.flex > p.label",
+            "snippet": "<p class=\"label max-w-[22.875rem] text-center\">"
+          },
+          "opportunities": []
         }
       }
     ]

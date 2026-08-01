@@ -722,9 +722,15 @@ export function Navigation({ data }: { data?: NavData | null }) {
             </Link>
           </div>
           <div className="hidden flex-1 items-center justify-end gap-8 md:flex">
-            <a href="#" aria-label="Search" data-nav-probe className="text-ink">
+            <button
+              type="button"
+              aria-label="Search"
+              data-nav-probe
+              onClick={() => window.dispatchEvent(new CustomEvent("sdr:search"))}
+              className="text-ink"
+            >
               <SearchMd />
-            </a>
+            </button>
             <span data-nav-probe className="text-ink">
               <NavButton label="ACCOUNT" />
             </span>
@@ -832,9 +838,14 @@ export function Navigation({ data }: { data?: NavData | null }) {
             mobileOpen ? "bg-surface-2" : "bg-wash backdrop-blur-md"
           }`}
         >
-          <m.a href="#" className="text-ink" style={{ opacity: searchOp }}>
+          <m.button
+            type="button"
+            onClick={() => window.dispatchEvent(new CustomEvent("sdr:search"))}
+            className="text-ink"
+            style={{ opacity: searchOp }}
+          >
             SEARCH
-          </m.a>
+          </m.button>
           <m.a href="#" className="text-ink" style={{ opacity: accountOp }}>
             ACCOUNT
           </m.a>

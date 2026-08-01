@@ -3,6 +3,7 @@ import { draftMode } from "next/headers";
 
 import { CartProvider } from "@/components/cart/CartContext";
 import { LazyCartFlyout } from "@/components/cart/LazyCartFlyout";
+import { LazySearchFlyout } from "@/components/search/LazySearchFlyout";
 import { Navigation } from "@/components/Navigation";
 import type { MenuItem, NavData, NavLink } from "@/components/Navigation";
 import { FooterTaglineProvider } from "@/components/FooterTagline";
@@ -124,6 +125,7 @@ export default async function SiteLayout({
       </div>
       <SiteFooter />
       <LazyCartFlyout />
+      <LazySearchFlyout />
       {/* real-user Core Web Vitals (enable Speed Insights in Vercel) */}
       <SpeedInsights />
       {/* click-to-edit overlays + live refresh, ONLY inside the

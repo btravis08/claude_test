@@ -259,3 +259,18 @@ export const siteSettingsQuery = groq`
     address
   }
 `;
+
+// Catalog search: title/vendor/type prefix match plus exact tag.
+// Callers pass $q with a trailing * (GROQ match wildcard) and $plain
+// as the bare lowercased term.
+export const productSearchQuery = groq`
+  *[_type == "product" && (!defined(status) || status == "active")
+    && (title match $q || vendor match $q || productType match $q || $plain in tags)]
+    | order(title asc) [0...24] { ${sliderProductFields} }
+`;
+
+export const collectionSearchQuery = groq`
+  *[_type == "collection" && defined(slug.current) && title match $q]
+    | order(title asc) [0...12] { _id, title, "slug": slug.current }
+`;
+

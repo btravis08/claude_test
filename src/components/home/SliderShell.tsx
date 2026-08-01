@@ -379,17 +379,26 @@ export function SliderShell({
   return (
     <div className="flex w-full flex-col">
       <div
-        className={`flex w-full items-center justify-between gap-4 bg-surface ${headerClassName} ${
+        className={`flex w-full flex-wrap items-center justify-between gap-4 bg-surface ${headerClassName} ${
           bordered ? "border-t border-line" : ""
         }`}
       >
         {/* no title (undefined, null, or empty) → the gender toggles
-            take the left side and the arrows stay right */}
+            take the left side and the arrows stay right. On mobile a
+            filterable slider stacks: title on its own row, then the
+            MENS/WOMENS buttons with the arrows beside them (comp
+            33691:63716) */}
         {Boolean(title) && (
-          <p className={`min-w-0 flex-1 ${titleClassName}`}>{title}</p>
+          <p
+            className={`min-w-0 flex-1 ${
+              filterable ? "max-sm:w-full max-sm:flex-none" : ""
+            } ${titleClassName}`}
+          >
+            {title}
+          </p>
         )}
         {filterable && (
-          <div className="hidden items-center gap-3 sm:flex">
+          <div className="flex items-center gap-3">
             {genders.map((g) => (
               <button
                 key={g}
@@ -404,7 +413,7 @@ export function SliderShell({
             ))}
           </div>
         )}
-        <div className={`flex items-start pl-3 ${title ? "" : "ml-auto"}`}>
+        <div className="ml-auto flex items-start pl-3">
           <ArrowButton
             type="button"
             aria-label="Previous"
@@ -476,7 +485,9 @@ export function SliderShell({
           Sits on top of the cards' bottom hairline (-mt) with no track
           background of its own. */}
       {showProgress && scrollable && (
-        <div className="relative z-10 -mt-0.5 h-0.5 w-full">
+        /* mobile (comp 33691:63716): a short centered track with a
+           visible wash rail; desktop keeps the full-width fill */
+        <div className="relative z-10 -mt-0.5 h-0.5 w-full max-sm:mx-auto max-sm:mt-4xl max-sm:w-40 max-sm:bg-wash">
           <m.div
             className="h-full bg-ink"
             initial={false}

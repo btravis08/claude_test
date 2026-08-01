@@ -391,6 +391,9 @@ export function ProductSlider({
       <SliderShell
         title={title}
         bordered={false}
+        /* comp card widths (33691:63690/63703/63716): ~4.3 cards at
+           desktop AND tablet, one near-full card + sliver on mobile */
+        cols="auto-cols-[93%] sm:auto-cols-[45%] lg:auto-cols-[23.3%]"
         items={products.map((product, i) => ({
           key: product._key ?? String(i),
           gender: product.gender,
@@ -734,18 +737,141 @@ export function Gallery({ mode = "light", title = "Gallery", slides = defaultGal
 
 /* ---------- Reviews (Yotpo placeholder) ---------- */
 
-export function Reviews({ mode = "light", title = "Reviews" }: { mode?: Mode; title?: string }) {
+/* five-pointed star, filled with the current ink */
+function Star({ size = 15 }: { size?: number }) {
   return (
-    <section data-mode={mode} className="w-full border-t border-line bg-surface text-ink">
-      <div className="flex flex-col items-center gap-6 px-4 py-20 text-center md:px-6">
-        <p className="font-display text-title-md">{title}</p>
-        <p className="label text-ink-2">4.8 ★★★★★ · 3 REVIEWS</p>
-        {/* Yotpo main widget mounts here once the integration lands */}
-        <div
-          id="yotpo-reviews"
-          className="yotpo yotpo-main-widget flex w-full max-w-3xl items-center justify-center rounded-xs border border-dashed border-line py-16"
-        >
-          <p className="label text-ink-3">YOTPO REVIEWS PLACEHOLDER</p>
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 15 15"
+      fill="currentColor"
+      aria-hidden
+    >
+      <path d="M7.5 0l2.02 4.68 5.08.44-3.85 3.34 1.15 4.97L7.5 10.8l-4.4 2.63 1.15-4.97L.42 5.12l5.08-.44L7.5 0z" />
+    </svg>
+  );
+}
+
+function StarRow({ count = 5, size = 15 }: { count?: number; size?: number }) {
+  return (
+    <span className="flex items-center gap-[0.125rem] text-ink" aria-label={`${count} stars`}>
+      {Array.from({ length: count }, (_, i) => (
+        <Star key={i} size={size} />
+      ))}
+    </span>
+  );
+}
+
+interface Review {
+  name: string;
+  verified?: boolean;
+  stars: number;
+  title: string;
+  body: string;
+  date: string;
+}
+
+const defaultReviews: Review[] = Array.from({ length: 3 }, () => ({
+  name: "Jane D.",
+  verified: true,
+  stars: 5,
+  title: "Lorem ipsum dolor sit amet consectetur adipiscing elit",
+  body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.",
+  date: "4/20/26",
+}));
+
+/* Reviews (Figma 33209:11159): centered rating summary, then a
+   full-width list — search/sort bar and review rows separated by
+   1.5px rules, each row three columns (reviewer · stars/title/body ·
+   date), pagination under the last row. */
+export function Reviews({
+  mode = "light",
+  title = "Presidio",
+  rating = "4.9",
+  count = 21,
+  reviews = defaultReviews,
+}: {
+  mode?: Mode;
+  title?: string;
+  rating?: string;
+  count?: number;
+  reviews?: Review[];
+}) {
+  return (
+    <section data-mode={mode} className="w-full bg-surface text-ink">
+      {/* 20px header stack gap is the comp's own value — the spacing
+          scale steps 16 → 24 with no 20 */}
+      <div className="flex flex-col items-center gap-6xl px-4xl py-9xl">
+        <div className="flex flex-col items-center gap-[1.25rem]">
+          <p className="font-display text-title-lg">{title}</p>
+          {/* 10px rating-row gap: comp value, no token (8 → 12) */}
+          <div className="flex items-center gap-[0.625rem]">
+            <p className="text-body-md font-medium">{rating}</p>
+            <StarRow size={17} />
+            <p className="text-body-md font-medium">{count} Reviews</p>
+          </div>
+          <button type="button" className="text-body-md font-medium">
+            Write a review
+          </button>
+        </div>
+
+        <div className="flex w-full flex-col">
+          {/* the comp's rules are deliberately heavier than the 1px
+              hairline system — 1.5px per the node */}
+          <div className="flex items-center justify-between border-t-[1.5px] border-line py-2xl">
+            <p className="text-body-md font-medium">Search reviews</p>
+            <p className="text-body-md font-medium">Sort by: Most recent</p>
+          </div>
+
+          {reviews.map((review, i) => (
+            <div
+              key={i}
+              /* 29px column gap + 13px title/body gap are the comp's
+                 own values — no tokens at those steps */
+              /* tablet holds three near-equal columns (the copy wraps
+                 tall); desktop widens the middle per the 1440 comp */
+              className="grid grid-cols-1 gap-y-lg border-t-[1.5px] border-line py-6xl md:grid-cols-[1fr_1.05fr_1fr] md:gap-x-[1.8125rem] xl:grid-cols-[1fr_2.3fr_1fr]"
+            >
+              <div className="flex flex-col gap-xs">
+                <p className="text-body-md font-medium">{review.name}</p>
+                {review.verified && (
+                  <p className="text-label-md font-medium uppercase text-ink-2">
+                    Verified
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-4xl">
+                <StarRow count={review.stars} />
+                <div className="flex flex-col gap-[0.8125rem]">
+                  <p className="text-body-md font-medium">{review.title}</p>
+                  <p className="text-body-sm text-ink-2">{review.body}</p>
+                </div>
+              </div>
+              <p className="text-label-md font-medium uppercase text-ink-2 md:text-right">
+                {review.date}
+              </p>
+            </div>
+          ))}
+
+          <div className="flex items-center justify-center gap-4xl pt-6xl">
+            <button type="button" aria-label="Previous page" className="text-ink">
+              <svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
+                <path d="M7 1L1 7l6 6" />
+              </svg>
+            </button>
+            <div className="flex items-center gap-2xl text-body-md font-medium">
+              <span>1</span>
+              <span>2</span>
+              <span>3</span>
+              <span>...</span>
+              <span>6</span>
+            </div>
+            <button type="button" aria-label="Next page" className="text-ink">
+              <svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
+                <path d="M1 1l6 6-6 6" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     </section>

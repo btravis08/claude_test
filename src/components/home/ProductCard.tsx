@@ -81,7 +81,10 @@ export function ProductCard({ product }: { product: ProductCardData }) {
     mq.addEventListener("change", update);
     return () => mq.removeEventListener("change", update);
   }, []);
-  const showSwatches = touch || (cardHover && !wellHover);
+  /* the mobile comp (33691:63716) shows the "+N colors" text, not
+     swatches — touch cards keep the resting meta; swatch picking
+     stays a hover affordance (touch users pick colorways on the PDP) */
+  const showSwatches = !touch && cardHover && !wellHover;
   const active = variants[selected];
 
   /* Warm the browser cache for every colorway's images on first hover

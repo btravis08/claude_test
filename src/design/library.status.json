@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-01T02:11:13.986Z",
+  "generatedAt": "2026-08-01T02:53:21.143Z",
   "sections": {
     "hero": {
       "comps": {
@@ -108,7 +108,7 @@
         },
         "mobile": {
           "pixel": 92.1,
-          "layout": 49.3
+          "layout": 47.5
         }
       },
       "tokens": {
@@ -164,16 +164,16 @@
     "product-slider": {
       "comps": {
         "desktop": {
-          "pixel": 98.4,
-          "layout": 82.7
+          "pixel": 98.1,
+          "layout": 78.5
         },
         "tablet": {
-          "pixel": 95.6,
-          "layout": 14.7
+          "pixel": 97.1,
+          "layout": 68
         },
         "mobile": {
-          "pixel": 97.5,
-          "layout": 19.1
+          "pixel": 98.3,
+          "layout": 59.9
         }
       },
       "tokens": {
@@ -185,22 +185,22 @@
         },
         "examples": [
           {
-            "selector": "div.flex.w-full > div.hidden.items-center > button.label.flex",
+            "selector": "div.flex.w-full > div.flex.items-center > button.label.flex",
             "kind": "padding",
             "value": "14px"
           },
           {
-            "selector": "div.flex.w-full > div.hidden.items-center > button.label.flex",
+            "selector": "div.flex.w-full > div.flex.items-center > button.label.flex",
             "kind": "padding",
             "value": "14px"
           },
           {
-            "selector": "div.flex.w-full > div.hidden.items-center > button.label.flex",
+            "selector": "div.flex.w-full > div.flex.items-center > button.label.flex",
             "kind": "padding",
             "value": "14px"
           },
           {
-            "selector": "div.flex.w-full > div.hidden.items-center > button.label.flex",
+            "selector": "div.flex.w-full > div.flex.items-center > button.label.flex",
             "kind": "padding",
             "value": "14px"
           },
@@ -335,23 +335,66 @@
     "reviews": {
       "comps": {
         "desktop": {
-          "pixel": 99,
-          "layout": 24.9
+          "pixel": 98.7,
+          "layout": 95.6
         },
         "tablet": {
-          "pixel": 98.9,
-          "layout": 30.5
+          "pixel": 98.3,
+          "layout": 89.6
         },
         "mobile": {
-          "pixel": 97.7,
-          "layout": 35.6
+          "pixel": 96.6,
+          "layout": 84.9
         }
       },
       "tokens": {
-        "elements": 7,
-        "offToken": 0,
-        "byKind": {},
-        "examples": []
+        "elements": 97,
+        "offToken": 13,
+        "byKind": {
+          "gap": 13
+        },
+        "examples": [
+          {
+            "selector": "section.w-full.bg-surface > div.flex.flex-col > div.flex.flex-col",
+            "kind": "gap",
+            "value": "20px"
+          },
+          {
+            "selector": "section.w-full.bg-surface > div.flex.flex-col > div.flex.flex-col",
+            "kind": "gap",
+            "value": "20px"
+          },
+          {
+            "selector": "div.flex.flex-col > div.flex.flex-col > div.flex.items-center",
+            "kind": "gap",
+            "value": "10px"
+          },
+          {
+            "selector": "div.flex.flex-col > div.flex.flex-col > div.flex.items-center",
+            "kind": "gap",
+            "value": "10px"
+          },
+          {
+            "selector": "div.flex.flex-col > div.flex.w-full > div.grid.grid-cols-1",
+            "kind": "gap",
+            "value": "29px"
+          },
+          {
+            "selector": "div.grid.grid-cols-1 > div.flex.flex-col > div.flex.flex-col",
+            "kind": "gap",
+            "value": "13px"
+          },
+          {
+            "selector": "div.grid.grid-cols-1 > div.flex.flex-col > div.flex.flex-col",
+            "kind": "gap",
+            "value": "13px"
+          },
+          {
+            "selector": "div.flex.flex-col > div.flex.w-full > div.grid.grid-cols-1",
+            "kind": "gap",
+            "value": "29px"
+          }
+        ]
       }
     },
     "legacy-hero": {

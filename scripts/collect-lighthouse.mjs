@@ -49,6 +49,24 @@ function runLighthouse(url, formFactor) {
   const report = JSON.parse(raw);
   const score = (id) => Math.round((report.categories[id]?.score ?? 0) * 100);
   const audit = (id) => report.audits[id]?.numericValue ?? null;
+
+  /* diagnostics, so a bad score arrives pre-diagnosed: the element
+     Lighthouse crowned LCP, and the top savings opportunities */
+  const lcpNode =
+    report.audits["largest-contentful-paint-element"]?.details?.items?.[0]
+      ?.items?.[0]?.node ?? null;
+  const opportunities = Object.values(report.audits)
+    .filter(
+      (a) =>
+        a?.details?.type === "opportunity" &&
+        (a.details.overallSavingsMs ?? 0) > 50,
+    )
+    .sort(
+      (a, b) => (b.details.overallSavingsMs ?? 0) - (a.details.overallSavingsMs ?? 0),
+    )
+    .slice(0, 3)
+    .map((a) => ({ id: a.id, savingsMs: Math.round(a.details.overallSavingsMs) }));
+
   return {
     perf: score("performance"),
     a11y: score("accessibility"),
@@ -58,6 +76,10 @@ function runLighthouse(url, formFactor) {
     lcp: audit("largest-contentful-paint"),
     cls: audit("cumulative-layout-shift"),
     tbt: audit("total-blocking-time"),
+    lcpElement: lcpNode
+      ? { selector: lcpNode.selector ?? null, snippet: (lcpNode.snippet ?? "").slice(0, 160) }
+      : null,
+    opportunities,
   };
 }
 

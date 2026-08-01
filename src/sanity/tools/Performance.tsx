@@ -27,6 +27,10 @@ interface Scores {
   lcp: number | null;
   cls: number | null;
   tbt: number | null;
+  /* diagnostics (newer snapshots): what Lighthouse crowned LCP, and
+     its top savings opportunities */
+  lcpElement?: { selector: string | null; snippet: string } | null;
+  opportunities?: { id: string; savingsMs: number }[];
 }
 
 /* nightly snapshot: both form factors. The first collection predates
@@ -241,6 +245,21 @@ function PageRow({ page, snaps }: { page: string; snaps: Snap[] }) {
           <GradeChip label="A11Y" value={m.a11y} />
           <GradeChip label="BP" value={m.bp} />
           <GradeChip label="SEO" value={m.seo} />
+          {(m.lcpElement?.selector || (m.opportunities?.length ?? 0) > 0) && (
+            <Text
+              size={0}
+              muted
+              style={{ width: "100%", fontFamily: MONO }}
+              title={m.lcpElement?.snippet}
+            >
+              LCP el {m.lcpElement?.selector ?? "—"}
+              {m.opportunities?.length
+                ? ` · fix first: ${m.opportunities
+                    .map((o) => `${o.id} (~${(o.savingsMs / 1000).toFixed(1)}s)`)
+                    .join(", ")}`
+                : ""}
+            </Text>
+          )}
           <Text size={0} style={{ width: "100%", fontFamily: MONO }}>
             <span style={{ color: "var(--card-muted-fg-color, #8a8a88)" }}>
               mobile{" "}

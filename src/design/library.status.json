@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-01T01:57:09.735Z",
+  "generatedAt": "2026-08-01T02:11:13.986Z",
   "sections": {
     "hero": {
       "comps": {
@@ -382,6 +382,11 @@
             "value": "oklab(0 0 0 / 0.2)"
           }
         ]
+      },
+      "motion": {
+        "passed": 1,
+        "total": 1,
+        "failed": []
       }
     },
     "split-text": {
@@ -392,7 +397,7 @@
         },
         "tablet": {
           "pixel": 98.5,
-          "layout": 91.5
+          "layout": 90.5
         },
         "mobile": {
           "pixel": 94.5,
@@ -417,6 +422,11 @@
             "value": "18px"
           }
         ]
+      },
+      "motion": {
+        "passed": 1,
+        "total": 1,
+        "failed": []
       }
     },
     "floating-gallery": {
@@ -444,9 +454,14 @@
           {
             "selector": "div.absolute > div.relative.w-full > div.pointer-events-none.absolute",
             "kind": "surface",
-            "value": "oklab(0.977255 -0.00247279 0.00476927 / 0.45)"
+            "value": "oklab(0.977202 -0.00247672 0.00477713 / 0.45)"
           }
         ]
+      },
+      "motion": {
+        "passed": 1,
+        "total": 1,
+        "failed": []
       }
     },
     "full-bleed-carousel": {
@@ -511,6 +526,11 @@
             "value": "72px"
           }
         ]
+      },
+      "motion": {
+        "passed": 1,
+        "total": 1,
+        "failed": []
       }
     },
     "product-swirl": {

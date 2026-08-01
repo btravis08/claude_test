@@ -25,6 +25,9 @@ export interface GridEntry {
   /* change vs the previous audit run */
   delta: number | null;
   offToken: number;
+  motion: { passed: number; total: number } | null;
+  /* Figma node re-render vs committed comp; low = design moved */
+  designDrift: number | null;
 }
 
 /* Thresholds, calibrated against the cosine edge-map metric on real
@@ -39,9 +42,13 @@ export interface GridEntry {
 const LAYOUT_OK = 50;
 const OFF_TOKEN_CLUSTER = 10;
 
+const DESIGN_MOVED = 85;
+
 function needsAttention(e: GridEntry) {
   if (e.offToken >= OFF_TOKEN_CLUSTER) return true;
   if (e.layout !== null && !e.timed && e.layout < LAYOUT_OK) return true;
+  if (e.motion && e.motion.passed < e.motion.total) return true;
+  if (e.designDrift !== null && e.designDrift < DESIGN_MOVED) return true;
   return false;
 }
 
@@ -191,6 +198,22 @@ export function LibraryGrid({
                         ) : (
                           <Badge title="No comp exported, so nothing to diff against">
                             NO COMP
+                          </Badge>
+                        )}
+                        {entry.motion && (
+                          <Badge
+                            strong={entry.motion.passed < entry.motion.total}
+                            title="Choreography assertions replayed in a real browser"
+                          >
+                            MOTION {entry.motion.passed}/{entry.motion.total}
+                          </Badge>
+                        )}
+                        {entry.designDrift !== null && entry.designDrift < DESIGN_MOVED && (
+                          <Badge
+                            strong
+                            title="The Figma node no longer matches the exported comp — the design changed since this was built"
+                          >
+                            DESIGN MOVED
                           </Badge>
                         )}
                         <Badge

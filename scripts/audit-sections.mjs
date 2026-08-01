@@ -31,6 +31,9 @@ import { createRequire } from "node:module";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
+import { gradientMap, cosineScore, readRegistry as readRegistryFrom } from "./lib/image-metric.mjs";
+import { MOTION_SPECS } from "./motion-specs.mjs";
+
 /* playwright-core: prefer a local install (CI does npm i --no-save
    playwright-core); fall back to the sandbox's sibling project */
 const localRequire = createRequire(import.meta.url);
@@ -56,26 +59,8 @@ const WIDTHS = { desktop: 1440, tablet: 1024, mobile: 428 };
 
 /* the registry is TSX — read the fields the audit needs without
    compiling it (slug, modes, comps) */
-function readRegistry() {
-  const src = readFileSync(path.join(ROOT, "src/library/registry.tsx"), "utf8");
-  /* slice the file at each entry's slug so a section without comps
-     can't inherit the next section's block */
-  const marks = [...src.matchAll(/^    slug: "([^"]+)",$/gm)];
-  return marks.map((mark, i) => {
-    const body = src.slice(mark.index, marks[i + 1]?.index ?? src.length);
-    const modes = (body.match(/modes: \[([^\]]*)\]/)?.[1] ?? "")
-      .split(",")
-      .map((s) => s.trim().replace(/"/g, ""))
-      .filter(Boolean);
-    const comps = {};
-    for (const c of body.matchAll(
-      /(desktop|tablet|mobile): \{ width: (\d+), height: (\d+) \}/g,
-    )) {
-      comps[c[1]] = { width: Number(c[2]), height: Number(c[3]) };
-    }
-    return { slug: mark[1], modes, comps };
-  });
-}
+const readRegistry = () =>
+  readRegistryFrom(path.join(ROOT, "src/library/registry.tsx"));
 
 const compPath = (slug, bp) =>
   path.join(ROOT, "public/figma/comps", `${slug}${bp === "desktop" ? "" : `-${bp}`}.jpg`);
@@ -94,53 +79,6 @@ function matchScore(a, b, scale = 255) {
    or copy inside those blocks differs, which is exactly the
    distinction the layout score needs: content changes shouldn't move
    it, moved/resized/missing blocks should. */
-const GRID = 96;
-/* box-blur passes over the gradient map: raw 1-cell edges never
-   align between a browser render and a Figma export even when the
-   layout matches, so edges are widened into bands before comparing.
-   Tuned on real screenshots: at 2 passes a verified-matching section
-   scores ~95 while a wrong-layout pairing stays ~22. */
-const EDGE_TOLERANCE = 2;
-async function gradientMap(input) {
-  const raw = await sharp(input)
-    .resize(GRID, GRID, { fit: "fill" })
-    .greyscale()
-    .normalise()
-    /* soften texture so photographic grain doesn't read as edges */
-    .blur(0.6)
-    .raw()
-    .toBuffer();
-  let grad = new Float32Array(GRID * GRID);
-  for (let y = 0; y < GRID - 1; y++) {
-    for (let x = 0; x < GRID - 1; x++) {
-      const i = y * GRID + x;
-      grad[i] = Math.abs(raw[i] - raw[i + 1]) + Math.abs(raw[i] - raw[i + GRID]);
-    }
-  }
-  for (let t = 0; t < EDGE_TOLERANCE; t++) {
-    const next = new Float32Array(GRID * GRID);
-    for (let y = 0; y < GRID; y++) {
-      for (let x = 0; x < GRID; x++) {
-        let sum = 0;
-        let n = 0;
-        for (let dy = -1; dy <= 1; dy++) {
-          for (let dx = -1; dx <= 1; dx++) {
-            const yy = y + dy;
-            const xx = x + dx;
-            if (yy >= 0 && yy < GRID && xx >= 0 && xx < GRID) {
-              sum += grad[yy * GRID + xx];
-              n++;
-            }
-          }
-        }
-        next[y * GRID + x] = sum / n;
-      }
-    }
-    grad = next;
-  }
-  return grad;
-}
-
 async function diff(shotBuf, compFile) {
   const comp = sharp(compFile);
   const { width, height } = await comp.metadata();
@@ -153,24 +91,11 @@ async function diff(shotBuf, compFile) {
 
   const [aGrad, bGrad] = await Promise.all([gradientMap(shotBuf), gradientMap(compFile)]);
 
-  /* cosine similarity: are the edges in the same places? Verified
-     spread — identical 100, same composition with different content
-     high, unrelated section layouts 14–17. (Mean-difference failed
-     here: sparse gradient maps are mostly zeros, so ANY two layouts
-     scored 90+.) */
-  let dot = 0;
-  let na = 0;
-  let nb = 0;
-  for (let i = 0; i < aGrad.length; i++) {
-    dot += aGrad[i] * bGrad[i];
-    na += aGrad[i] * aGrad[i];
-    nb += bGrad[i] * bGrad[i];
-  }
-  const cosine = (dot / (Math.sqrt(na) * Math.sqrt(nb) || 1)) * 100;
-
   return {
     pixel: matchScore(aFull, bFull),
-    layout: +cosine.toFixed(1),
+    /* shared metric (scripts/lib/image-metric.mjs): cosine of blurred
+       edge maps — verified match ~95, unrelated layouts ~22 */
+    layout: cosineScore(aGrad, bGrad),
   };
 }
 
@@ -225,11 +150,34 @@ async function run() {
       examples: audit.findings.slice(0, 8),
     };
 
+    /* motion specs: replayable assertions for the choreography a
+       screenshot can't judge — a fresh page per spec */
+    const specs = MOTION_SPECS[entry.slug] ?? [];
+    if (specs.length) {
+      const failed = [];
+      for (const spec of specs) {
+        const specPage = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+        try {
+          await specPage.goto(
+            `${ORIGIN}/library/${entry.slug}?frame=1&mode=${entry.modes[0]}`,
+            { waitUntil: "domcontentloaded" },
+          );
+          await spec.run(specPage, ORIGIN, entry.slug);
+        } catch (err) {
+          failed.push({ name: spec.name, error: String(err.message ?? err) });
+        } finally {
+          await specPage.close();
+        }
+      }
+      record.motion = { passed: specs.length - failed.length, total: specs.length, failed };
+    }
+
     status[entry.slug] = record;
     const worst = Object.values(record.comps).map((c) => c.layout);
     console.log(
       `${entry.slug.padEnd(22)} layout ${worst.length ? `${Math.min(...worst)}%` : "—".padEnd(4)}` +
-        `  off-token ${record.tokens.offToken}`,
+        `  off-token ${record.tokens.offToken}` +
+        (record.motion ? `  motion ${record.motion.passed}/${record.motion.total}` : ""),
     );
   }
 

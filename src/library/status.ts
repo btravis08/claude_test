@@ -1,3 +1,4 @@
+import drift from "@/design/design-drift.json";
 import history from "@/design/library.history.json";
 import status from "@/design/library.status.json";
 import { SECTIONS, type SectionEntry } from "@/library/registry";
@@ -10,6 +11,7 @@ import { SECTIONS, type SectionEntry } from "@/library/registry";
 
 export interface SectionStatus {
   comps: Record<string, { pixel: number; layout: number }>;
+  motion?: { passed: number; total: number; failed: { name: string; error: string }[] };
   tokens: {
     elements: number;
     offToken: number;
@@ -67,7 +69,18 @@ export function summarize(entry: SectionEntry) {
     layout: worstLayout(entry.slug),
     delta: layoutDelta(entry.slug),
     offToken: s?.tokens?.offToken ?? 0,
+    motion: s?.motion ? { passed: s.motion.passed, total: s.motion.total } : null,
+    designDrift: driftScore(entry.slug),
   };
 }
 
 export const summaries = () => SECTIONS.map(summarize);
+
+/* design-drift check (scripts/check-design-drift.mjs): the Figma node
+   re-rendered and compared against the committed comp — a low score
+   means the DESIGN moved since the comp was exported */
+type DriftFile = { generatedAt: string | null; sections: Record<string, { score: number | null }> };
+export function driftScore(slug: string): number | null {
+  return (drift as DriftFile).sections?.[slug]?.score ?? null;
+}
+export const driftCheckedAt = (drift as DriftFile).generatedAt ?? null;

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-01T01:48:58.790Z",
+  "generatedAt": "2026-08-01T01:57:09.735Z",
   "sections": {
     "hero": {
       "comps": {
@@ -392,7 +392,7 @@
         },
         "tablet": {
           "pixel": 98.5,
-          "layout": 90.5
+          "layout": 91.5
         },
         "mobile": {
           "pixel": 94.5,
@@ -444,7 +444,7 @@
           {
             "selector": "div.absolute > div.relative.w-full > div.pointer-events-none.absolute",
             "kind": "surface",
-            "value": "oklab(0.977202 -0.00247672 0.00477713 / 0.45)"
+            "value": "oklab(0.977255 -0.00247279 0.00476927 / 0.45)"
           }
         ]
       }

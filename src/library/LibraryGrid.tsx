@@ -22,22 +22,66 @@ export interface GridEntry {
   breakpoints: string[];
   /* worst layout match across the section's breakpoints */
   layout: number | null;
+  /* change vs the previous audit run */
+  delta: number | null;
   offToken: number;
 }
 
-/* Thresholds, chosen so the flag means something. Below LAYOUT_OK the
-   composition genuinely differs from the comp; above it the delta is
-   photography and antialiasing, not layout. A handful of off-token
-   values is usually one shared utility repeated down a list, so only
-   a real cluster is worth triage — every card still shows its exact
-   count, nothing is hidden by the threshold. */
-const LAYOUT_OK = 85;
+/* Thresholds, calibrated against the cosine edge-map metric on real
+   screenshot/comp pairs: a verified-matching section scores ~95, a
+   wrong-layout pairing ~22. Bands: ≥85 matching, 50–85 partial
+   (usually responsive drift at one breakpoint — the score shown is
+   the WORST breakpoint), <50 the composition genuinely doesn't match
+   its comp. The flag fires on the bottom band so triage starts with
+   certain mismatches; partials still show their number on the card.
+   Off-token: a handful is usually one shared utility repeated down a
+   list, so only a cluster flags — the exact count always shows. */
+const LAYOUT_OK = 50;
 const OFF_TOKEN_CLUSTER = 10;
 
 function needsAttention(e: GridEntry) {
   if (e.offToken >= OFF_TOKEN_CLUSTER) return true;
   if (e.layout !== null && !e.timed && e.layout < LAYOUT_OK) return true;
   return false;
+}
+
+/* tiny device glyphs for the comp-coverage badge */
+function DeviceIcons({ breakpoints }: { breakpoints: string[] }) {
+  const stroke = { fill: "none", stroke: "currentColor", strokeWidth: 1.2 } as const;
+  return (
+    <span aria-hidden className="inline-flex items-center gap-1 align-middle">
+      {breakpoints.includes("desktop") && (
+        <svg width="12" height="12" viewBox="0 0 12 12" {...stroke}>
+          <rect x="1" y="2" width="10" height="6.5" rx="0.5" />
+          <path d="M4 10.5h4M6 8.5v2" />
+        </svg>
+      )}
+      {breakpoints.includes("tablet") && (
+        <svg width="12" height="12" viewBox="0 0 12 12" {...stroke}>
+          <rect x="2" y="1.5" width="8" height="9" rx="1" />
+          <path d="M5 9.25h2" />
+        </svg>
+      )}
+      {breakpoints.includes("mobile") && (
+        <svg width="12" height="12" viewBox="0 0 12 12" {...stroke}>
+          <rect x="3.5" y="1.5" width="5" height="9" rx="1" />
+          <path d="M5.25 9.25h1.5" />
+        </svg>
+      )}
+    </span>
+  );
+}
+
+function Delta({ value }: { value: number | null }) {
+  if (value === null || Math.abs(value) < 0.5) return null;
+  return (
+    <span
+      title="Change vs the previous audit run"
+      className="label font-medium"
+    >
+      {value > 0 ? `\u2191${value}` : `\u2193${Math.abs(value)}`}
+    </span>
+  );
 }
 
 function Badge({
@@ -121,7 +165,9 @@ export function LibraryGrid({
                         <Badge>{entry.schemaType ? "CMS" : "FIXED"}</Badge>
                         {entry.breakpoints.length > 0 && (
                           <Badge title={`Comps: ${entry.breakpoints.join(", ")}`}>
-                            COMP ×{entry.breakpoints.length}
+                            <span className="inline-flex items-center gap-1.5">
+                              COMP <DeviceIcons breakpoints={entry.breakpoints} />
+                            </span>
                           </Badge>
                         )}
                       </div>
@@ -137,7 +183,10 @@ export function LibraryGrid({
                                 : "Worst layout match across this section's comps"
                             }
                           >
-                            {entry.layout}% MATCH{entry.timed ? " · TIMED" : ""}
+                            <span className="inline-flex items-center gap-1.5">
+                              {entry.layout}% MATCH{entry.timed ? " · TIMED" : ""}
+                              <Delta value={entry.delta} />
+                            </span>
                           </Badge>
                         ) : (
                           <Badge title="No comp exported, so nothing to diff against">

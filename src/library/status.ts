@@ -1,3 +1,4 @@
+import history from "@/design/library.history.json";
 import status from "@/design/library.status.json";
 import { SECTIONS, type SectionEntry } from "@/library/registry";
 
@@ -32,6 +33,26 @@ export function worstLayout(slug: string): number | null {
   return scores.length ? Math.min(...scores) : null;
 }
 
+/* the run before the current one — the baseline the deltas read from
+   (the newest history entry IS the current status) */
+type HistoryRun = {
+  generatedAt: string;
+  sections: Record<string, { layout: number | null; offToken: number }>;
+};
+const previousRun: HistoryRun | null =
+  (history as HistoryRun[]).length > 1
+    ? (history as HistoryRun[])[(history as HistoryRun[]).length - 2]
+    : null;
+
+/* layout delta vs the previous audit run; null when there's nothing
+   to compare (first run, no comp, or section added since) */
+export function layoutDelta(slug: string): number | null {
+  const now = worstLayout(slug);
+  const prev = previousRun?.sections[slug]?.layout ?? null;
+  if (now === null || prev === null) return null;
+  return +(now - prev).toFixed(1);
+}
+
 export function summarize(entry: SectionEntry) {
   const s = statusFor(entry.slug);
   return {
@@ -44,6 +65,7 @@ export function summarize(entry: SectionEntry) {
     timed: entry.timed,
     breakpoints: Object.keys(entry.comps ?? {}),
     layout: worstLayout(entry.slug),
+    delta: layoutDelta(entry.slug),
     offToken: s?.tokens?.offToken ?? 0,
   };
 }

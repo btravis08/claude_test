@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { compUrl, figmaUrl, SECTIONS } from "@/library/registry";
-import { auditedAt, statusFor } from "@/library/status";
+import { auditedAt, layoutDelta, statusFor } from "@/library/status";
 
 /*
   The library, machine-readable: every section with its Figma node,
@@ -35,6 +35,8 @@ export function GET() {
           match: status?.comps?.[breakpoint] ?? null,
         })),
         tokens: status?.tokens ?? null,
+        /* worst-layout change vs the previous audit run */
+        layoutDelta: layoutDelta(entry.slug),
       };
     }),
   });

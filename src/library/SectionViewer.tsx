@@ -35,6 +35,30 @@ const VIEWPORTS: { id: Breakpoint; label: string; width: number }[] = [
   { id: "mobile", label: "Mobile", width: 428 },
 ];
 
+function DeviceIcon({ id }: { id: Breakpoint }) {
+  const stroke = { fill: "none", stroke: "currentColor", strokeWidth: 1.2 } as const;
+  if (id === "desktop")
+    return (
+      <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden {...stroke}>
+        <rect x="1" y="2" width="10" height="6.5" rx="0.5" />
+        <path d="M4 10.5h4M6 8.5v2" />
+      </svg>
+    );
+  if (id === "tablet")
+    return (
+      <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden {...stroke}>
+        <rect x="2" y="1.5" width="8" height="9" rx="1" />
+        <path d="M5 9.25h2" />
+      </svg>
+    );
+  return (
+    <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden {...stroke}>
+      <rect x="3.5" y="1.5" width="5" height="9" rx="1" />
+      <path d="M5.25 9.25h1.5" />
+    </svg>
+  );
+}
+
 /* comp overlay modes: off, ghosted over the build, or difference-
    blended so any mismatch lights up and a perfect match goes black */
 type Compare = "off" | "overlay" | "difference";
@@ -102,10 +126,11 @@ export function SectionViewer({ entry }: { entry: ViewerEntry }) {
                 key={v.id}
                 type="button"
                 onClick={() => setVp(v.id)}
-                className={`label rounded-xs px-3 py-2 font-medium transition-colors ${
+                className={`label flex items-center gap-1.5 rounded-xs px-3 py-2 font-medium transition-colors ${
                   vp === v.id ? "bg-btn text-btn-fg" : "bg-wash text-ink-3 hover:text-ink"
                 }`}
               >
+                <DeviceIcon id={v.id} />
                 {v.label.toUpperCase()}
               </button>
             ))}

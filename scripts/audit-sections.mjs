@@ -4,32 +4,53 @@
  * For every registered section it:
  *   1. screenshots the live render at each breakpoint that has a comp
  *   2. diffs that against the Figma comp, producing two numbers:
- *        layout — composition match, measured on 64px thumbnails so
- *                 antialiasing and photographic detail can't drown the
- *                 signal. THIS is the number that tracks design drift.
- *        pixel  — full-resolution match. Always lower (the comp's
- *                 photography is not the site's photography); useful
- *                 only as a relative trend for one section over time.
+ *        layout — STRUCTURE match: both images are reduced to
+ *                 normalized 96px gradient maps (where edges are, not
+ *                 what pixels contain), so different photography or
+ *                 copy in the same composition scores high while a
+ *                 moved/resized/missing block scores low. This is the
+ *                 drift number.
+ *        pixel  — full-resolution raw match. Always lower (the comp's
+ *                 photography is not the site's); a relative trend
+ *                 only.
  *   3. sweeps every visible element through the token matcher and
  *      counts values that match no token
  *
- * Results land in src/design/library.status.json, which the library
- * grid badges from and /library/manifest.json serves.
+ * Results land in src/design/library.status.json; every run also
+ * appends a snapshot to src/design/library.history.json so the grid
+ * can show per-section deltas and regressions are visible.
  *
  * Needs a built server on :3000 (npm run build && npm start).
  * Run: npm run audit
+ *   AUDIT_ORIGIN    — server origin (default http://localhost:3000)
+ *   AUDIT_CHROMIUM  — chromium/chrome binary (default the sandbox's
+ *                     /opt/pw-browsers/chromium; CI passes
+ *                     /usr/bin/google-chrome)
  */
 import { createRequire } from "node:module";
-import { readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
-const require = createRequire("/home/user/site-framework/package.json");
-const { chromium } = require("playwright-core");
-const sharp = createRequire(import.meta.url)("sharp");
+/* playwright-core: prefer a local install (CI does npm i --no-save
+   playwright-core); fall back to the sandbox's sibling project */
+const localRequire = createRequire(import.meta.url);
+function resolvePlaywright() {
+  try {
+    return localRequire("playwright-core");
+  } catch {
+    return createRequire("/home/user/site-framework/package.json")("playwright-core");
+  }
+}
+const { chromium } = resolvePlaywright();
+const sharp = localRequire("sharp");
 
 const ROOT = process.cwd();
 const ORIGIN = process.env.AUDIT_ORIGIN ?? "http://localhost:3000";
+const EXECUTABLE = process.env.AUDIT_CHROMIUM ?? "/opt/pw-browsers/chromium";
 const OUT = path.join(ROOT, "src/design/library.status.json");
+const HISTORY = path.join(ROOT, "src/design/library.history.json");
+/* enough runs for a real trend without bloating the bundle */
+const HISTORY_CAP = 60;
 
 const WIDTHS = { desktop: 1440, tablet: 1024, mobile: 428 };
 
@@ -59,12 +80,65 @@ function readRegistry() {
 const compPath = (slug, bp) =>
   path.join(ROOT, "public/figma/comps", `${slug}${bp === "desktop" ? "" : `-${bp}`}.jpg`);
 
-/* mean absolute difference of two same-size grayscale buffers, as a
-   0–100 "match" score */
-function matchScore(a, b) {
+/* mean absolute difference of two same-size buffers, as a 0–100
+   "match" score */
+function matchScore(a, b, scale = 255) {
   let sum = 0;
   for (let i = 0; i < a.length; i++) sum += Math.abs(a[i] - b[i]);
-  return +(100 - (sum / a.length / 255) * 100).toFixed(1);
+  return +(100 - (sum / a.length / scale) * 100).toFixed(1);
+}
+
+/* Gradient map: where the edges are, per pixel, on a normalized 96px
+   thumbnail. Two images of the same COMPOSITION — same blocks in the
+   same places — produce near-identical maps even when the photography
+   or copy inside those blocks differs, which is exactly the
+   distinction the layout score needs: content changes shouldn't move
+   it, moved/resized/missing blocks should. */
+const GRID = 96;
+/* box-blur passes over the gradient map: raw 1-cell edges never
+   align between a browser render and a Figma export even when the
+   layout matches, so edges are widened into bands before comparing.
+   Tuned on real screenshots: at 2 passes a verified-matching section
+   scores ~95 while a wrong-layout pairing stays ~22. */
+const EDGE_TOLERANCE = 2;
+async function gradientMap(input) {
+  const raw = await sharp(input)
+    .resize(GRID, GRID, { fit: "fill" })
+    .greyscale()
+    .normalise()
+    /* soften texture so photographic grain doesn't read as edges */
+    .blur(0.6)
+    .raw()
+    .toBuffer();
+  let grad = new Float32Array(GRID * GRID);
+  for (let y = 0; y < GRID - 1; y++) {
+    for (let x = 0; x < GRID - 1; x++) {
+      const i = y * GRID + x;
+      grad[i] = Math.abs(raw[i] - raw[i + 1]) + Math.abs(raw[i] - raw[i + GRID]);
+    }
+  }
+  for (let t = 0; t < EDGE_TOLERANCE; t++) {
+    const next = new Float32Array(GRID * GRID);
+    for (let y = 0; y < GRID; y++) {
+      for (let x = 0; x < GRID; x++) {
+        let sum = 0;
+        let n = 0;
+        for (let dy = -1; dy <= 1; dy++) {
+          for (let dx = -1; dx <= 1; dx++) {
+            const yy = y + dy;
+            const xx = x + dx;
+            if (yy >= 0 && yy < GRID && xx >= 0 && xx < GRID) {
+              sum += grad[yy * GRID + xx];
+              n++;
+            }
+          }
+        }
+        next[y * GRID + x] = sum / n;
+      }
+    }
+    grad = next;
+  }
+  return grad;
 }
 
 async function diff(shotBuf, compFile) {
@@ -77,19 +151,35 @@ async function diff(shotBuf, compFile) {
     comp.clone().greyscale().raw().toBuffer(),
   ]);
 
-  /* composition: 64px thumbnails, normalized so overall exposure
-     differences between a flat comp and a photographic render don't
-     count as layout drift */
-  const thumb = (input) =>
-    sharp(input).resize(64, 64, { fit: "fill" }).greyscale().normalise().raw().toBuffer();
-  const [aThumb, bThumb] = await Promise.all([thumb(shotBuf), thumb(compFile)]);
+  const [aGrad, bGrad] = await Promise.all([gradientMap(shotBuf), gradientMap(compFile)]);
 
-  return { pixel: matchScore(aFull, bFull), layout: matchScore(aThumb, bThumb) };
+  /* cosine similarity: are the edges in the same places? Verified
+     spread — identical 100, same composition with different content
+     high, unrelated section layouts 14–17. (Mean-difference failed
+     here: sparse gradient maps are mostly zeros, so ANY two layouts
+     scored 90+.) */
+  let dot = 0;
+  let na = 0;
+  let nb = 0;
+  for (let i = 0; i < aGrad.length; i++) {
+    dot += aGrad[i] * bGrad[i];
+    na += aGrad[i] * aGrad[i];
+    nb += bGrad[i] * bGrad[i];
+  }
+  const cosine = (dot / (Math.sqrt(na) * Math.sqrt(nb) || 1)) * 100;
+
+  return {
+    pixel: matchScore(aFull, bFull),
+    layout: +cosine.toFixed(1),
+  };
 }
 
 async function run() {
   const entries = readRegistry();
-  const browser = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium" });
+  const browser = await chromium.launch({
+    executablePath: EXECUTABLE,
+    args: ["--no-sandbox"],
+  });
   const status = {};
 
   for (const entry of entries) {
@@ -144,11 +234,32 @@ async function run() {
   }
 
   await browser.close();
+  const generatedAt = new Date().toISOString();
+  writeFileSync(OUT, `${JSON.stringify({ generatedAt, sections: status }, null, 2)}\n`);
+
+  /* append this run to the history so the grid can show deltas and a
+     regression is a visible drop, not a silent overwrite */
+  const history = existsSync(HISTORY) ? JSON.parse(readFileSync(HISTORY, "utf8")) : [];
+  history.push({
+    generatedAt,
+    sections: Object.fromEntries(
+      Object.entries(status).map(([slug, s]) => {
+        const layouts = Object.values(s.comps).map((c) => c.layout);
+        return [
+          slug,
+          {
+            layout: layouts.length ? Math.min(...layouts) : null,
+            offToken: s.tokens?.offToken ?? 0,
+          },
+        ];
+      }),
+    ),
+  });
   writeFileSync(
-    OUT,
-    `${JSON.stringify({ generatedAt: new Date().toISOString(), sections: status }, null, 2)}\n`,
+    HISTORY,
+    `${JSON.stringify(history.slice(-HISTORY_CAP), null, 2)}\n`,
   );
-  console.log(`\n✓ ${path.relative(ROOT, OUT)}`);
+  console.log(`\n✓ ${path.relative(ROOT, OUT)} (+ history, ${history.length} runs)`);
 }
 
 run().catch((err) => {

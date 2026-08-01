@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-07-31T15:33:44.019Z",
+  "generatedAt": "2026-08-01T01:48:58.790Z",
   "sections": {
     "hero": {
       "comps": {
         "desktop": {
           "pixel": 89.9,
-          "layout": 89.9
+          "layout": 49.8
         },
         "tablet": {
           "pixel": 89.8,
-          "layout": 89.6
+          "layout": 51.3
         },
         "mobile": {
           "pixel": 86.5,
-          "layout": 85.3
+          "layout": 46.9
         }
       },
       "tokens": {
@@ -35,15 +35,15 @@
       "comps": {
         "desktop": {
           "pixel": 79.2,
-          "layout": 69.7
+          "layout": 31.9
         },
         "tablet": {
           "pixel": 73,
-          "layout": 66.3
+          "layout": 32
         },
         "mobile": {
           "pixel": 77.2,
-          "layout": 72.2
+          "layout": 52.4
         }
       },
       "tokens": {
@@ -65,15 +65,15 @@
       "comps": {
         "desktop": {
           "pixel": 75.4,
-          "layout": 72.7
+          "layout": 60.6
         },
         "tablet": {
           "pixel": 75.4,
-          "layout": 72
+          "layout": 60.9
         },
         "mobile": {
           "pixel": 76,
-          "layout": 77.5
+          "layout": 66.4
         }
       },
       "tokens": {
@@ -100,15 +100,15 @@
       "comps": {
         "desktop": {
           "pixel": 91.5,
-          "layout": 82.7
+          "layout": 42.5
         },
         "tablet": {
           "pixel": 91.8,
-          "layout": 84.9
+          "layout": 48.7
         },
         "mobile": {
           "pixel": 92.1,
-          "layout": 87.4
+          "layout": 49.3
         }
       },
       "tokens": {
@@ -165,15 +165,15 @@
       "comps": {
         "desktop": {
           "pixel": 98.4,
-          "layout": 83.3
+          "layout": 82.7
         },
         "tablet": {
           "pixel": 95.6,
-          "layout": 74.8
+          "layout": 14.7
         },
         "mobile": {
           "pixel": 97.5,
-          "layout": 86.8
+          "layout": 19.1
         }
       },
       "tokens": {
@@ -231,15 +231,15 @@
       "comps": {
         "desktop": {
           "pixel": 97.5,
-          "layout": 96.5
+          "layout": 94.6
         },
         "tablet": {
           "pixel": 96.8,
-          "layout": 95.5
+          "layout": 87
         },
         "mobile": {
           "pixel": 92.4,
-          "layout": 86.6
+          "layout": 49.8
         }
       },
       "tokens": {
@@ -283,7 +283,7 @@
       "comps": {
         "desktop": {
           "pixel": 98.3,
-          "layout": 93.3
+          "layout": 71.6
         }
       },
       "tokens": {
@@ -336,15 +336,15 @@
       "comps": {
         "desktop": {
           "pixel": 99,
-          "layout": 62.2
+          "layout": 24.9
         },
         "tablet": {
           "pixel": 98.9,
-          "layout": 80.4
+          "layout": 30.5
         },
         "mobile": {
           "pixel": 97.7,
-          "layout": 86.2
+          "layout": 35.6
         }
       },
       "tokens": {
@@ -358,15 +358,15 @@
       "comps": {
         "desktop": {
           "pixel": 37,
-          "layout": 39.2
+          "layout": 51.8
         },
         "tablet": {
           "pixel": 33.7,
-          "layout": 37.1
+          "layout": 51.6
         },
         "mobile": {
           "pixel": 63.4,
-          "layout": 66.8
+          "layout": 53.1
         }
       },
       "tokens": {
@@ -388,15 +388,15 @@
       "comps": {
         "desktop": {
           "pixel": 98.9,
-          "layout": 97
+          "layout": 95.4
         },
         "tablet": {
           "pixel": 98.5,
-          "layout": 97.5
+          "layout": 90.5
         },
         "mobile": {
           "pixel": 94.5,
-          "layout": 92.9
+          "layout": 76.6
         }
       },
       "tokens": {
@@ -423,15 +423,15 @@
       "comps": {
         "desktop": {
           "pixel": 88.2,
-          "layout": 88
+          "layout": 77.8
         },
         "tablet": {
           "pixel": 77.1,
-          "layout": 76.5
+          "layout": 53.5
         },
         "mobile": {
           "pixel": 78.2,
-          "layout": 76.6
+          "layout": 39.8
         }
       },
       "tokens": {
@@ -453,11 +453,11 @@
       "comps": {
         "desktop": {
           "pixel": 72.4,
-          "layout": 75.2
+          "layout": 56.9
         },
         "mobile": {
           "pixel": 63.1,
-          "layout": 63.5
+          "layout": 51
         }
       },
       "tokens": {
@@ -517,15 +517,15 @@
       "comps": {
         "desktop": {
           "pixel": 94.9,
-          "layout": 95.4
+          "layout": 87.4
         },
         "tablet": {
           "pixel": 92.9,
-          "layout": 93.1
+          "layout": 79.5
         },
         "mobile": {
           "pixel": 85.6,
-          "layout": 86
+          "layout": 66.7
         }
       },
       "tokens": {

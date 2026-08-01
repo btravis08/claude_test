@@ -19,8 +19,7 @@ import history from "@/design/perf.history.json";
   they're semantic, not decorative.
 */
 
-interface Snap {
-  t: string;
+interface Scores {
   perf: number;
   a11y: number;
   bp: number;
@@ -29,6 +28,17 @@ interface Snap {
   cls: number | null;
   tbt: number | null;
 }
+
+/* nightly snapshot: both form factors. The first collection predates
+   the desktop runs and stored flat mobile scores — normalize reads. */
+interface Snap extends Partial<Scores> {
+  t: string;
+  mobile?: Scores;
+  desktop?: Scores;
+}
+
+const mobileOf = (s: Snap): Scores => s.mobile ?? (s as unknown as Scores);
+const desktopOf = (s: Snap): Scores | null => s.desktop ?? null;
 
 const DATA = (history as { pages: Record<string, Snap[]> }).pages;
 
@@ -49,10 +59,18 @@ function ago(iso: string) {
 }
 
 /* the line graph: score history normalized into a small polyline */
-function Sparkline({ snaps, color }: { snaps: Snap[]; color: string }) {
+function Sparkline({
+  snaps,
+  color,
+  pick,
+}: {
+  snaps: Snap[];
+  color: string;
+  pick: (s: Snap) => number | null;
+}) {
   const W = 160;
   const H = 40;
-  const scores = snaps.map((s) => s.perf);
+  const scores = snaps.map(pick).filter((n): n is number => n !== null);
   if (scores.length < 2) {
     return (
       <Text size={0} muted>
@@ -98,20 +116,62 @@ function GradeChip({ label, value }: { label: string; value: number }) {
   );
 }
 
+function Ticker({
+  label,
+  snaps,
+  pick,
+}: {
+  label: string;
+  snaps: Snap[];
+  pick: (s: Snap) => Scores | null;
+}) {
+  const series = snaps.map((s) => pick(s)?.perf ?? null);
+  const present = series.filter((n): n is number => n !== null);
+  if (!present.length)
+    return (
+      <Stack space={2} style={{ width: 250 }}>
+        <Text size={0} muted>
+          {label}
+        </Text>
+        <Text size={0} muted>
+          first run tonight
+        </Text>
+      </Stack>
+    );
+  const latest = present[present.length - 1];
+  const prev = present.length > 1 ? present[present.length - 2] : null;
+  const delta = prev !== null ? latest - prev : 0;
+  const color = trendColor(delta);
+  return (
+    <Flex align="center" gap={3} style={{ width: 300, flex: "none" }}>
+      <Stack space={2} style={{ width: 56 }}>
+        <Text size={0} muted>
+          {label}
+        </Text>
+        <Text size={4} weight="semibold" style={{ fontFamily: MONO, color }}>
+          {latest}
+        </Text>
+      </Stack>
+      <Text size={1} weight="semibold" style={{ color, width: 40 }}>
+        {delta > 0 ? "▲" : delta < 0 ? "▼" : "▬"} {delta === 0 ? "" : Math.abs(delta)}
+      </Text>
+      <Sparkline snaps={snaps} color={color} pick={(s) => pick(s)?.perf ?? null} />
+    </Flex>
+  );
+}
+
 function PageRow({ page, snaps }: { page: string; snaps: Snap[] }) {
   const latest = snaps[snaps.length - 1];
-  const prev = snaps.length > 1 ? snaps[snaps.length - 2] : null;
-  const delta = prev ? latest.perf - prev.perf : 0;
-  const color = trendColor(delta);
-  const lcp = latest.lcp !== null ? `${(latest.lcp / 1000).toFixed(1)}s` : "—";
-  const tbt = latest.tbt !== null ? `${Math.round(latest.tbt)}ms` : "—";
-  const cls = latest.cls !== null ? latest.cls.toFixed(3) : "—";
+  const m = mobileOf(latest);
+  const lcp = m.lcp !== null ? `${(m.lcp / 1000).toFixed(1)}s` : "—";
+  const tbt = m.tbt !== null ? `${Math.round(m.tbt)}ms` : "—";
+  const cls = m.cls !== null ? m.cls.toFixed(3) : "—";
 
   return (
     <Card padding={4} radius={2} shadow={1}>
       <Flex align="center" gap={5} wrap="wrap">
         {/* the ticker: symbol, price, movement */}
-        <Box style={{ width: 210, flex: "none" }}>
+        <Box style={{ width: 190, flex: "none" }}>
           <Stack space={3}>
             <Text size={1} weight="semibold" style={{ fontFamily: MONO }}>
               {page}
@@ -122,29 +182,15 @@ function PageRow({ page, snaps }: { page: string; snaps: Snap[] }) {
           </Stack>
         </Box>
 
-        <Flex align="center" gap={3} style={{ width: 150, flex: "none" }}>
-          <Text size={4} weight="semibold" style={{ fontFamily: MONO, color }}>
-            {latest.perf}
-          </Text>
-          <Stack space={2}>
-            <Text size={1} weight="semibold" style={{ color }}>
-              {delta > 0 ? "▲" : delta < 0 ? "▼" : "▬"}{" "}
-              {delta === 0 ? "0" : Math.abs(delta)}
-            </Text>
-            <Text size={0} muted>
-              vs last run
-            </Text>
-          </Stack>
-        </Flex>
-
-        <Sparkline snaps={snaps} color={color} />
+        <Ticker label="MOBILE" snaps={snaps} pick={(s) => mobileOf(s)} />
+        <Ticker label="DESKTOP" snaps={snaps} pick={desktopOf} />
 
         <Flex gap={2} wrap="wrap" style={{ flex: 1, minWidth: 200 }}>
-          <GradeChip label="A11Y" value={latest.a11y} />
-          <GradeChip label="BP" value={latest.bp} />
-          <GradeChip label="SEO" value={latest.seo} />
+          <GradeChip label="A11Y" value={m.a11y} />
+          <GradeChip label="BP" value={m.bp} />
+          <GradeChip label="SEO" value={m.seo} />
           <Text size={0} muted style={{ width: "100%", fontFamily: MONO }}>
-            LCP {lcp} · TBT {tbt} · CLS {cls}
+            mobile LCP {lcp} · TBT {tbt} · CLS {cls}
           </Text>
         </Flex>
 
@@ -172,16 +218,19 @@ function PerformancePanel() {
     .sort()
     .pop();
 
-  /* the site as one number: average of the latest perf scores */
+  /* the site as one number: average of the latest MOBILE perf scores
+     (the stricter form factor — the one the perf ground rules target) */
   const avg = pages.length
     ? Math.round(
-        pages.reduce((sum, [, s]) => sum + s[s.length - 1].perf, 0) / pages.length,
+        pages.reduce((sum, [, s]) => sum + mobileOf(s[s.length - 1]).perf, 0) /
+          pages.length,
       )
     : null;
   const prevAvg =
     pages.length && pages.every(([, s]) => s.length > 1)
       ? Math.round(
-          pages.reduce((sum, [, s]) => sum + s[s.length - 2].perf, 0) / pages.length,
+          pages.reduce((sum, [, s]) => sum + mobileOf(s[s.length - 2]).perf, 0) /
+            pages.length,
         )
       : null;
   const avgDelta = avg !== null && prevAvg !== null ? avg - prevAvg : 0;
@@ -195,9 +244,10 @@ function PerformancePanel() {
               Performance
             </Text>
             <Text size={1} muted>
-              Mobile Lighthouse against production, nightly (08:30 UTC). Green
-              is improving, red is declining — the score shown is the page's
-              performance grade out of 100.
+              Lighthouse against production, nightly (08:30 UTC), mobile and
+              desktop. Green is improving, red is declining — scores are the
+              performance grade out of 100; the SITE number tracks mobile,
+              the stricter form factor.
             </Text>
           </Stack>
           {avg !== null && (

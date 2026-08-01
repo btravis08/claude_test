@@ -29,7 +29,7 @@ const PAGES = [
   "/journal",
 ];
 
-function runLighthouse(url) {
+function runLighthouse(url, formFactor) {
   const raw = execFileSync(
     "npx",
     [
@@ -40,6 +40,8 @@ function runLighthouse(url) {
       "--output-path=stdout",
       "--quiet",
       "--only-categories=performance,accessibility,best-practices,seo",
+      /* mobile is Lighthouse's default emulation; desktop is the preset */
+      ...(formFactor === "desktop" ? ["--preset=desktop"] : []),
       '--chrome-flags=--headless=new --no-sandbox --disable-gpu',
     ],
     { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 },
@@ -48,7 +50,6 @@ function runLighthouse(url) {
   const score = (id) => Math.round((report.categories[id]?.score ?? 0) * 100);
   const audit = (id) => report.audits[id]?.numericValue ?? null;
   return {
-    t: new Date().toISOString(),
     perf: score("performance"),
     a11y: score("accessibility"),
     bp: score("best-practices"),
@@ -67,10 +68,17 @@ const history = existsSync(OUT)
 for (const page of PAGES) {
   const url = `${ORIGIN}${page}`;
   try {
-    const snap = runLighthouse(url);
+    /* both form factors per night; snapshots keyed {t, mobile, desktop}
+       (early history entries were flat mobile-only — readers treat
+       those as {mobile}) */
+    const snap = {
+      t: new Date().toISOString(),
+      mobile: runLighthouse(url, "mobile"),
+      desktop: runLighthouse(url, "desktop"),
+    };
     history.pages[page] = [...(history.pages[page] ?? []), snap].slice(-CAP);
     console.log(
-      `${page.padEnd(24)} perf ${snap.perf}  a11y ${snap.a11y}  bp ${snap.bp}  seo ${snap.seo}`,
+      `${page.padEnd(24)} mobile ${snap.mobile.perf}  desktop ${snap.desktop.perf}`,
     );
   } catch (err) {
     /* one failing page shouldn't lose the night's data for the rest */

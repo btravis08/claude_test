@@ -265,8 +265,13 @@ export function FullWidth({
 export interface InfoCardData {
   _key?: string;
   title?: string;
-  /* optional body copy (feature / technology cards) */
+  /* optional body copy (feature / technology cards) — presence flips
+     the whole slider into the bordered FRAMED variant */
   body?: string;
+  /* editorial line under an OPEN card (Slider Info V2, 33781:52010):
+     body-sm secondary copy ending in Learn More. Distinct from `body`
+     so it can't trip the framed heuristic. */
+  copy?: string;
   image?: string;
   /* info cards allow a static image or an autoplay video */
   kind?: MediaKind;
@@ -282,6 +287,7 @@ export interface InfoSliderProps {
 const defaultInfoCards: InfoCardData[] = ["Footwear", "Polos", "Headwear", "T-Shirts"].map(
   (title) => ({
     title,
+    copy: "Torsional Traction Plate for benefit lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.",
     image: "/figma/media-portrait.jpg",
   }),
 );
@@ -295,22 +301,36 @@ export function InfoSlider({
      Technology): hairlines between and around the cards plus generous
      space under the slider; category sliders keep the open look */
   const framed = cards.some((card) => card.body);
+  /* Slider Info V2 (editorial copy under open cards) breathes like
+     the framed variant: 9xl above and below instead of sitting flush */
+  const editorial = !framed && cards.some((card) => card.copy);
   return (
     <section
       data-mode={mode}
-      className={`flex w-full flex-col bg-surface text-ink ${framed ? "py-9xl" : ""}`}
+      className={`flex w-full flex-col bg-surface text-ink ${
+        framed || editorial ? "py-9xl" : ""
+      }`}
     >
       <SliderShell
         title={title}
         titleClassName={
           framed ? "font-display text-title-md text-ink" : undefined
         }
-        bordered={!framed}
-        headerClassName={framed ? "border-b border-line px-4 pb-12 pt-4 md:px-6 md:pt-6" : undefined}
+        bordered={!framed && !editorial}
+        headerClassName={
+          framed
+            ? "border-b border-line px-4 pb-12 pt-4 md:px-6 md:pt-6"
+            : editorial
+              ? "px-4 pb-12 md:px-6"
+              : undefined
+        }
         cols={
           framed
             ? "auto-cols-[85%] sm:auto-cols-[45%] lg:auto-cols-[28.75%]"
-            : undefined
+            : editorial
+              ? /* V2 comps: near-full card on mobile, 4-up from tablet */
+                "auto-cols-[93%] sm:auto-cols-[45%] lg:auto-cols-[24%] xl:auto-cols-[23.75%]"
+              : undefined
         }
         items={cards.map((card, i) => {
           const media = (
@@ -340,9 +360,18 @@ export function InfoSlider({
                 {card.body && <p className="text-body-sm text-ink-2">{card.body}</p>}
               </a>
             ) : (
+              /* Slider Info V2 (33781:52010): serif card title, then
+                 the editorial line closing on Learn More */
               <a href="#" className="group flex w-full flex-col gap-[1.125rem] bg-surface pb-16">
                 {media}
-                <p className="px-4 text-body-md font-medium text-ink md:px-6">{card.title}</p>
+                <div className="flex flex-col gap-2 px-4 md:px-6">
+                  <p className="font-display text-title-sm text-ink">{card.title}</p>
+                  {card.copy && (
+                    <p className="max-w-[18.75rem] text-body-sm text-ink-2">
+                      {card.copy} <span className="text-ink">Learn More</span>
+                    </p>
+                  )}
+                </div>
               </a>
             ),
           };

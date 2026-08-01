@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-01T02:53:21.143Z",
+  "generatedAt": "2026-08-01T03:11:43.127Z",
   "sections": {
     "hero": {
       "comps": {
@@ -99,20 +99,20 @@
     "info-slider": {
       "comps": {
         "desktop": {
-          "pixel": 91.5,
-          "layout": 42.5
+          "pixel": 94.6,
+          "layout": 81.4
         },
         "tablet": {
-          "pixel": 91.8,
-          "layout": 48.7
+          "pixel": 93.8,
+          "layout": 74
         },
         "mobile": {
-          "pixel": 92.1,
-          "layout": 47.5
+          "pixel": 92.7,
+          "layout": 52.5
         }
       },
       "tokens": {
-        "elements": 45,
+        "elements": 57,
         "offToken": 10,
         "byKind": {
           "gap": 10

@@ -1,7 +1,7 @@
 "use client";
 
 import { icons } from "@sanity/icons";
-import { Badge, Box, Card, Flex, Stack, Text } from "@sanity/ui";
+import { Box, Card, Flex, Stack, Text } from "@sanity/ui";
 import type { Tool } from "sanity";
 
 import history from "@/design/perf.history.json";
@@ -44,12 +44,26 @@ const DATA = (history as { pages: Record<string, Snap[]> }).pages;
 
 const GREEN = "#16a34a";
 const RED = "#dc2626";
+const AMBER = "#d97706";
 const FLAT = "#8a8a88";
 
 const MONO = "ui-monospace, SFMono-Regular, Menlo, monospace";
 
 const trendColor = (delta: number) =>
   delta > 0 ? GREEN : delta < 0 ? RED : FLAT;
+
+/* Lighthouse's own grading bands: 90+ passing, 50–89 needs work,
+   below 50 failing — every score in the panel wears its band */
+const bandColor = (score: number) =>
+  score >= 90 ? GREEN : score >= 50 ? AMBER : RED;
+
+/* Core Web Vitals thresholds (good / needs improvement / poor) */
+const lcpColor = (ms: number | null) =>
+  ms === null ? FLAT : ms <= 2500 ? GREEN : ms <= 4000 ? AMBER : RED;
+const tbtColor = (ms: number | null) =>
+  ms === null ? FLAT : ms <= 200 ? GREEN : ms <= 600 ? AMBER : RED;
+const clsColor = (v: number | null) =>
+  v === null ? FLAT : v <= 0.1 ? GREEN : v <= 0.25 ? AMBER : RED;
 
 function ago(iso: string) {
   const mins = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
@@ -110,9 +124,19 @@ function Sparkline({
 
 function GradeChip({ label, value }: { label: string; value: number }) {
   return (
-    <Badge tone="default" fontSize={0} title={`${label}: ${value}/100`}>
-      {label} {value}
-    </Badge>
+    <span
+      title={`${label}: ${value}/100`}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 5,
+        fontFamily: MONO,
+        fontSize: 11,
+      }}
+    >
+      <span style={{ color: "var(--card-muted-fg-color, #8a8a88)" }}>{label}</span>
+      <span style={{ color: bandColor(value), fontWeight: 600 }}>{value}</span>
+    </span>
   );
 }
 
@@ -148,7 +172,11 @@ function Ticker({
         <Text size={0} muted>
           {label}
         </Text>
-        <Text size={4} weight="semibold" style={{ fontFamily: MONO, color }}>
+        <Text
+          size={4}
+          weight="semibold"
+          style={{ fontFamily: MONO, color: bandColor(latest) }}
+        >
           {latest}
         </Text>
       </Stack>
@@ -163,9 +191,11 @@ function Ticker({
 function PageRow({ page, snaps }: { page: string; snaps: Snap[] }) {
   const latest = snaps[snaps.length - 1];
   const m = mobileOf(latest);
-  const lcp = m.lcp !== null ? `${(m.lcp / 1000).toFixed(1)}s` : "—";
-  const tbt = m.tbt !== null ? `${Math.round(m.tbt)}ms` : "—";
-  const cls = m.cls !== null ? m.cls.toFixed(3) : "—";
+  const metrics: [string, string, string][] = [
+    ["LCP", m.lcp !== null ? `${(m.lcp / 1000).toFixed(1)}s` : "—", lcpColor(m.lcp)],
+    ["TBT", m.tbt !== null ? `${Math.round(m.tbt)}ms` : "—", tbtColor(m.tbt)],
+    ["CLS", m.cls !== null ? m.cls.toFixed(3) : "—", clsColor(m.cls)],
+  ];
 
   return (
     <Card padding={4} radius={2} shadow={1}>
@@ -189,8 +219,23 @@ function PageRow({ page, snaps }: { page: string; snaps: Snap[] }) {
           <GradeChip label="A11Y" value={m.a11y} />
           <GradeChip label="BP" value={m.bp} />
           <GradeChip label="SEO" value={m.seo} />
-          <Text size={0} muted style={{ width: "100%", fontFamily: MONO }}>
-            mobile LCP {lcp} · TBT {tbt} · CLS {cls}
+          <Text size={0} style={{ width: "100%", fontFamily: MONO }}>
+            <span style={{ color: "var(--card-muted-fg-color, #8a8a88)" }}>
+              mobile{" "}
+            </span>
+            {metrics.map(([label, value, color], i) => (
+              <span key={label}>
+                {i > 0 && (
+                  <span style={{ color: "var(--card-muted-fg-color, #8a8a88)" }}>
+                    {" · "}
+                  </span>
+                )}
+                <span style={{ color: "var(--card-muted-fg-color, #8a8a88)" }}>
+                  {label}{" "}
+                </span>
+                <span style={{ color, fontWeight: 600 }}>{value}</span>
+              </span>
+            ))}
           </Text>
         </Flex>
 
@@ -258,7 +303,7 @@ function PerformancePanel() {
               <Text
                 size={4}
                 weight="semibold"
-                style={{ fontFamily: MONO, color: trendColor(avgDelta) }}
+                style={{ fontFamily: MONO, color: bandColor(avg) }}
               >
                 {avg}
               </Text>

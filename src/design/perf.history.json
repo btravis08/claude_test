@@ -31,6 +31,37 @@
           "cls": 0.00007076977349911941,
           "tbt": 6.5
         }
+      },
+      {
+        "t": "2026-08-01T04:55:10.222Z",
+        "mobile": {
+          "perf": 66,
+          "a11y": 95,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 2770.938,
+          "cls": 0,
+          "tbt": 1506.4999999999998,
+          "lcpElement": {
+            "selector": "div.flex > div.hero-cta > div.flex > span.sdr-text-reveal",
+            "snippet": "<span class=\"sdr-text-reveal font-display text-headline-lg\">"
+          },
+          "opportunities": []
+        },
+        "desktop": {
+          "perf": 100,
+          "a11y": 91,
+          "bp": 96,
+          "seo": 100,
+          "lcp": 613.1425000000002,
+          "cls": 0.00007076977349911941,
+          "tbt": 13.000000000000057,
+          "lcpElement": {
+            "selector": "div.pointer-events-none > div.absolute > div.grid > span.sdr-text-reveal",
+            "snippet": "<span class=\"sdr-text-reveal col-start-2 justify-self-center font-display text-headline…\">"
+          },
+          "opportunities": []
+        }
       }
     ],
     "/legacy": [
@@ -63,6 +94,34 @@
           "lcp": 1141.661,
           "cls": 0.00040827879583719983,
           "tbt": 0
+        }
+      },
+      {
+        "t": "2026-08-01T04:56:12.359Z",
+        "mobile": {
+          "perf": 87,
+          "a11y": 100,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 2504.3859999999995,
+          "cls": 0,
+          "tbt": 66,
+          "lcpElement": null,
+          "opportunities": []
+        },
+        "desktop": {
+          "perf": 90,
+          "a11y": 91,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 513.104,
+          "cls": 0.0003561684616058138,
+          "tbt": 0,
+          "lcpElement": {
+            "selector": "div.absolute > div.flex > p.font-display",
+            "snippet": "<p class=\"font-display text-headline-lg whitespace-nowrap opacity-80 transition-colo…\">"
+          },
+          "opportunities": []
         }
       }
     ],
@@ -97,6 +156,42 @@
           "cls": 0,
           "tbt": 0
         }
+      },
+      {
+        "t": "2026-08-01T04:56:44.874Z",
+        "mobile": {
+          "perf": 84,
+          "a11y": 91,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 4474.393559936525,
+          "cls": 0,
+          "tbt": 55.5,
+          "lcpElement": {
+            "selector": "a.flex > div.group/well > div.absolute > img.absolute",
+            "snippet": "<img src=\"https://cdn.sanity.io/images/alsdve2t/production/320a119f5e96ace9328c9ec96…\" alt=\"3D Merino Wool Hoodie\" loading=\"lazy\" decoding=\"async\" draggable=\"fa"
+          },
+          "opportunities": [
+            {
+              "id": "uses-responsive-images",
+              "savingsMs": 100
+            }
+          ]
+        },
+        "desktop": {
+          "perf": 99,
+          "a11y": 87,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 936.7350599365234,
+          "cls": 0,
+          "tbt": 0,
+          "lcpElement": {
+            "selector": "a.flex > div.group/well > div.absolute > img.absolute",
+            "snippet": "<img src=\"https://cdn.sanity.io/images/alsdve2t/production/320a119f5e96ace9328c9ec96…\" alt=\"3D Merino Wool Hoodie\" loading=\"lazy\" decoding=\"async\" draggable=\"fa"
+          },
+          "opportunities": []
+        }
       }
     ],
     "/products/presidio": [
@@ -130,6 +225,47 @@
           "cls": 0,
           "tbt": 1.5
         }
+      },
+      {
+        "t": "2026-08-01T04:57:19.898Z",
+        "mobile": {
+          "perf": 72,
+          "a11y": 91,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 5537.490250000003,
+          "cls": 0,
+          "tbt": 86.5,
+          "lcpElement": {
+            "selector": "div.relative > div.no-scrollbar > div.relative > div.absolute",
+            "snippet": "<div role=\"img\" aria-label=\"Presidio — image 2\" class=\"absolute inset-0 bg-[length:100%_auto] bg-center bg-no-repeat md:inset-x-[…\" style=\"background-image: url"
+          },
+          "opportunities": [
+            {
+              "id": "offscreen-images",
+              "savingsMs": 340
+            }
+          ]
+        },
+        "desktop": {
+          "perf": 97,
+          "a11y": 86,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 1134.7835,
+          "cls": 0,
+          "tbt": 0,
+          "lcpElement": {
+            "selector": "div.relative > div.no-scrollbar > div.relative > div.absolute",
+            "snippet": "<div role=\"img\" aria-label=\"Presidio — image 1\" class=\"absolute inset-0 bg-[length:100%_auto] bg-center bg-no-repeat md:inset-x-[…\" style=\"background-image: url"
+          },
+          "opportunities": [
+            {
+              "id": "unused-javascript",
+              "savingsMs": 60
+            }
+          ]
+        }
       }
     ],
     "/journal": [
@@ -162,6 +298,50 @@
           "lcp": 556.198,
           "cls": 0,
           "tbt": 0
+        }
+      },
+      {
+        "t": "2026-08-01T04:58:03.513Z",
+        "mobile": {
+          "perf": 56,
+          "a11y": 96,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 12962.201500000003,
+          "cls": 0,
+          "tbt": 757.5,
+          "lcpElement": {
+            "selector": "div.flex > div.max-md:transform-none! > a.block > img.w-[10rem]",
+            "snippet": "<img src=\"/figma/journal/stream-02.jpg\" alt=\"\" loading=\"lazy\" decoding=\"async\" draggable=\"false\" class=\"w-[10rem] bg-surface-2 object-cover md:w-[14.3125rem]\" s"
+          },
+          "opportunities": [
+            {
+              "id": "modern-image-formats",
+              "savingsMs": 2190
+            },
+            {
+              "id": "uses-optimized-images",
+              "savingsMs": 1880
+            },
+            {
+              "id": "uses-responsive-images",
+              "savingsMs": 1100
+            }
+          ]
+        },
+        "desktop": {
+          "perf": 100,
+          "a11y": 91,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 564.571,
+          "cls": 0,
+          "tbt": 0,
+          "lcpElement": {
+            "selector": "div > div.bg-surface > header.flex > p.label",
+            "snippet": "<p class=\"label max-w-[22.875rem] text-center\">"
+          },
+          "opportunities": []
         }
       }
     ]

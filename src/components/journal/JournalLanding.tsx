@@ -2,6 +2,7 @@
 
 import { m, useMotionValue, useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
+import { preload } from "react-dom";
 
 import { ArrowLink, ArrowSwap } from "@/components/home/ArrowHover";
 import { ArrowUpRight } from "@/components/icons";
@@ -31,13 +32,16 @@ interface StreamImage {
 }
 
 /* each category streams its articles' imagery (1:1, 4:5, 3:4 cards);
-   clicking a card opens that article */
+   clicking a card opens that article. The rail renders at 160/229px,
+   so it uses the 480w .thumb.jpg variants — the full-size files are
+   for covers, pairs, and the legacy fallbacks */
 const SECTIONS = JOURNAL_CATEGORIES.map((category) => ({
   title: category.title,
   label: category.label,
   images: category.articles.flatMap((article): StreamImage[] =>
     article.stream.map((image) => ({
       ...image,
+      src: image.src.replace(/\.jpg$/, ".thumb.jpg"),
       href: `/journal/${article.slug}`,
     })),
   ),
@@ -57,12 +61,17 @@ function Stream({
   images,
   open,
   cruise,
+  priority = false,
 }: {
   images: StreamImage[];
   open: boolean;
   /* signed loop speed in px/s — desktop drifts left → right, mobile
      right → left at half pace */
   cruise: number;
+  /* first (above-fold) rail: its leading images load eagerly and the
+     very first carries fetchPriority=high — it IS the mobile LCP, and
+     a lazy LCP is the exact anti-pattern the perf rules ban */
+  priority?: boolean;
 }) {
   const copyRef = useRef<HTMLDivElement>(null);
   const copyW = useRef(0);
@@ -206,7 +215,8 @@ function Stream({
         <img
           src={image.src}
           alt=""
-          loading="lazy"
+          loading={priority && copy === 0 && i < 4 ? "eager" : "lazy"}
+          fetchPriority={priority && copy === 0 && i === 0 ? "high" : undefined}
           decoding="async"
           draggable={false}
           className="w-[10rem] bg-surface-2 object-cover md:w-[14.3125rem]"
@@ -281,6 +291,7 @@ function JournalSection({
   open,
   alwaysOpen,
   onActivate,
+  priority,
 }: {
   title: string;
   label: string;
@@ -289,6 +300,7 @@ function JournalSection({
   /* touch layout: every section stays expanded */
   alwaysOpen: boolean;
   onActivate: () => void;
+  priority: boolean;
 }) {
   const expanded = open || alwaysOpen;
   return (
@@ -357,6 +369,7 @@ function JournalSection({
             images={images}
             open={expanded}
             cruise={alwaysOpen ? -BASE_SPEED / 2 : BASE_SPEED}
+            priority={priority}
           />
         </div>
       </m.div>
@@ -380,6 +393,11 @@ export function JournalLanding() {
     mq.addEventListener("change", update);
     return () => mq.removeEventListener("change", update);
   }, []);
+
+  /* the first rail's first thumb is the mobile LCP — hand it to the
+     preload scanner (SSR emits the <link>, so discovery beats
+     hydration) */
+  preload(SECTIONS[0].images[0].src, { as: "image", fetchPriority: "high" });
 
   return (
     <div data-mode="light" className="bg-surface text-ink">
@@ -409,6 +427,7 @@ export function JournalLanding() {
             open={active === i}
             alwaysOpen={!hoverCapable}
             onActivate={() => setActive(i)}
+            priority={i === 0}
             {...section}
           />
         ))}

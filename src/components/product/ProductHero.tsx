@@ -446,17 +446,29 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
             className="relative h-full cursor-zoom-in snap-start"
           >
             <m.div
-              role="img"
-              aria-label={`${product.title} — image ${i + 1}`}
-              /* mobile: width-bound full bleed — the image always spans
-                 edge to edge (height follows its aspect, centered);
-                 md+: the framed contain layout from the comp */
-              className="absolute inset-0 bg-[length:100%_auto] bg-center bg-no-repeat md:inset-x-[8%] md:inset-y-[22%] md:bg-contain"
-              style={{ backgroundImage: `url(${src})` }}
+              className="absolute inset-0 overflow-hidden md:inset-x-[8%] md:inset-y-[22%]"
               initial={false}
               animate={{ scale: loaded[src] ? 1 : 1.04 }}
               transition={{ duration: 0.9, ease: [...MEDIA_EASE] }}
-            />
+            >
+              {/* a real <img> (not a CSS background) so the initial
+                  slide can preload and count as the LCP the moment it
+                  paints. Mobile: width-bound full bleed (height
+                  follows the aspect, centered, cropped by the frame);
+                  md+: the framed contain layout from the comp */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={src}
+                alt={`${product.title} — image ${
+                  (loop ? (i - 1 + slides.length) % slides.length : i) + 1
+                }`}
+                loading={i === (loop ? 1 : 0) ? "eager" : "lazy"}
+                fetchPriority={i === (loop ? 1 : 0) ? "high" : undefined}
+                decoding="async"
+                draggable={false}
+                className="absolute left-0 top-1/2 w-full -translate-y-1/2 md:static md:h-full md:translate-y-0 md:object-contain"
+              />
+            </m.div>
             {/* the image itself stays at full opacity from first paint
                 (so it counts as the LCP immediately); this surface-
                 colored overlay fading away creates the same fade-in

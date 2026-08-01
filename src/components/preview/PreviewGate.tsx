@@ -3,7 +3,14 @@
 import dynamic from "next/dynamic";
 
 import type { ProductCardData } from "@/components/home/ProductCard";
-import type { Discount, Page, ProductFull, SliderProduct, StoreSettings } from "@/sanity/types";
+import type {
+  Discount,
+  LegacyPageDoc,
+  Page,
+  ProductFull,
+  SliderProduct,
+  StoreSettings,
+} from "@/sanity/types";
 
 /*
   Tiny client gate between server routes and the draft-mode preview
@@ -25,6 +32,10 @@ const ProductPreview = dynamic(
   () => import("@/components/preview/ProductPreview").then((m) => m.ProductPreview),
   { ssr: false },
 );
+const LegacyPreview = dynamic(
+  () => import("@/components/preview/LegacyPreview").then((m) => m.LegacyPreview),
+  { ssr: false },
+);
 
 export type PreviewGateProps =
   | {
@@ -42,12 +53,19 @@ export type PreviewGateProps =
       related: SliderProduct[];
       homeHeroImage?: string;
       sliderCards: Record<string, ProductCardData[]>;
+    }
+  | {
+      kind: "legacy";
+      initial: LegacyPageDoc | null;
     };
 
 export function PreviewGate(props: PreviewGateProps) {
   if (props.kind === "product") {
     const { kind: _kind, ...rest } = props;
     return <ProductPreview {...rest} />;
+  }
+  if (props.kind === "legacy") {
+    return <LegacyPreview initial={props.initial} />;
   }
   const { kind: _kind, ...rest } = props;
   return <PagePreview {...rest} />;

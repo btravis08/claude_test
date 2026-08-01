@@ -32,6 +32,14 @@ const STEGA_COPY_FIELDS = new Set([
   "colorway",
   "value",
   "alt",
+  /* Legacy page copy (legacyPage singleton) */
+  "wordLeft",
+  "wordRight",
+  "copy",
+  "cta",
+  "meta",
+  "textLeft",
+  "textRight",
 ]);
 
 /* Draft-mode client for the Studio's Presentation tool: reads draft

@@ -80,12 +80,13 @@ export const SECTIONS: SectionEntry[] = [
       "Full-bleed opening image or video with eyebrow, headline and a primary CTA. Carries the page's LCP.",
     modes: ["dark", "light"],
     tall: true,
+    /* NOTE: 33585:48542 and its exported comps are the HOMEPAGE V2
+       design, which is NOT in use — the user rejected it (2026-08-02:
+       "Revert back to the original homepage design. V2 is incorrect").
+       comps stay OFF so the audit (and the nightly improvement agent)
+       can't score or "fix" this section toward V2. Re-point to the V1
+       frame + re-export comps before re-enabling. */
     figmaNodeId: "33585:48542",
-    comps: {
-      desktop: { width: 1440, height: 960 },
-      tablet: { width: 1024, height: 683 },
-      mobile: { width: 428, height: 840 },
-    },
     render: (mode) => <Hero mode={mode} />,
   },
   {
@@ -97,12 +98,10 @@ export const SECTIONS: SectionEntry[] = [
       "Edge-to-edge media block — image, shop-the-look, click-to-play or autoplay video — with overlaid copy.",
     modes: ["dark", "light"],
     tall: true,
+    /* NOTE: 33638:56658 and its exported comps are the HOMEPAGE V2
+       design — rejected, see the hero note above. comps OFF until V1
+       comps are exported. */
     figmaNodeId: "33638:56658",
-    comps: {
-      desktop: { width: 1440, height: 810 },
-      tablet: { width: 1024, height: 683 },
-      mobile: { width: 428, height: 642 },
-    },
     render: (mode) => <FullWidth mode={mode} />,
   },
   {

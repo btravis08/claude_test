@@ -18,6 +18,10 @@ embedded at /studio, with Motion (framer-motion) for interactions.
   — `main` is the deploy branch and Vercel builds it to the staging
   site. Never open a PR unless asked.
 - Match the Figma design exactly — don't adapt or reinterpret it.
+  GOTCHA: the homepage is the V1 design and stays V1 — the V2 frames
+  (hero 33585:48542, full-width 33638:56658) were explicitly rejected
+  (2026-08-02). Never rebuild homepage sections toward V2 comps; their
+  registry comps are disabled for exactly this reason.
 - Verify changes with `npm run build`, then drive the real page (in
   Claude's remote sandbox, Playwright with
   `executablePath: '/opt/pw-browsers/chromium'`) before pushing.

@@ -1,5 +1,6 @@
 "use client";
 
+import { assist } from "@sanity/assist";
 import { visionTool } from "@sanity/vision";
 import { defineConfig } from "sanity";
 import { defineDocuments, defineLocations, presentationTool } from "sanity/presentation";
@@ -220,6 +221,10 @@ export default defineConfig({
        the dataset — image pickers across the Studio gain a "Media"
        source too */
     media(),
+    /* AI Assist: field-level generate/rewrite/translate + image alt
+       text, using the schema as context. Instructions are authored
+       per field in the Studio (sparkle menu). */
+    assist(),
     visionTool({ defaultApiVersion: apiVersion }),
   ],
   /* read-only design-system reference alongside Content/Preview */

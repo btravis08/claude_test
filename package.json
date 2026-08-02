@@ -15,6 +15,7 @@
     "drift": "node scripts/check-design-drift.mjs"
   },
   "dependencies": {
+    "@sanity/assist": "^6.1.17",
     "@sanity/image-url": "^2.1.1",
     "@sanity/react-loader": "^2.1.2",
     "@sanity/vision": "^6.5.0",

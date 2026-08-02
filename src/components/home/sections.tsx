@@ -240,9 +240,32 @@ export function FullWidth({
         lookProducts={lookProducts}
         lqip={lqip}
       />
-      {/* pointer-events pass through the text overlay so the media's
-          own controls (bag, play, pause) stay hoverable beneath it */}
-      <CampaignOverlay left={eyebrow} center={headline} right={primaryCta} stack="link" />
+      {/* V2 content overlay (33638:56658): md+ is one vertically
+          CENTERED row on the 24px gutter — Title Large left, the
+          underlined label CTA right (no eyebrow); mobile (comp
+          full-width-mobile) stacks eyebrow + title at the bottom
+          left with no CTA. data-mode=dark so ink resolves white over
+          the imagery. Pointer events pass through so the media's own
+          controls (bag, play, pause) stay hoverable beneath it. */}
+      <div
+        data-mode="dark"
+        className="pointer-events-none absolute inset-0 flex flex-col justify-end p-2xl text-ink md:justify-center"
+      >
+        <div className="flex flex-col gap-md md:hidden">
+          {eyebrow && <p className="label">{eyebrow}</p>}
+          <p className="font-display text-title-lg">{headline}</p>
+        </div>
+        <div className="hidden w-full items-center justify-between md:flex">
+          <p className="font-display text-title-lg">{headline}</p>
+          {primaryCta && (
+            <span className="label relative">
+              {primaryCta}
+              {/* comp shows the underline drawn at rest */}
+              <span className="absolute inset-x-0 -bottom-0.5 h-px bg-ink" />
+            </span>
+          )}
+        </div>
+      </div>
     </>
   );
   return (

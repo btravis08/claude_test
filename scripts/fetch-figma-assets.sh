@@ -45,6 +45,9 @@ fetch_jpg() {
 
 # Campaign photography (hero / full-width / 50-50) — raw fills
 fetch campaign.png            747a12d2-e457-42bb-9ded-a7e3fa81435b
+# Full Width V2 (33638:56658) media fill — the section's design
+# content (shoe macro); becomes the FullWidth default image
+fetch_jpg full-width-media.jpg 94c2bd0e-31ed-4210-b48e-2ac8a8e5e9c5 1920
 fetch _raw/campaign-b.png     c5d08e84-a8d7-42bd-9469-2a5c9e366bb1
 fetch _raw/hero-export.png    aadf4332-4ad7-4a2a-8d1f-e2156002cceb
 

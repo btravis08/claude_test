@@ -1,30 +1,11 @@
 "use client";
 
 import { AnimatePresence, m } from "motion/react";
-import type { Variants } from "motion/react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
-
-/* product links navigate client-side so the chrome stays put */
-const MotionLink = m.create(Link);
-
-/* Swatches stagger-fade in from the right, right to left, when the
-   pointer is over the card but outside the image well */
-const swatchVariants: Variants = {
-  rest: { opacity: 0, x: 8, transition: { duration: 0.15 } },
-  hover: (order: number) => ({
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.3, ease: [...MEDIA_EASE], delay: order * 0.06 },
-  }),
-};
-
-const extraLabelVariants: Variants = {
-  rest: { opacity: 1, transition: { duration: 0.2, delay: 0.15 } },
-  hover: { opacity: 0, transition: { duration: 0.15 } },
-};
+import { useTouch } from "@/lib/useTouch";
 
 export interface ProductVariantData {
   name?: string;
@@ -56,6 +37,9 @@ export interface ProductCardData {
   defaultVariant?: number;
 }
 
+/* CSS twin of MEDIA_EASE (EASE_OUT) — keep in sync with lib/motion */
+const EASE_CSS = "cubic-bezier(0.22,1,0.36,1)";
+
 /*
   Product Card V1 with the standard image behaviors:
   - the padded product shot enters with the fade/settle animation
@@ -65,25 +49,26 @@ export interface ProductCardData {
     clickable swatches; picking one switches the visible product shot,
     the hover image, and the variant name — the two hover zones never
     overlap, so the swap is always visible
+
+  Hydration is deliberately light: the homepage mounts ~a hundred of
+  these at once under mobile CPU throttle, so hover choreography
+  (swatch stagger, label swap) runs on CSS transitions, the swatch
+  row and colorway-crossfade machinery mount only after the first
+  pointer entry ("armed"), and the touch check is one shared
+  subscription (useTouch). Motion is reserved for what it animates:
+  the entrance settle and the armed crossfade.
 */
 export function ProductCard({ product }: { product: ProductCardData }) {
   const variants = product.variants ?? [];
   const [selected, setSelected] = useState(product.defaultVariant ?? 0);
   const [cardHover, setCardHover] = useState(false);
   const [wellHover, setWellHover] = useState(false);
-  /* touch devices can't hover — swatches stay visible there; desktop
-     keeps the hover reveal */
-  const [touch, setTouch] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(hover: none), (pointer: coarse)");
-    const update = () => setTouch(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
-  /* the mobile comp (33691:63716) shows the "+N colors" text, not
-     swatches — touch cards keep the resting meta; swatch picking
-     stays a hover affordance (touch users pick colorways on the PDP) */
+  /* first pointer entry arms the interactive layer (swatches,
+     crossfade, hover image) — touch devices never arm it: the mobile
+     comp (33691:63716) shows the "+N colors" text, not swatches, and
+     touch users pick colorways on the PDP */
+  const [armed, setArmed] = useState(false);
+  const touch = useTouch();
   const showSwatches = !touch && cardHover && !wellHover;
   const active = variants[selected];
 
@@ -92,14 +77,14 @@ export function ProductCard({ product }: { product: ProductCardData }) {
      new image loads */
   const preloaded = useRef(false);
   useEffect(() => {
-    if (!cardHover || preloaded.current) return;
+    if (!armed || preloaded.current) return;
     preloaded.current = true;
     for (const variant of variants) {
       for (const src of [variant.image, variant.hoverImage]) {
         if (src) new window.Image().src = src;
       }
     }
-  }, [cardHover, variants]);
+  }, [armed, variants]);
   const wellImage = active?.image ?? product.image ?? "/figma/card-shoe.jpg";
   const hoverImage = active?.hoverImage ?? product.hoverImage;
   const extra = variants.length > 0 ? variants.length - 1 : undefined;
@@ -115,15 +100,40 @@ export function ProductCard({ product }: { product: ProductCardData }) {
       : product.colorCount;
 
   const internal = Boolean(product.href?.startsWith("/"));
-  const CardShell = (internal ? MotionLink : m.a) as typeof m.a;
+  const CardShell = internal ? Link : "a";
+
+  /* the product shot (+ LQIP underlay), shared by both swap modes */
+  const shot = (
+    <>
+      {/* LQIP blur under the shot while it lazy-loads (only the
+          default colorway has one — swatch swaps skip it) */}
+      {product.imageLqip && wellImage === product.image && (
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-contain bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${product.imageLqip})` }}
+        />
+      )}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={wellImage}
+        alt={product.title}
+        loading="lazy"
+        decoding="async"
+        draggable={false}
+        className="absolute inset-0 size-full object-contain"
+      />
+    </>
+  );
 
   return (
     <CardShell
       href={product.href ?? "#"}
       {...(internal ? { prefetch: true, scroll: false } : {})}
-      initial="rest"
-      animate={showSwatches ? "hover" : "rest"}
-      onMouseEnter={() => setCardHover(true)}
+      onMouseEnter={() => {
+        setCardHover(true);
+        if (!touch) setArmed(true);
+      }}
       onMouseLeave={() => setCardHover(false)}
       className="flex w-full flex-col gap-[1.125rem] overflow-hidden bg-surface pb-16"
     >
@@ -136,45 +146,36 @@ export function ProductCard({ product }: { product: ProductCardData }) {
         viewport={{ once: true, amount: 0.2 }}
         transition={{ duration: 0.9, ease: [...MEDIA_EASE] }}
       >
-        {/* padded product shot; the outgoing colorway stays visible
-            while the new one fades in, so the swap never goes blank.
-            A real <img> so off-screen cards lazy-load natively. */}
-        <AnimatePresence initial={false}>
-          <m.div
-            key={selected}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="absolute inset-x-[17.77%] top-1/2 aspect-square -translate-y-1/2"
-          >
-            {/* LQIP blur under the shot while it lazy-loads (only the
-                default colorway has one — swatch swaps skip it) */}
-            {product.imageLqip && wellImage === product.image && (
-              <div
-                aria-hidden
-                className="absolute inset-0 bg-contain bg-center bg-no-repeat"
-                style={{ backgroundImage: `url(${product.imageLqip})` }}
-              />
-            )}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={wellImage}
-              alt={product.title}
-              loading="lazy"
-              decoding="async"
-              draggable={false}
-              className="absolute inset-0 size-full object-contain"
-            />
-          </m.div>
-        </AnimatePresence>
+        {/* padded product shot; after arming, the outgoing colorway
+            stays visible while the new one fades in, so a swatch swap
+            never goes blank. Until then (every card at hydration) it
+            is a plain static layer — the crossfade machinery only
+            exists on cards the pointer has actually visited. */}
+        {armed ? (
+          <AnimatePresence initial={false}>
+            <m.div
+              key={selected}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              className="absolute inset-x-[17.77%] top-1/2 aspect-square -translate-y-1/2"
+            >
+              {shot}
+            </m.div>
+          </AnimatePresence>
+        ) : (
+          <div className="absolute inset-x-[17.77%] top-1/2 aspect-square -translate-y-1/2">
+            {shot}
+          </div>
+        )}
         {/* full-bleed hover image, settles 1.05x → 1x, shown only while
             the pointer is over the well itself; the keyed layers
             crossfade when a swatch picks another colorway. Touch
             devices never hover, so they never mount (or download) it;
             on desktop it mounts on the first pointer entry, which also
             warms every colorway via the preload effect above. */}
-        {hoverImage && !touch && (cardHover || wellHover || preloaded.current) && (
+        {hoverImage && !touch && armed && (
           <div
             aria-hidden
             className="pointer-events-none absolute inset-0 scale-105 opacity-0 transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/well:scale-100 group-hover/well:opacity-100"
@@ -218,32 +219,53 @@ export function ProductCard({ product }: { product: ProductCardData }) {
           <p>{colorLabel}</p>
           <span className="relative flex items-center justify-end">
             {extraLabel && (
-              <m.p variants={variants.length > 1 ? extraLabelVariants : undefined}>
+              <p
+                /* swaps out for the swatches on hover (CSS twin of the
+                   old Motion variants: hide 150ms, return 200ms after
+                   a 150ms hold) */
+                className="transition-opacity"
+                style={
+                  variants.length > 1
+                    ? {
+                        opacity: showSwatches ? 0 : 1,
+                        transitionDuration: showSwatches ? "150ms" : "200ms",
+                        transitionDelay: showSwatches ? "0ms" : "150ms",
+                      }
+                    : undefined
+                }
+              >
                 {extraLabel}
-              </m.p>
+              </p>
             )}
-            {variants.length > 1 && (
+            {variants.length > 1 && armed && (
               <span
                 className={`absolute right-0 flex items-center gap-1.5 ${
                   showSwatches ? "pointer-events-auto" : "pointer-events-none"
                 }`}
               >
                 {variants.map((variant, i) => (
-                  <m.button
+                  <button
                     key={i}
                     type="button"
                     aria-label={variant.name ?? `Variant ${i + 1}`}
-                    custom={variants.length - 1 - i}
-                    variants={swatchVariants}
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
                       setSelected(i);
                     }}
-                    className={`size-4 rounded-xs border ${
+                    /* stagger-fade in from the right, right to left —
+                       the old swatchVariants as a CSS transition */
+                    className={`size-4 rounded-xs border transition-[opacity,transform] ${
                       i === selected ? "border-ink" : "border-line"
-                    }`}
-                    style={{ backgroundColor: variant.color ?? "#c8c8c4" }}
+                    } ${showSwatches ? "translate-x-0 opacity-100" : "translate-x-2 opacity-0"}`}
+                    style={{
+                      backgroundColor: variant.color ?? "#c8c8c4",
+                      transitionDuration: showSwatches ? "300ms" : "150ms",
+                      transitionTimingFunction: EASE_CSS,
+                      transitionDelay: showSwatches
+                        ? `${(variants.length - 1 - i) * 60}ms`
+                        : "0ms",
+                    }}
                   />
                 ))}
               </span>

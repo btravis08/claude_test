@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-02T10:48:44.185Z",
+  "generatedAt": "2026-08-02T15:48:10.719Z",
   "sections": {
     "hero": {
       "comps": {
@@ -34,20 +34,20 @@
     "full-width": {
       "comps": {
         "desktop": {
-          "pixel": 79.2,
-          "layout": 31.9
+          "pixel": 87.7,
+          "layout": 73.5
         },
         "tablet": {
-          "pixel": 73,
-          "layout": 32
+          "pixel": 79.9,
+          "layout": 63
         },
         "mobile": {
-          "pixel": 77.2,
-          "layout": 52.4
+          "pixel": 86.7,
+          "layout": 71
         }
       },
       "tokens": {
-        "elements": 14,
+        "elements": 12,
         "offToken": 1,
         "byKind": {
           "surface": 1

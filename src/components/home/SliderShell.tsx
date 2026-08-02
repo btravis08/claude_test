@@ -71,6 +71,8 @@ export function SliderShell({
   const filterable = genders.length > 1;
 
   const [gender, setGender] = useState<string | null>(null);
+  /* slides gain their Motion wrappers on first filter intent */
+  const [filterArmed, setFilterArmed] = useState(false);
   // Bumped per filter click so the stagger order reshuffles each time
   const [generation, setGeneration] = useState(0);
   const visible = useMemo(
@@ -398,7 +400,14 @@ export function SliderShell({
           </p>
         )}
         {filterable && (
-          <div className="flex items-center gap-3">
+          <div
+            className="flex items-center gap-3"
+            /* pointerdown fires before click: the slides' Motion
+               wrappers mount here, so even the first filter click
+               gets the full exit/enter stagger */
+            onPointerDown={() => setFilterArmed(true)}
+            onFocusCapture={() => setFilterArmed(true)}
+          >
             {genders.map((g) => (
               <button
                 key={g}
@@ -453,33 +462,50 @@ export function SliderShell({
           variable ? "flex" : `grid grid-flow-col ${cols}`
         } ${dragging ? "cursor-grabbing select-none" : "cursor-grab"}`}
       >
-        <AnimatePresence initial={false} onExitComplete={updateArrows}>
-          {visible.map((item) => (
-            <m.div
+        {filterArmed ? (
+          <AnimatePresence initial={false} onExitComplete={updateArrows}>
+            {visible.map((item) => (
+              <m.div
+                key={item.key}
+                data-slide
+                className={`flex ${variable ? "shrink-0" : "min-w-0"}`}
+                initial={{ opacity: 0 }}
+                animate={{
+                  opacity: 1,
+                  // incoming cards wait for the outgoing stagger to clear
+                  transition: {
+                    duration: FADE_S,
+                    delay: FADE_S + STAGGER_S + hash01(item.key + generation) * STAGGER_S,
+                  },
+                }}
+                exit={{
+                  opacity: 0,
+                  transition: {
+                    duration: FADE_S,
+                    delay: hash01(item.key + generation) * STAGGER_S,
+                  },
+                }}
+              >
+                {item.card}
+              </m.div>
+            ))}
+          </AnimatePresence>
+        ) : (
+          /* until the filter is touched the Motion wrappers (and the
+             AnimatePresence context) never mount — with initial=false
+             they render at rest anyway, so this is pixel-identical
+             and saves a per-slide motion instance on every rail
+             (three 24-card sliders on the homepage) */
+          visible.map((item) => (
+            <div
               key={item.key}
               data-slide
               className={`flex ${variable ? "shrink-0" : "min-w-0"}`}
-              initial={{ opacity: 0 }}
-              animate={{
-                opacity: 1,
-                // incoming cards wait for the outgoing stagger to clear
-                transition: {
-                  duration: FADE_S,
-                  delay: FADE_S + STAGGER_S + hash01(item.key + generation) * STAGGER_S,
-                },
-              }}
-              exit={{
-                opacity: 0,
-                transition: {
-                  duration: FADE_S,
-                  delay: hash01(item.key + generation) * STAGGER_S,
-                },
-              }}
             >
               {item.card}
-            </m.div>
-          ))}
-        </AnimatePresence>
+            </div>
+          ))
+        )}
       </div>
       {/* Custom scroll progress: eased fill, full width at the end.
           Sits on top of the cards' bottom hairline (-mt) with no track

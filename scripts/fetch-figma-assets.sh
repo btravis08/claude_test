@@ -48,6 +48,9 @@ fetch campaign.png            747a12d2-e457-42bb-9ded-a7e3fa81435b
 # Full Width V2 (33638:56658) media fill — the section's design
 # content (shoe macro); becomes the FullWidth default image
 fetch_jpg full-width-media.jpg c0495a9e-342f-4f6c-abf1-bdbfbc25baea 1920
+# Hero V2 (33585:48542) media fill — same shoe source over the
+# hero's black base; becomes the Hero default image
+fetch_jpg hero-media.jpg 52dfcec8-4170-4e9f-a352-5e4af918f2e9 1920
 fetch _raw/campaign-b.png     c5d08e84-a8d7-42bd-9469-2a5c9e366bb1
 fetch _raw/hero-export.png    aadf4332-4ad7-4a2a-8d1f-e2156002cceb
 

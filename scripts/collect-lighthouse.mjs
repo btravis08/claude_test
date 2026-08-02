@@ -67,6 +67,22 @@ function runLighthouse(url, formFactor) {
     .slice(0, 3)
     .map((a) => ({ id: a.id, savingsMs: Math.round(a.details.overallSavingsMs) }));
 
+  /* TBT attribution: which scripts burned the main thread (bootup-
+     time, top 3 by total ms) and how much long-task time there was —
+     so a blocking-bound score names its culprit instead of needing a
+     manual profile */
+  const bootup = (report.audits["bootup-time"]?.details?.items ?? [])
+    .slice(0, 3)
+    .map((s) => ({
+      url: String(s.url ?? "").split("/").pop().slice(0, 60),
+      totalMs: Math.round(s.total ?? 0),
+    }));
+  const longTaskItems = report.audits["long-tasks"]?.details?.items ?? [];
+  const longTasks = {
+    count: longTaskItems.length,
+    totalMs: Math.round(longTaskItems.reduce((sum, t) => sum + (t.duration ?? 0), 0)),
+  };
+
   return {
     perf: score("performance"),
     a11y: score("accessibility"),
@@ -80,6 +96,8 @@ function runLighthouse(url, formFactor) {
       ? { selector: lcpNode.selector ?? null, snippet: (lcpNode.snippet ?? "").slice(0, 160) }
       : null,
     opportunities,
+    bootup,
+    longTasks,
   };
 }
 

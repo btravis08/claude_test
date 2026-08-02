@@ -8,6 +8,7 @@ import {
 } from "@/components/product/ProductPageView";
 import { activeOnly, buildSliderCardMap, SectionRenderer } from "@/components/SectionRenderer";
 import { cardImg } from "@/sanity/lib/cards";
+import { sanitySrcSet } from "@/sanity/lib/image";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import {
   automaticDiscountsQuery,
@@ -83,10 +84,19 @@ export default async function ProductPage({
     homeHeroImage,
   });
 
-  /* the first hero slide is the LCP image — start it with the HTML
-     instead of waiting for hydration to reveal a CSS background */
-  if (model.heroImages[0]) {
-    preload(model.heroImages[0], { as: "image", fetchPriority: "high" });
+  /* the first hero slide is the LCP image — start it with the HTML.
+     The hero leads with the SELECTED VARIANT's image (ProductHero
+     slides[0]), not images[0]: preloading anything else warms the
+     wrong URL and the real LCP loads cold. imageSrcSet mirrors the
+     slide's srcset so the browser fetches exactly one candidate. */
+  const lcpImage = model.hero.variants?.[0]?.image ?? model.heroImages[0];
+  if (lcpImage) {
+    preload(lcpImage, {
+      as: "image",
+      fetchPriority: "high",
+      imageSrcSet: sanitySrcSet(lcpImage),
+      imageSizes: "(min-width: 640px) 45vw, 100vw",
+    });
   }
 
   /* Presentation preview: live client shell, edits stream pre-save */

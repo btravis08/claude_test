@@ -4,6 +4,7 @@ import { AnimatePresence, m } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
+import { sanitySrcSet } from "@/sanity/lib/image";
 import { useCart } from "@/components/cart/CartContext";
 import { ArrowLeft, ArrowRight } from "@/components/icons";
 import { MenuX } from "@/components/MenuX";
@@ -459,6 +460,8 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={src}
+                srcSet={sanitySrcSet(src)}
+                sizes="(min-width: 640px) 45vw, 100vw"
                 alt={`${product.title} — image ${
                   (loop ? (i - 1 + slides.length) % slides.length : i) + 1
                 }`}

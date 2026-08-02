@@ -2,7 +2,6 @@ import dynamic from "next/dynamic";
 
 import { AnimatedMedia } from "@/components/home/AnimatedMedia";
 import { ArrowInViewPlay, ArrowLink, ArrowSwap } from "@/components/home/ArrowHover";
-import { CampaignOverlay } from "@/components/home/CampaignOverlay";
 import type { LookProductData } from "@/components/home/MediaBlock";
 import type { ProductCardData } from "@/components/home/ProductCard";
 import { SectionReveal, RevealLine, RevealText } from "@/components/home/SectionReveal";
@@ -166,7 +165,9 @@ export function Hero({
   eyebrow = "Now Arriving",
   headline = "Spring Traditions",
   primaryCta = "Shop Collection",
-  image = "/figma/campaign.jpg",
+  /* the V2 comp's own media fill (33585:48542) over the hero's
+     black base */
+  image = "/figma/hero-media.jpg",
   kind = "image",
   videoUrl,
   lqip,
@@ -176,11 +177,13 @@ export function Hero({
       {/* the whole hero is the link and the hover parent: image scales,
           the right text's underline draws in */}
       <a href="#" aria-label={headline} className="group block w-full">
-        {/* slower entrance (2x) and no hover zoom on the hero image */}
+        {/* slower entrance (2x) and no hover zoom on the hero image;
+            the comp's content overlay is the 20% scrim + bottom
+            gradient (media-overlay), not the flat wash */}
         <Media
           aspect="h-svh"
           image={image}
-          overlay="flat"
+          overlay
           parallax
           kind={kind}
           videoUrl={videoUrl}
@@ -188,15 +191,36 @@ export function Hero({
           priority
           lqip={lqip}
         />
-        <CampaignOverlay
-          left={eyebrow}
-          center={headline}
-          right={primaryCta}
-          stack="button"
-          /* the hero headline is the mobile LCP element — its fade
-             must not wait for hydration (CSS reveal, see globals) */
-          priority
-        />
+        {/* V2 content overlay (33585:48542): md+ is one vertically
+            centered three-column row on the 24px gutter — eyebrow
+            left, Title Large headline centered, underlined label CTA
+            right; mobile (comp hero-mobile) pins eyebrow top-left,
+            headline mid-left, CTA bottom-left. The wrapper carries
+            the CSS reveal (sdr-text-reveal) so the first paint never
+            waits for hydration — the LCP rule. */}
+        <div
+          data-mode="dark"
+          className="sdr-text-reveal pointer-events-none absolute inset-0 p-2xl text-ink"
+        >
+          <div className="hidden h-full w-full items-center md:flex">
+            <p className="label flex-1">{eyebrow}</p>
+            <p className="flex-1 text-center font-display text-title-lg">{headline}</p>
+            <span className="flex flex-1 justify-end">
+              <span className="label relative">
+                {primaryCta}
+                <span className="absolute inset-x-0 -bottom-0.5 h-px bg-ink" />
+              </span>
+            </span>
+          </div>
+          <div className="flex h-full flex-col justify-between md:hidden">
+            <p className="label">{eyebrow}</p>
+            <p className="font-display text-title-lg">{headline}</p>
+            <span className="label relative self-start">
+              {primaryCta}
+              <span className="absolute inset-x-0 -bottom-0.5 h-px bg-ink" />
+            </span>
+          </div>
+        </div>
       </a>
     </section>
   );

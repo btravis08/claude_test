@@ -1,7 +1,7 @@
 "use client";
 
 import { visionTool } from "@sanity/vision";
-import { buildLegacyTheme, defineConfig } from "sanity";
+import { defineConfig } from "sanity";
 import { defineDocuments, defineLocations, presentationTool } from "sanity/presentation";
 import { structureTool } from "sanity/structure";
 import { media } from "sanity-plugin-media";
@@ -13,6 +13,7 @@ import { schemaTypes } from "@/sanity/schemaTypes";
 import { designTokensTool } from "@/sanity/tools/DesignTokens";
 import { performanceTool } from "@/sanity/tools/Performance";
 import { sectionLibraryTool } from "@/sanity/tools/SectionLibrary";
+import { theme } from "@/sanity/theme";
 
 /*
   Studio sidebar modeled on the Shopify admin: Products (with status,
@@ -125,21 +126,7 @@ const structure: StructureResolver = (S) =>
         ),
     ]);
 
-/* Monochrome Studio: the brand's black/white system instead of the
-   default blue accent — the biggest win in dark mode, where the blue
-   was the only chroma. Validation/danger states keep their semantic
-   colors on purpose. */
-const theme = buildLegacyTheme({
-  "--black": "#161716",
-  "--white": "#f7f8f4",
-  "--brand-primary": "#161716",
-  "--focus-color": "#8a8a88",
-  "--default-button-color": "#70716f",
-  "--default-button-primary-color": "#161716",
-  "--state-info-color": "#70716f",
-  "--main-navigation-color": "#161716",
-  "--main-navigation-color--inverted": "#f7f8f4",
-});
+
 
 export default defineConfig({
   basePath: "/studio",

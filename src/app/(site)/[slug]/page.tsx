@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
+
+import { resolveRedirect } from "@/sanity/lib/redirects";
 import { PortableText } from "next-sanity";
 
 import { draftMode } from "next/headers";
@@ -31,7 +33,12 @@ export default async function CmsPage({
   const { slug } = await params;
   const page = await sanityFetch<Page | null>(pageBySlugQuery, { slug }, null);
 
-  if (!page) notFound();
+  if (!page) {
+    /* CMS-managed redirects get a look before the 404 */
+    const hit = await resolveRedirect(`/${slug}`);
+    if (hit) redirect(hit.to);
+    notFound();
+  }
 
   /* Presentation preview: live client shell, edits stream pre-save */
   const { isEnabled: isDraft } = await draftMode();

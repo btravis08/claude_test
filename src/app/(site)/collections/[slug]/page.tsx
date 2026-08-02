@@ -1,4 +1,6 @@
 import { CollectionExplorer } from "@/components/collection/CollectionExplorer";
+import { redirect } from "next/navigation";
+import { resolveRedirect } from "@/sanity/lib/redirects";
 import type { CardMeta, ExplorerItem, StoryData } from "@/components/collection/CollectionExplorer";
 import { FooterTagline } from "@/components/FooterTagline";
 import { NavTextLink } from "@/components/NavTextLink";
@@ -130,6 +132,11 @@ export default async function CollectionPage({
     { slug },
     null,
   );
+  if (!collection) {
+    /* a retired collection may have a CMS-managed redirect */
+    const hit = await resolveRedirect(`/collections/${slug}`);
+    if (hit) redirect(hit.to);
+  }
   /* a subcategory slug like mens-pants matches stories tagged either
      "mens" or "pants" */
   const storyKeys = Array.from(new Set([slug, ...slug.split("-")]));

@@ -4,6 +4,7 @@ import { discount } from "./discount";
 import { legacyPage } from "./legacyPage";
 import { navigation } from "./navigation";
 import { page } from "./page";
+import { redirect } from "./redirect";
 import { product } from "./product";
 import { project } from "./project";
 import { sectionTypes } from "./sections";
@@ -13,6 +14,7 @@ import { storeSettings } from "./storeSettings";
 
 export const schemaTypes = [
   project,
+  redirect,
   product,
   collection,
   discount,

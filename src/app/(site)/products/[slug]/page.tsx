@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { draftMode } from "next/headers";
+import { redirect } from "next/navigation";
 import { preload } from "react-dom";
 
 import {
@@ -8,6 +9,7 @@ import {
 } from "@/components/product/ProductPageView";
 import { activeOnly, buildSliderCardMap, SectionRenderer } from "@/components/SectionRenderer";
 import { cardImg } from "@/sanity/lib/cards";
+import { resolveRedirect } from "@/sanity/lib/redirects";
 import { sanitySrcSet } from "@/sanity/lib/image";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import {
@@ -39,6 +41,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const product = await sanityFetch<ProductFull | null>(productBySlugQuery, { slug }, null);
+  if (!product) {
+    /* a renamed/retired product may have a CMS-managed redirect */
+    const hit = await resolveRedirect(`/products/${slug}`);
+    if (hit) redirect(hit.to);
+  }
   return { title: product?.title ?? "Presidio" };
 }
 
@@ -53,6 +60,11 @@ export default async function ProductPage({
     sanityFetch<StoreSettings | null>(storeSettingsQuery, {}, null),
     sanityFetch<Discount[]>(automaticDiscountsQuery, {}, []),
   ]);
+  if (!product) {
+    /* a renamed/retired product may have a CMS-managed redirect */
+    const hit = await resolveRedirect(`/products/${slug}`);
+    if (hit) redirect(hit.to);
+  }
 
   /* pairs/shop rails: products sharing the first tag */
   const tag = product?.tags?.[0] ?? "all";

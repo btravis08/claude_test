@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-08-02T15:48:10.719Z",
+  "generatedAt": "2026-08-02T16:09:41.191Z",
   "sections": {
     "hero": {
       "comps": {
         "desktop": {
-          "pixel": 89.9,
-          "layout": 49.8
+          "pixel": 87.6,
+          "layout": 53.7
         },
         "tablet": {
-          "pixel": 89.8,
-          "layout": 51.3
+          "pixel": 87.5,
+          "layout": 54.9
         },
         "mobile": {
-          "pixel": 86.5,
-          "layout": 46.9
+          "pixel": 85.4,
+          "layout": 53.6
         }
       },
       "tokens": {
@@ -24,9 +24,9 @@
         },
         "examples": [
           {
-            "selector": "a.group.block > div.relative.w-full > div.pointer-events-none.absolute",
+            "selector": "a.group.block > div.relative.w-full > div.media-overlay",
             "kind": "surface",
-            "value": "oklab(0 0 0 / 0.25)"
+            "value": "rgba(0, 0, 0, 0.2)"
           }
         ]
       }

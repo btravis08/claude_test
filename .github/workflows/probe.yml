@@ -7,16 +7,14 @@ jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
-      - name: Does the deployed field bundle contain the clamp fix?
+      - name: Is the live homepage hero the reverted V1 at 100svh?
         run: |
-          html=$(curl -sSL "https://sundayred.vercel.app/journal/alt")
-          chunks=$(echo "$html" | grep -oE '/_next/static/chunks/[^"]+\.js' | sort -u)
-          echo "chunks referenced: $(echo "$chunks" | wc -l)"
-          found=0
-          for c in $chunks; do
-            if curl -sSL "https://sundayred.vercel.app$c" | grep -q "max-height:none"; then
-              echo "clamp fix FOUND in $c"
-              found=1
-            fi
-          done
-          echo "clamp-fix-present: $found"
+          html=$(curl -sSL "https://sundayred.vercel.app/")
+          echo "--- h-svh present in hero markup:"
+          echo "$html" | grep -c "h-svh" || true
+          echo "--- V1 overlay signature (big display headline class):"
+          echo "$html" | grep -o 'sdr-text-reveal[^"]*text-headline-lg' | head -2 || true
+          echo "--- V2 signature (should be ABSENT — title-lg centered row):"
+          echo "$html" | grep -o 'flex-1 text-center font-display text-title-lg' | head -2 || true
+          echo "--- hero media src:"
+          echo "$html" | grep -oE '(hero-media|campaign|cdn\.sanity)[^"]*' | head -4 || true

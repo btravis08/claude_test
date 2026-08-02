@@ -220,7 +220,9 @@ export function FullWidth({
   eyebrow = "Now Arriving",
   headline = "Spring Traditions",
   primaryCta = "Shop Collection",
-  image = "/figma/campaign.jpg",
+  /* the V2 comp's own media fill (33638:56658) — cover-center of the
+     portrait source reproduces both comp crops */
+  image = "/figma/full-width-media.jpg",
   kind = "image",
   videoUrl,
   lookProducts,
@@ -232,7 +234,7 @@ export function FullWidth({
         aspect="aspect-[2/3] sm:aspect-[16/9]"
         image={image}
         overlay
-        position="bottom"
+        position="center"
         hoverScale={kind === "image"}
         parallax
         kind={kind}

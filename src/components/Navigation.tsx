@@ -498,6 +498,8 @@ export function Navigation({ data }: { data?: NavData | null }) {
   /* color mode of the section under the mobile bottom bar */
   const [barMode, setBarMode] = useState<"light" | "dark">("light");
   const lastY = useRef(0);
+  /* the transition resample loop runs on route CHANGES, not mount */
+  const firstModeSample = useRef(true);
   const headerRef = useRef<HTMLElement>(null);
   /* the hide-on-scroll header animation only applies at md+ — on
      mobile the bar is absolute and scrolls away naturally */
@@ -557,12 +559,25 @@ export function Navigation({ data }: { data?: NavData | null }) {
        Resample every frame through the page transition (exit + enter
        + settle) so the bar tracks whatever fades in beneath it. */
     let raf = 0;
-    const started = performance.now();
-    const resample = () => {
-      setBarMode(modeUnderBar());
-      if (performance.now() - started < 1300) raf = requestAnimationFrame(resample);
-    };
-    raf = requestAnimationFrame(resample);
+    /* only needed on ROUTE CHANGES — at initial mount there is no
+       transition, and each sample forces a hit-test against the full
+       page DOM (on the homepage that's expensive enough to register
+       as startup long tasks; it was the largest attributable TBT
+       source). A binary mode flip also doesn't need 60Hz: ~150ms
+       cadence tracks the 1.3s transition fade closely enough. */
+    if (!firstModeSample.current) {
+      const started = performance.now();
+      let lastSample = 0;
+      const resample = (now: number) => {
+        if (now - lastSample > 150) {
+          lastSample = now;
+          setBarMode(modeUnderBar());
+        }
+        if (performance.now() - started < 1300) raf = requestAnimationFrame(resample);
+      };
+      raf = requestAnimationFrame(resample);
+    }
+    firstModeSample.current = false;
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);

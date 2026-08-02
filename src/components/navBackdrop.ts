@@ -211,16 +211,35 @@ export function startNavBackdropProbes(header: HTMLElement): () => void {
     raf = requestAnimationFrame(loop);
   };
   raf = requestAnimationFrame(loop);
-  /* capture-phase scroll catches inner tracks (the hero carousel) too */
-  window.addEventListener("scroll", schedule, { capture: true, passive: true });
-  window.addEventListener("resize", schedule);
-  const tick = window.setInterval(schedule, 600);
+  /* the first probe adapts the first paint; the STANDING work (the
+     600ms media tick, scroll/resize) arms after idle — each probeAll
+     hit-tests the full page DOM, and during hydration those ticks
+     were stacking into the startup long-task window (TBT) for no
+     visual benefit: nothing scrolls or fades before the user can
+     interact */
+  let tick = 0;
+  let armed = false;
+  const arm = () => {
+    if (armed) return;
+    armed = true;
+    window.addEventListener("scroll", schedule, { capture: true, passive: true });
+    window.addEventListener("resize", schedule);
+    tick = window.setInterval(schedule, 600);
+  };
+  const hasIdle = typeof window.requestIdleCallback === "function";
+  const idle = hasIdle
+    ? window.requestIdleCallback(arm, { timeout: 4000 })
+    : (window.setTimeout(arm, 3000) as unknown as number);
 
   return () => {
     cancelAnimationFrame(raf);
-    clearInterval(tick);
-    window.removeEventListener("scroll", schedule, { capture: true });
-    window.removeEventListener("resize", schedule);
+    if (hasIdle) window.cancelIdleCallback(idle);
+    else clearTimeout(idle);
+    if (armed) {
+      clearInterval(tick);
+      window.removeEventListener("scroll", schedule, { capture: true });
+      window.removeEventListener("resize", schedule);
+    }
     header
       .querySelectorAll<HTMLElement>("[data-nav-probe]")
       .forEach((probe) => delete probe.dataset.mode);

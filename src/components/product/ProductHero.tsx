@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, m } from "motion/react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
 import { sanitySrcSet } from "@/sanity/lib/image";
@@ -92,9 +92,22 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
      first after the last; the track starts one slide in, and any
      motion that settles on a clone teleports (instantly, invisibly)
      to its real twin — so left always slides the previous image in
-     from the left */
+     from the left.
+
+     The clones (and the compensating scroll to "one slide in") are
+     withheld until `loopReady` flips true in a layout effect. Without
+     this, the leading clone sat at scrollLeft 0 in the raw SSR HTML —
+     exactly what the browser paints before hydration ever runs — so
+     the LAZY clone (not the eager, fetchPriority=high real first
+     slide, which was scrolled offscreen) was winning the LCP race.
+     Gating on loopReady means the first paint already shows the real
+     first slide at position 0; the clones are spliced in — and the
+     track re-scrolled to compensate — synchronously before the next
+     paint, so there's no visible flash either. */
   const loop = slides.length > 1;
-  const renderSlides = loop
+  const [loopReady, setLoopReady] = useState(false);
+  const looping = loop && loopReady;
+  const renderSlides = looping
     ? [slides[slides.length - 1], ...slides, slides[0]]
     : slides;
 
@@ -108,18 +121,22 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
       : el.clientWidth;
   };
 
+  useLayoutEffect(() => {
+    if (loop) setLoopReady(true);
+  }, [loop]);
+
   const updateProgress = useCallback(() => {
     const el = trackRef.current;
     if (!el) return;
     /* measure against the real slides — the edge clones don't count */
-    const w = loop ? slideWidth(el) : 0;
+    const w = looping ? slideWidth(el) : 0;
     const realWidth = el.scrollWidth - 2 * w;
     setProgress(
       realWidth > 0
         ? Math.min(1, Math.max(0, (el.scrollLeft - w + el.clientWidth) / realWidth))
         : 1,
     );
-  }, [loop]);
+  }, [looping]);
 
   useEffect(() => {
     updateProgress();
@@ -133,18 +150,20 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
     };
   }, [updateProgress]);
 
-  /* looping track opens on the first REAL slide (one slide in) */
-  useEffect(() => {
+  /* looping track opens on the first REAL slide (one slide in) — a
+     layout effect so the compensating scroll (now that the clones
+     just landed) lands before the browser's next paint */
+  useLayoutEffect(() => {
     const el = trackRef.current;
-    if (!el || !loop) return;
+    if (!el || !looping) return;
     el.scrollTo({ left: slideWidth(el), behavior: "instant" });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selected, loop]);
+  }, [selected, looping]);
 
   /* once motion settles on a clone, swap to its real twin */
   useEffect(() => {
     const el = trackRef.current;
-    if (!el || !loop) return;
+    if (!el || !looping) return;
     let settle: ReturnType<typeof setTimeout>;
     const onScroll = () => {
       clearTimeout(settle);
@@ -165,7 +184,7 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
       clearTimeout(settle);
       el.removeEventListener("scroll", onScroll);
     };
-  }, [selected, loop, slides.length]);
+  }, [selected, looping, slides.length]);
 
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
@@ -440,7 +459,7 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
             onClick={(e) => {
               if (suppressClick.current) return;
               openViewer(
-                loop ? (i - 1 + slides.length) % slides.length : i,
+                looping ? (i - 1 + slides.length) % slides.length : i,
                 e.currentTarget,
               );
             }}
@@ -463,10 +482,10 @@ export function ProductHero({ product }: { product: ProductHeroData }) {
                 srcSet={sanitySrcSet(src)}
                 sizes="(min-width: 640px) 45vw, 100vw"
                 alt={`${product.title} — image ${
-                  (loop ? (i - 1 + slides.length) % slides.length : i) + 1
+                  (looping ? (i - 1 + slides.length) % slides.length : i) + 1
                 }`}
-                loading={i === (loop ? 1 : 0) ? "eager" : "lazy"}
-                fetchPriority={i === (loop ? 1 : 0) ? "high" : undefined}
+                loading={i === (looping ? 1 : 0) ? "eager" : "lazy"}
+                fetchPriority={i === (looping ? 1 : 0) ? "high" : undefined}
                 decoding="async"
                 draggable={false}
                 className="absolute left-0 top-1/2 w-full -translate-y-1/2 md:static md:h-full md:translate-y-0 md:object-contain"

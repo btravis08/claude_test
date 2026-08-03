@@ -215,7 +215,8 @@ export const navigationQuery = groq`
 
 export const storeSettingsQuery = groq`
   *[_type == "storeSettings"][0] {
-    currency, locale, showCompareAt, applyAutomaticDiscounts
+    currency, locale, showCompareAt, applyAutomaticDiscounts,
+    "searchSynonyms": searchSynonyms[].terms
   }
 `;
 

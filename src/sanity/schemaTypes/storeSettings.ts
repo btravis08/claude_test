@@ -31,6 +31,33 @@ export const storeSettings = defineType({
       initialValue: true,
     }),
     defineField({
+      name: "searchSynonyms",
+      title: "Search synonyms",
+      type: "array",
+      description:
+        'Groups of terms treated as equivalent in site search (e.g. "tee, t-shirt, tshirt"). A search for any term in a group also matches the others.',
+      of: [
+        {
+          type: "object",
+          name: "synonymGroup",
+          fields: [
+            defineField({
+              name: "terms",
+              title: "Terms",
+              type: "array",
+              of: [{ type: "string" }],
+              options: { layout: "tags" },
+              validation: (rule) => rule.min(2),
+            }),
+          ],
+          preview: {
+            select: { terms: "terms" },
+            prepare: ({ terms }) => ({ title: (terms ?? []).join(" · ") }),
+          },
+        },
+      ],
+    }),
+    defineField({
       name: "applyAutomaticDiscounts",
       title: "Apply active automatic discounts to displayed prices",
       type: "boolean",

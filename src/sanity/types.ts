@@ -211,6 +211,8 @@ export interface StoreSettings {
   locale?: string;
   showCompareAt?: boolean;
   applyAutomaticDiscounts?: boolean;
+  /* groups of equivalent search terms, flattened to string arrays */
+  searchSynonyms?: string[][];
 }
 
 export interface SectionProductSlider extends SectionBase {

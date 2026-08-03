@@ -40,6 +40,7 @@
     "src/design/**",
     "src/fonts/**",
     "src/lib/**",
+    "scripts/seed-pack.ts",
     "scripts/tokens.mjs",
     "scripts/collect-lighthouse.mjs",
     "scripts/audit-sections.mjs",
@@ -81,6 +82,10 @@
     "src/app/(site)/projects/**",
     "src/sanity/schemaTypes/project.ts"
   ],
+  "packs": {
+    "description": "Sample packs the create-CLI can copy into a scaffold as sample-pack/ (seeded by scripts/seed-pack.ts). The packs and the CLI itself live under packages/ and are never copied.",
+    "paths": ["packages/create-sdr-site/**"]
+  },
   "site-specific": {
     "description": "SDR-only content that a scaffold replaces with a sample pack: never copied to new projects.",
     "paths": [

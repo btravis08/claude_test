@@ -1,0 +1,5 @@
+{
+  "title": "Apparel brand",
+  "blurb": "Commerce + blog: 20 products with colorway variants across 4 categories, smart collections, a discount, search synonyms, and a small journal.",
+  "features": { "commerce": true, "blog": true, "projects": false }
+}

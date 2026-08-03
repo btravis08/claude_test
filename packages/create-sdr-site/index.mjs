@@ -13,7 +13,7 @@
  * scaffold.manifest.json). Provisioning (Sanity project, GitHub,
  * Vercel) is printed as next steps rather than run for you.
  */
-import { cpSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import readline from "node:readline/promises";
 
@@ -41,8 +41,16 @@ const EXCLUDE = [
   ".github/workflows/fetch-sdr-catalog.yml",
 ];
 
+/* sample packs: packs/<slug>/{pack.json,content.mjs,images/} */
+const PACKS_DIR = path.join(HERE, "packs");
+const PACK_NAMES = existsSync(PACKS_DIR)
+  ? readdirSync(PACKS_DIR).filter((d) =>
+      existsSync(path.join(PACKS_DIR, d, "pack.json")),
+    )
+  : [];
+
 /* flags for non-interactive use:
-   --name= --url= --commerce=y|n --blog=y|n --projects=y|n */
+   --name= --url= --pack=<slug>|none --commerce=y|n --blog=y|n --projects=y|n */
 const flags = Object.fromEntries(
   process.argv
     .filter((a) => a.startsWith("--"))
@@ -74,9 +82,20 @@ if (existsSync(dest)) {
 
 const name = flags.name ?? (await ask("Site name", "My Site"));
 const baseUrl = flags.url ?? (await ask("Production base URL", "https://example.vercel.app"));
-const commerce = "commerce" in flags ? /^y/i.test(flags.commerce) : await askBool("E-commerce (products, collections, cart, search)?", true);
-const blog = "blog" in flags ? /^y/i.test(flags.blog) : await askBool("Blog (posts, authors, categories)?", true);
-const projects = "projects" in flags ? /^y/i.test(flags.projects) : await askBool("Projects / portfolio?", false);
+const packName =
+  flags.pack ?? (await ask(`Sample pack (${[...PACK_NAMES, "none"].join(" / ")})`, "none"));
+if (packName !== "none" && !PACK_NAMES.includes(packName)) {
+  console.error(`unknown pack "${packName}" — available: ${PACK_NAMES.join(", ")} or none`);
+  process.exit(1);
+}
+const pack =
+  packName === "none"
+    ? null
+    : JSON.parse(readFileSync(path.join(PACKS_DIR, packName, "pack.json"), "utf8"));
+/* a pack presets the modules; explicit answers/flags still win */
+const commerce = "commerce" in flags ? /^y/i.test(flags.commerce) : await askBool("E-commerce (products, collections, cart, search)?", pack?.features.commerce ?? true);
+const blog = "blog" in flags ? /^y/i.test(flags.blog) : await askBool("Blog (posts, authors, categories)?", pack?.features.blog ?? true);
+const projects = "projects" in flags ? /^y/i.test(flags.projects) : await askBool("Projects / portfolio?", pack?.features.projects ?? false);
 rl?.close();
 
 console.log(`\nScaffolding into ${dest} …`);
@@ -99,10 +118,19 @@ cfg.site.perfPages = [
   "/",
   ...(commerce ? ["/collections/shop-all"] : []),
   ...(blog ? ["/journal"] : []),
+  ...(projects ? ["/projects"] : []),
 ];
 cfg.features = { commerce, blog, projects };
 cfg.figma.fileKey = "REPLACE_WITH_YOUR_FIGMA_FILE_KEY";
 writeFileSync(cfgPath, `${JSON.stringify(cfg, null, 2)}\n`);
+
+/* sample pack → <dest>/sample-pack (seeded later by scripts/seed-pack.ts) */
+if (pack) {
+  cpSync(path.join(PACKS_DIR, packName), path.join(dest, "sample-pack"), {
+    recursive: true,
+  });
+  console.log(`Included sample pack: ${pack.title}`);
+}
 
 /* package identity */
 const pkgPath = path.join(dest, "package.json");
@@ -115,7 +143,13 @@ Done. Next steps (one-time logins assumed: sanity, gh, vercel):
 
   cd ${target}
   npm install
-  npx sanity init --env        # creates the Sanity project + writes ids
+  npx sanity init --env        # creates the Sanity project + writes ids${
+    pack
+      ? `
+  npx sanity exec scripts/seed-pack.ts --with-user-token
+                               # loads the "${pack.title}" sample content`
+      : ""
+  }
   npm run dev                  # http://localhost:3000 (+ /studio)
 
   gh repo create ${pkg.name} --private --source . --push
@@ -127,8 +161,15 @@ Notes
   - Replace figma.fileKey in designops.config.json to arm the
     design-drift + comp tooling; add FIGMA_TOKEN as a repo secret.
   - The SDR product catalog, brand imagery (public/figma, public/sdr)
-    and seeds were not copied — pages fall back to broken image slots
-    until you add your own media (a sample-pack seed is the planned
-    replacement). design/figma-tokens ships as a working example;
-    re-export it from your own Figma file.
+    and seeds were not copied.${
+      pack
+        ? ` The sample pack's imagery is
+    program-generated placeholder art owned by this project — replace
+    it with your own as the site becomes real.`
+        : ` Without a sample pack, pages
+    render fallback content with empty image slots until you seed
+    your own.`
+    }
+  - design/figma-tokens ships as a working example; re-export it from
+    your own Figma file.
 `);

@@ -56,6 +56,10 @@ jobs:
           git add src/design/backup.status.json
           git diff --cached --quiet && echo "No changes" || {
             git commit -m "Refresh backup status (scheduled)"
-            git push
+            # concurrent nightly jobs push to the same branch — rebase and retry
+            for i in 1 2 3; do
+              git pull --rebase && git push && break
+              sleep $((i * 3))
+            done
             git push origin HEAD:main || echo "main diverged; skipping mirror"
           }

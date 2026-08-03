@@ -1,21 +1,8 @@
 {
-  "generatedAt": "2026-08-02T16:09:41.191Z",
+  "generatedAt": "2026-08-03T03:07:45.452Z",
   "sections": {
     "hero": {
-      "comps": {
-        "desktop": {
-          "pixel": 87.6,
-          "layout": 53.7
-        },
-        "tablet": {
-          "pixel": 87.5,
-          "layout": 54.9
-        },
-        "mobile": {
-          "pixel": 85.4,
-          "layout": 53.6
-        }
-      },
+      "comps": {},
       "tokens": {
         "elements": 14,
         "offToken": 1,
@@ -24,30 +11,17 @@
         },
         "examples": [
           {
-            "selector": "a.group.block > div.relative.w-full > div.media-overlay",
+            "selector": "a.group.block > div.relative.w-full > div.pointer-events-none.absolute",
             "kind": "surface",
-            "value": "rgba(0, 0, 0, 0.2)"
+            "value": "oklab(0 0 0 / 0.25)"
           }
         ]
       }
     },
     "full-width": {
-      "comps": {
-        "desktop": {
-          "pixel": 87.7,
-          "layout": 73.5
-        },
-        "tablet": {
-          "pixel": 79.9,
-          "layout": 63
-        },
-        "mobile": {
-          "pixel": 86.7,
-          "layout": 71
-        }
-      },
+      "comps": {},
       "tokens": {
-        "elements": 12,
+        "elements": 14,
         "offToken": 1,
         "byKind": {
           "surface": 1

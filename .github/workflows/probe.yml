@@ -54,19 +54,36 @@ jobs:
             for (const it of mt.slice(0,6))
               console.log('  mainthread', Math.round(it.duration), 'ms ::', it.groupLabel);
           "
-      - name: PSI (Google-hosted Lighthouse) — independent of runner noise
+      - name: Preview A/B — Lighthouse the known-good commit with real CMS data
+        env:
+          CHROME_PATH: /usr/bin/google-chrome
         run: |
-          for path in "/" "/products/presidio"; do
-            url="https://sundayred.vercel.app${path}"
-            curl -s --max-time 120 "https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=$(python3 -c "import urllib.parse,sys;print(urllib.parse.quote(sys.argv[1],safe=''))" "$url")&strategy=mobile&category=performance" -o psi.json
-            python3 - "$path" <<'EOF'
-          import json, sys
-          d = json.load(open("psi.json"))
-          lr = d.get("lighthouseResult")
-          if not lr:
-              print(sys.argv[1], "PSI error:", json.dumps(d)[:300]); raise SystemExit
-          print(sys.argv[1], "PSI mobile perf:", round(lr["categories"]["performance"]["score"] * 100))
-          for k in ("largest-contentful-paint", "total-blocking-time", "cumulative-layout-shift", "speed-index"):
-              print("   ", k, lr["audits"][k]["displayValue"])
+          for host in \
+            "sundayred-git-claude-website-design-framework-h7b1kw.vercel.app" \
+            "sundayred-git-claude-website-design-framework-h7b1kw-btravis08.vercel.app" \
+            "sundayred-git-claude-website-design-framework-h7b1kw-btravis08s-projects.vercel.app"; do
+            code=$(curl -s -o preview.html -w "%{http_code}" --max-time 30 "https://$host/") || code=000
+            echo "$host → $code ($(wc -c < preview.html) bytes)"
+            if [ "$code" = "200" ] && ! grep -qi "Authentication Required\|vercel.com/sso" preview.html; then
+              echo "== measuring https://$host/ =="
+              npx -y lighthouse@12 "https://$host/" \
+                --only-categories=performance --output=json --output-path=lh-preview.json \
+                --chrome-flags="--headless=new --no-sandbox --disable-gpu" --quiet
+              node -e "
+                const r = require('./lh-preview.json');
+                console.log('PREVIEW(good commit) perf', Math.round(r.categories.performance.score*100),
+                  'tbt', Math.round(r.audits['total-blocking-time'].numericValue),
+                  'lcp', Math.round(r.audits['largest-contentful-paint'].numericValue));
+                const items = r.audits['bootup-time'].details?.items ?? [];
+                for (const it of items.slice(0,4))
+                  console.log('  bootup', Math.round(it.total), 'ms ::', (it.url||'').slice(0,90));
+              "
+              python3 - <<'EOF'
+          import re
+          html = open("preview.html", encoding="utf-8", errors="replace").read()
+          scripts = re.findall(r"<script(?![^>]*\bsrc=)[^>]*>(.*?)</script>", html, re.S)
+          print(f"preview inline: {len(scripts)} scripts, {sum(len(s) for s in scripts)} bytes; html {len(html)} bytes")
           EOF
+              break
+            fi
           done

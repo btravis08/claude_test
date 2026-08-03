@@ -35,6 +35,25 @@ jobs:
           grep -c "announcement-bar" home.html || true
           echo "--- number of section wrappers (data-mode):"
           grep -o 'data-mode="[a-z-]*"' home.html | sort | uniq -c || true
+      - name: Lighthouse benchmarkIndex + bootup attribution (runner-speed check)
+        env:
+          CHROME_PATH: /usr/bin/google-chrome
+        run: |
+          npx -y lighthouse@12 "https://sundayred.vercel.app/" \
+            --only-categories=performance --output=json --output-path=lh.json \
+            --chrome-flags="--headless=new --no-sandbox --disable-gpu" --quiet
+          node -e "
+            const r = require('./lh.json');
+            console.log('benchmarkIndex', Math.round(r.environment.benchmarkIndex));
+            console.log('perf', Math.round(r.categories.performance.score*100),
+              'tbt', Math.round(r.audits['total-blocking-time'].numericValue));
+            const items = r.audits['bootup-time'].details?.items ?? [];
+            for (const it of items.slice(0,6))
+              console.log('  bootup', Math.round(it.total), 'ms ::', (it.url||'').slice(0,90));
+            const mt = r.audits['mainthread-work-breakdown'].details?.items ?? [];
+            for (const it of mt.slice(0,6))
+              console.log('  mainthread', Math.round(it.duration), 'ms ::', it.groupLabel);
+          "
       - name: PSI (Google-hosted Lighthouse) — independent of runner noise
         run: |
           for path in "/" "/products/presidio"; do

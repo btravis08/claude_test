@@ -1,0 +1,7 @@
+{
+  "name": "create-sdr-site",
+  "version": "0.1.0",
+  "description": "Scaffold a new site from the SDR skeleton: design tokens, section library, perf apparatus, Studio dashboard, and optional commerce/blog/projects modules.",
+  "type": "module",
+  "bin": { "create-sdr-site": "./index.mjs" }
+}

@@ -3,6 +3,7 @@ import designops from "../../../designops.config.json";
 import { blockContent } from "./blockContent";
 import { collection } from "./collection";
 import { discount } from "./discount";
+import { formSubmission } from "./formSubmission";
 import { legacyPage } from "./legacyPage";
 import { navigation } from "./navigation";
 import { page } from "./page";
@@ -26,6 +27,7 @@ import { storeSettings } from "./storeSettings";
 
 const base = [
   redirect,
+  formSubmission,
   page,
   legacyPage,
   navigation,

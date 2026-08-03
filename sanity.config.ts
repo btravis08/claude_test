@@ -143,6 +143,34 @@ S.listItem()
         .title("Navigation")
         .icon(icons["menu"])
         .child(S.document().schemaType("navigation").documentId("navigation")),
+      S.listItem()
+        .title("Inbox")
+        .icon(icons["envelope"])
+        .child(
+          S.list()
+            .title("Inbox")
+            .items([
+              S.listItem()
+                .title("Unread")
+                .schemaType("formSubmission")
+                .child(
+                  S.documentList()
+                    .title("Unread")
+                    .apiVersion(apiVersion)
+                    .schemaType("formSubmission")
+                    .filter('_type == "formSubmission" && read != true')
+                    .defaultOrdering([{ field: "submittedAt", direction: "desc" }]),
+                ),
+              S.listItem()
+                .title("All submissions")
+                .schemaType("formSubmission")
+                .child(
+                  S.documentTypeList("formSubmission")
+                    .title("All submissions")
+                    .defaultOrdering([{ field: "submittedAt", direction: "desc" }]),
+                ),
+            ]),
+        ),
       ...(designops.features.projects
         ? [
 S.listItem()

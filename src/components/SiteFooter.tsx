@@ -7,6 +7,7 @@ import { useLayoutEffect, useRef, useState } from "react";
 import { useFooterTagline } from "@/components/FooterTagline";
 import { Logo } from "@/components/Logo";
 import { NavTextLink } from "@/components/NavTextLink";
+import { NewsletterForm } from "@/components/NewsletterForm";
 import { ArrowUp, CurrencyDollar, Plus } from "@/components/icons";
 import { EASE_OUT } from "@/lib/motion";
 
@@ -279,25 +280,7 @@ export function SiteFooter() {
       </div>
 
       {/* newsletter */}
-      <form className="flex w-full flex-col items-stretch gap-3 p-4 sm:flex-row sm:gap-0 md:p-6">
-        {/* flex-1 only in the sm+ row layout — in the stacked mobile
-            column it would become the vertical basis and squash the
-            46px heights */}
-        <label className="flex h-[2.875rem] items-center rounded-xs bg-wash pl-4 pr-3 backdrop-blur-[12px] sm:flex-1 md:h-10">
-          <span className="sr-only">Email address</span>
-          <input
-            type="email"
-            placeholder="EMAIL ADDRESS"
-            className="label w-full bg-transparent font-medium text-ink outline-none placeholder:text-ink-3"
-          />
-        </label>
-        <button
-          type="submit"
-          className="label flex h-[2.875rem] items-center justify-center rounded-xs bg-btn px-3.5 font-medium text-btn-fg transition-opacity hover:opacity-80 sm:min-w-[9.375rem] sm:flex-1 md:h-10"
-        >
-          Submit
-        </button>
-      </form>
+      <NewsletterForm />
 
       {/* logo + socials row */}
       <div className="flex w-full items-center gap-16 p-4 sm:gap-8 sm:px-6 sm:py-8">

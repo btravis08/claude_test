@@ -20,7 +20,7 @@ jobs:
       - name: Crawl sitemap + key pages
         run: |
           set -uo pipefail
-          BASE="https://sundayred.vercel.app"
+          BASE=$(node -p "require('./designops.config.json').site.baseUrl")
           : > /tmp/broken.txt
           checked=0
 

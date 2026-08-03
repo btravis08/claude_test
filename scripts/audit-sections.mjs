@@ -53,9 +53,12 @@ const EXECUTABLE = process.env.AUDIT_CHROMIUM ?? "/opt/pw-browsers/chromium";
 const OUT = path.join(ROOT, "src/design/library.status.json");
 const HISTORY = path.join(ROOT, "src/design/library.history.json");
 /* enough runs for a real trend without bloating the bundle */
-const HISTORY_CAP = 60;
+const DESIGNOPS = JSON.parse(
+  readFileSync(path.join(ROOT, "designops.config.json"), "utf8"),
+);
+const HISTORY_CAP = DESIGNOPS.audit.historyCap;
 
-const WIDTHS = { desktop: 1440, tablet: 1024, mobile: 428 };
+const WIDTHS = DESIGNOPS.audit.breakpoints;
 
 /* the registry is TSX — read the fields the audit needs without
    compiling it (slug, modes, comps) */

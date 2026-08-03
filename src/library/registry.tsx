@@ -62,7 +62,9 @@ export interface SectionEntry {
 export type Breakpoint = "desktop" | "tablet" | "mobile";
 
 /* the design library file every node id below lives in */
-export const FIGMA_FILE = "CMeh0gCtTQAnIRc9iXjGbr";
+import designops from "../../designops.config.json";
+
+export const FIGMA_FILE = designops.figma.fileKey;
 
 export const figmaUrl = (nodeId: string) =>
   `https://www.figma.com/design/${FIGMA_FILE}/?node-id=${nodeId.replace(":", "-")}`;

@@ -19,7 +19,9 @@ import perfHistory from "@/design/perf.history.json";
 /* timed sections animate through their screenshots — their layout
    scores are structurally low and are verified by motion specs
    instead (see AGENTS.md) */
-const TIMED = new Set(["legacy-hero", "floating-gallery", "full-bleed-carousel", "carousel"]);
+import designops from "../../../designops.config.json";
+
+const TIMED = new Set<string>(designops.audit.timedSections);
 
 type Snap = {
   t?: string;
@@ -112,9 +114,9 @@ function collect() {
 
   const alerts: string[] = [];
   if (links.broken?.length) alerts.push(`${links.broken.length} broken link(s)`);
-  if (hoursSince(backup.generatedAt) > 36) alerts.push("dataset backup is stale");
+  if (hoursSince(backup.generatedAt) > designops.alerts.backupStaleHours) alerts.push("dataset backup is stale");
   for (const row of perf) {
-    if (row.score != null && row.prevMedian != null && row.prevMedian - row.score >= 10)
+    if (row.score != null && row.prevMedian != null && row.prevMedian - row.score >= designops.alerts.perfDrop)
       alerts.push(`${row.path} perf dropped (${row.prevMedian}→${row.score})`);
   }
 
@@ -260,8 +262,8 @@ function OverviewPane() {
               </Text>
             ) : (
               <Flex align="center" gap={2}>
-                <Badge tone={hoursSince(backup.generatedAt) > 36 ? "critical" : "positive"}>
-                  {hoursSince(backup.generatedAt) > 36 ? "STALE" : "OK"}
+                <Badge tone={hoursSince(backup.generatedAt) > designops.alerts.backupStaleHours ? "critical" : "positive"}>
+                  {hoursSince(backup.generatedAt) > designops.alerts.backupStaleHours ? "STALE" : "OK"}
                 </Badge>
                 <Text size={1}>
                   {backup.docs} documents · {(backup.bytes / 1024).toFixed(0)}KB · 90-day retention

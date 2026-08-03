@@ -22,7 +22,10 @@ import path from "node:path";
 import { layoutScore, readRegistry } from "./lib/image-metric.mjs";
 
 const ROOT = process.cwd();
-const FILE_KEY = "CMeh0gCtTQAnIRc9iXjGbr";
+const DESIGNOPS = JSON.parse(
+  readFileSync(path.join(ROOT, "designops.config.json"), "utf8"),
+);
+const FILE_KEY = DESIGNOPS.figma.fileKey;
 const OUT = path.join(ROOT, "src/design/design-drift.json");
 
 const token = process.env.FIGMA_TOKEN;

@@ -10,7 +10,9 @@ import { sanityFetch } from "@/sanity/lib/fetch";
   routes alone when the CMS is unreachable.
 */
 
-const BASE = "https://sundayred.vercel.app";
+import designops from "../../designops.config.json";
+
+const BASE = designops.site.baseUrl;
 
 const slugsQuery = groq`{
   "pages": *[_type == "page" && defined(slug.current) && slug.current != "home"].slug.current,

@@ -34,6 +34,17 @@ embedded at /studio, with Motion (framer-motion) for interactions.
   changes should be live on sundayred.vercel.app. Batch rapid
   successive pushes into one notification.
 
+## designops.config.json (single source for the ops apparatus)
+
+Every project-specific constant the monitoring/dashboard apparatus
+needs lives in `designops.config.json` at the repo root: site name +
+base URL, the Lighthouse page list, the Figma file key, audit
+breakpoints/bands/history cap, the timed-section exemption list, and
+the Overview alert thresholds. The collectors, audit, drift check,
+link checker, sitemap, registry, and Studio Overview all read it —
+edit the config, never the consumers. This is the portability seam:
+pointing this apparatus at a new project starts with this one file.
+
 ## Design source (Figma)
 
 - File: `CMeh0gCtTQAnIRc9iXjGbr` ("[i] Design Library — SDR"), desktop

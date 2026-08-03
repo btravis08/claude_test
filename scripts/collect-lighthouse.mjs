@@ -16,18 +16,15 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 const ROOT = process.cwd();
-const ORIGIN = process.env.PERF_ORIGIN ?? "https://sundayred.vercel.app";
+/* pages + base URL come from designops.config.json — the single
+   place a new project edits */
+const DESIGNOPS = JSON.parse(
+  readFileSync(path.join(ROOT, "designops.config.json"), "utf8"),
+);
+const ORIGIN = process.env.PERF_ORIGIN ?? DESIGNOPS.site.baseUrl;
 const OUT = path.join(ROOT, "src/design/perf.history.json");
 const CAP = 120; // nightly ≈ four months of trend per page
-
-/* every distinct page shape on the site */
-const PAGES = [
-  "/",
-  "/legacy",
-  "/collections/shop-all",
-  "/products/presidio",
-  "/journal",
-];
+const PAGES = DESIGNOPS.site.perfPages;
 
 function runLighthouse(url, formFactor) {
   const raw = execFileSync(

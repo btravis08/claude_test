@@ -260,7 +260,8 @@ export const siteSettingsQuery = groq`
     tagline,
     phone,
     email,
-    address
+    address,
+    announcement
   }
 `;
 

@@ -384,7 +384,19 @@ export interface SiteSettings {
   phone?: string;
   email?: string;
   address?: string;
+  announcement?: {
+    enabled?: boolean;
+    text?: string;
+    url?: string;
+    colorMode?: "light" | "dark";
+    dismissible?: boolean;
+    startsAt?: string;
+    endsAt?: string;
+  } | null;
 }
+
+/* alias used by the site layout (settings doc as fetched) */
+export type SiteSettingsDoc = SiteSettings;
 
 /* The Legacy page singleton (/legacy) — content only; geometry and
    choreography are code-owned with built-in fallbacks per field */

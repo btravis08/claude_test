@@ -1,6 +1,7 @@
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { draftMode } from "next/headers";
 
+import { AnnouncementBar } from "@/components/AnnouncementBar";
 import { CartProvider } from "@/components/cart/CartContext";
 import { LazyCartFlyout } from "@/components/cart/LazyCartFlyout";
 import { LazySearchFlyout } from "@/components/search/LazySearchFlyout";
@@ -15,8 +16,8 @@ import { MotionProvider } from "@/components/MotionProvider";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { urlFor } from "@/sanity/lib/image";
-import { navigationQuery } from "@/sanity/lib/queries";
-import type { NavigationDoc, NavLinkDoc } from "@/sanity/types";
+import { navigationQuery, siteSettingsQuery } from "@/sanity/lib/queries";
+import type { NavigationDoc, NavLinkDoc, SiteSettingsDoc } from "@/sanity/types";
 import type { SanityImageSource } from "@sanity/image-url";
 
 function img(source: SanityImageSource | undefined | null, width = 1400) {
@@ -91,8 +92,28 @@ export default async function SiteLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const navDoc = await sanityFetch<NavigationDoc | null>(navigationQuery, {}, null);
+  const [navDoc, settings] = await Promise.all([
+    sanityFetch<NavigationDoc | null>(navigationQuery, {}, null),
+    sanityFetch<SiteSettingsDoc | null>(siteSettingsQuery, {}, null),
+  ]);
   const { isEnabled: isDraft } = await draftMode();
+
+  /* announcement bar: enabled + inside its schedule window (evaluated
+     at render/revalidate time — 10-minute ISR granularity is fine) */
+  const a = settings?.announcement;
+  const now = Date.now();
+  const announcement =
+    a?.enabled &&
+    a.text &&
+    (!a.startsAt || Date.parse(a.startsAt) <= now) &&
+    (!a.endsAt || Date.parse(a.endsAt) >= now)
+      ? {
+          text: a.text,
+          url: a.url || undefined,
+          colorMode: a.colorMode,
+          dismissible: a.dismissible,
+        }
+      : null;
 
   return (
     <MotionProvider>
@@ -112,6 +133,14 @@ export default async function SiteLayout({
            it or the fixed footer peeks through on load */
         className="relative z-10 flex min-h-lvh flex-col bg-surface mb-[min(var(--footer-h,0px),100svh)]"
       >
+        {announcement && (
+          <>
+            {/* nav + page offset while the bar is live; the bar's
+                dismiss logic zeroes the var */}
+            <style>{`:root{--announce-h:2.5rem}`}</style>
+            <AnnouncementBar announcement={announcement} />
+          </>
+        )}
         <Navigation data={toNavData(navDoc)} />
         <main className="flex-1">
           {/* draft mode (Presentation preview) skips the transition

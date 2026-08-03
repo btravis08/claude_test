@@ -704,7 +704,7 @@ export function Navigation({ data }: { data?: NavData | null }) {
         ref={headerRef}
         className={`${
           isLegacy ? "absolute" : "fixed"
-        } top-0 z-50 flex w-full flex-col text-ink max-md:absolute`}
+        } top-[var(--announce-h,0px)] z-50 flex w-full flex-col text-ink max-md:absolute`}
       >
         {/* bar: transparent over the hero / at top, bg-primary once
             scrolled back in or engaged (hover / open dropdown). The

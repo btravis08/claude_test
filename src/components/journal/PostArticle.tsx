@@ -20,6 +20,7 @@ export interface PostDoc {
   body?: PortableTextBlock[];
   publishedAt?: string;
   seoTitle?: string;
+  seo?: import("@/sanity/types").SeoDoc | null;
   author?: { name?: string; role?: string; avatar?: SanityImageSource };
   categories?: { title?: string; slug?: string }[];
 }

@@ -50,6 +50,11 @@ export const page = defineType({
         defineArrayMember({ type: "sectionThreeD" }),
       ],
     }),
+    defineField({
+      name: "seo",
+      title: "Search engine listing",
+      type: "seo",
+    }),
     // Legacy fields, kept so pre-section documents still render
     defineField({
       name: "heroImage",

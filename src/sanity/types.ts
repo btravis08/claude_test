@@ -131,8 +131,18 @@ export interface SliderProduct {
   collectionIds?: string[];
 }
 
+/* shared SEO object (page/post/product/collection) */
+export interface SeoDoc {
+  title?: string | null;
+  description?: string | null;
+  ogImage?: SanityImageSource | null;
+  noindex?: boolean | null;
+  canonical?: string | null;
+}
+
 /* Full product for the PDP: the slider shape plus page content */
 export interface ProductFull extends SliderProduct {
+  seo?: SeoDoc | null;
   description?: PortableTextBlock[];
   /* links under the description; each opens the specifications drawer */
   detailLinks?: Array<{ _key?: string; label?: string; body?: PortableTextBlock[] }>;
@@ -182,6 +192,7 @@ export interface CollectionDoc {
   rules?: CollectionRule[];
   sortOrder?: CollectionSort;
   showFooterTagline?: boolean;
+  seo?: SeoDoc | null;
   products?: Array<SliderProduct | null>;
   parent?: { title?: string; slug?: string } | null;
   subcategories?: Array<{ _id: string; title?: string; slug?: string } | null>;
@@ -315,6 +326,7 @@ export interface Page {
   title: string;
   slug: string;
   showFooterTagline?: boolean;
+  seo?: SeoDoc | null;
   sections?: PageSection[];
   heroImage?: SanityImageSource & { alt?: string };
   body?: PortableTextBlock[];

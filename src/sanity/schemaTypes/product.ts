@@ -425,27 +425,12 @@ export const product = defineType({
       ],
     }),
 
-    /* ---------- seo ---------- */
+    /* ---------- seo (shared object w/ live Google preview) ---------- */
     defineField({
       name: "seo",
       title: "Search engine listing",
-      type: "object",
+      type: "seo",
       group: "seo",
-      fields: [
-        defineField({
-          name: "title",
-          title: "Page title",
-          type: "string",
-          description: "Defaults to the product title.",
-        }),
-        defineField({
-          name: "description",
-          title: "Meta description",
-          type: "text",
-          rows: 3,
-          validation: (rule) => rule.max(320),
-        }),
-      ],
     }),
 
     /* legacy display price from the first content model; superseded by

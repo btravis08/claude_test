@@ -166,6 +166,11 @@ export const collection = defineType({
       },
       initialValue: "newest",
     }),
+    defineField({
+      name: "seo",
+      title: "Search engine listing",
+      type: "seo",
+    }),
   ],
   preview: {
     select: { title: "title", type: "type", parent: "parent.title", media: "image" },

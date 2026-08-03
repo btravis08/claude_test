@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+
 import { CollectionExplorer } from "@/components/collection/CollectionExplorer";
 import { redirect } from "next/navigation";
 import { resolveRedirect } from "@/sanity/lib/redirects";
@@ -9,6 +11,7 @@ import type { ProductCardData } from "@/components/home/ProductCard";
 import { activeOnly, productsForCollection, toCards } from "@/components/SectionRenderer";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { urlFor } from "@/sanity/lib/image";
+import { seoMeta } from "@/sanity/lib/seo";
 import {
   automaticDiscountsQuery,
   collectionBySlugQuery,
@@ -119,6 +122,27 @@ function Chip({ label, href }: { label: string; href: string }) {
       {label.toUpperCase()}
     </SmartLink>
   );
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const collection = await sanityFetch<CollectionDoc | null>(
+    collectionBySlugQuery,
+    { slug },
+    null,
+  );
+  if (!collection) return { title: "Collection" };
+  return seoMeta({
+    seo: collection.seo,
+    title: collection.title ?? "Collection",
+    description: collection.description,
+    path: `/collections/${slug}`,
+    image: collection.image,
+  });
 }
 
 export default async function CollectionPage({

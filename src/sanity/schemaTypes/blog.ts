@@ -145,10 +145,19 @@ export const post = defineType({
       initialValue: false,
     }),
     defineField({
+      name: "seo",
+      title: "Search engine listing",
+      type: "seo",
+      group: "meta",
+    }),
+    /* superseded by the seo object; hidden but kept so any existing
+       documents' overrides survive (metadata falls back to it) */
+    defineField({
       name: "seoTitle",
-      title: "SEO title override",
+      title: "SEO title override (legacy)",
       type: "string",
       group: "meta",
+      hidden: true,
     }),
   ],
   orderings: [

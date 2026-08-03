@@ -10,6 +10,7 @@ import {
 import { activeOnly, buildSliderCardMap, SectionRenderer } from "@/components/SectionRenderer";
 import { cardImg } from "@/sanity/lib/cards";
 import { resolveRedirect } from "@/sanity/lib/redirects";
+import { seoMeta } from "@/sanity/lib/seo";
 import { sanitySrcSet } from "@/sanity/lib/image";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import {
@@ -45,8 +46,15 @@ export async function generateMetadata({
     /* a renamed/retired product may have a CMS-managed redirect */
     const hit = await resolveRedirect(`/products/${slug}`);
     if (hit) redirect(hit.to);
+    return { title: "Presidio" };
   }
-  return { title: product?.title ?? "Presidio" };
+  /* no `image` fallback here on purpose: the PDP's generated
+     opengraph-image keeps serving unless an editor sets seo.ogImage */
+  return seoMeta({
+    seo: product.seo,
+    title: product.title ?? "Product",
+    path: `/products/${slug}`,
+  });
 }
 
 export default async function ProductPage({

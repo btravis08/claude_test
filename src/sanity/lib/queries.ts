@@ -162,6 +162,7 @@ export const productBySlugQuery = groq`
     images,
     options[] { name, values },
     showFooterTagline,
+    seo,
     pairsWellWith[]->{ ${sliderProductFields} },
     sections[] { ${sectionFields} }
   }
@@ -173,6 +174,7 @@ export const collectionBySlugQuery = groq`
   *[_type == "collection" && slug.current == $slug][0] {
     _id, title, "slug": slug.current, description, image,
     type, match, rules, sortOrder, showFooterTagline,
+    seo,
     "parent": parent->{ title, "slug": slug.current },
     subcategories[]->{ _id, title, "slug": slug.current }
   }
@@ -226,6 +228,7 @@ export const pageBySlugQuery = groq`
     title,
     "slug": slug.current,
     showFooterTagline,
+    seo,
     sections[] { ${sectionFields} },
     heroImage,
     body
@@ -281,6 +284,7 @@ export const postBySlugQuery = groq`
   *[_type == "post" && slug.current == $slug][0]{
     title, "slug": slug.current, heroImage, excerpt, body, publishedAt,
     seoTitle,
+    seo,
     "author": author->{name, role, avatar},
     "categories": categories[]->{title, "slug": slug.current}
   }

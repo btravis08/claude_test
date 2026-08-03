@@ -12,6 +12,7 @@ import { buildSliderCardMap, SectionRenderer } from "@/components/SectionRendere
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { urlFor } from "@/sanity/lib/image";
 import { pageBySlugQuery } from "@/sanity/lib/queries";
+import { seoMeta } from "@/sanity/lib/seo";
 import type { Page } from "@/sanity/types";
 
 export async function generateMetadata({
@@ -22,7 +23,7 @@ export async function generateMetadata({
   const { slug } = await params;
   const page = await sanityFetch<Page | null>(pageBySlugQuery, { slug }, null);
   if (!page) return { title: "Page not found" };
-  return { title: page.title };
+  return seoMeta({ seo: page.seo, title: page.title, path: `/${slug}` });
 }
 
 export default async function CmsPage({

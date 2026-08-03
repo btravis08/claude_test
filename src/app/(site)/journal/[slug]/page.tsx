@@ -11,6 +11,7 @@ import {
 } from "@/components/journal/articles";
 import { toCards } from "@/sanity/lib/cards";
 import { sanityFetch } from "@/sanity/lib/fetch";
+import { seoMeta } from "@/sanity/lib/seo";
 import {
   automaticDiscountsQuery,
   postBySlugQuery,
@@ -36,10 +37,16 @@ export async function generateMetadata({
   const { slug } = await params;
   const post = await sanityFetch<PostDoc | null>(postBySlugQuery, { slug }, null);
   if (post) {
-    return {
-      title: `${post.seoTitle ?? post.title} — Honors Journal`,
-      description: post.excerpt,
-    };
+    /* seo.title (or the legacy seoTitle) overrides; both get the
+       journal suffix. heroImage is the OG fallback image. */
+    const base = post.seo?.title || post.seoTitle || post.title;
+    return seoMeta({
+      seo: post.seo ? { ...post.seo, title: undefined } : null,
+      title: `${base} — Honors Journal`,
+      description: post.seo?.description || post.excerpt,
+      path: `/journal/${slug}`,
+      image: post.heroImage,
+    });
   }
   const hit = findArticle(slug);
   if (!hit) return { title: "Honors Journal" };

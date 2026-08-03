@@ -675,6 +675,78 @@
             "totalMs": 0
           }
         }
+      },
+      {
+        "t": "2026-08-03T20:52:32.309Z",
+        "mobile": {
+          "perf": 64,
+          "a11y": 95,
+          "bp": 96,
+          "seo": 100,
+          "lcp": 3563.9455000000003,
+          "cls": 0,
+          "tbt": 1082.5000000000002,
+          "lcpElement": {
+            "selector": "div.relative > div.absolute > div.absolute > img.absolute",
+            "snippet": "<img src=\"https://cdn.sanity.io/images/alsdve2t/production/3dea0f6ed4ff73e87b03c6f56…\" srcset=\"https://cdn.sanity.io/images/alsdve2t/production/3dea0f6ed4ff73e8"
+          },
+          "opportunities": [
+            {
+              "id": "legacy-javascript",
+              "savingsMs": 170
+            }
+          ],
+          "bootup": [
+            {
+              "url": "",
+              "totalMs": 1744
+            },
+            {
+              "url": "Unattributable",
+              "totalMs": 994
+            },
+            {
+              "url": "2ejk_26znfoeu.js",
+              "totalMs": 990
+            }
+          ],
+          "longTasks": {
+            "count": 15,
+            "totalMs": 2566
+          }
+        },
+        "desktop": {
+          "perf": 99,
+          "a11y": 91,
+          "bp": 96,
+          "seo": 100,
+          "lcp": 912.5719999999999,
+          "cls": 0.00007076977349911941,
+          "tbt": 0,
+          "lcpElement": {
+            "selector": "div.relative > div.absolute > div.absolute > img.absolute",
+            "snippet": "<img src=\"https://cdn.sanity.io/images/alsdve2t/production/3dea0f6ed4ff73e87b03c6f56…\" srcset=\"https://cdn.sanity.io/images/alsdve2t/production/3dea0f6ed4ff73e8"
+          },
+          "opportunities": [],
+          "bootup": [
+            {
+              "url": "2ejk_26znfoeu.js",
+              "totalMs": 187
+            },
+            {
+              "url": "",
+              "totalMs": 86
+            },
+            {
+              "url": "Unattributable",
+              "totalMs": 81
+            }
+          ],
+          "longTasks": {
+            "count": 0,
+            "totalMs": 0
+          }
+        }
       }
     ],
     "/legacy": [
@@ -1317,6 +1389,87 @@
             {
               "url": "legacy",
               "totalMs": 61
+            }
+          ],
+          "longTasks": {
+            "count": 0,
+            "totalMs": 0
+          }
+        }
+      },
+      {
+        "t": "2026-08-03T20:53:32.341Z",
+        "mobile": {
+          "perf": 68,
+          "a11y": 100,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 10325.764500000001,
+          "cls": 0,
+          "tbt": 28.5,
+          "lcpElement": {
+            "selector": "div.absolute > div.flex > p.font-display",
+            "snippet": "<p class=\"font-display text-headline-lg whitespace-nowrap opacity-80 transition-colo…\">"
+          },
+          "opportunities": [
+            {
+              "id": "modern-image-formats",
+              "savingsMs": 330
+            },
+            {
+              "id": "uses-responsive-images",
+              "savingsMs": 330
+            }
+          ],
+          "bootup": [
+            {
+              "url": "2ejk_26znfoeu.js",
+              "totalMs": 622
+            },
+            {
+              "url": "Unattributable",
+              "totalMs": 276
+            },
+            {
+              "url": "legacy",
+              "totalMs": 162
+            }
+          ],
+          "longTasks": {
+            "count": 3,
+            "totalMs": 207
+          }
+        },
+        "desktop": {
+          "perf": 99,
+          "a11y": 91,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 768.1759999999999,
+          "cls": 0.0003561684616058138,
+          "tbt": 0,
+          "lcpElement": {
+            "selector": "div.absolute > div.flex > p.font-display",
+            "snippet": "<p class=\"font-display text-headline-lg whitespace-nowrap opacity-80 transition-colo…\">"
+          },
+          "opportunities": [
+            {
+              "id": "uses-responsive-images",
+              "savingsMs": 110
+            }
+          ],
+          "bootup": [
+            {
+              "url": "2ejk_26znfoeu.js",
+              "totalMs": 123
+            },
+            {
+              "url": "Unattributable",
+              "totalMs": 80
+            },
+            {
+              "url": "legacy",
+              "totalMs": 75
             }
           ],
           "longTasks": {
@@ -2038,6 +2191,78 @@
             "totalMs": 0
           }
         }
+      },
+      {
+        "t": "2026-08-03T20:54:08.425Z",
+        "mobile": {
+          "perf": 89,
+          "a11y": 91,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 3748.917559936524,
+          "cls": 0,
+          "tbt": 58.5,
+          "lcpElement": {
+            "selector": "a.flex > div.group/well > div.absolute > img.absolute",
+            "snippet": "<img src=\"https://cdn.sanity.io/images/alsdve2t/production/320a119f5e96ace9328c9ec96…\" alt=\"3D Merino Wool Hoodie\" loading=\"lazy\" decoding=\"async\" draggable=\"fa"
+          },
+          "opportunities": [
+            {
+              "id": "uses-responsive-images",
+              "savingsMs": 100
+            }
+          ],
+          "bootup": [
+            {
+              "url": "2ejk_26znfoeu.js",
+              "totalMs": 530
+            },
+            {
+              "url": "Unattributable",
+              "totalMs": 379
+            },
+            {
+              "url": "shop-all",
+              "totalMs": 250
+            }
+          ],
+          "longTasks": {
+            "count": 2,
+            "totalMs": 234
+          }
+        },
+        "desktop": {
+          "perf": 99,
+          "a11y": 87,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 954.4705599365234,
+          "cls": 0,
+          "tbt": 0,
+          "lcpElement": {
+            "selector": "a.flex > div.group/well > div.absolute > img.absolute",
+            "snippet": "<img src=\"https://cdn.sanity.io/images/alsdve2t/production/320a119f5e96ace9328c9ec96…\" alt=\"3D Merino Wool Hoodie\" loading=\"lazy\" decoding=\"async\" draggable=\"fa"
+          },
+          "opportunities": [],
+          "bootup": [
+            {
+              "url": "Unattributable",
+              "totalMs": 113
+            },
+            {
+              "url": "2ejk_26znfoeu.js",
+              "totalMs": 101
+            },
+            {
+              "url": "1nzfiapbtfjhl.js",
+              "totalMs": 57
+            }
+          ],
+          "longTasks": {
+            "count": 0,
+            "totalMs": 0
+          }
+        }
       }
     ],
     "/products/presidio": [
@@ -2732,6 +2957,73 @@
           "longTasks": {
             "count": 1,
             "totalMs": 88
+          }
+        }
+      },
+      {
+        "t": "2026-08-03T20:54:44.576Z",
+        "mobile": {
+          "perf": 92,
+          "a11y": 91,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 2867.1014999999998,
+          "cls": 0,
+          "tbt": 166.5,
+          "lcpElement": {
+            "selector": "div.no-scrollbar > div.relative > div.absolute > img.absolute",
+            "snippet": "<img src=\"https://cdn.sanity.io/images/alsdve2t/production/7f86dd3c7ab4db2f36eba353b…\" srcset=\"https://cdn.sanity.io/images/alsdve2t/production/7f86dd3c7ab4db2f"
+          },
+          "opportunities": [],
+          "bootup": [
+            {
+              "url": "2ejk_26znfoeu.js",
+              "totalMs": 1036
+            },
+            {
+              "url": "2kecfm1y-5b0c.js",
+              "totalMs": 596
+            },
+            {
+              "url": "presidio",
+              "totalMs": 494
+            }
+          ],
+          "longTasks": {
+            "count": 4,
+            "totalMs": 539
+          }
+        },
+        "desktop": {
+          "perf": 97,
+          "a11y": 86,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 1087.4189999999999,
+          "cls": 0,
+          "tbt": 22,
+          "lcpElement": {
+            "selector": "div.no-scrollbar > div.relative > div.absolute > img.absolute",
+            "snippet": "<img src=\"https://cdn.sanity.io/images/alsdve2t/production/7f86dd3c7ab4db2f36eba353b…\" srcset=\"https://cdn.sanity.io/images/alsdve2t/production/7f86dd3c7ab4db2f"
+          },
+          "opportunities": [],
+          "bootup": [
+            {
+              "url": "2ejk_26znfoeu.js",
+              "totalMs": 275
+            },
+            {
+              "url": "2kecfm1y-5b0c.js",
+              "totalMs": 140
+            },
+            {
+              "url": "presidio",
+              "totalMs": 124
+            }
+          ],
+          "longTasks": {
+            "count": 1,
+            "totalMs": 94
           }
         }
       }
@@ -3451,6 +3743,78 @@
             {
               "url": "journal",
               "totalMs": 106
+            }
+          ],
+          "longTasks": {
+            "count": 0,
+            "totalMs": 0
+          }
+        }
+      },
+      {
+        "t": "2026-08-03T20:55:27.831Z",
+        "mobile": {
+          "perf": 95,
+          "a11y": 96,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 2833.9759999999997,
+          "cls": 0,
+          "tbt": 78,
+          "lcpElement": {
+            "selector": "div.flex > div.max-md:transform-none! > a.block > img.w-[10rem]",
+            "snippet": "<img src=\"/figma/journal/stream-02.thumb.jpg\" alt=\"\" loading=\"eager\" fetchpriority=\"high\" decoding=\"async\" draggable=\"false\" class=\"w-[10rem] bg-surface-2 objec"
+          },
+          "opportunities": [
+            {
+              "id": "unused-javascript",
+              "savingsMs": 160
+            }
+          ],
+          "bootup": [
+            {
+              "url": "2ejk_26znfoeu.js",
+              "totalMs": 743
+            },
+            {
+              "url": "1nzfiapbtfjhl.js",
+              "totalMs": 550
+            },
+            {
+              "url": "journal",
+              "totalMs": 428
+            }
+          ],
+          "longTasks": {
+            "count": 3,
+            "totalMs": 306
+          }
+        },
+        "desktop": {
+          "perf": 100,
+          "a11y": 91,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 644.4374999999999,
+          "cls": 0,
+          "tbt": 0,
+          "lcpElement": {
+            "selector": "div > div.bg-surface > header.flex > p.label",
+            "snippet": "<p class=\"label max-w-[22.875rem] text-center\">"
+          },
+          "opportunities": [],
+          "bootup": [
+            {
+              "url": "2ejk_26znfoeu.js",
+              "totalMs": 149
+            },
+            {
+              "url": "1nzfiapbtfjhl.js",
+              "totalMs": 137
+            },
+            {
+              "url": "journal",
+              "totalMs": 111
             }
           ],
           "longTasks": {

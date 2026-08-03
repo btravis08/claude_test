@@ -14,6 +14,7 @@ import { schemaTypes } from "@/sanity/schemaTypes";
 import { designTokensTool } from "@/sanity/tools/DesignTokens";
 import { performanceTool } from "@/sanity/tools/Performance";
 import { sectionLibraryTool } from "@/sanity/tools/SectionLibrary";
+import { overviewTool } from "@/sanity/tools/Overview";
 import { theme } from "@/sanity/theme";
 
 /*
@@ -228,5 +229,5 @@ export default defineConfig({
     visionTool({ defaultApiVersion: apiVersion }),
   ],
   /* read-only design-system reference alongside Content/Preview */
-  tools: (prev) => [...prev, sectionLibraryTool, designTokensTool, performanceTool],
+  tools: (prev) => [...prev, overviewTool, sectionLibraryTool, designTokensTool, performanceTool],
 });

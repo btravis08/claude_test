@@ -5,6 +5,7 @@ import { legacyPage } from "./legacyPage";
 import { navigation } from "./navigation";
 import { page } from "./page";
 import { redirect } from "./redirect";
+import { author, post, postCategory } from "./blog";
 import { product } from "./product";
 import { project } from "./project";
 import { sectionTypes } from "./sections";
@@ -15,6 +16,9 @@ import { storeSettings } from "./storeSettings";
 export const schemaTypes = [
   project,
   redirect,
+  post,
+  author,
+  postCategory,
   product,
   collection,
   discount,

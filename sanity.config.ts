@@ -43,6 +43,32 @@ const structure: StructureResolver = (S) =>
     .title("Store")
     .items([
       S.listItem()
+        .title("Blog")
+        .icon(icons["compose"])
+        .child(
+          S.list()
+            .title("Blog")
+            .items([
+              S.listItem()
+                .title("All posts")
+                .schemaType("post")
+                .child(S.documentTypeList("post").title("All posts").defaultOrdering([{ field: "publishedAt", direction: "desc" }])),
+              S.listItem()
+                .title("Featured")
+                .schemaType("post")
+                .child(
+                  S.documentList()
+                    .title("Featured")
+                    .apiVersion(apiVersion)
+                    .schemaType("post")
+                    .filter('_type == "post" && featured == true'),
+                ),
+              S.divider(),
+              S.documentTypeListItem("postCategory").title("Categories"),
+              S.documentTypeListItem("author").title("Authors"),
+            ]),
+        ),
+      S.listItem()
         .title("Products")
         .icon(icons["package"])
         .schemaType("product")

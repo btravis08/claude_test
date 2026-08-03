@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
 
 import { ArticleView } from "@/components/journal/ArticleView";
+import { PostArticle } from "@/components/journal/PostArticle";
+import type { PostDoc } from "@/components/journal/PostArticle";
 import {
   ARTICLE_LEAD,
   JOURNAL_CATEGORIES,
@@ -11,6 +13,7 @@ import { toCards } from "@/sanity/lib/cards";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import {
   automaticDiscountsQuery,
+  postBySlugQuery,
   productsByTagQuery,
   storeSettingsQuery,
 } from "@/sanity/lib/queries";
@@ -31,6 +34,13 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
+  const post = await sanityFetch<PostDoc | null>(postBySlugQuery, { slug }, null);
+  if (post) {
+    return {
+      title: `${post.seoTitle ?? post.title} — Honors Journal`,
+      description: post.excerpt,
+    };
+  }
   const hit = findArticle(slug);
   if (!hit) return { title: "Honors Journal" };
   return {
@@ -45,6 +55,12 @@ export default async function JournalArticlePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+
+  /* CMS posts take the slug first; the built-in design articles
+     remain the fallback set */
+  const post = await sanityFetch<PostDoc | null>(postBySlugQuery, { slug }, null);
+  if (post) return <PostArticle post={post} />;
+
   const hit = findArticle(slug);
   if (!hit) notFound();
 

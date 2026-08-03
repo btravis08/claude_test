@@ -36,6 +36,7 @@ interface StreamImage {
    so it uses the 480w .thumb.jpg variants — the full-size files are
    for covers, pairs, and the legacy fallbacks */
 const SECTIONS = JOURNAL_CATEGORIES.map((category) => ({
+  slug: category.slug,
   title: category.title,
   label: category.label,
   images: category.articles.flatMap((article): StreamImage[] =>
@@ -377,7 +378,13 @@ function JournalSection({
   );
 }
 
-export function JournalLanding() {
+export function JournalLanding({
+  extraStreams = {},
+}: {
+  /* CMS blog posts merged into their category's stream, newest
+     first (keyed by category slug; built by the journal route) */
+  extraStreams?: Record<string, StreamImage[]>;
+}) {
   /* always-one-open accordion: Ambassadors by default, and the last
      activated section stays open — nothing ever closes to zero */
   const [active, setActive] = useState(0);
@@ -397,7 +404,12 @@ export function JournalLanding() {
   /* the first rail's first thumb is the mobile LCP — hand it to the
      preload scanner (SSR emits the <link>, so discovery beats
      hydration) */
-  preload(SECTIONS[0].images[0].src, { as: "image", fetchPriority: "high" });
+  const sections = SECTIONS.map((section) => ({
+    ...section,
+    images: [...(extraStreams[section.slug] ?? []), ...section.images],
+  }));
+
+  preload(sections[0].images[0].src, { as: "image", fetchPriority: "high" });
 
   return (
     <div data-mode="light" className="bg-surface text-ink">
@@ -421,7 +433,7 @@ export function JournalLanding() {
       </header>
 
       <div className="flex flex-col pb-32 pt-[4.5rem]">
-        {SECTIONS.map((section, i) => (
+        {sections.map((section, i) => (
           <JournalSection
             key={section.title}
             open={active === i}

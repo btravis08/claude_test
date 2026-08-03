@@ -275,3 +275,26 @@ export const collectionSearchQuery = groq`
     | order(title asc) [0...12] { _id, title, "slug": slug.current }
 `;
 
+
+// ---------- Blog (Honors Journal posts) ----------
+export const postBySlugQuery = groq`
+  *[_type == "post" && slug.current == $slug][0]{
+    title, "slug": slug.current, heroImage, excerpt, body, publishedAt,
+    seoTitle,
+    "author": author->{name, role, avatar},
+    "categories": categories[]->{title, "slug": slug.current}
+  }
+`;
+
+// landing-stream cards: newest posts with their first category slug
+export const journalPostsQuery = groq`
+  *[_type == "post" && defined(slug.current) && defined(heroImage)]
+    | order(publishedAt desc)[0...24]{
+    title, "slug": slug.current, heroImage,
+    "category": categories[0]->slug.current
+  }
+`;
+
+export const postSlugsQuery = groq`
+  *[_type == "post" && defined(slug.current)].slug.current
+`;

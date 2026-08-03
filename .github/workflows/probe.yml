@@ -35,3 +35,19 @@ jobs:
           grep -c "announcement-bar" home.html || true
           echo "--- number of section wrappers (data-mode):"
           grep -o 'data-mode="[a-z-]*"' home.html | sort | uniq -c || true
+      - name: PSI (Google-hosted Lighthouse) — independent of runner noise
+        run: |
+          for path in "/" "/products/presidio"; do
+            url="https://sundayred.vercel.app${path}"
+            curl -s --max-time 120 "https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=$(python3 -c "import urllib.parse,sys;print(urllib.parse.quote(sys.argv[1],safe=''))" "$url")&strategy=mobile&category=performance" -o psi.json
+            python3 - "$path" <<'EOF'
+          import json, sys
+          d = json.load(open("psi.json"))
+          lr = d.get("lighthouseResult")
+          if not lr:
+              print(sys.argv[1], "PSI error:", json.dumps(d)[:300]); raise SystemExit
+          print(sys.argv[1], "PSI mobile perf:", round(lr["categories"]["performance"]["score"] * 100))
+          for k in ("largest-contentful-paint", "total-blocking-time", "cumulative-layout-shift", "speed-index"):
+              print("   ", k, lr["audits"][k]["displayValue"])
+          EOF
+          done

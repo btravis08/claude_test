@@ -2,19 +2,42 @@
   "site": {
     "name": "Sun Day Red",
     "baseUrl": "https://sundayred.vercel.app",
-    "perfPages": ["/", "/legacy", "/collections/shop-all", "/products/presidio", "/journal"]
+    "perfPages": [
+      "/",
+      "/legacy",
+      "/collections/shop-all",
+      "/products/presidio",
+      "/journal"
+    ]
   },
   "figma": {
     "fileKey": "CMeh0gCtTQAnIRc9iXjGbr"
   },
   "audit": {
-    "breakpoints": { "desktop": 1440, "tablet": 1024, "mobile": 428 },
+    "breakpoints": {
+      "desktop": 1440,
+      "tablet": 1024,
+      "mobile": 428
+    },
     "historyCap": 60,
-    "bands": { "match": 85, "partial": 50 },
-    "timedSections": ["legacy-hero", "floating-gallery", "full-bleed-carousel", "carousel"]
+    "bands": {
+      "match": 85,
+      "partial": 50
+    },
+    "timedSections": [
+      "legacy-hero",
+      "floating-gallery",
+      "full-bleed-carousel",
+      "carousel"
+    ]
   },
   "alerts": {
     "perfDrop": 10,
     "backupStaleHours": 36
+  },
+  "features": {
+    "commerce": true,
+    "blog": true,
+    "projects": true
   }
 }

@@ -16,6 +16,7 @@ import { performanceTool } from "@/sanity/tools/Performance";
 import { sectionLibraryTool } from "@/sanity/tools/SectionLibrary";
 import { overviewTool } from "@/sanity/tools/Overview";
 import { theme } from "@/sanity/theme";
+import designops from "./designops.config.json";
 
 /*
   Studio sidebar modeled on the Shopify admin: Products (with status,
@@ -42,7 +43,9 @@ const structure: StructureResolver = (S) =>
   S.list()
     .title("Store")
     .items([
-      S.listItem()
+      ...(designops.features.blog
+        ? [
+S.listItem()
         .title("Blog")
         .icon(icons["compose"])
         .child(
@@ -68,7 +71,11 @@ const structure: StructureResolver = (S) =>
               S.documentTypeListItem("author").title("Authors"),
             ]),
         ),
-      S.listItem()
+              ]
+        : []),
+      ...(designops.features.commerce
+        ? [
+S.listItem()
         .title("Products")
         .icon(icons["package"])
         .schemaType("product")
@@ -109,6 +116,8 @@ const structure: StructureResolver = (S) =>
         .icon(icons["tag"])
         .schemaType("discount")
         .child(S.documentTypeList("discount").title("Discounts")),
+              ]
+        : []),
       S.divider(),
       S.listItem()
         .title("Pages")
@@ -134,18 +143,26 @@ const structure: StructureResolver = (S) =>
         .title("Navigation")
         .icon(icons["menu"])
         .child(S.document().schemaType("navigation").documentId("navigation")),
-      S.listItem()
+      ...(designops.features.projects
+        ? [
+S.listItem()
         .title("Projects")
         .icon(icons["case"])
         .schemaType("project")
         .child(S.documentTypeList("project").title("Projects")),
+              ]
+        : []),
       S.divider(),
-      S.listItem()
+      ...(designops.features.commerce
+        ? [
+S.listItem()
         .title("Store settings")
         .icon(icons["cog"])
         .child(
           S.document().schemaType("storeSettings").documentId("storeSettings"),
         ),
+              ]
+        : []),
       S.listItem()
         .title("Site settings")
         .icon(icons["controls"])

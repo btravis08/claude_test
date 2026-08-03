@@ -45,6 +45,19 @@ link checker, sitemap, registry, and Studio Overview all read it —
 edit the config, never the consumers. This is the portability seam:
 pointing this apparatus at a new project starts with this one file.
 
+## Feature modules & the scaffold manifest
+
+The codebase is organized as BASE (pages/sections, navigation,
+settings, the design-ops apparatus) plus three feature modules —
+commerce, blog, projects — gated by `features` flags in
+designops.config.json (they compose the Studio schema + desk;
+existing dataset documents are untouched by a flag flip).
+`scaffold.manifest.json` maps every file to its module and marks
+SDR-only content (legacy page, catalog, figma exports) that a
+scaffold replaces with a sample pack — it is the copier spec for the
+future create-CLI. When adding files, keep them inside one module's
+boundary and list new top-level paths in the manifest.
+
 ## Design source (Figma)
 
 - File: `CMeh0gCtTQAnIRc9iXjGbr` ("[i] Design Library — SDR"), desktop

@@ -7,14 +7,31 @@ jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
-      - name: Is the live homepage hero the reverted V1 at 100svh?
+      - name: Homepage payload anatomy (TBT regression hunt)
         run: |
-          html=$(curl -sSL "https://sundayred.vercel.app/")
-          echo "--- h-svh present in hero markup:"
-          echo "$html" | grep -c "h-svh" || true
-          echo "--- V1 overlay signature (big display headline class):"
-          echo "$html" | grep -o 'sdr-text-reveal[^"]*text-headline-lg' | head -2 || true
-          echo "--- V2 signature (should be ABSENT — title-lg centered row):"
-          echo "$html" | grep -o 'flex-1 text-center font-display text-title-lg' | head -2 || true
-          echo "--- hero media src:"
-          echo "$html" | grep -oE '(hero-media|campaign|cdn\.sanity)[^"]*' | head -4 || true
+          curl -sSL "https://sundayred.vercel.app/" -o home.html
+          echo "--- total HTML bytes:"
+          wc -c < home.html
+          echo "--- inline script bytes (all <script> without src):"
+          python3 - <<'EOF'
+          import re
+          html = open("home.html", encoding="utf-8", errors="replace").read()
+          scripts = re.findall(r"<script(?![^>]*\bsrc=)[^>]*>(.*?)</script>", html, re.S)
+          total = sum(len(s) for s in scripts)
+          print(f"{len(scripts)} inline scripts, {total} bytes total")
+          for s in sorted(scripts, key=len, reverse=True)[:5]:
+              print(f"  {len(s):>8} bytes :: {s[:120].replace(chr(10),' ')}")
+          ext = re.findall(r'<script[^>]*\bsrc="([^"]+)"', html)
+          print(f"{len(ext)} external scripts:")
+          for u in ext: print("  ", u)
+          imgs = re.findall(r'<img[^>]*\bsrc="([^"]+)"', html)
+          print(f"{len(imgs)} <img> tags; first 5:")
+          for u in imgs[:5]: print("  ", u[:140])
+          links = re.findall(r'<link[^>]*rel="preload"[^>]*>', html)
+          print(f"{len(links)} preloads:")
+          for l in links[:8]: print("  ", l[:160])
+          EOF
+          echo "--- announcement bar present?"
+          grep -c "announcement-bar" home.html || true
+          echo "--- number of section wrappers (data-mode):"
+          grep -o 'data-mode="[a-z-]*"' home.html | sort | uniq -c || true

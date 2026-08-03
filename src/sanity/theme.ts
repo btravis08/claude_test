@@ -2,19 +2,25 @@ import { defaultTheme } from "sanity";
 import type { StudioTheme } from "sanity";
 
 /*
-  Studio theme: the default Sanity theme with BOTH color schemes —
-  the earlier buildLegacyTheme() monochrome pass overrode the color
-  system for both schemes at once, which broke the Studio's
-  appearance toggle (dark mode effectively disappeared).
+  Studio theme: the default Sanity theme re-branded to the dashboard
+  reference (2026-08-03) by a generic hue remap over every color in
+  BOTH schemes — the appearance toggle keeps working:
 
-  This keeps the default light scheme untouched and rebuilds the
-  DARK scheme with desaturated colors only: every color in the dark
-  subtree is pulled toward gray (saturation cut to 15%), so dark
-  mode reads as the brand's monochrome system — differences carry
-  through lightness, not chroma.
+  - Sanity's blue/violet brand hues (focus rings, buttons, links,
+    selected states) → SDR orange, keeping each color's lightness so
+    contrast relationships survive.
+  - Near-grays → warm neutrals (the reference's paper/charcoal cast).
+  - Semantic colors (critical red, positive green, caution yellow)
+    keep their hues — they're meaning, not brand.
+
+  Custom tool panes don't use this theme at all — they carry the
+  self-contained dashboard skin (tools/dash.tsx).
 */
 
 const HEX = /^#([0-9a-fA-F]{6}|[0-9a-fA-F]{8}|[0-9a-fA-F]{3,4})$/;
+
+const BRAND_HUE = 19; /* SDR orange (#f2622e) */
+const WARM_HUE = 40; /* paper/charcoal warm cast */
 
 function hexToRgb(hex: string): [number, number, number, string] {
   let h = hex.slice(1);
@@ -34,24 +40,66 @@ function hexToRgb(hex: string): [number, number, number, string] {
   ];
 }
 
-function desaturate(hex: string, keep = 0.15): string {
-  const [r, g, b, alpha] = hexToRgb(hex);
-  /* toward the luma gray of the same color */
-  const l = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-  const mix = (c: number) => Math.round(l + (c - l) * keep);
-  const to2 = (c: number) => c.toString(16).padStart(2, "0");
-  return `#${to2(mix(r))}${to2(mix(g))}${to2(mix(b))}${alpha}`;
+function rgbToHsl(r: number, g: number, b: number): [number, number, number] {
+  r /= 255;
+  g /= 255;
+  b /= 255;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const l = (max + min) / 2;
+  if (max === min) return [0, 0, l];
+  const d = max - min;
+  const s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+  let h: number;
+  if (max === r) h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
+  else if (max === g) h = ((b - r) / d + 2) / 6;
+  else h = ((r - g) / d + 4) / 6;
+  return [h * 360, s, l];
 }
 
-/* Rebuild the theme object, transforming color strings only inside
-   "dark" subtrees. Plain objects/arrays are copied; anything else
-   (functions, class instances) passes through by reference. */
-function transform<T>(value: T, inDark: boolean): T {
+function hslToHex(h: number, s: number, l: number, alpha: string): string {
+  h = ((h % 360) + 360) % 360;
+  const c = (1 - Math.abs(2 * l - 1)) * s;
+  const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+  const m = l - c / 2;
+  let rgb: [number, number, number];
+  if (h < 60) rgb = [c, x, 0];
+  else if (h < 120) rgb = [x, c, 0];
+  else if (h < 180) rgb = [0, c, x];
+  else if (h < 240) rgb = [0, x, c];
+  else if (h < 300) rgb = [x, 0, c];
+  else rgb = [c, 0, x];
+  const to2 = (v: number) =>
+    Math.round((v + m) * 255)
+      .toString(16)
+      .padStart(2, "0");
+  return `#${to2(rgb[0])}${to2(rgb[1])}${to2(rgb[2])}${alpha}`;
+}
+
+function rebrand(hex: string): string {
+  const [r, g, b, alpha] = hexToRgb(hex);
+  const [h, s, l] = rgbToHsl(r, g, b);
+  /* Sanity's brand blues and violets → SDR orange */
+  if (s > 0.2 && h >= 190 && h <= 290) {
+    return hslToHex(BRAND_HUE, Math.min(0.85, s), l, alpha);
+  }
+  /* near-grays → warm neutrals */
+  if (s < 0.12) {
+    return hslToHex(WARM_HUE, Math.min(0.07, s + 0.045), l, alpha);
+  }
+  /* semantic colors keep their hue */
+  return hex;
+}
+
+/* Rebuild the theme object, transforming color strings everywhere.
+   Plain objects/arrays are copied; anything else (functions, class
+   instances) passes through by reference. */
+function transform<T>(value: T): T {
   if (typeof value === "string") {
-    return (HEX.test(value) && inDark ? desaturate(value) : value) as T;
+    return (HEX.test(value) ? rebrand(value) : value) as T;
   }
   if (Array.isArray(value)) {
-    return value.map((item) => transform(item, inDark)) as T;
+    return value.map((item) => transform(item)) as T;
   }
   if (
     value &&
@@ -60,11 +108,11 @@ function transform<T>(value: T, inDark: boolean): T {
   ) {
     const out: Record<string, unknown> = {};
     for (const [key, child] of Object.entries(value as Record<string, unknown>)) {
-      out[key] = transform(child, inDark || key === "dark");
+      out[key] = transform(child);
     }
     return out as T;
   }
   return value;
 }
 
-export const theme: StudioTheme = transform(defaultTheme, false);
+export const theme: StudioTheme = transform(defaultTheme);

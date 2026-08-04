@@ -315,4 +315,28 @@ export default defineConfig({
     performanceTool,
     ...(designops.features.blog ? [calendarTool] : []),
   ],
+  document: {
+    /* The global "Create new document" dialog: only content an editor
+       actually authors by hand, in a sensible order. Everything else
+       is created elsewhere or not at all — singletons (navigation,
+       settings, legacy page) live in the desk, form submissions
+       arrive via /api/forms, experiment results via /api/ab, and
+       plugin types (media tags, AI context) manage themselves. */
+    newDocumentOptions: (prev, { creationContext }) => {
+      if (creationContext.type !== "global") return prev;
+      const order = [
+        "page",
+        ...(designops.features.blog ? ["post", "author", "postCategory"] : []),
+        ...(designops.features.commerce
+          ? ["product", "collection", "discount", "story"]
+          : []),
+        ...(designops.features.projects ? ["project"] : []),
+        "redirect",
+      ];
+      const rank = new Map(order.map((id, i) => [id, i]));
+      return prev
+        .filter((tpl) => rank.has(tpl.templateId))
+        .sort((a, b) => rank.get(a.templateId)! - rank.get(b.templateId)!);
+    },
+  },
 });

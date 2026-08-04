@@ -11,6 +11,7 @@ import type { StructureResolver } from "sanity/structure";
 
 import { apiVersion, dataset, projectId } from "@/sanity/env";
 import { schemaTypes } from "@/sanity/schemaTypes";
+import { calendarTool } from "@/sanity/tools/Calendar";
 import { designTokensTool } from "@/sanity/tools/DesignTokens";
 import { performanceTool } from "@/sanity/tools/Performance";
 import { sectionLibraryTool } from "@/sanity/tools/SectionLibrary";
@@ -300,5 +301,12 @@ export default defineConfig({
     visionTool({ defaultApiVersion: apiVersion }),
   ],
   /* read-only design-system reference alongside Content/Preview */
-  tools: (prev) => [...prev, overviewTool, sectionLibraryTool, designTokensTool, performanceTool],
+  tools: (prev) => [
+    ...prev,
+    overviewTool,
+    sectionLibraryTool,
+    designTokensTool,
+    performanceTool,
+    ...(designops.features.blog ? [calendarTool] : []),
+  ],
 });

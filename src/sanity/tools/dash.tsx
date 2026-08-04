@@ -82,6 +82,9 @@ const TOOLS: [name: string, label: string][] = [
   ["performance", "Performance"],
   ["sections", "Sections"],
   ["tokens", "Tokens"],
+  ...(designops.features.blog
+    ? ([["calendar", "Calendar"]] as [string, string][])
+    : []),
 ];
 
 export function Shell({

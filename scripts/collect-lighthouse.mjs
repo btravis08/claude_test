@@ -81,6 +81,10 @@ function runLighthouse(url, formFactor) {
   };
 
   return {
+    /* runner health: Lighthouse's own CPU benchmark for this run —
+       a low value (<1500) means the VM was slow and the absolute
+       scores that night deserve skepticism */
+    benchmarkIndex: Math.round(report.environment?.benchmarkIndex ?? 0),
     perf: score("performance"),
     a11y: score("accessibility"),
     bp: score("best-practices"),

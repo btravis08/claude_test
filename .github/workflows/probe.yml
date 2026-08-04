@@ -54,22 +54,22 @@ jobs:
             for (const it of mt.slice(0,6))
               console.log('  mainthread', Math.round(it.duration), 'ms ::', it.groupLabel);
           "
-      - name: Category-set A/B — does adding a11y/bp/seo inflate home TBT?
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run the real collector (no commit) — does it reproduce home 67?
         env:
           CHROME_PATH: /usr/bin/google-chrome
         run: |
-          for i in 1 2 3; do
-            for cats in "performance" "performance,accessibility,best-practices,seo"; do
-              npx -y lighthouse@12 "https://sundayred.vercel.app/" \
-                --only-categories="$cats" --output=json --output-path=lh.json \
-                --chrome-flags="--headless=new --no-sandbox --disable-gpu" --quiet
-              node -e "
-                const r = require('./lh.json');
-                console.log('$i', '$cats'.split(',').length + 'cat',
-                  'perf', Math.round(r.categories.performance.score*100),
-                  'tbt', Math.round(r.audits['total-blocking-time'].numericValue),
-                  'tti', Math.round(r.audits['interactive'].numericValue),
-                  'benchmark', Math.round(r.environment.benchmarkIndex));
-              "
-            done
-          done
+          node scripts/collect-lighthouse.mjs
+          node -e "
+            const h = require('./src/design/perf.history.json');
+            for (const [page, snaps] of Object.entries(h.pages)) {
+              const s = snaps[snaps.length - 1], m = s.mobile || {};
+              console.log('COLLECTOR', page, 'mobile', m.perf,
+                'tbt', Math.round(m.tbt ?? -1),
+                'lcp', Math.round(m.lcp ?? -1),
+                'benchmark', m.benchmarkIndex ?? '?');
+            }
+          "

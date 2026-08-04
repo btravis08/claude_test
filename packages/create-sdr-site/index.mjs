@@ -123,6 +123,21 @@ cfg.features = { commerce, blog, projects };
 cfg.figma.fileKey = "REPLACE_WITH_YOUR_FIGMA_FILE_KEY";
 writeFileSync(cfgPath, `${JSON.stringify(cfg, null, 2)}\n`);
 
+/* fresh dashboards: the ops status files in the template carry the
+   source project's nightly data — a new project starts empty and its
+   own workflows fill them in */
+const RESET_FILES = {
+  "src/design/perf.history.json": { pages: {} },
+  "src/design/library.status.json": { sections: {} },
+  "src/design/library.history.json": [],
+  "src/design/links.status.json": { generatedAt: null, checked: 0, broken: [] },
+  "src/design/backup.status.json": { generatedAt: null, docs: 0, bytes: 0 },
+  "src/design/design-drift.json": { generatedAt: null },
+};
+for (const [rel, empty] of Object.entries(RESET_FILES)) {
+  writeFileSync(path.join(dest, rel), `${JSON.stringify(empty, null, 2)}\n`);
+}
+
 /* sample pack → <dest>/sample-pack (seeded later by scripts/seed-pack.ts) */
 if (pack) {
   cpSync(path.join(PACKS_DIR, packName), path.join(dest, "sample-pack"), {

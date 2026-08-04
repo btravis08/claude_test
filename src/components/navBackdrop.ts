@@ -35,6 +35,8 @@ export function startNavBackdropProbes(header: HTMLElement): () => void {
     HTMLVideoElement,
     { c: HTMLCanvasElement; ctx: CanvasRenderingContext2D }
   >();
+  /* per-sweep video frame cache; cleared at the top of probeAll */
+  const videoFrame = new Map<HTMLVideoElement, ImageData>();
   let raf = 0;
   let dirty = true;
 
@@ -127,8 +129,14 @@ export function startNavBackdropProbes(header: HTMLElement): () => void {
           entry = { c, ctx: c.getContext("2d", { willReadFrequently: true })! };
           videoCanvas.set(el, entry);
         }
-        entry.ctx.drawImage(el, 0, 0, entry.c.width, entry.c.height);
-        const data = entry.ctx.getImageData(0, 0, entry.c.width, entry.c.height);
+        /* one readback per video per sweep — the three sample points
+           share the same frame */
+        let data = videoFrame.get(el);
+        if (!data) {
+          entry.ctx.drawImage(el, 0, 0, entry.c.width, entry.c.height);
+          data = entry.ctx.getImageData(0, 0, entry.c.width, entry.c.height);
+          videoFrame.set(el, data);
+        }
         const { u, v, outside } = mapPoint(
           u0,
           v0,
@@ -181,6 +189,14 @@ export function startNavBackdropProbes(header: HTMLElement): () => void {
   };
 
   const probeAll = () => {
+    /* Two phases, reads then writes. Setting data-mode invalidates
+       style document-wide, and the next probe's elementsFromPoint
+       would force a full synchronous recalc — interleaved, a sweep
+       used to trigger up to one full style+layout pass per sample
+       (the intermittent multi-hundred-ms long tasks Lighthouse
+       attributed to the page during startup). */
+    const updates: Array<[HTMLElement, "light" | "dark" | null]> = [];
+    videoFrame.clear();
     header.querySelectorAll<HTMLElement>("[data-nav-probe]").forEach((probe) => {
       const r = probe.getBoundingClientRect();
       if (r.width < 1) return;
@@ -195,9 +211,19 @@ export function startNavBackdropProbes(header: HTMLElement): () => void {
         if (mode === "dark") dark += 1;
         else if (mode === "light") light += 1;
       }
-      if (dark === 0 && light === 0) delete probe.dataset.mode;
-      else probe.dataset.mode = dark >= light ? "dark" : "light";
+      updates.push([
+        probe,
+        dark === 0 && light === 0 ? null : dark >= light ? "dark" : "light",
+      ]);
     });
+    /* writes last, and only when the value actually changes */
+    for (const [probe, mode] of updates) {
+      if (mode === null) {
+        if (probe.dataset.mode !== undefined) delete probe.dataset.mode;
+      } else if (probe.dataset.mode !== mode) {
+        probe.dataset.mode = mode;
+      }
+    }
   };
 
   const schedule = () => {

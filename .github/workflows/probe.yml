@@ -54,32 +54,22 @@ jobs:
             for (const it of mt.slice(0,6))
               console.log('  mainthread', Math.round(it.duration), 'ms ::', it.groupLabel);
           "
-      - name: Which project serves sundayred.vercel.app — and do they differ?
+      - name: Category-set A/B — does adding a11y/bp/seo inflate home TBT?
         env:
           CHROME_PATH: /usr/bin/google-chrome
         run: |
-          for host in \
-            "sundayred.vercel.app" \
-            "claude-test-lacv8ggto-btravis08s-projects.vercel.app" \
-            "claude-test-evkx-hq4t152gt-btravis08s-projects.vercel.app"; do
-            code=$(curl -sL -o page.html -w "%{http_code}" --max-time 30 "https://$host/") || code=000
-            python3 - "$host" "$code" <<'EOF'
-          import re, sys
-          html = open("page.html", encoding="utf-8", errors="replace").read()
-          inline = re.findall(r"<script(?![^>]*\bsrc=)[^>]*>(.*?)</script>", html, re.S)
-          ext = re.findall(r'<script[^>]*\bsrc="([^"]+)"', html)
-          sso = "SSO-WALL" if ("vercel.com/sso" in html or "Authentication Required" in html) else "open"
-          print(sys.argv[1], "->", sys.argv[2], f"{len(html)}B html, {len(inline)} inline ({sum(len(x) for x in inline)}B), {len(ext)} ext scripts, {sso}")
-          EOF
-            if [ "$code" = "200" ] && ! grep -qi "vercel.com/sso" page.html; then
-              npx -y lighthouse@12 "https://$host/" \
-                --only-categories=performance --output=json --output-path=lh-cmp.json \
-                --chrome-flags="--headless=new --no-sandbox --disable-gpu" --quiet || continue
+          for i in 1 2 3; do
+            for cats in "performance" "performance,accessibility,best-practices,seo"; do
+              npx -y lighthouse@12 "https://sundayred.vercel.app/" \
+                --only-categories="$cats" --output=json --output-path=lh.json \
+                --chrome-flags="--headless=new --no-sandbox --disable-gpu" --quiet
               node -e "
-                const r = require('./lh-cmp.json');
-                console.log('  LH:', Math.round(r.categories.performance.score*100), 'perf /',
-                  Math.round(r.audits['total-blocking-time'].numericValue), 'ms tbt /',
-                  Math.round(r.audits['largest-contentful-paint'].numericValue), 'ms lcp');
+                const r = require('./lh.json');
+                console.log('$i', '$cats'.split(',').length + 'cat',
+                  'perf', Math.round(r.categories.performance.score*100),
+                  'tbt', Math.round(r.audits['total-blocking-time'].numericValue),
+                  'tti', Math.round(r.audits['interactive'].numericValue),
+                  'benchmark', Math.round(r.environment.benchmarkIndex));
               "
-            fi
+            done
           done

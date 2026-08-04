@@ -116,10 +116,13 @@ export function LibraryGrid({
   entries,
   groups,
   generatedAt,
+  scheme,
 }: {
   entries: GridEntry[];
   groups: string[];
   generatedAt: string | null;
+  /* chrome scheme carried through entry links (Studio embed) */
+  scheme?: "light" | "dark";
 }) {
   const [onlyAttention, setOnlyAttention] = useState(false);
 
@@ -162,7 +165,7 @@ export function LibraryGrid({
               {items.map((entry) => (
                 <li key={entry.slug}>
                   <Link
-                    href={`/library/${entry.slug}`}
+                    href={`/library/${entry.slug}${scheme === "dark" ? "?scheme=dark" : ""}`}
                     className="group block overflow-hidden rounded-xs border border-line bg-surface transition-colors hover:border-ink"
                   >
                     <Thumb slug={entry.slug} height={entry.tall ? 900 : 620} />

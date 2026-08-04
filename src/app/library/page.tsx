@@ -8,9 +8,17 @@ import { auditedAt, summaries } from "@/library/status";
   through for the full-size preview with mode, breakpoint and comp
   comparison.
 */
-export default function LibraryIndex() {
+export default async function LibraryIndex({
+  searchParams,
+}: {
+  searchParams: Promise<{ scheme?: string }>;
+}) {
+  /* the Studio's Sections tool passes its appearance scheme so the
+     embedded library chrome matches */
+  const { scheme } = await searchParams;
+  const chrome = scheme === "dark" ? "dark" : "light";
   return (
-    <div data-mode="light" className="min-h-screen w-full bg-surface text-ink">
+    <div data-mode={chrome} className="min-h-screen w-full bg-surface text-ink">
       <header className="border-b border-line px-6 py-8">
         <p className="label font-medium text-ink-3">SUN DAY RED</p>
         <h1 className="mt-2 font-display text-headline-md">Section library</h1>
@@ -26,6 +34,7 @@ export default function LibraryIndex() {
         entries={summaries()}
         groups={[...GROUPS]}
         generatedAt={auditedAt}
+        scheme={chrome}
       />
     </div>
   );

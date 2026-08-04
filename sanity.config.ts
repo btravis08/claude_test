@@ -210,7 +210,24 @@ export default defineConfig({
   projectId,
   dataset,
   theme,
-  schema: { types: schemaTypes },
+  schema: {
+    types: schemaTypes,
+    templates: (prev) => [
+      ...prev,
+      /* Calendar day-click: a post pre-dated to the clicked day */
+      {
+        id: "post-on-date",
+        title: "Post (dated)",
+        schemaType: "post",
+        parameters: [
+          { name: "publishedAt", title: "Publish date", type: "string" },
+        ],
+        value: (params: { publishedAt?: string }) => ({
+          publishedAt: params?.publishedAt,
+        }),
+      },
+    ],
+  },
   plugins: [
     /* live palette editor (top-right); starts from the theme's own
        options — copy its snippet into src/sanity/theme.ts to keep a

@@ -14,8 +14,8 @@ import {
   Text,
 } from "@sanity/ui";
 import { useEffect, useMemo, useState } from "react";
-import type { Tool } from "sanity";
 import { useClient } from "sanity";
+import { IntentLink } from "sanity/router";
 
 /*
   "Calendar" — the editorial month at a glance, in plain @sanity/ui.
@@ -249,9 +249,38 @@ export default function CalendarPanel() {
                       }}
                     >
                       <Stack space={2}>
-                        <Text size={0} muted>
-                          {d.getDate()}
-                        </Text>
+                        <Flex justify="space-between" align="center">
+                          <Text size={0} muted>
+                            {d.getDate()}
+                          </Text>
+                          {inMonth && (
+                            <IntentLink
+                              intent="create"
+                              params={[
+                                { type: "post", template: "post-on-date" },
+                                {
+                                  publishedAt: new Date(
+                                    d.getFullYear(),
+                                    d.getMonth(),
+                                    d.getDate(),
+                                    9,
+                                  ).toISOString(),
+                                },
+                              ]}
+                              title={`New post on ${key}`}
+                              aria-label={`Create a post publishing ${key}`}
+                              style={{
+                                textDecoration: "none",
+                                lineHeight: 1,
+                                padding: "0 2px",
+                              }}
+                            >
+                              <Text size={1} muted>
+                                +
+                              </Text>
+                            </IntentLink>
+                          )}
+                        </Flex>
                         {inMonth &&
                           hit?.releases.map((release) => (
                             <a

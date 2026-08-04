@@ -63,7 +63,15 @@ function DeviceIcon({ id }: { id: Breakpoint }) {
    blended so any mismatch lights up and a perfect match goes black */
 type Compare = "off" | "overlay" | "difference";
 
-export function SectionViewer({ entry }: { entry: ViewerEntry }) {
+export function SectionViewer({
+  entry,
+  scheme = "light",
+}: {
+  entry: ViewerEntry;
+  /* chrome scheme (Studio embed passes its appearance) — the frame's
+     own section mode stays independently switchable */
+  scheme?: "light" | "dark";
+}) {
   const [mode, setMode] = useState<Mode>(entry.modes[0]);
   const [vp, setVp] = useState<Breakpoint>("desktop");
   const [compare, setCompare] = useState<Compare>("off");
@@ -80,9 +88,12 @@ export function SectionViewer({ entry }: { entry: ViewerEntry }) {
     setOffset((o) => ({ x: o.x + dx, y: o.y + dy }));
 
   return (
-    <div data-mode="light" className="flex h-screen w-full flex-col bg-surface text-ink">
+    <div data-mode={scheme} className="flex h-screen w-full flex-col bg-surface text-ink">
       <header className="flex flex-wrap items-center gap-x-6 gap-y-3 border-b border-line px-6 py-4">
-        <Link href="/library" className="label font-medium text-ink-3 hover:text-ink">
+        <Link
+          href={scheme === "dark" ? "/library?scheme=dark" : "/library"}
+          className="label font-medium text-ink-3 hover:text-ink"
+        >
           ← LIBRARY
         </Link>
         <div className="flex items-baseline gap-3">

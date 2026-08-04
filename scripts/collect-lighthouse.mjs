@@ -112,9 +112,22 @@ for (const page of PAGES) {
     /* both form factors per night; snapshots keyed {t, mobile, desktop}
        (early history entries were flat mobile-only — readers treat
        those as {mobile}) */
+    let mobile = runLighthouse(url, "mobile");
+    /* Slow-VM guard: a big drop vs the page's last snapshot is more
+       often runner noise than a real regression (home read 64-68 with
+       ~1100ms TBT on several nights while independent runs read ~92).
+       Re-measure once and keep the retry — a real regression survives
+       it, a fluke doesn't — and mark the snap so the ticker can show
+       it was confirmed. */
+    const prev = (history.pages[page] ?? []).at(-1);
+    const prevPerf = prev?.mobile?.perf ?? prev?.perf ?? null;
+    if (prevPerf !== null && prevPerf - mobile.perf >= 15) {
+      console.log(`${page} mobile ${mobile.perf} (prev ${prevPerf}) — re-measuring to rule out a slow VM`);
+      mobile = { ...runLighthouse(url, "mobile"), retried: true };
+    }
     const snap = {
       t: new Date().toISOString(),
-      mobile: runLighthouse(url, "mobile"),
+      mobile,
       desktop: runLighthouse(url, "desktop"),
     };
     history.pages[page] = [...(history.pages[page] ?? []), snap].slice(-CAP);

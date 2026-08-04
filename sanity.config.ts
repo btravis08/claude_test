@@ -306,10 +306,11 @@ export default defineConfig({
     assist(),
     visionTool({ defaultApiVersion: apiVersion }),
   ],
-  /* read-only design-system reference alongside Content/Preview */
+  /* Overview leads — the Studio opens on the ops readout — followed
+     by Sanity's own tools, then the design-system reference panes */
   tools: (prev) => [
-    ...prev,
     overviewTool,
+    ...prev,
     sectionLibraryTool,
     designTokensTool,
     performanceTool,

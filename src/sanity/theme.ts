@@ -2,14 +2,15 @@ import { defaultTheme } from "sanity";
 import type { StudioTheme } from "sanity";
 
 /*
-  Studio theme: the default Sanity theme re-branded to the dashboard
-  reference (2026-08-03) by a generic hue remap over every color in
-  BOTH schemes — the appearance toggle keeps working:
+  Studio theme: the default Sanity theme made MONOCHROME (2026-08-04)
+  by a generic desaturation over every color in BOTH schemes — the
+  appearance toggle keeps working:
 
   - Sanity's blue/violet brand hues (focus rings, buttons, links,
-    selected states) → SDR orange, keeping each color's lightness so
+    selected states) → pure gray, keeping each color's lightness so
     contrast relationships survive.
-  - Near-grays → warm neutrals (the reference's paper/charcoal cast).
+  - Tinted near-grays → pure neutrals (no warm/orange cast on borders
+    or surfaces).
   - Semantic colors (critical red, positive green, caution yellow)
     keep their hues — they're meaning, not brand.
 
@@ -18,9 +19,6 @@ import type { StudioTheme } from "sanity";
 */
 
 const HEX = /^#([0-9a-fA-F]{6}|[0-9a-fA-F]{8}|[0-9a-fA-F]{3,4})$/;
-
-const BRAND_HUE = 19; /* SDR orange (#f2622e) */
-const WARM_HUE = 40; /* paper/charcoal warm cast */
 
 function hexToRgb(hex: string): [number, number, number, string] {
   let h = hex.slice(1);
@@ -79,13 +77,10 @@ function hslToHex(h: number, s: number, l: number, alpha: string): string {
 function rebrand(hex: string): string {
   const [r, g, b, alpha] = hexToRgb(hex);
   const [h, s, l] = rgbToHsl(r, g, b);
-  /* Sanity's brand blues and violets → SDR orange */
-  if (s > 0.2 && h >= 190 && h <= 290) {
-    return hslToHex(BRAND_HUE, Math.min(0.85, s), l, alpha);
-  }
-  /* near-grays → warm neutrals */
-  if (s < 0.12) {
-    return hslToHex(WARM_HUE, Math.min(0.07, s + 0.045), l, alpha);
+  /* brand blues/violets and any tinted gray → pure neutral gray;
+     lightness carries the contrast */
+  if ((s > 0.2 && h >= 190 && h <= 290) || s < 0.12) {
+    return hslToHex(0, 0, l, alpha);
   }
   /* semantic colors keep their hue */
   return hex;

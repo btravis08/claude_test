@@ -54,22 +54,48 @@ jobs:
             for (const it of mt.slice(0,6))
               console.log('  mainthread', Math.round(it.duration), 'ms ::', it.groupLabel);
           "
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - name: Run the real collector (no commit) — does it reproduce home 67?
-        env:
-          CHROME_PATH: /usr/bin/google-chrome
+      - name: Load /studio in mobile-emulated Chrome — capture crash evidence
         run: |
-          node scripts/collect-lighthouse.mjs
-          node -e "
-            const h = require('./src/design/perf.history.json');
-            for (const [page, snaps] of Object.entries(h.pages)) {
-              const s = snaps[snaps.length - 1], m = s.mobile || {};
-              console.log('COLLECTOR', page, 'mobile', m.perf,
-                'tbt', Math.round(m.tbt ?? -1),
-                'lcp', Math.round(m.lcp ?? -1),
-                'benchmark', m.benchmarkIndex ?? '?');
+          npm init -y >/dev/null 2>&1
+          npm install --no-save playwright-core >/dev/null 2>&1
+          node - <<'EOF'
+          const { chromium } = require('playwright-core');
+          (async () => {
+            const b = await chromium.launch({ executablePath: '/usr/bin/google-chrome', args: ['--no-sandbox'] });
+            const ctx = await b.newContext({
+              viewport: { width: 390, height: 844 },
+              isMobile: true, hasTouch: true, deviceScaleFactor: 3,
+              userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1',
+            });
+            const p = await ctx.newPage();
+            const errors = [];
+            p.on('pageerror', (e) => errors.push('PAGEERROR: ' + String(e).slice(0, 300)));
+            p.on('console', (m) => { if (m.type() === 'error') errors.push('CONSOLE: ' + m.text().slice(0, 300)); });
+            p.on('crash', () => errors.push('PAGE CRASHED'));
+            let bytes = 0, jsBytes = 0, jsCount = 0;
+            p.on('response', async (r) => {
+              try {
+                const len = Number(r.headers()['content-length'] ?? 0);
+                bytes += len;
+                if ((r.headers()['content-type'] ?? '').includes('javascript')) { jsBytes += len; jsCount++; }
+              } catch {}
+            });
+            try {
+              await p.goto('https://sundayred.vercel.app/studio', { waitUntil: 'domcontentloaded', timeout: 60000 });
+              await p.waitForTimeout(30000);
+              const heap = await p.evaluate(() => {
+                const m = performance.memory;
+                return m ? { usedMB: Math.round(m.usedJSHeapSize / 1048576), totalMB: Math.round(m.totalJSHeapSize / 1048576) } : null;
+              }).catch(() => null);
+              const text = await p.evaluate(() => document.body.innerText.slice(0, 200)).catch(() => 'EVAL FAILED');
+              console.log('heap:', JSON.stringify(heap));
+              console.log('transfer:', Math.round(bytes / 1024), 'KB total;', jsCount, 'JS files,', Math.round(jsBytes / 1024), 'KB js');
+              console.log('body:', text.replace(/\n+/g, ' | '));
+            } catch (e) {
+              console.log('NAV FAILED:', String(e).slice(0, 300));
             }
-          "
+            console.log('errors (' + errors.length + '):');
+            for (const e of errors.slice(0, 15)) console.log(' ', e);
+            await b.close();
+          })();
+          EOF

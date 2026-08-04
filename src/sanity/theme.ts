@@ -13,8 +13,8 @@ import type { StudioTheme } from "sanity";
   - Semantic colors (critical red, positive green, caution yellow)
     keep their hues — they're meaning, not brand.
 
-  Custom tool panes don't use this theme at all — they carry the
-  self-contained dashboard skin (tools/dash.tsx).
+  Custom tool panes are plain @sanity/ui components, so this theme
+  reaches them too — one look everywhere.
 */
 
 const HEX = /^#([0-9a-fA-F]{6}|[0-9a-fA-F]{8}|[0-9a-fA-F]{3,4})$/;

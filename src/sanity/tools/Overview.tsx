@@ -1,4 +1,5 @@
 import { icons } from "@sanity/icons";
+import { Badge, Box, Card, Container, Flex, Grid, Heading, Stack, Text } from "@sanity/ui";
 import type { Tool } from "sanity";
 
 import backupStatus from "@/design/backup.status.json";
@@ -7,15 +8,14 @@ import libraryStatus from "@/design/library.status.json";
 import linksStatus from "@/design/links.status.json";
 import perfHistory from "@/design/perf.history.json";
 
-import { ACCENT, Bars, CARD_INK, DotRow, Gauge, GlassChip, Meter, Shell, StatCard } from "./dash";
 import { ExperimentsCard } from "./Experiments";
 
 /*
   Overview — the Studio's landing readout: is everything okay?
   Pulls the JSON the nightly jobs commit (Lighthouse history, section
   audit, link check, dataset backup, design drift) into one pane.
-  Data ships with the bundle, so "as of" times matter. Presentation
-  comes from the shared dashboard skin (./dash).
+  Data ships with the bundle, so "as of" times matter. Built from
+  plain @sanity/ui components so it follows the Studio theme.
 */
 
 /* timed sections animate through their screenshots — their layout
@@ -60,7 +60,6 @@ interface PerfRow {
   prevMedian?: number;
   desktop?: number;
   t?: string;
-  history: number[];
 }
 
 function collect() {
@@ -77,10 +76,6 @@ function collect() {
       prevMedian: median(prev),
       desktop: last?.desktop?.perf,
       t: last?.t,
-      history: snaps
-        .slice(-14)
-        .map((snap) => mobileOf(snap)?.perf)
-        .filter((value): value is number => typeof value === "number"),
     };
   });
 
@@ -114,124 +109,201 @@ function collect() {
 
   const alerts: string[] = [];
   if (links.broken?.length) alerts.push(`${links.broken.length} broken link(s)`);
-  if (hoursSince(backup.generatedAt) > designops.alerts.backupStaleHours) alerts.push("dataset backup is stale");
+  if (hoursSince(backup.generatedAt) > designops.alerts.backupStaleHours)
+    alerts.push("dataset backup is stale");
   for (const row of perf) {
-    if (row.score != null && row.prevMedian != null && row.prevMedian - row.score >= designops.alerts.perfDrop)
+    if (
+      row.score != null &&
+      row.prevMedian != null &&
+      row.prevMedian - row.score >= designops.alerts.perfDrop
+    )
       alerts.push(`${row.path} perf dropped (${row.prevMedian}→${row.score})`);
   }
 
   return { perf, sections, links, backup, drift, alerts };
 }
 
+const scoreTone = (score: number | undefined) =>
+  score == null ? undefined : score >= 90 ? "positive" : score >= 75 ? "caution" : "critical";
+
 export function OverviewPane() {
   const { perf, sections, links, backup, drift, alerts } = collect();
   const base = designops.site.baseUrl;
   const lastRun = perf[0]?.t;
   const backupFresh = hoursSince(backup.generatedAt) <= designops.alerts.backupStaleHours;
-  /* backup freshness as gauge: full = just ran, empty = at threshold */
-  const backupGauge = backup.generatedAt
-    ? Math.max(0, 100 - (hoursSince(backup.generatedAt) / designops.alerts.backupStaleHours) * 100)
-    : 0;
 
   return (
-    <Shell
-      active="overview"
-      title="Site Overview"
-      sub={`${base.replace(/^https?:\/\//, "")} · monitors as of ${ago(lastRun)}`}
-      chip={
-        <GlassChip
-          label="Alerts"
-          value={alerts.length}
-          note={alerts.length ? "needs attention" : "all monitors green"}
-          warn={alerts.length > 0}
-        />
-      }
-    >
-      <div className="ovw-grid">
-        {perf.map((row, i) => (
-          <StatCard
-            key={row.path}
-            title={`${row.path} · mobile`}
-            href={`${base}${row.path}`}
-            size={i === 0 ? "wide" : undefined}
-          >
-            <div className="ovw-big">
-              {row.score ?? "—"}
-              {row.desktop != null ? <small>desktop {row.desktop}</small> : null}
-            </div>
-            {row.score != null ? <Meter value={row.score} /> : null}
-            {row.prevMedian != null && row.score != null && row.score !== row.prevMedian ? (
-              <DotRow
-                label="vs median of last 5"
-                value={`${row.score > row.prevMedian ? "+" : ""}${row.score - row.prevMedian}`}
-                tone={row.score < row.prevMedian ? "accent" : undefined}
-              />
-            ) : null}
-            {i === 0 ? <Bars series={row.history} /> : null}
-          </StatCard>
-        ))}
+    <Card height="fill" overflow="auto">
+      <Container width={5} paddingX={4} paddingY={5}>
+        <Stack space={5}>
+          <Flex align="flex-end" justify="space-between" gap={4} wrap="wrap">
+            <Stack space={3}>
+              <Heading as="h1" size={3}>
+                Site overview
+              </Heading>
+              <Text size={1} muted>
+                {base.replace(/^https?:\/\//, "")} · monitors as of {ago(lastRun)}
+              </Text>
+            </Stack>
+            <Badge
+              tone={alerts.length ? "critical" : "positive"}
+              fontSize={1}
+              padding={3}
+            >
+              {alerts.length
+                ? `${alerts.length} alert${alerts.length === 1 ? "" : "s"}`
+                : "all monitors green"}
+            </Badge>
+          </Flex>
 
-        <StatCard title="Design fidelity · worst breakpoint" href="/studio/sections" size="wide">
-          {sections.slice(0, 6).map((row) => (
-            <DotRow
-              key={row.slug}
-              label={row.slug}
-              value={row.worst!.toFixed(1)}
-              tone={row.worst! >= designops.audit.bands.match ? undefined : "accent"}
-            />
-          ))}
-          <div className="ovw-gauge-label">timed sections verify via motion specs instead</div>
-        </StatCard>
-
-        <StatCard title="Alerts">
-          <div className="ovw-big" style={{ color: alerts.length ? ACCENT : CARD_INK }}>
-            {alerts.length}
-          </div>
-          {alerts.length ? (
-            <ul className="ovw-alert-list">
-              {alerts.slice(0, 4).map((alert) => (
-                <li key={alert}>{alert}</li>
-              ))}
-            </ul>
-          ) : (
-            <div className="ovw-gauge-label" style={{ textAlign: "left", marginTop: 0 }}>
-              every monitor is green
-            </div>
+          {alerts.length > 0 && (
+            <Card padding={4} radius={3} tone="critical">
+              <Stack space={3}>
+                {alerts.map((alert) => (
+                  <Text key={alert} size={1}>
+                    {alert}
+                  </Text>
+                ))}
+              </Stack>
+            </Card>
           )}
-        </StatCard>
 
-        <StatCard title="Links checked">
-          <Gauge
-            value={links.checked ? ((links.checked - links.broken.length) / links.checked) * 100 : 0}
-            warn={links.broken.length > 0}
-          />
-          <div className="ovw-gauge-label">
-            {links.generatedAt == null
-              ? "no run recorded yet"
-              : links.broken.length === 0
-                ? `${links.checked} URLs · none broken · ${ago(links.generatedAt)}`
-                : `${links.broken.length} of ${links.checked} broken · ${ago(links.generatedAt)}`}
-          </div>
-        </StatCard>
+          <Grid columns={[1, 1, 2, 3]} gap={3}>
+            {perf.map((row) => (
+              <Card key={row.path} padding={4} radius={3} border>
+                <Stack space={3}>
+                  <Flex justify="space-between" gap={2}>
+                    <Text size={1} weight="medium">
+                      {row.path}
+                    </Text>
+                    <Text size={1} muted>
+                      <a
+                        href={`${base}${row.path}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{ color: "inherit" }}
+                      >
+                        open ↗
+                      </a>
+                    </Text>
+                  </Flex>
+                  <Flex align="baseline" gap={3}>
+                    <Heading size={4}>{row.score ?? "—"}</Heading>
+                    <Badge tone={scoreTone(row.score)}>mobile</Badge>
+                    {row.desktop != null && (
+                      <Text size={1} muted>
+                        desktop {row.desktop}
+                      </Text>
+                    )}
+                  </Flex>
+                  {row.prevMedian != null &&
+                    row.score != null &&
+                    row.score !== row.prevMedian && (
+                      <Text
+                        size={1}
+                        muted={row.score >= row.prevMedian}
+                      >
+                        {row.score > row.prevMedian ? "+" : ""}
+                        {row.score - row.prevMedian} vs median of last 5
+                      </Text>
+                    )}
+                </Stack>
+              </Card>
+            ))}
+          </Grid>
 
-        <StatCard title="Dataset backup">
-          <Gauge value={backupGauge} warn={!backupFresh} />
-          <div className="ovw-gauge-label">
-            {backup.generatedAt == null
-              ? "no backup recorded yet"
-              : `${backup.docs} docs · ${(backup.bytes / 1024).toFixed(0)}KB · ${ago(backup.generatedAt)}`}
-          </div>
-        </StatCard>
+          <Grid columns={[1, 1, 2, 3]} gap={3}>
+            <Card padding={4} radius={3} border>
+              <Stack space={3}>
+                <Flex justify="space-between">
+                  <Text size={1} weight="medium">
+                    Design fidelity · worst breakpoint
+                  </Text>
+                  <Text size={1} muted>
+                    <a href="/studio/sections" style={{ color: "inherit" }}>
+                      sections →
+                    </a>
+                  </Text>
+                </Flex>
+                {sections.slice(0, 6).map((row) => (
+                  <Flex key={row.slug} justify="space-between">
+                    <Text size={1} muted>
+                      {row.slug}
+                    </Text>
+                    <Badge
+                      tone={
+                        row.worst! >= designops.audit.bands.match
+                          ? "positive"
+                          : "caution"
+                      }
+                    >
+                      {row.worst!.toFixed(1)}
+                    </Badge>
+                  </Flex>
+                ))}
+                <Text size={0} muted>
+                  timed sections verify via motion specs instead
+                </Text>
+              </Stack>
+            </Card>
 
-        {/* live A/B results (D1) — reads the dataset, not bundled JSON */}
-        <ExperimentsCard />
-      </div>
+            <Card padding={4} radius={3} border>
+              <Stack space={3}>
+                <Text size={1} weight="medium">
+                  Links checked
+                </Text>
+                <Flex align="baseline" gap={3}>
+                  <Heading size={4}>
+                    {links.checked ? links.checked - links.broken.length : "—"}
+                  </Heading>
+                  <Badge tone={links.broken.length ? "critical" : "positive"}>
+                    {links.broken.length ? `${links.broken.length} broken` : "none broken"}
+                  </Badge>
+                </Flex>
+                <Text size={1} muted>
+                  {links.generatedAt == null
+                    ? "no run recorded yet"
+                    : `${links.checked} URLs · ${ago(links.generatedAt)}`}
+                </Text>
+              </Stack>
+            </Card>
 
-      <div className="ovw-foot">
-        Design drift: {drift.generatedAt ? `last checked ${ago(drift.generatedAt)}` : "dormant (FIGMA_TOKEN not set)"} ·
-        data updates with each deploy after the nightly jobs commit their results.
-      </div>
-    </Shell>
+            <Card padding={4} radius={3} border>
+              <Stack space={3}>
+                <Text size={1} weight="medium">
+                  Dataset backup
+                </Text>
+                <Flex align="baseline" gap={3}>
+                  <Heading size={4}>{backup.docs || "—"}</Heading>
+                  <Badge tone={backupFresh ? "positive" : "critical"}>
+                    {backupFresh ? "fresh" : "stale"}
+                  </Badge>
+                </Flex>
+                <Text size={1} muted>
+                  {backup.generatedAt == null
+                    ? "no backup recorded yet"
+                    : `${(backup.bytes / 1024).toFixed(0)}KB · ${ago(backup.generatedAt)}`}
+                </Text>
+              </Stack>
+            </Card>
+          </Grid>
+
+          {/* live A/B results (D1) — reads the dataset, not bundled JSON */}
+          <ExperimentsCard />
+
+          <Box>
+            <Text size={0} muted>
+              Design drift:{" "}
+              {drift.generatedAt
+                ? `last checked ${ago(drift.generatedAt)}`
+                : "dormant (FIGMA_TOKEN not set)"}{" "}
+              · data updates with each deploy after the nightly jobs commit their
+              results.
+            </Text>
+          </Box>
+        </Stack>
+      </Container>
+    </Card>
   );
 }
 

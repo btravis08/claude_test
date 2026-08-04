@@ -1,17 +1,16 @@
 "use client";
 
+import { Badge, Card, Flex, Stack, Text } from "@sanity/ui";
 import { useEffect, useState } from "react";
 import { useClient } from "sanity";
-
-import { ACCENT, CARD_INK, CARD_MUTED, MONO, StatCard } from "./dash";
 
 /*
   Experiments card (Overview pane): live A/B results. Counters come
   from abResult docs (flat views_<variantKey> / converts_<variantKey>,
   written by /api/ab); variant labels and hypotheses come from the
   experiment sections still present on pages. The best conversion
-  rate renders in ink, the rest muted — accent marks a variant beating
-  the control once both have views.
+  rate is badged; a positive badge marks a variant beating the
+  control once both have views.
 */
 
 interface ResultDoc {
@@ -94,67 +93,75 @@ export function ExperimentsCard() {
   }, [client]);
 
   return (
-    <StatCard title="Experiments" size="wide">
-      {!rows || rows.length === 0 ? (
-        <p style={{ fontSize: 12.5, color: CARD_MUTED, margin: 0 }}>
-          {rows === null
-            ? "Loading…"
-            : "No experiments yet — add an A/B Experiment section to a page."}
-        </p>
-      ) : (
-        rows.map((row) => {
-          const best = Math.max(...row.variants.map((v) => v.rate));
-          const control = row.variants[0];
-          return (
-            <div key={row.experiment} style={{ padding: "8px 0", borderBottom: "1px solid #dedcd6" }}>
-              <div style={{ display: "flex", gap: 8, alignItems: "baseline" }}>
-                <span style={{ fontSize: 12.5, fontWeight: 600, color: CARD_INK }}>
-                  {row.experiment}
-                </span>
-                {!row.live && (
-                  <span style={{ fontSize: 10.5, color: CARD_MUTED }}>ended</span>
-                )}
-                {row.note && (
-                  <span style={{ fontSize: 11.5, color: CARD_MUTED, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                    {row.note}
-                  </span>
-                )}
-              </div>
-              {row.variants.map((variant, i) => {
-                const beatsControl =
-                  i > 0 &&
-                  variant.views > 0 &&
-                  (control?.views ?? 0) > 0 &&
-                  variant.rate > (control?.rate ?? 0);
-                return (
-                  <div
-                    key={`${row.experiment}-${variant.label}-${i}`}
-                    style={{
-                      display: "flex",
-                      gap: 10,
-                      fontSize: 12,
-                      fontFamily: MONO,
-                      color: variant.rate === best && variant.views > 0 ? CARD_INK : CARD_MUTED,
-                      padding: "2px 0",
-                    }}
-                  >
-                    <span style={{ width: 150, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                      {variant.label}
-                      {i === 0 ? " (control)" : ""}
-                    </span>
-                    <span style={{ width: 90 }}>{variant.views} views</span>
-                    <span style={{ width: 60 }}>{variant.converts} conv</span>
-                    <span style={{ color: beatsControl ? ACCENT : undefined }}>
-                      {variant.views > 0 ? `${(variant.rate * 100).toFixed(1)}%` : "—"}
-                      {beatsControl ? " ▲" : ""}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          );
-        })
-      )}
-    </StatCard>
+    <Card padding={4} radius={3} border>
+      <Stack space={4}>
+        <Text size={1} weight="medium">
+          Experiments
+        </Text>
+        {!rows || rows.length === 0 ? (
+          <Text size={1} muted>
+            {rows === null
+              ? "Loading…"
+              : "No experiments yet — add an A/B Experiment section to a page."}
+          </Text>
+        ) : (
+          rows.map((row) => {
+            const best = Math.max(...row.variants.map((v) => v.rate));
+            const control = row.variants[0];
+            return (
+              <Stack key={row.experiment} space={3}>
+                <Flex gap={2} align="baseline" wrap="wrap">
+                  <Text size={1} weight="medium">
+                    {row.experiment}
+                  </Text>
+                  {!row.live && <Badge tone="caution">ended</Badge>}
+                  {row.note && (
+                    <Text size={1} muted textOverflow="ellipsis">
+                      {row.note}
+                    </Text>
+                  )}
+                </Flex>
+                {row.variants.map((variant, i) => {
+                  const beatsControl =
+                    i > 0 &&
+                    variant.views > 0 &&
+                    (control?.views ?? 0) > 0 &&
+                    variant.rate > (control?.rate ?? 0);
+                  const isBest = variant.rate === best && variant.views > 0;
+                  return (
+                    <Flex
+                      key={`${row.experiment}-${variant.label}-${i}`}
+                      gap={3}
+                      align="center"
+                      wrap="wrap"
+                    >
+                      <Text
+                        size={1}
+                        muted={!isBest}
+                        style={{ width: 160 }}
+                        textOverflow="ellipsis"
+                      >
+                        {variant.label}
+                        {i === 0 ? " (control)" : ""}
+                      </Text>
+                      <Text size={1} muted style={{ width: 90 }}>
+                        {variant.views} views
+                      </Text>
+                      <Text size={1} muted style={{ width: 70 }}>
+                        {variant.converts} conv
+                      </Text>
+                      <Badge tone={beatsControl ? "positive" : isBest ? "primary" : undefined}>
+                        {variant.views > 0 ? `${(variant.rate * 100).toFixed(1)}%` : "—"}
+                        {beatsControl ? " ▲" : ""}
+                      </Badge>
+                    </Flex>
+                  );
+                })}
+              </Stack>
+            );
+          })
+        )}
+      </Stack>
+    </Card>
   );
 }

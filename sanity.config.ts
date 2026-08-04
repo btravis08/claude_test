@@ -16,7 +16,9 @@ import { designTokensTool } from "@/sanity/tools/DesignTokens";
 import { performanceTool } from "@/sanity/tools/Performance";
 import { sectionLibraryTool } from "@/sanity/tools/SectionLibrary";
 import { overviewTool } from "@/sanity/tools/Overview";
-import { theme } from "@/sanity/theme";
+import { themerTool } from "@sanity/themer/tool";
+
+import { theme, themeOptions } from "@/sanity/theme";
 import designops from "./designops.config.json";
 
 /*
@@ -210,6 +212,10 @@ export default defineConfig({
   theme,
   schema: { types: schemaTypes },
   plugins: [
+    /* live palette editor (top-right); starts from the theme's own
+       options — copy its snippet into src/sanity/theme.ts to keep a
+       variation */
+    themerTool({ config: themeOptions }),
     structureTool({ structure, title: "Content" }),
     /* Presentation: live preview of the real site (drafts included)
        with click-to-edit overlays. The site and Studio share an

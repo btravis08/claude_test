@@ -15,7 +15,8 @@ import designops from "../../designops.config.json";
 const BASE = designops.site.baseUrl;
 
 const slugsQuery = groq`{
-  "pages": *[_type == "page" && defined(slug.current) && slug.current != "home"].slug.current,
+  "pages": *[_type == "page" && defined(slug.current) && slug.current != "home"
+    && protected != true].slug.current,
   "products": *[_type == "product" && (!defined(status) || status == "active") && defined(slug.current)].slug.current,
   "collections": *[_type == "collection" && defined(slug.current)].slug.current,
   "posts": *[_type == "post" && defined(slug.current)].slug.current,

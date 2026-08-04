@@ -51,6 +51,29 @@ export const page = defineType({
       ],
     }),
     defineField({
+      name: "protected",
+      title: "Password protection",
+      description:
+        "Visitors must enter the passphrase below before this page renders. Protected pages are also kept out of search engines and the sitemap.",
+      type: "boolean",
+      initialValue: false,
+    }),
+    defineField({
+      name: "passphrase",
+      title: "Passphrase",
+      description:
+        "Shared with everyone who should see the page. Changing it signs every visitor out of the page.",
+      type: "string",
+      hidden: ({ document }) => !document?.protected,
+      validation: (rule) =>
+        rule.custom((value, context) =>
+          (context.document as { protected?: boolean } | undefined)?.protected &&
+          !value?.trim()
+            ? "A protected page needs a passphrase"
+            : true,
+        ),
+    }),
+    defineField({
       name: "seo",
       title: "Search engine listing",
       type: "seo",

@@ -326,6 +326,7 @@ export interface Page {
   title: string;
   slug: string;
   showFooterTagline?: boolean;
+  protected?: boolean;
   seo?: SeoDoc | null;
   sections?: PageSection[];
   heroImage?: SanityImageSource & { alt?: string };

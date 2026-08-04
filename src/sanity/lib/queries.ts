@@ -228,11 +228,18 @@ export const pageBySlugQuery = groq`
     title,
     "slug": slug.current,
     showFooterTagline,
+    protected,
     seo,
     sections[] { ${sectionFields} },
     heroImage,
     body
   }
+`;
+
+// gate check only — never include this in a render projection (the
+// value would serialize into client props / preview payloads)
+export const pagePassphraseQuery = groq`
+  *[_type == "page" && slug.current == $slug][0].passphrase
 `;
 
 // The Legacy page singleton — content only; the page's choreography

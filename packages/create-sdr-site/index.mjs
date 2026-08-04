@@ -20,26 +20,25 @@ import readline from "node:readline/promises";
 const HERE = path.dirname(new URL(import.meta.url).pathname);
 const TEMPLATE_ROOT = path.resolve(HERE, "../..");
 
-/* SDR-only content a new project must not inherit (sample packs
-   replace it later; see scaffold.manifest.json "site-specific") */
-const EXCLUDE = [
-  ".git",
-  "node_modules",
-  ".next",
+/* scaffold.manifest.json is the copier spec: its "site-specific"
+   paths (SDR content a new project must not inherit) and "packs"
+   never ship; everything else does. Editing the manifest is the only
+   place exclusions live — this file holds no duplicate list. */
+const manifest = JSON.parse(
+  readFileSync(path.join(TEMPLATE_ROOT, "scaffold.manifest.json"), "utf8"),
+);
+const ALWAYS_EXCLUDE = [".git", "node_modules", ".next", ".vercel", "sample-pack"];
+const EXCLUDE_GLOBS = [
+  ...ALWAYS_EXCLUDE,
+  ...manifest["site-specific"].paths,
+  ...manifest.packs.paths.map((g) => g.replace(/\/\*\*$/, "")),
   "packages",
-  "public/sdr",
-  "public/figma",
-  "design/sdr-catalog",
-  "scripts/seed.ts",
-  "scripts/seed-legacy.ts",
-  "scripts/fetch-figma-assets.sh",
-  "scripts/import-sdr-catalog.ts",
-  "scripts/retire-lorem.ts",
-  "scripts/wire-nav-collections.ts",
-  "scripts/fix-catalog-ids.ts",
-  "scripts/fetch-sdr-catalog.mjs",
-  ".github/workflows/fetch-sdr-catalog.yml",
 ];
+const excluded = (rel) =>
+  EXCLUDE_GLOBS.some((g) => {
+    const base = g.endsWith("/**") ? g.slice(0, -3) : g;
+    return rel === base || rel.startsWith(`${base}/`);
+  });
 
 /* sample packs: packs/<slug>/{pack.json,content.mjs,images/} */
 const PACKS_DIR = path.join(HERE, "packs");
@@ -103,9 +102,9 @@ mkdirSync(dest, { recursive: true });
 cpSync(TEMPLATE_ROOT, dest, {
   recursive: true,
   filter: (src) => {
-    const rel = path.relative(TEMPLATE_ROOT, src);
+    const rel = path.relative(TEMPLATE_ROOT, src).split(path.sep).join("/");
     if (!rel) return true;
-    return !EXCLUDE.some((ex) => rel === ex || rel.startsWith(`${ex}${path.sep}`));
+    return !excluded(rel);
   },
 });
 

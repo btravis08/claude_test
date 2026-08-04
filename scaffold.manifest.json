@@ -1,5 +1,5 @@
 {
-  "description": "Module ownership map for the create-CLI scaffolder: base always ships; feature modules are copied only when selected. Runtime flags in designops.config.json gate the Studio (schema + desk); scaffold-time selection omits a module's files entirely.",
+  "description": "Module ownership map and copier spec for the create-CLI scaffolder. The CLI copies the whole template minus 'site-specific' (and packs/); feature modules always ship as files \u2014 cross-module imports exist (SectionRenderer uses commerce card math, the library registry uses the legacy sections) \u2014 and runtime flags in designops.config.json gate what the Studio and site expose. Module lists below document which feature owns each file.",
   "base": [
     "designops.config.json",
     "scaffold.manifest.json",
@@ -54,7 +54,34 @@
     ".github/workflows/dataset-backup.yml",
     ".github/workflows/fetch-figma-assets.yml",
     "sanity.config.ts",
-    "sanity.cli.ts"
+    "sanity.cli.ts",
+    "src/app/robots.ts",
+    "src/app/favicon.ico",
+    "src/app/library/**",
+    "src/app/api/forms/**",
+    "src/app/api/gate/**",
+    "src/app/api/ab/**",
+    "src/components/AnnouncementBar.tsx",
+    "src/components/FooterTagline.tsx",
+    "src/components/LiveVisualEditing.tsx",
+    "src/components/Logo.tsx",
+    "src/components/MenuX.tsx",
+    "src/components/NavTextLink.tsx",
+    "src/components/NewsletterForm.tsx",
+    "src/components/PageGate.tsx",
+    "src/components/SmartLink.tsx",
+    "src/components/icons.tsx",
+    "src/components/navBackdrop.ts",
+    "src/components/useMdUp.ts",
+    "src/components/experiment/**",
+    "src/sanity/components/**",
+    "src/sanity/lib/queries.ts",
+    "src/sanity/lib/seo.ts",
+    "src/sanity/lib/preview-store.ts",
+    "src/sanity/schemaTypes/formSubmission.ts",
+    "src/sanity/schemaTypes/seo.ts",
+    "src/sanity/types.ts",
+    "scripts/build-token-index.mjs"
   ],
   "commerce": [
     "src/app/(site)/products/**",
@@ -71,7 +98,8 @@
     "src/sanity/schemaTypes/collection.ts",
     "src/sanity/schemaTypes/discount.ts",
     "src/sanity/schemaTypes/story.ts",
-    "src/sanity/schemaTypes/storeSettings.ts"
+    "src/sanity/schemaTypes/storeSettings.ts",
+    "src/components/collection/**"
   ],
   "blog": [
     "src/app/(site)/journal/**",
@@ -80,26 +108,43 @@
   ],
   "projects": [
     "src/app/(site)/projects/**",
-    "src/sanity/schemaTypes/project.ts"
+    "src/sanity/schemaTypes/project.ts",
+    "src/components/ProjectCard.tsx"
   ],
   "packs": {
     "description": "Sample packs the create-CLI can copy into a scaffold as sample-pack/ (seeded by scripts/seed-pack.ts). The packs and the CLI itself live under packages/ and are never copied.",
-    "paths": ["packages/create-sdr-site/**"]
+    "paths": [
+      "packages/create-sdr-site/**"
+    ]
   },
   "site-specific": {
     "description": "SDR-only content that a scaffold replaces with a sample pack: never copied to new projects.",
     "paths": [
-      "src/app/(site)/legacy/**",
-      "src/components/legacy/**",
-      "src/sanity/schemaTypes/legacyPage.ts",
       "public/figma/**",
       "public/sdr/**",
       "design/sdr-catalog/**",
-      "design/figma-tokens/**",
       "scripts/seed.ts",
       "scripts/import-sdr-catalog.ts",
       "scripts/fetch-sdr-catalog.mjs",
-      "scripts/fetch-figma-assets.sh"
+      "scripts/fetch-figma-assets.sh",
+      "src/app/(site)/media-test/**",
+      "scripts/retire-lorem.ts",
+      "scripts/fix-catalog-ids.ts",
+      "scripts/wire-nav-collections.ts",
+      ".github/workflows/fetch-sdr-catalog.yml",
+      ".github/workflows/capture-reference.yml",
+      ".github/workflows/lighthouse.yml",
+      ".github/workflows/probe.yml"
+    ]
+  },
+  "site-example": {
+    "description": "SDR-branded content that ships as a working example until the new project replaces it: the legacy page is the library's animation showcase, and the Figma token exports power the token tooling until re-exported from the project's own file.",
+    "paths": [
+      "src/app/(site)/legacy/**",
+      "src/components/legacy/**",
+      "src/sanity/schemaTypes/legacyPage.ts",
+      "design/figma-tokens/**",
+      "scripts/seed-legacy.ts"
     ]
   }
 }

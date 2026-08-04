@@ -80,6 +80,25 @@ function runLighthouse(url, formFactor) {
     totalMs: Math.round(longTaskItems.reduce((sum, t) => sum + (t.duration ?? 0), 0)),
   };
 
+  /* Deep diagnostic on a blocking-bound mobile run: dump everything
+     needed to explain the TBT to the job log, so a bad night is
+     debuggable from the log alone (artifacts need auth to fetch). */
+  const tbtMs = audit("total-blocking-time") ?? 0;
+  if (formFactor === "mobile" && tbtMs > 500) {
+    console.log(`--- DIAGNOSTIC ${url} tbt=${Math.round(tbtMs)} benchmark=${Math.round(report.environment?.benchmarkIndex ?? 0)}`);
+    for (const s of report.audits["bootup-time"]?.details?.items ?? [])
+      console.log(`  bootup ${Math.round(s.total)}ms (script ${Math.round(s.scripting)}ms) :: ${String(s.url).slice(-90)}`);
+    const reqs = report.audits["network-requests"]?.details?.items ?? [];
+    const js = reqs.filter((r) => r.resourceType === "Script");
+    console.log(`  network: ${reqs.length} requests; ${js.length} scripts, ${Math.round(js.reduce((a, r) => a + (r.transferSize ?? 0), 0) / 1024)}KB transferred`);
+    for (const r of js.sort((a, b) => (b.transferSize ?? 0) - (a.transferSize ?? 0)).slice(0, 8))
+      console.log(`    ${Math.round((r.transferSize ?? 0) / 1024)}KB ${r.statusCode} :: ${String(r.url).slice(-90)}`);
+    const doc = reqs.find((r) => r.resourceType === "Document");
+    if (doc) console.log(`  document: ${doc.statusCode} ${Math.round((doc.transferSize ?? 0) / 1024)}KB transfer, ${Math.round((doc.resourceSize ?? 0) / 1024)}KB resource`);
+    for (const t of longTaskItems.slice(0, 8))
+      console.log(`  longtask ${Math.round(t.duration)}ms start=${Math.round(t.startTime)} :: ${String(t.url ?? "").slice(-70)}`);
+  }
+
   return {
     /* runner health: Lighthouse's own CPU benchmark for this run —
        a low value (<1500) means the VM was slow and the absolute
@@ -119,8 +138,12 @@ for (const page of PAGES) {
        Re-measure once and keep the retry — a real regression survives
        it, a fluke doesn't — and mark the snap so the ticker can show
        it was confirmed. */
-    const prev = (history.pages[page] ?? []).at(-1);
-    const prevPerf = prev?.mobile?.perf ?? prev?.perf ?? null;
+    /* baseline = best of the last 5 snapshots, so consecutive bad
+       nights don't lower the bar and mute the guard */
+    const recent = (history.pages[page] ?? []).slice(-5);
+    const prevPerf = recent.length
+      ? Math.max(...recent.map((s) => s?.mobile?.perf ?? s?.perf ?? 0))
+      : null;
     if (prevPerf !== null && prevPerf - mobile.perf >= 15) {
       console.log(`${page} mobile ${mobile.perf} (prev ${prevPerf}) — re-measuring to rule out a slow VM`);
       mobile = { ...runLighthouse(url, "mobile"), retried: true };

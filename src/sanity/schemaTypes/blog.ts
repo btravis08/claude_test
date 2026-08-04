@@ -131,6 +131,16 @@ export const post = defineType({
       group: "meta",
     }),
     defineField({
+      name: "tags",
+      title: "Tags",
+      type: "array",
+      of: [{ type: "string" }],
+      options: { layout: "tags" },
+      group: "meta",
+      description:
+        "Free-form keywords, shown on the article and carried in the RSS feed (categories drive the archives; tags are lighter-weight).",
+    }),
+    defineField({
       name: "publishedAt",
       title: "Published at",
       type: "datetime",

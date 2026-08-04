@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { PortableText } from "next-sanity";
 import type { PortableTextBlock } from "next-sanity";
 
@@ -21,8 +22,18 @@ export interface PostDoc {
   publishedAt?: string;
   seoTitle?: string;
   seo?: import("@/sanity/types").SeoDoc | null;
+  tags?: string[];
   author?: { name?: string; role?: string; avatar?: SanityImageSource };
   categories?: { title?: string; slug?: string }[];
+}
+
+export interface RelatedPost {
+  title?: string;
+  slug?: string;
+  heroImage?: SanityImageSource;
+  excerpt?: string;
+  publishedAt?: string;
+  category?: string;
 }
 
 function img(source: SanityImageSource | undefined, width: number) {
@@ -43,17 +54,35 @@ function formatDate(iso?: string) {
   });
 }
 
-export function PostArticle({ post }: { post: PostDoc }) {
+export function PostArticle({
+  post,
+  related = [],
+}: {
+  post: PostDoc;
+  related?: RelatedPost[];
+}) {
   const hero = img(post.heroImage, 2000);
   const date = formatDate(post.publishedAt);
-  const category = post.categories?.[0]?.title;
+  const category = post.categories?.[0];
 
   return (
     <article data-mode="dark" className="w-full bg-surface pb-32 text-ink">
       {/* masthead */}
       <header className="mx-auto flex max-w-3xl flex-col items-center gap-4 px-6 pb-12 pt-[8.75rem] text-center">
         <p className="label text-ink-3">
-          {[category, date].filter(Boolean).join(" · ").toUpperCase()}
+          {category?.title && category.slug ? (
+            <>
+              <Link
+                href={`/journal/category/${category.slug}`}
+                className="transition-colors hover:text-ink"
+              >
+                {category.title.toUpperCase()}
+              </Link>
+              {date && ` · ${date.toUpperCase()}`}
+            </>
+          ) : (
+            [category?.title, date].filter(Boolean).join(" · ").toUpperCase()
+          )}
         </p>
         <h1 className="font-display text-headline-lg">{post.title}</h1>
         {post.excerpt && (
@@ -142,6 +171,64 @@ export function PostArticle({ post }: { post: PostDoc }) {
             {post.author.role && <p className="label text-ink-3">{post.author.role}</p>}
           </div>
         </footer>
+      )}
+
+      {/* tags */}
+      {(post.tags?.length ?? 0) > 0 && (
+        <ul className="mx-auto mt-8 flex max-w-2xl flex-wrap gap-2 px-6">
+          {post.tags!.map((tag) => (
+            <li
+              key={tag}
+              className="label rounded-xs border border-line px-3 py-2 text-ink-3"
+            >
+              {tag.toUpperCase()}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {/* related stories — shared category, newest first */}
+      {related.length > 0 && (
+        <aside className="mx-auto mt-24 max-w-6xl border-t border-line px-6 pt-12">
+          <h2 className="label mb-8 text-ink-3">RELATED STORIES</h2>
+          <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-3">
+            {related.map((item) => {
+              const src = img(item.heroImage, 800);
+              const itemDate = formatDate(item.publishedAt);
+              return (
+                <Link
+                  key={item.slug}
+                  href={`/journal/${item.slug}`}
+                  className="group flex flex-col gap-4"
+                >
+                  {src && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={src}
+                      srcSet={sanitySrcSet(src)}
+                      sizes="(min-width: 640px) 33vw, 100vw"
+                      alt={item.title ?? ""}
+                      loading="lazy"
+                      decoding="async"
+                      className="aspect-[3/4] w-full rounded-xs object-cover"
+                    />
+                  )}
+                  <div className="flex flex-col gap-2">
+                    <p className="label text-ink-3">
+                      {[item.category, itemDate]
+                        .filter(Boolean)
+                        .join(" · ")
+                        .toUpperCase()}
+                    </p>
+                    <h3 className="font-display text-title-sm transition-colors group-hover:text-ink-2">
+                      {item.title}
+                    </h3>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </aside>
       )}
     </article>
   );

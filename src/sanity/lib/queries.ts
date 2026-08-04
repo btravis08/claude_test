@@ -286,8 +286,50 @@ export const postBySlugQuery = groq`
     title, "slug": slug.current, heroImage, excerpt, body, publishedAt,
     seoTitle,
     seo,
+    tags,
     "author": author->{name, role, avatar},
     "categories": categories[]->{title, "slug": slug.current}
+  }
+`;
+
+// posts sharing any of the current post's categories, newest first
+export const relatedPostsQuery = groq`
+  *[_type == "post" && slug.current != $slug && defined(slug.current)
+    && count((categories[]->slug.current)[@ in $categorySlugs]) > 0]
+    | order(publishedAt desc)[0...3]{
+    title, "slug": slug.current, heroImage, excerpt, publishedAt,
+    "category": categories[0]->title
+  }
+`;
+
+// ---------- category archives (paginated) ----------
+export const postCategoryBySlugQuery = groq`
+  *[_type == "postCategory" && slug.current == $slug][0]{
+    title, "slug": slug.current, description
+  }
+`;
+
+export const postsByCategoryQuery = groq`
+  *[_type == "post" && defined(slug.current)
+    && $slug in categories[]->slug.current]
+    | order(publishedAt desc)[$from...$to]{
+    title, "slug": slug.current, heroImage, excerpt, publishedAt,
+    "author": author->name
+  }
+`;
+
+export const postsByCategoryCountQuery = groq`
+  count(*[_type == "post" && defined(slug.current)
+    && $slug in categories[]->slug.current])
+`;
+
+// newest posts for the RSS feed
+export const rssPostsQuery = groq`
+  *[_type == "post" && defined(slug.current) && defined(publishedAt)]
+    | order(publishedAt desc)[0...50]{
+    title, "slug": slug.current, excerpt, publishedAt, tags,
+    "categories": categories[]->title,
+    "author": author->name
   }
 `;
 

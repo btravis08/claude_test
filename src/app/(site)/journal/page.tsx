@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   title: "Honors Journal",
   description:
     "People, ideas, & culture — stories from the course and beyond the red.",
+  alternates: {
+    types: { "application/rss+xml": "/journal/rss.xml" },
+  },
 };
 
 /* pin iOS bar chrome to the light surface (matches the page ground) */

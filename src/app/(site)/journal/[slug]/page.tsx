@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 
 import { ArticleView } from "@/components/journal/ArticleView";
 import { PostArticle } from "@/components/journal/PostArticle";
-import type { PostDoc } from "@/components/journal/PostArticle";
+import type { PostDoc, RelatedPost } from "@/components/journal/PostArticle";
 import {
   ARTICLE_LEAD,
   JOURNAL_CATEGORIES,
@@ -16,6 +16,7 @@ import {
   automaticDiscountsQuery,
   postBySlugQuery,
   productsByTagQuery,
+  relatedPostsQuery,
   storeSettingsQuery,
 } from "@/sanity/lib/queries";
 import type { Discount, SliderProduct, StoreSettings } from "@/sanity/types";
@@ -66,7 +67,19 @@ export default async function JournalArticlePage({
   /* CMS posts take the slug first; the built-in design articles
      remain the fallback set */
   const post = await sanityFetch<PostDoc | null>(postBySlugQuery, { slug }, null);
-  if (post) return <PostArticle post={post} />;
+  if (post) {
+    const categorySlugs = (post.categories ?? [])
+      .map((c) => c.slug)
+      .filter(Boolean);
+    const related = categorySlugs.length
+      ? await sanityFetch<RelatedPost[]>(
+          relatedPostsQuery,
+          { slug, categorySlugs },
+          [],
+        )
+      : [];
+    return <PostArticle post={post} related={related} />;
+  }
 
   const hit = findArticle(slug);
   if (!hit) notFound();

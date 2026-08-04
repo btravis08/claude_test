@@ -8,6 +8,7 @@ import linksStatus from "@/design/links.status.json";
 import perfHistory from "@/design/perf.history.json";
 
 import { ACCENT, Bars, CARD_INK, DotRow, Gauge, GlassChip, Meter, Shell, StatCard } from "./dash";
+import { ExperimentsCard } from "./Experiments";
 
 /*
   Overview — the Studio's landing readout: is everything okay?
@@ -221,6 +222,9 @@ export function OverviewPane() {
               : `${backup.docs} docs · ${(backup.bytes / 1024).toFixed(0)}KB · ${ago(backup.generatedAt)}`}
           </div>
         </StatCard>
+
+        {/* live A/B results (D1) — reads the dataset, not bundled JSON */}
+        <ExperimentsCard />
       </div>
 
       <div className="ovw-foot">

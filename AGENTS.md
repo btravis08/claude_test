@@ -63,23 +63,23 @@ boundary and list new top-level paths in the manifest.
 Features from the WordPress/Webflow/Framer comparison, to build in
 order. Strike items through as they ship.
 
-- A1 Forms + submissions inbox: formSubmission docs, /api/forms
+- ~~A1 Forms + submissions inbox: formSubmission docs, /api/forms
   (honeypot + rate limit, needs SANITY_API_WRITE_TOKEN in Vercel),
-  footer newsletter wired, Studio Submissions view.
-- A2 Yoast-style SEO editor: seo object (metaTitle/metaDescription
+  footer newsletter wired, Studio Submissions view.~~
+- ~~A2 Yoast-style SEO editor: seo object (metaTitle/metaDescription
   with counters, ogImage override, noindex, canonical) on
   page/post/product/collection, Studio Google+social preview,
-  generateMetadata wiring, robots.ts.
-- A3 Announcement bar: schedulable, dismissible strip above the nav,
-  managed from siteSettings; SSR'd, zero CLS.
-- B1 Blog completion: RSS, related posts (shared category), post
-  tags, paginated category archives.
-- B2 Content calendar: Studio month-grid tool of posts + scheduled
-  releases.
-- C1 Gated pages: protected flag + shared passphrase on page docs.
-- D1 A/B section testing (flagship): section variants, cookie split,
+  generateMetadata wiring, robots.ts.~~
+- ~~A3 Announcement bar: schedulable, dismissible strip above the nav,
+  managed from siteSettings; SSR'd, zero CLS.~~
+- ~~B1 Blog completion: RSS, related posts (shared category), post
+  tags, paginated category archives.~~
+- ~~B2 Content calendar: Studio month-grid tool of posts + scheduled
+  releases.~~
+- ~~C1 Gated pages: protected flag + shared passphrase on page docs.~~
+- ~~D1 A/B section testing (flagship): section variants, cookie split,
   conversion logging, results in the Overview pane — edge-safe split
-  that must not break caching or the perf standings.
+  that must not break caching or the perf standings.~~
 - D2 Localization: field-level i18n + locale routing. Biggest lift;
   only when a real project needs it.
 

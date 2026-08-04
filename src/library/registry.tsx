@@ -11,6 +11,7 @@ import {
   Reviews,
   TechSpecs,
 } from "@/components/home/sections";
+import { ExperimentSection } from "@/components/experiment/ExperimentSection";
 import { FloatingWords } from "@/components/legacy/FloatingWords";
 import { FullBleedCarousel } from "@/components/legacy/FullBleedCarousel";
 import { LegacyHero } from "@/components/legacy/LegacyHero";
@@ -208,6 +209,31 @@ export const SECTIONS: SectionEntry[] = [
       mobile: { width: 428, height: 1497 },
     },
     render: (mode) => <Reviews mode={mode} />,
+  },
+  {
+    slug: "ab-experiment",
+    title: "A/B Experiment",
+    group: "Page sections",
+    schemaType: "sectionExperiment",
+    description:
+      "Cookie-split wrapper testing two-to-four variant section stacks; one variant paints per visitor, conversions read out in the Studio Overview.",
+    modes: ["light", "dark"],
+    /* the demo carries its own sections, each with real modes */
+    render: (mode) => (
+      <ExperimentSection
+        exKey="library-demo"
+        variants={[
+          {
+            key: "a",
+            node: <Carousel mode={mode} eyebrow="VARIANT A — CONTROL" />,
+          },
+          {
+            key: "b",
+            node: <InfoSlider mode={mode} title="Variant B" />,
+          },
+        ]}
+      />
+    ),
   },
 
   /* ---- the Legacy page's bespoke sections ---- */

@@ -238,6 +238,32 @@ export function SectionList({
                   </div>
                 </section>
               );
+            case "sectionExperiment":
+              /* preview affordance: every variant renders stacked
+                 with a label strip, so editors can see and edit each
+                 one — the live split only happens on the published
+                 site (SectionRenderer). */
+              return (
+                <div key={section._key} className="w-full">
+                  {(section.variants ?? []).map((variant, variantIndex) => (
+                    <div key={variant._key} className="w-full">
+                      <div
+                        data-mode="dark"
+                        className="label w-full bg-surface px-6 py-3 text-ink-3"
+                      >
+                        A/B {section.key ?? ""} — {variant.label ?? `VARIANT ${variantIndex + 1}`}
+                        {variantIndex === 0 ? " (CONTROL)" : ""}
+                      </div>
+                      {variant.sections?.length ? (
+                        <SectionList
+                          sections={variant.sections}
+                          sliderCards={sliderCards}
+                        />
+                      ) : null}
+                    </div>
+                  ))}
+                </div>
+              );
             default:
               return null;
           }

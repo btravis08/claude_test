@@ -308,6 +308,19 @@ export interface SectionRichText extends SectionBase {
   body?: PortableTextBlock[];
 }
 
+export interface ExperimentVariant {
+  _key: string;
+  label?: string;
+  sections?: PageSection[];
+}
+
+export interface SectionExperiment extends SectionBase {
+  _type: "sectionExperiment";
+  key?: string;
+  note?: string;
+  variants?: ExperimentVariant[];
+}
+
 export type PageSection =
   | SectionHero
   | SectionFullWidth
@@ -319,7 +332,8 @@ export type PageSection =
   | SectionTechSpecs
   | SectionGallery
   | SectionReviews
-  | SectionThreeD;
+  | SectionThreeD
+  | SectionExperiment;
 
 export interface Page {
   _id: string;

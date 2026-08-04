@@ -72,7 +72,7 @@ const lookProductFields = groq`
   "thumb": images[0]
 `;
 
-const sectionFields = groq`
+const innerSectionFields = groq`
   _key,
   _type,
   colorMode,
@@ -114,6 +114,19 @@ const sectionFields = groq`
     "aspect": image.asset->metadata.dimensions.aspectRatio,
     "videoUrl": video.asset->url,
     lookProducts[]->{ ${lookProductFields} }
+  }
+`;
+
+/* experiments carry nested section stacks; they cannot nest further,
+   so one level of innerSectionFields is exact */
+const sectionFields = groq`
+  ${innerSectionFields},
+  key,
+  note,
+  variants[] {
+    _key,
+    label,
+    sections[] { ${innerSectionFields} }
   }
 `;
 

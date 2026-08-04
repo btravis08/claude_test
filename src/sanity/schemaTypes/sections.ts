@@ -681,6 +681,120 @@ export const sectionThreeD = defineType({
   },
 });
 
+/* D1 — A/B experiment: two-to-four variants, each a stack of normal
+   sections. The split happens client-side from a cookie set before
+   first paint, so every visitor receives the same cached HTML; the
+   control variant is what no-JS visitors (and search engines) see.
+   Results accumulate in abResult docs via /api/ab and read out in
+   the Studio Overview. Experiments cannot nest. */
+export const sectionExperiment = defineType({
+  name: "sectionExperiment",
+  icon: icons["split-horizontal"],
+  title: "A/B Experiment",
+  type: "object",
+  fields: [
+    defineField({
+      name: "key",
+      title: "Experiment key",
+      description:
+        "Identifies this experiment in cookies and results (letters, numbers, dashes). Changing it restarts the experiment: visitors re-roll and results start a fresh row.",
+      type: "string",
+      validation: (rule) =>
+        rule
+          .required()
+          .regex(/^[a-zA-Z0-9-]{1,60}$/, { name: "letters, numbers, dashes" }),
+    }),
+    defineField({
+      name: "note",
+      title: "Hypothesis",
+      description: "What this experiment is testing — for the results pane.",
+      type: "string",
+    }),
+    defineField({
+      name: "variants",
+      title: "Variants",
+      description:
+        "The first variant is the control: it renders for visitors without JavaScript and for search engines. Conversions count clicks on links and buttons inside the shown variant.",
+      type: "array",
+      validation: (rule) => rule.required().min(2).max(4),
+      of: [
+        defineArrayMember({
+          type: "object",
+          name: "experimentVariant",
+          fields: [
+            defineField({
+              name: "label",
+              title: "Label",
+              type: "string",
+              validation: (rule) => rule.required(),
+              initialValue: "Variant",
+            }),
+            defineField({
+              name: "sections",
+              title: "Sections",
+              type: "array",
+              validation: (rule) => rule.required().min(1),
+              of: [
+                defineArrayMember({ type: "sectionHero" }),
+                defineArrayMember({ type: "sectionInfoSlider" }),
+                defineArrayMember({ type: "sectionFullWidth" }),
+                defineArrayMember({ type: "sectionCarousel" }),
+                defineArrayMember({ type: "sectionFiftyFifty" }),
+                defineArrayMember({ type: "sectionProductSlider" }),
+                defineArrayMember({ type: "sectionRichText" }),
+                defineArrayMember({ type: "sectionTechSpecs" }),
+                defineArrayMember({ type: "sectionGallery" }),
+                defineArrayMember({ type: "sectionReviews" }),
+                defineArrayMember({ type: "sectionThreeD" }),
+              ],
+            }),
+          ],
+          preview: {
+            select: { title: "label", sections: "sections" },
+            prepare: ({ title, sections }) => ({
+              title: title ?? "Variant",
+              subtitle: `${(sections as unknown[] | undefined)?.length ?? 0} section(s)`,
+            }),
+          },
+        }),
+      ],
+    }),
+  ],
+  preview: {
+    select: { key: "key", variants: "variants" },
+    prepare: ({ key, variants }) => ({
+      title: `A/B: ${key ?? "unnamed"}`,
+      subtitle: `${(variants as unknown[] | undefined)?.length ?? 0} variants`,
+    }),
+  },
+});
+
+/* running counters per experiment, incremented by /api/ab */
+export const abResult = defineType({
+  name: "abResult",
+  title: "Experiment result",
+  type: "document",
+  readOnly: true,
+  fields: [
+    defineField({ name: "experiment", title: "Experiment key", type: "string" }),
+    defineField({
+      name: "counters",
+      title: "Counters",
+      description: "views_<variantKey> / converts_<variantKey> running totals.",
+      type: "object",
+      fields: [
+        /* dynamic keys live here; this placeholder keeps the Studio
+           from warning about an empty object type */
+        defineField({ name: "note", type: "string", hidden: true }),
+      ],
+    }),
+  ],
+  preview: {
+    select: { title: "experiment" },
+    prepare: ({ title }) => ({ title: `Results: ${title ?? "?"}` }),
+  },
+});
+
 export const sectionTypes = [
   sectionHero,
   sectionFullWidth,
@@ -693,4 +807,6 @@ export const sectionTypes = [
   sectionGallery,
   sectionReviews,
   sectionThreeD,
+  sectionExperiment,
+  abResult,
 ];

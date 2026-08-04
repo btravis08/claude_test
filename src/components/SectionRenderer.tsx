@@ -13,6 +13,7 @@ import {
   TechSpecs,
   ThreeDViewer,
 } from "@/components/home/sections";
+import { ExperimentSection } from "@/components/experiment/ExperimentSection";
 import type { LookProductData } from "@/components/home/MediaBlock";
 import type { ProductCardData } from "@/components/home/ProductCard";
 import {
@@ -136,7 +137,17 @@ async function ProductSliderSection({ section }: { section: SectionProductSlider
 export async function buildSliderCardMap(
   sections: PageSection[],
 ): Promise<Record<string, ProductCardData[]>> {
-  const sliders = sections.filter(
+  /* experiments hold nested section stacks — flatten one level so
+     sliders inside variants get their preview cards too */
+  const flattened = sections.flatMap((section) =>
+    section._type === "sectionExperiment"
+      ? [
+          section,
+          ...(section.variants ?? []).flatMap((v) => v.sections ?? []),
+        ]
+      : [section],
+  );
+  const sliders = flattened.filter(
     (section): section is SectionProductSlider =>
       section._type === "sectionProductSlider",
   );
@@ -335,6 +346,34 @@ export function SectionRenderer({ sections }: { sections: PageSection[] }) {
                 </div>
               </section>
             );
+          case "sectionExperiment": {
+            /* A/B split (D1): all variants render into the shared
+               cached HTML; the shell's pre-paint script shows one.
+               Degenerate configs (fewer than two usable variants)
+               render the first variant plainly. */
+            const usable = (section.variants ?? []).filter(
+              (v) => v.sections?.length,
+            );
+            const exKey = (section.key ?? "").replace(/[^a-zA-Z0-9-]/g, "");
+            if (usable.length < 2 || !exKey) {
+              return usable[0] ? (
+                <SectionRenderer
+                  key={section._key}
+                  sections={usable[0].sections!}
+                />
+              ) : null;
+            }
+            return (
+              <ExperimentSection
+                key={section._key}
+                exKey={exKey}
+                variants={usable.map((v) => ({
+                  key: v._key,
+                  node: <SectionRenderer sections={v.sections!} />,
+                }))}
+              />
+            );
+          }
           default:
             return null;
         }

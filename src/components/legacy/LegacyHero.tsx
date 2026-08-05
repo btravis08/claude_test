@@ -254,8 +254,8 @@ export function LegacyHero({
         /* Enter/hold: the phrase rises to center as one line. */
         <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 px-6">
           <motion.div
-            initial={{ y: "14vh", opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
+            initial={{ y: "14vh" }}
+            animate={{ y: 0 }}
             transition={{ duration: 2, ease: DRAMA }}
             className="flex w-full items-center justify-center gap-[0.35em]"
           >

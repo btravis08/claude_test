@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-04T11:34:01.836Z",
+  "generatedAt": "2026-08-05T11:28:55.240Z",
   "sections": {
     "hero": {
       "comps": {},
@@ -367,6 +367,23 @@
             "selector": "div.flex.flex-col > div.flex.w-full > div.grid.grid-cols-1",
             "kind": "gap",
             "value": "29px"
+          }
+        ]
+      }
+    },
+    "ab-experiment": {
+      "comps": {},
+      "tokens": {
+        "elements": 20,
+        "offToken": 1,
+        "byKind": {
+          "radius": 1
+        },
+        "examples": [
+          {
+            "selector": "div.relative.hidden > div.absolute.inset-0 > button.flex.size-7",
+            "kind": "radius",
+            "value": "33554400px"
           }
         ]
       }

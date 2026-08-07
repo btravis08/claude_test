@@ -1,0 +1,13 @@
+{
+  "name": "Envoy Split Shot",
+  "id": "envoy-split-shot",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "ui.html",
+  "editorType": ["figma"],
+  "documentAccess": "dynamic-page",
+  "networkAccess": {
+    "allowedDomains": ["none"],
+    "reasoning": "JSZip is vendored and inlined in ui.html; the plugin only reads a local zip file."
+  }
+}

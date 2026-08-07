@@ -45,6 +45,11 @@
     #status.error {
       color: #d0342c;
     }
+    #hint {
+      margin-top: 16px;
+      font-size: 11px;
+      color: #999;
+    }
     button {
       padding: 10px 16px;
       background: #222;
@@ -63,6 +68,7 @@
     <button id="browse">Browse Files</button>
     <input id="fileInput" type="file" accept=".zip,application/zip" style="display:none" />
     <div id="status"></div>
+    <div id="hint">Captures sent from the Split Shot Chrome extension land here automatically while this window is open.</div>
   </div>
 
   <!-- JSZip v3.10.1, vendored (see jszip.min.js) and inlined below so the
@@ -113,12 +119,78 @@ https://github.com/nodeca/pako/blob/main/LICENSE
     browseBtn.addEventListener('click', () => fileInput.click());
     fileInput.addEventListener('change', () => handleFiles(fileInput.files));
 
-    // The main thread reports node-building failures back so the UI can reset.
-    window.onmessage = (e) => {
-      const msg = e.data && e.data.pluginMessage;
-      if (msg && msg.type === 'import-failed') {
+    // -----------------------------------------------------------------------
+    // Bridge to the Split Shot Chrome extension. When Figma runs in Chrome
+    // with the extension installed, its content script on figma.com listens
+    // for this ready ping and pushes pending captures straight in — no zip.
+    // -----------------------------------------------------------------------
+    let bridgeAcked = false;
+    function pingBridge() {
+      window.parent.postMessage({ source: 'envoy-split-shot-plugin', type: 'ready' }, '*');
+    }
+    const readyPing = setInterval(() => {
+      if (bridgeAcked) clearInterval(readyPing);
+      else pingBridge();
+    }, 1500);
+    pingBridge();
+
+    function base64ToBytes(b64) {
+      const bin = atob(b64);
+      const arr = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+      return arr;
+    }
+
+    function onBridgeCapture(capture) {
+      if (busy || !capture || !Array.isArray(capture.slices)) return;
+      setBusy(true);
+      setStatus(`Receiving "${capture.pageName || 'capture'}" from the Chrome extension…`);
+      try {
+        const slices = capture.slices.map((s) => ({
+          name: s.name,
+          y: s.y,
+          cssWidth: s.cssWidth,
+          cssHeight: s.cssHeight,
+          data: base64ToBytes(s.base64),
+        }));
+        parent.postMessage({
+          pluginMessage: {
+            type: 'direct-capture',
+            captureId: capture.captureId,
+            pageName: capture.pageName,
+            cssWidth: capture.cssWidth,
+            totalCssHeight: capture.totalCssHeight,
+            slices,
+          },
+        }, '*');
+      } catch (_) {
         setBusy(false);
-        setStatus('Import failed — see the Figma toast for details.', true);
+        setStatus('Could not decode the capture sent by the extension.', true);
+      }
+    }
+
+    // Messages arrive from two directions: the plugin main thread (wrapped in
+    // pluginMessage) and the extension's figma.com bridge (tagged source).
+    window.onmessage = (e) => {
+      const data = e.data || {};
+      const msg = data.pluginMessage;
+      if (msg) {
+        if (msg.type === 'import-failed') {
+          setBusy(false);
+          setStatus('Import failed — see the Figma toast for details.', true);
+        } else if (msg.type === 'direct-placed') {
+          setBusy(false);
+          setStatus(`Placed "${msg.frameName}" on the Split Shot Inspo page ✓`);
+          window.parent.postMessage({ source: 'envoy-split-shot-plugin', type: 'placed', captureId: msg.captureId }, '*');
+        } else if (msg.type === 'direct-failed') {
+          setBusy(false);
+          setStatus(msg.message || 'Import failed.', true);
+        }
+        return;
+      }
+      if (data.source === 'envoy-split-shot-bridge') {
+        if (data.type === 'ready-ack') bridgeAcked = true;
+        else if (data.type === 'capture') onBridgeCapture(data.capture);
       }
     };
 

@@ -1,8 +1,18 @@
 # Envoy Split Shot (Figma plugin)
 
-Imports a page-capture zip produced by the Envoy Split Shot Chrome extension
-and stitches its screenshot slices into a single vertical auto-layout frame,
-sized in CSS pixels (the capture devicePixelRatio is divided out).
+Places page captures from the Envoy Split Shot Chrome extension
+(`design/chrome-extensions/split-shot/`) into Figma. Two paths:
+
+- **Direct (no zip):** when Figma runs in Chrome with the extension
+  installed, captures sent from the extension land automatically while this
+  plugin's window is open — the plugin finds or creates a page called
+  **Split Shot Inspo** and places the capture as a frame to the right of
+  what's already there, sized in CSS pixels. The hand-off protocol is
+  documented in the extension's README. (Figma's REST API can't write to a
+  canvas, which is why the plugin must be open to receive; the desktop app
+  can't talk to a Chrome extension, so direct mode is Chrome-only.)
+- **Zip drag-and-drop:** import a `page-capture.zip`, stitched into a single
+  vertical auto-layout frame (the capture devicePixelRatio is divided out).
 
 ## Install
 

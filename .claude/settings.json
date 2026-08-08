@@ -15,7 +15,18 @@
       "mcp__Figma__list_shader_fills",
       "mcp__Figma__get_libraries",
       "mcp__Figma__list_file_components_for_code_connect",
-      "mcp__Figma__get_code_connect_map"
+      "mcp__Figma__get_code_connect_map",
+      "mcp__Figma__use_figma",
+      "Bash(npm run build*)",
+      "Bash(npm start*)",
+      "Bash(node *)",
+      "Bash(python3 *)",
+      "Bash(pkill -f next-server*)",
+      "Bash(git add*)",
+      "Bash(git commit*)",
+      "Bash(git push*)",
+      "Bash(git log*)",
+      "Bash(git status*)"
     ]
   }
 }

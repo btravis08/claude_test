@@ -51,6 +51,11 @@ export function LegacyHero({
 }) {
   const reduced = useReducedMotion();
   const [phase, setPhase] = useState<Phase>("enter");
+  /* state-driven (initial={false} + animate) — mount animations are
+     suppressed under the page transition's presence context, which
+     was intermittently freezing this title at its pre-entrance
+     offset and inflating LCP (see SplitTextBlock's Word component) */
+  const [risen, setRisen] = useState(false);
   const lenis = useLenis();
   const leftRef = useRef<HTMLParagraphElement>(null);
   const rightRef = useRef<HTMLParagraphElement>(null);
@@ -62,6 +67,12 @@ export function LegacyHero({
 
   useEffect(() => {
     if (reduced) setPhase("done");
+  }, [reduced]);
+
+  useEffect(() => {
+    if (reduced) return;
+    const raf = requestAnimationFrame(() => setRisen(true));
+    return () => cancelAnimationFrame(raf);
   }, [reduced]);
 
   /* the film must be decoded before the split — a load-pop mid-
@@ -254,8 +265,8 @@ export function LegacyHero({
         /* Enter/hold: the phrase rises to center as one line. */
         <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 px-6">
           <motion.div
-            initial={{ y: "14vh" }}
-            animate={{ y: 0 }}
+            initial={false}
+            animate={{ y: risen ? 0 : "14vh" }}
             transition={{ duration: 2, ease: DRAMA }}
             className="flex w-full items-center justify-center gap-[0.35em]"
           >

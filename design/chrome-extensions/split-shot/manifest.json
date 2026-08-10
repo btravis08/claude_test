@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "Envoy - Split Shot",
+  "version": "2.0",
+  "description": "Capture higher resolution screenshots at native device pixel ratio and place them straight into Figma.",
+  "permissions": [
+    "scripting",
+    "activeTab",
+    "tabs",
+    "storage"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "action": {
+    "default_title": "Higher Resolution Screenshots For Figma",
+    "default_icon": "icon.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "options_page": "options.html",
+  "content_scripts": [
+    {
+      "matches": ["https://www.figma.com/*"],
+      "js": ["figma-bridge.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["jszip.min.js", "splitshot.svg"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

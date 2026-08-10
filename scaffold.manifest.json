@@ -37,6 +37,8 @@
     "src/sanity/tools/**",
     "src/sanity/theme.ts",
     "src/library/**",
+    "design/figma-plugins/**",
+    "design/chrome-extensions/**",
     "src/design/**",
     "src/fonts/**",
     "src/lib/**",

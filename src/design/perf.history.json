@@ -1432,6 +1432,76 @@
             "totalMs": 0
           }
         }
+      },
+      {
+        "t": "2026-08-10T09:56:59.693Z",
+        "mobile": {
+          "benchmarkIndex": 2499,
+          "perf": 96,
+          "a11y": 95,
+          "bp": 96,
+          "seo": 100,
+          "lcp": 2736.3740000000007,
+          "cls": 0,
+          "tbt": 64,
+          "lcpElement": {
+            "selector": "div.relative > div.absolute > div.absolute > img.absolute",
+            "snippet": "<img src=\"https://cdn.sanity.io/images/alsdve2t/production/7dc79278832fc20389910a5fd…\" srcset=\"https://cdn.sanity.io/images/alsdve2t/production/7dc79278832fc203"
+          },
+          "opportunities": [],
+          "bootup": [
+            {
+              "url": "2ejk_26znfoeu.js",
+              "totalMs": 531
+            },
+            {
+              "url": "Unattributable",
+              "totalMs": 192
+            },
+            {
+              "url": "",
+              "totalMs": 182
+            }
+          ],
+          "longTasks": {
+            "count": 2,
+            "totalMs": 228
+          },
+          "retried": true
+        },
+        "desktop": {
+          "benchmarkIndex": 2524,
+          "perf": 100,
+          "a11y": 90,
+          "bp": 96,
+          "seo": 100,
+          "lcp": 705.3559999999999,
+          "cls": 0.00007865854987027631,
+          "tbt": 0,
+          "lcpElement": {
+            "selector": "div.pointer-events-none > div.absolute > div.grid > span.sdr-text-reveal",
+            "snippet": "<span class=\"sdr-text-reveal col-start-2 justify-self-center font-display text-headline…\">"
+          },
+          "opportunities": [],
+          "bootup": [
+            {
+              "url": "2ejk_26znfoeu.js",
+              "totalMs": 143
+            },
+            {
+              "url": "",
+              "totalMs": 54
+            },
+            {
+              "url": "Unattributable",
+              "totalMs": 52
+            }
+          ],
+          "longTasks": {
+            "count": 0,
+            "totalMs": 0
+          }
+        }
       }
     ],
     "/legacy": [
@@ -2889,6 +2959,81 @@
             {
               "url": "Unattributable",
               "totalMs": 68
+            }
+          ],
+          "longTasks": {
+            "count": 0,
+            "totalMs": 0
+          }
+        }
+      },
+      {
+        "t": "2026-08-10T09:57:48.813Z",
+        "mobile": {
+          "benchmarkIndex": 2520,
+          "perf": 69,
+          "a11y": 100,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 9845.127000000004,
+          "cls": 0,
+          "tbt": 20.5,
+          "lcpElement": {
+            "selector": "div.absolute > div.flex > p.font-display",
+            "snippet": "<p class=\"font-display text-headline-lg whitespace-nowrap opacity-80 transition-colo…\">"
+          },
+          "opportunities": [
+            {
+              "id": "unused-javascript",
+              "savingsMs": 90
+            }
+          ],
+          "bootup": [
+            {
+              "url": "2ejk_26znfoeu.js",
+              "totalMs": 538
+            },
+            {
+              "url": "Unattributable",
+              "totalMs": 268
+            },
+            {
+              "url": "legacy",
+              "totalMs": 144
+            }
+          ],
+          "longTasks": {
+            "count": 2,
+            "totalMs": 141
+          },
+          "retried": true
+        },
+        "desktop": {
+          "benchmarkIndex": 2505,
+          "perf": 100,
+          "a11y": 91,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 350.8119999999999,
+          "cls": 0.0003561684616058138,
+          "tbt": 0,
+          "lcpElement": {
+            "selector": "div.absolute > div.flex > p.font-display",
+            "snippet": "<p class=\"font-display text-headline-lg whitespace-nowrap opacity-80 transition-colo…\">"
+          },
+          "opportunities": [],
+          "bootup": [
+            {
+              "url": "2ejk_26znfoeu.js",
+              "totalMs": 120
+            },
+            {
+              "url": "Unattributable",
+              "totalMs": 85
+            },
+            {
+              "url": "legacy",
+              "totalMs": 57
             }
           ],
           "longTasks": {
@@ -4448,6 +4593,80 @@
             "totalMs": 0
           }
         }
+      },
+      {
+        "t": "2026-08-10T09:58:23.570Z",
+        "mobile": {
+          "benchmarkIndex": 2498,
+          "perf": 85,
+          "a11y": 91,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 4251.559559936522,
+          "cls": 0,
+          "tbt": 47,
+          "lcpElement": {
+            "selector": "a.flex > div.group/well > div.absolute > img.absolute",
+            "snippet": "<img src=\"https://cdn.sanity.io/images/alsdve2t/production/320a119f5e96ace9328c9ec96…\" alt=\"3D Merino Wool Hoodie\" loading=\"lazy\" decoding=\"async\" draggable=\"fa"
+          },
+          "opportunities": [
+            {
+              "id": "uses-responsive-images",
+              "savingsMs": 100
+            }
+          ],
+          "bootup": [
+            {
+              "url": "2ejk_26znfoeu.js",
+              "totalMs": 530
+            },
+            {
+              "url": "Unattributable",
+              "totalMs": 345
+            },
+            {
+              "url": "shop-all",
+              "totalMs": 223
+            }
+          ],
+          "longTasks": {
+            "count": 3,
+            "totalMs": 260
+          }
+        },
+        "desktop": {
+          "benchmarkIndex": 2510,
+          "perf": 99,
+          "a11y": 87,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 902.0135599365235,
+          "cls": 0,
+          "tbt": 1.5,
+          "lcpElement": {
+            "selector": "a.flex > div.group/well > div.absolute > img.absolute",
+            "snippet": "<img src=\"https://cdn.sanity.io/images/alsdve2t/production/320a119f5e96ace9328c9ec96…\" alt=\"3D Merino Wool Hoodie\" loading=\"lazy\" decoding=\"async\" draggable=\"fa"
+          },
+          "opportunities": [],
+          "bootup": [
+            {
+              "url": "2ejk_26znfoeu.js",
+              "totalMs": 118
+            },
+            {
+              "url": "Unattributable",
+              "totalMs": 106
+            },
+            {
+              "url": "2nsq1ek51g625.js",
+              "totalMs": 93
+            }
+          ],
+          "longTasks": {
+            "count": 1,
+            "totalMs": 53
+          }
+        }
       }
     ],
     "/products/presidio": [
@@ -5941,6 +6160,75 @@
           "longTasks": {
             "count": 1,
             "totalMs": 69
+          }
+        }
+      },
+      {
+        "t": "2026-08-10T09:59:01.973Z",
+        "mobile": {
+          "benchmarkIndex": 2517,
+          "perf": 83,
+          "a11y": 91,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 4136.036,
+          "cls": 0,
+          "tbt": 158,
+          "lcpElement": {
+            "selector": "div.no-scrollbar > div.relative > div.absolute > img.absolute",
+            "snippet": "<img src=\"https://cdn.sanity.io/images/alsdve2t/production/7f86dd3c7ab4db2f36eba353b…\" srcset=\"https://cdn.sanity.io/images/alsdve2t/production/7f86dd3c7ab4db2f"
+          },
+          "opportunities": [],
+          "bootup": [
+            {
+              "url": "2ejk_26znfoeu.js",
+              "totalMs": 878
+            },
+            {
+              "url": "presidio",
+              "totalMs": 463
+            },
+            {
+              "url": "41ie449iow24y.js",
+              "totalMs": 450
+            }
+          ],
+          "longTasks": {
+            "count": 3,
+            "totalMs": 498
+          }
+        },
+        "desktop": {
+          "benchmarkIndex": 2499,
+          "perf": 98,
+          "a11y": 86,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 1035.963,
+          "cls": 0,
+          "tbt": 8.999999999999886,
+          "lcpElement": {
+            "selector": "div.no-scrollbar > div.relative > div.absolute > img.absolute",
+            "snippet": "<img src=\"https://cdn.sanity.io/images/alsdve2t/production/7f86dd3c7ab4db2f36eba353b…\" srcset=\"https://cdn.sanity.io/images/alsdve2t/production/7f86dd3c7ab4db2f"
+          },
+          "opportunities": [],
+          "bootup": [
+            {
+              "url": "2ejk_26znfoeu.js",
+              "totalMs": 269
+            },
+            {
+              "url": "41ie449iow24y.js",
+              "totalMs": 142
+            },
+            {
+              "url": "presidio",
+              "totalMs": 116
+            }
+          ],
+          "longTasks": {
+            "count": 1,
+            "totalMs": 68
           }
         }
       }
@@ -7500,6 +7788,75 @@
             {
               "url": "journal",
               "totalMs": 115
+            }
+          ],
+          "longTasks": {
+            "count": 0,
+            "totalMs": 0
+          }
+        }
+      },
+      {
+        "t": "2026-08-10T09:59:44.826Z",
+        "mobile": {
+          "benchmarkIndex": 2508,
+          "perf": 97,
+          "a11y": 96,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 2424.0380000000005,
+          "cls": 0,
+          "tbt": 84.5,
+          "lcpElement": {
+            "selector": "div.flex > div.max-md:transform-none! > a.block > img.w-[10rem]",
+            "snippet": "<img src=\"/figma/journal/stream-02.thumb.jpg\" alt=\"\" loading=\"eager\" fetchpriority=\"high\" decoding=\"async\" draggable=\"false\" class=\"w-[10rem] bg-surface-2 objec"
+          },
+          "opportunities": [],
+          "bootup": [
+            {
+              "url": "2ejk_26znfoeu.js",
+              "totalMs": 671
+            },
+            {
+              "url": "1nzfiapbtfjhl.js",
+              "totalMs": 419
+            },
+            {
+              "url": "journal",
+              "totalMs": 381
+            }
+          ],
+          "longTasks": {
+            "count": 3,
+            "totalMs": 319
+          }
+        },
+        "desktop": {
+          "benchmarkIndex": 2517,
+          "perf": 100,
+          "a11y": 91,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 583.563,
+          "cls": 0,
+          "tbt": 0,
+          "lcpElement": {
+            "selector": "div > div.bg-surface > header.flex > p.label",
+            "snippet": "<p class=\"label max-w-[22.875rem] text-center\">"
+          },
+          "opportunities": [],
+          "bootup": [
+            {
+              "url": "2ejk_26znfoeu.js",
+              "totalMs": 176
+            },
+            {
+              "url": "journal",
+              "totalMs": 116
+            },
+            {
+              "url": "1nzfiapbtfjhl.js",
+              "totalMs": 113
             }
           ],
           "longTasks": {

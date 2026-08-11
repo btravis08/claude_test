@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+import { preload } from "react-dom";
+
 import { CollectionExplorer } from "@/components/collection/CollectionExplorer";
 import { redirect } from "next/navigation";
 import { resolveRedirect } from "@/sanity/lib/redirects";
@@ -208,6 +210,13 @@ export default async function CollectionPage({
     },
   }));
   const gridItems = collection ? items : items.length ? items : fallbackItems;
+  /* the grid's opening row is above the fold and holds the LCP
+     candidate (matches CollectionGrid's priority={true} on the first
+     4 cards) — preload the first card's already-resolved image URL */
+  const firstCardImage = gridItems[0]?.card.image;
+  if (firstCardImage) {
+    preload(firstCardImage, { as: "image", fetchPriority: "high" });
+  }
   const stories: StoryData[] = storyDocs.length
     ? storyDocs.map((story) => ({
         title: story.title,

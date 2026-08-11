@@ -58,7 +58,16 @@ const EASE_CSS = "cubic-bezier(0.22,1,0.36,1)";
   subscription (useTouch). Motion is reserved for what it animates:
   the entrance settle and the armed crossfade.
 */
-export function ProductCard({ product }: { product: ProductCardData }) {
+export function ProductCard({
+  product,
+  priority = false,
+}: {
+  product: ProductCardData;
+  /* above-the-fold grid card (e.g. the PLP's opening row): eager,
+     high-priority image fetch, and the well never fades in — it must
+     be LCP-honest, matching AnimatedMedia/ProductHero */
+  priority?: boolean;
+}) {
   const variants = product.variants ?? [];
   const [selected, setSelected] = useState(product.defaultVariant ?? 0);
   const [cardHover, setCardHover] = useState(false);
@@ -118,7 +127,8 @@ export function ProductCard({ product }: { product: ProductCardData }) {
       <img
         src={wellImage}
         alt={product.title}
-        loading="lazy"
+        loading={priority ? "eager" : "lazy"}
+        fetchPriority={priority ? "high" : undefined}
         decoding="async"
         draggable={false}
         className="absolute inset-0 size-full object-contain"
@@ -141,7 +151,7 @@ export function ProductCard({ product }: { product: ProductCardData }) {
         onMouseEnter={() => setWellHover(true)}
         onMouseLeave={() => setWellHover(false)}
         className="group/well relative flex aspect-[236/301] w-full flex-col justify-end overflow-hidden rounded-xs bg-surface-2 p-4 md:p-6"
-        initial={{ opacity: 0, scale: 1.05 }}
+        initial={priority ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 1.05 }}
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true, amount: 0.2 }}
         transition={{ duration: 0.9, ease: [...MEDIA_EASE] }}

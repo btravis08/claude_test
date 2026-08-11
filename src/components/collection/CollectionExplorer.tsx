@@ -550,13 +550,13 @@ function CollectionGrid({
   let p = 0;
   let s = 0;
   let side = 0; // alternation counter for auto-placed stories
-  const pushProducts = (count: number) => {
+  const pushProducts = (count: number, priority = false) => {
     for (const card of cards.slice(p, p + count)) {
-      cells.push(<ProductCard key={card._key} product={card} />);
+      cells.push(<ProductCard key={card._key} product={card} priority={priority} />);
     }
     p += count;
   };
-  pushProducts(4); // opening row
+  pushProducts(4, true); // opening row — above the fold, holds the LCP candidate
   while (s < stories.length && cards.length - p >= 6) {
     const story = stories[s];
     const position =

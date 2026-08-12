@@ -7,95 +7,25 @@ jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
-      - name: Homepage payload anatomy (TBT regression hunt)
+      - name: Aigency dashboard — is the 1Password ORBR project live?
         run: |
-          curl -sSL "https://sundayred.vercel.app/" -o home.html
-          echo "--- total HTML bytes:"
-          wc -c < home.html
-          echo "--- inline script bytes (all <script> without src):"
-          python3 - <<'EOF'
-          import re
-          html = open("home.html", encoding="utf-8", errors="replace").read()
-          scripts = re.findall(r"<script(?![^>]*\bsrc=)[^>]*>(.*?)</script>", html, re.S)
-          total = sum(len(s) for s in scripts)
-          print(f"{len(scripts)} inline scripts, {total} bytes total")
-          for s in sorted(scripts, key=len, reverse=True)[:5]:
-              print(f"  {len(s):>8} bytes :: {s[:120].replace(chr(10),' ')}")
-          ext = re.findall(r'<script[^>]*\bsrc="([^"]+)"', html)
-          print(f"{len(ext)} external scripts:")
-          for u in ext: print("  ", u)
-          imgs = re.findall(r'<img[^>]*\bsrc="([^"]+)"', html)
-          print(f"{len(imgs)} <img> tags; first 5:")
-          for u in imgs[:5]: print("  ", u[:140])
-          links = re.findall(r'<link[^>]*rel="preload"[^>]*>', html)
-          print(f"{len(links)} preloads:")
-          for l in links[:8]: print("  ", l[:160])
-          EOF
-          echo "--- announcement bar present?"
-          grep -c "announcement-bar" home.html || true
-          echo "--- number of section wrappers (data-mode):"
-          grep -o 'data-mode="[a-z-]*"' home.html | sort | uniq -c || true
-      - name: Lighthouse benchmarkIndex + bootup attribution (runner-speed check)
-        env:
-          CHROME_PATH: /usr/bin/google-chrome
+          echo "=== /framework headers ==="
+          curl -sSIL "https://aigency-red.vercel.app/framework" | sed -n '1,20p'
+          echo "=== /framework body checks ==="
+          curl -sSL "https://aigency-red.vercel.app/framework" -o fw.html
+          wc -c < fw.html
+          echo "--- 1Password mentions:"
+          grep -c "1Password" fw.html || echo "NOT FOUND"
+          echo "--- Oracle Red Bull mentions:"
+          grep -c "Oracle Red Bull" fw.html || echo "NOT FOUND"
+          echo "--- known projects (sanity check the files backend is serving):"
+          grep -c "Method Homes" fw.html || echo "Method Homes NOT FOUND"
+          grep -c "Atelier North" fw.html || echo "Atelier North NOT FOUND"
+          echo "--- project links present:"
+          grep -o 'href="/framework/[a-z0-9-]*"' fw.html | sort | uniq -c || true
+      - name: Project overview page
         run: |
-          npx -y lighthouse@12 "https://sundayred.vercel.app/" \
-            --only-categories=performance --output=json --output-path=lh.json \
-            --chrome-flags="--headless=new --no-sandbox --disable-gpu" --quiet
-          node -e "
-            const r = require('./lh.json');
-            console.log('benchmarkIndex', Math.round(r.environment.benchmarkIndex));
-            console.log('perf', Math.round(r.categories.performance.score*100),
-              'tbt', Math.round(r.audits['total-blocking-time'].numericValue));
-            const items = r.audits['bootup-time'].details?.items ?? [];
-            for (const it of items.slice(0,6))
-              console.log('  bootup', Math.round(it.total), 'ms ::', (it.url||'').slice(0,90));
-            const mt = r.audits['mainthread-work-breakdown'].details?.items ?? [];
-            for (const it of mt.slice(0,6))
-              console.log('  mainthread', Math.round(it.duration), 'ms ::', it.groupLabel);
-          "
-      - name: Load /studio in mobile-emulated Chrome — capture crash evidence
-        run: |
-          npm init -y >/dev/null 2>&1
-          npm install --no-save playwright-core >/dev/null 2>&1
-          node - <<'EOF'
-          const { chromium } = require('playwright-core');
-          (async () => {
-            const b = await chromium.launch({ executablePath: '/usr/bin/google-chrome', args: ['--no-sandbox'] });
-            const ctx = await b.newContext({
-              viewport: { width: 390, height: 844 },
-              isMobile: true, hasTouch: true, deviceScaleFactor: 3,
-              userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1',
-            });
-            const p = await ctx.newPage();
-            const errors = [];
-            p.on('pageerror', (e) => errors.push('PAGEERROR: ' + String(e).slice(0, 300)));
-            p.on('console', (m) => { if (m.type() === 'error') errors.push('CONSOLE: ' + m.text().slice(0, 300)); });
-            p.on('crash', () => errors.push('PAGE CRASHED'));
-            let bytes = 0, jsBytes = 0, jsCount = 0;
-            p.on('response', async (r) => {
-              try {
-                const len = Number(r.headers()['content-length'] ?? 0);
-                bytes += len;
-                if ((r.headers()['content-type'] ?? '').includes('javascript')) { jsBytes += len; jsCount++; }
-              } catch {}
-            });
-            try {
-              await p.goto('https://sundayred.vercel.app/studio', { waitUntil: 'domcontentloaded', timeout: 60000 });
-              await p.waitForTimeout(30000);
-              const heap = await p.evaluate(() => {
-                const m = performance.memory;
-                return m ? { usedMB: Math.round(m.usedJSHeapSize / 1048576), totalMB: Math.round(m.totalJSHeapSize / 1048576) } : null;
-              }).catch(() => null);
-              const text = await p.evaluate(() => document.body.innerText.slice(0, 200)).catch(() => 'EVAL FAILED');
-              console.log('heap:', JSON.stringify(heap));
-              console.log('transfer:', Math.round(bytes / 1024), 'KB total;', jsCount, 'JS files,', Math.round(jsBytes / 1024), 'KB js');
-              console.log('body:', text.replace(/\n+/g, ' | '));
-            } catch (e) {
-              console.log('NAV FAILED:', String(e).slice(0, 300));
-            }
-            console.log('errors (' + errors.length + '):');
-            for (const e of errors.slice(0, 15)) console.log(' ', e);
-            await b.close();
-          })();
-          EOF
+          echo "=== /framework/1password-orbr ==="
+          curl -sS -o proj.html -w "HTTP %{http_code}\n" "https://aigency-red.vercel.app/framework/1password-orbr"
+          grep -c "they run on it" proj.html || echo "USP NOT FOUND"
+          head -c 400 proj.html; echo

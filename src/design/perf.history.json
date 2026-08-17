@@ -1933,6 +1933,76 @@
             "totalMs": 0
           }
         }
+      },
+      {
+        "t": "2026-08-17T09:08:09.043Z",
+        "mobile": {
+          "benchmarkIndex": 2361,
+          "perf": 96,
+          "a11y": 95,
+          "bp": 96,
+          "seo": 100,
+          "lcp": 2740.201499999999,
+          "cls": 0,
+          "tbt": 49,
+          "lcpElement": {
+            "selector": "div.relative > div.absolute > div.absolute > img.absolute",
+            "snippet": "<img src=\"https://cdn.sanity.io/images/alsdve2t/production/7dc79278832fc20389910a5fd…\" srcset=\"https://cdn.sanity.io/images/alsdve2t/production/7dc79278832fc203"
+          },
+          "opportunities": [],
+          "bootup": [
+            {
+              "url": "2ejk_26znfoeu.js",
+              "totalMs": 599
+            },
+            {
+              "url": "",
+              "totalMs": 261
+            },
+            {
+              "url": "Unattributable",
+              "totalMs": 233
+            }
+          ],
+          "longTasks": {
+            "count": 2,
+            "totalMs": 198
+          },
+          "retried": true
+        },
+        "desktop": {
+          "benchmarkIndex": 2408,
+          "perf": 100,
+          "a11y": 90,
+          "bp": 96,
+          "seo": 100,
+          "lcp": 535.044,
+          "cls": 0.00007865854987027631,
+          "tbt": 0,
+          "lcpElement": {
+            "selector": "div.pointer-events-none > div.absolute > div.grid > span.sdr-text-reveal",
+            "snippet": "<span class=\"sdr-text-reveal col-start-2 justify-self-center font-display text-headline…\">"
+          },
+          "opportunities": [],
+          "bootup": [
+            {
+              "url": "2ejk_26znfoeu.js",
+              "totalMs": 132
+            },
+            {
+              "url": "",
+              "totalMs": 60
+            },
+            {
+              "url": "Unattributable",
+              "totalMs": 59
+            }
+          ],
+          "longTasks": {
+            "count": 0,
+            "totalMs": 0
+          }
+        }
       }
     ],
     "/legacy": [
@@ -3897,6 +3967,73 @@
             },
             {
               "url": "Unattributable",
+              "totalMs": 82
+            }
+          ],
+          "longTasks": {
+            "count": 0,
+            "totalMs": 0
+          }
+        }
+      },
+      {
+        "t": "2026-08-17T09:08:58.507Z",
+        "mobile": {
+          "benchmarkIndex": 2402,
+          "perf": 78,
+          "a11y": 100,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 5511.695,
+          "cls": 0,
+          "tbt": 58,
+          "lcpElement": null,
+          "opportunities": [],
+          "bootup": [
+            {
+              "url": "2ejk_26znfoeu.js",
+              "totalMs": 590
+            },
+            {
+              "url": "Unattributable",
+              "totalMs": 379
+            },
+            {
+              "url": "1nzfiapbtfjhl.js",
+              "totalMs": 340
+            }
+          ],
+          "longTasks": {
+            "count": 5,
+            "totalMs": 383
+          },
+          "retried": true
+        },
+        "desktop": {
+          "benchmarkIndex": 2449,
+          "perf": 98,
+          "a11y": 91,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 1028.495,
+          "cls": 0.0003561684616058138,
+          "tbt": 0,
+          "lcpElement": {
+            "selector": "div.absolute > div.flex > p.font-display",
+            "snippet": "<p class=\"font-display text-headline-lg whitespace-nowrap opacity-80 transition-colo…\">"
+          },
+          "opportunities": [],
+          "bootup": [
+            {
+              "url": "2ejk_26znfoeu.js",
+              "totalMs": 129
+            },
+            {
+              "url": "Unattributable",
+              "totalMs": 89
+            },
+            {
+              "url": "1nzfiapbtfjhl.js",
               "totalMs": 82
             }
           ],
@@ -5991,6 +6128,76 @@
             "totalMs": 0
           }
         }
+      },
+      {
+        "t": "2026-08-17T09:09:32.980Z",
+        "mobile": {
+          "benchmarkIndex": 2410,
+          "perf": 90,
+          "a11y": 91,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 3684.1490599365243,
+          "cls": 0,
+          "tbt": 62,
+          "lcpElement": {
+            "selector": "a.flex > div.group/well > div.absolute > img.absolute",
+            "snippet": "<img src=\"https://cdn.sanity.io/images/alsdve2t/production/320a119f5e96ace9328c9ec96…\" alt=\"3D Merino Wool Hoodie\" loading=\"eager\" fetchpriority=\"high\" decoding"
+          },
+          "opportunities": [
+            {
+              "id": "uses-responsive-images",
+              "savingsMs": 100
+            }
+          ],
+          "bootup": [
+            {
+              "url": "2ejk_26znfoeu.js",
+              "totalMs": 432
+            },
+            {
+              "url": "Unattributable",
+              "totalMs": 385
+            },
+            {
+              "url": "2nsq1ek51g625.js",
+              "totalMs": 276
+            }
+          ],
+          "longTasks": {
+            "count": 4,
+            "totalMs": 352
+          }
+        },
+        "desktop": {
+          "benchmarkIndex": 2449,
+          "perf": 99,
+          "a11y": 87,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 836.2320599365237,
+          "cls": 0,
+          "tbt": 13,
+          "lcpElement": {
+            "selector": "a.flex > div.group/well > div.absolute > img.absolute",
+            "snippet": "<img src=\"https://cdn.sanity.io/images/alsdve2t/production/320a119f5e96ace9328c9ec96…\" alt=\"3D Merino Wool Hoodie\" loading=\"eager\" fetchpriority=\"high\" decoding"
+          },
+          "opportunities": [],
+          "bootup": [
+            {
+              "url": "2ejk_26znfoeu.js",
+              "totalMs": 161
+            },
+            {
+              "url": "Unattributable",
+              "totalMs": 121
+            }
+          ],
+          "longTasks": {
+            "count": 1,
+            "totalMs": 63
+          }
+        }
       }
     ],
     "/products/presidio": [
@@ -7985,6 +8192,75 @@
           "longTasks": {
             "count": 1,
             "totalMs": 91
+          }
+        }
+      },
+      {
+        "t": "2026-08-17T09:10:11.618Z",
+        "mobile": {
+          "benchmarkIndex": 2426,
+          "perf": 81,
+          "a11y": 91,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 4258.099,
+          "cls": 0,
+          "tbt": 214.5,
+          "lcpElement": {
+            "selector": "div.no-scrollbar > div.relative > div.absolute > img.absolute",
+            "snippet": "<img src=\"https://cdn.sanity.io/images/alsdve2t/production/7f86dd3c7ab4db2f36eba353b…\" srcset=\"https://cdn.sanity.io/images/alsdve2t/production/7f86dd3c7ab4db2f"
+          },
+          "opportunities": [],
+          "bootup": [
+            {
+              "url": "2ejk_26znfoeu.js",
+              "totalMs": 1135
+            },
+            {
+              "url": "41ie449iow24y.js",
+              "totalMs": 582
+            },
+            {
+              "url": "presidio",
+              "totalMs": 437
+            }
+          ],
+          "longTasks": {
+            "count": 3,
+            "totalMs": 602
+          }
+        },
+        "desktop": {
+          "benchmarkIndex": 2432,
+          "perf": 99,
+          "a11y": 86,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 931.5930000000001,
+          "cls": 0,
+          "tbt": 13.999999999999943,
+          "lcpElement": {
+            "selector": "div.no-scrollbar > div.relative > div.absolute > img.absolute",
+            "snippet": "<img src=\"https://cdn.sanity.io/images/alsdve2t/production/7f86dd3c7ab4db2f36eba353b…\" srcset=\"https://cdn.sanity.io/images/alsdve2t/production/7f86dd3c7ab4db2f"
+          },
+          "opportunities": [],
+          "bootup": [
+            {
+              "url": "2ejk_26znfoeu.js",
+              "totalMs": 294
+            },
+            {
+              "url": "41ie449iow24y.js",
+              "totalMs": 143
+            },
+            {
+              "url": "presidio",
+              "totalMs": 137
+            }
+          ],
+          "longTasks": {
+            "count": 2,
+            "totalMs": 128
           }
         }
       }
@@ -10074,6 +10350,88 @@
             {
               "url": "1nzfiapbtfjhl.js",
               "totalMs": 109
+            }
+          ],
+          "longTasks": {
+            "count": 0,
+            "totalMs": 0
+          }
+        }
+      },
+      {
+        "t": "2026-08-17T09:10:54.792Z",
+        "mobile": {
+          "benchmarkIndex": 2437,
+          "perf": 95,
+          "a11y": 96,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 2725.7649999999994,
+          "cls": 0,
+          "tbt": 114.5,
+          "lcpElement": {
+            "selector": "div.flex > div.max-md:transform-none! > a.block > img.w-[10rem]",
+            "snippet": "<img src=\"/figma/journal/stream-02.thumb.jpg\" alt=\"\" loading=\"eager\" fetchpriority=\"high\" decoding=\"async\" draggable=\"false\" class=\"w-[10rem] bg-surface-2 objec"
+          },
+          "opportunities": [
+            {
+              "id": "unused-javascript",
+              "savingsMs": 150
+            },
+            {
+              "id": "uses-responsive-images",
+              "savingsMs": 150
+            },
+            {
+              "id": "legacy-javascript",
+              "savingsMs": 150
+            }
+          ],
+          "bootup": [
+            {
+              "url": "2ejk_26znfoeu.js",
+              "totalMs": 657
+            },
+            {
+              "url": "1nzfiapbtfjhl.js",
+              "totalMs": 529
+            },
+            {
+              "url": "journal",
+              "totalMs": 420
+            }
+          ],
+          "longTasks": {
+            "count": 3,
+            "totalMs": 379
+          }
+        },
+        "desktop": {
+          "benchmarkIndex": 2330,
+          "perf": 100,
+          "a11y": 91,
+          "bp": 100,
+          "seo": 100,
+          "lcp": 492.3,
+          "cls": 0,
+          "tbt": 0,
+          "lcpElement": {
+            "selector": "div > div.bg-surface > header.flex > p.label",
+            "snippet": "<p class=\"label max-w-[22.875rem] text-center\">"
+          },
+          "opportunities": [],
+          "bootup": [
+            {
+              "url": "2ejk_26znfoeu.js",
+              "totalMs": 181
+            },
+            {
+              "url": "1nzfiapbtfjhl.js",
+              "totalMs": 127
+            },
+            {
+              "url": "journal",
+              "totalMs": 118
             }
           ],
           "longTasks": {

@@ -68,7 +68,7 @@ function Plane({
       }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={src} alt="" className="w-full" />
+      <img src={src} alt="" loading="lazy" decoding="async" className="w-full" />
     </motion.div>
   );
 }
@@ -108,6 +108,8 @@ export function ProductSwirl({
           <img
             src={centerImage}
             alt="Sun Day Red campaign"
+            loading="lazy"
+            decoding="async"
             className="absolute inset-0 h-full w-full object-cover"
           />
         </div>

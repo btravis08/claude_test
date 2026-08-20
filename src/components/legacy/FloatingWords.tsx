@@ -118,15 +118,35 @@ export function FloatingWords({
     copy: texts?.[i] || text.copy,
   }));
 
-  /* decode every image up front — cards otherwise decode as they
-     enter the viewport mid-travel, which stutters the ride */
+  /* decode every image before the ride reaches them — cards otherwise
+     decode as they enter the viewport mid-travel, which stutters the
+     ride. Gated on the section approaching the viewport (generous
+     rootMargin) rather than firing at mount: this section sits well
+     below the fold, and decoding all ten (some 200-270KB) unconditionally
+     on mount competed with the page's LCP-critical fetches for
+     bandwidth on a throttled connection. */
   const srcKey = mergedCards.map((c) => c.src).join("|");
   useEffect(() => {
-    srcKey.split("|").forEach((src) => {
-      const img = new Image();
-      img.src = src;
-      img.decode?.().catch(() => {});
-    });
+    const el = ref.current;
+    if (!el) return;
+    let decoded = false;
+    const decodeAll = () => {
+      if (decoded) return;
+      decoded = true;
+      srcKey.split("|").forEach((src) => {
+        const img = new Image();
+        img.src = src;
+        img.decode?.().catch(() => {});
+      });
+    };
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) decodeAll();
+      },
+      { rootMargin: "800px 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
   }, [srcKey]);
 
   useEffect(() => {
@@ -241,7 +261,13 @@ function GalleryCard({
           className="absolute inset-y-0"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={card.src} alt="" className="h-full w-full object-cover" />
+          <img
+            src={card.src}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            className="h-full w-full object-cover"
+          />
         </motion.div>
         {card.tone === "tint" && (
           <div className="pointer-events-none absolute inset-0 bg-surface/45 mix-blend-color" aria-hidden />

@@ -123,6 +123,8 @@ export function SplitTextBlock({
         <img
           src={markImage}
           alt="Sun Day Red tiger mark"
+          loading="lazy"
+          decoding="async"
           className="w-full max-w-[32.375rem]"
         />
       )}

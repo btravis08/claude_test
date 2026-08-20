@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 /*
   Legacy full-bleed carousel (Figma 34346:77144). A timed, full-
@@ -97,14 +97,35 @@ export function FullBleedCarousel({
     return () => clearTimeout(t);
   }, [step]);
 
-  /* decode everything up front so advances never decode-jank */
+  /* decode everything up front so advances never decode-jank — gated
+     on the section approaching the viewport (generous rootMargin)
+     rather than firing at mount: this carousel sits well below the
+     fold, and decoding all five slides' bg+media unconditionally on
+     mount competed with the page's LCP-critical fetches for bandwidth
+     on a throttled connection. */
   const srcKey = deck.flatMap((s) => [s.bg, s.media]).join("|");
+  const ref = useRef<HTMLElement>(null);
   useEffect(() => {
-    srcKey.split("|").forEach((src) => {
-      const img = new Image();
-      img.src = src;
-      img.decode?.().catch(() => {});
-    });
+    const el = ref.current;
+    if (!el) return;
+    let decoded = false;
+    const decodeAll = () => {
+      if (decoded) return;
+      decoded = true;
+      srcKey.split("|").forEach((src) => {
+        const img = new Image();
+        img.src = src;
+        img.decode?.().catch(() => {});
+      });
+    };
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) decodeAll();
+      },
+      { rootMargin: "800px 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
   }, [srcKey]);
 
   /* the rail renders a window around the current step */
@@ -113,6 +134,7 @@ export function FullBleedCarousel({
 
   return (
     <section
+      ref={ref}
       data-mode="dark"
       className="relative h-screen w-full overflow-hidden bg-black text-ink md:h-[90vh]"
     >
@@ -133,6 +155,8 @@ export function FullBleedCarousel({
           <img
             src={slide.bg}
             alt=""
+            loading="lazy"
+            decoding="async"
             className="h-full w-full object-cover"
             draggable={false}
           />
@@ -233,6 +257,8 @@ export function FullBleedCarousel({
             <img
               src={slide.media}
               alt=""
+              loading="lazy"
+              decoding="async"
               className="h-full w-full object-cover"
               draggable={false}
             />

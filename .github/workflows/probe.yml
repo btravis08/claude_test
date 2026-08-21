@@ -7,25 +7,23 @@ jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
-      - name: Aigency dashboard — is the 1Password ORBR project live?
+      - uses: actions/checkout@v4
+      - name: Fetch pre-overwrite singletons from Sanity history API
         run: |
-          echo "=== /framework headers ==="
-          curl -sSIL "https://aigency-red.vercel.app/framework" | sed -n '1,20p'
-          echo "=== /framework body checks ==="
-          curl -sSL "https://aigency-red.vercel.app/framework" -o fw.html
-          wc -c < fw.html
-          echo "--- 1Password mentions:"
-          grep -c "1Password" fw.html || echo "NOT FOUND"
-          echo "--- Oracle Red Bull mentions:"
-          grep -c "Oracle Red Bull" fw.html || echo "NOT FOUND"
-          echo "--- known projects (sanity check the files backend is serving):"
-          grep -c "Method Homes" fw.html || echo "Method Homes NOT FOUND"
-          grep -c "Atelier North" fw.html || echo "Atelier North NOT FOUND"
-          echo "--- project links present:"
-          grep -o 'href="/framework/[a-z0-9-]*"' fw.html | sort | uniq -c || true
-      - name: Project overview page
+          mkdir -p design/restore
+          # page-home / navigation / siteSettings as they were before the
+          # 2026-08-04T22:43Z sample-pack overwrite (public dataset read)
+          code=$(curl -sS -o design/restore/singletons-pre-pack.json -w "%{http_code}" \
+            "https://alsdve2t.api.sanity.io/v2026-07-01/data/history/production/documents/page-home,navigation,siteSettings?time=2026-08-04T20:00:00Z")
+          echo "HTTP $code"
+          wc -c design/restore/singletons-pre-pack.json
+          head -c 600 design/restore/singletons-pre-pack.json; echo
+          test "$code" = "200"
+      - name: Commit
         run: |
-          echo "=== /framework/1password-orbr ==="
-          curl -sS -o proj.html -w "HTTP %{http_code}\n" "https://aigency-red.vercel.app/framework/1password-orbr"
-          grep -c "they run on it" proj.html || echo "USP NOT FOUND"
-          head -c 400 proj.html; echo
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add design/restore
+          git diff --cached --quiet && echo "No changes" && exit 0
+          git commit -m "Restore capture: pre-sample-pack singletons from Sanity history"
+          git push

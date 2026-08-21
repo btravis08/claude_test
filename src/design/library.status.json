@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-20T09:44:03.527Z",
+  "generatedAt": "2026-08-21T09:46:32.521Z",
   "sections": {
     "hero": {
       "comps": {},
@@ -374,51 +374,16 @@
     "ab-experiment": {
       "comps": {},
       "tokens": {
-        "elements": 59,
-        "offToken": 10,
+        "elements": 20,
+        "offToken": 1,
         "byKind": {
-          "gap": 10
+          "radius": 1
         },
         "examples": [
           {
-            "selector": "section.flex.w-full > div.flex.w-full > div.no-scrollbar.w-full",
-            "kind": "gap",
-            "value": "1px"
-          },
-          {
-            "selector": "section.flex.w-full > div.flex.w-full > div.no-scrollbar.w-full",
-            "kind": "gap",
-            "value": "1px"
-          },
-          {
-            "selector": "div.no-scrollbar.w-full > div.flex.min-w-0 > a.group.flex",
-            "kind": "gap",
-            "value": "18px"
-          },
-          {
-            "selector": "div.no-scrollbar.w-full > div.flex.min-w-0 > a.group.flex",
-            "kind": "gap",
-            "value": "18px"
-          },
-          {
-            "selector": "div.no-scrollbar.w-full > div.flex.min-w-0 > a.group.flex",
-            "kind": "gap",
-            "value": "18px"
-          },
-          {
-            "selector": "div.no-scrollbar.w-full > div.flex.min-w-0 > a.group.flex",
-            "kind": "gap",
-            "value": "18px"
-          },
-          {
-            "selector": "div.no-scrollbar.w-full > div.flex.min-w-0 > a.group.flex",
-            "kind": "gap",
-            "value": "18px"
-          },
-          {
-            "selector": "div.no-scrollbar.w-full > div.flex.min-w-0 > a.group.flex",
-            "kind": "gap",
-            "value": "18px"
+            "selector": "div.relative.hidden > div.absolute.inset-0 > button.flex.size-7",
+            "kind": "radius",
+            "value": "33554400px"
           }
         ]
       }

@@ -1,0 +1,990 @@
+{
+ "navigation": {
+  "_id": "navigation",
+  "_type": "navigation",
+  "companyLinks": [
+   {
+    "_key": "seed2587",
+    "_type": "navLink",
+    "label": "The Legacy",
+    "url": "#"
+   },
+   {
+    "_key": "seed2588",
+    "_type": "navLink",
+    "label": "Honors Journal",
+    "url": "#"
+   },
+   {
+    "_key": "seed2589",
+    "_type": "navLink",
+    "label": "Team Sun Day Red",
+    "url": "#"
+   },
+   {
+    "_key": "seed2590",
+    "_type": "navLink",
+    "label": "Careers",
+    "url": "#"
+   }
+  ],
+  "items": [
+   {
+    "_key": "seed2509",
+    "_type": "navItem",
+    "columns": [
+     {
+      "_key": "seed2510",
+      "_type": "navColumn",
+      "links": [
+       {
+        "_key": "seed2511",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-new-arrivals",
+         "_type": "reference"
+        },
+        "label": "New Arrivals",
+        "url": "#"
+       },
+       {
+        "_key": "seed2512",
+        "_type": "navLink",
+        "label": "The Coral Standard",
+        "url": "#"
+       },
+       {
+        "_key": "seed2513",
+        "_type": "navLink",
+        "label": "Training Gear",
+        "url": "#"
+       },
+       {
+        "_key": "seed2514",
+        "_type": "navLink",
+        "label": "First Light Collection",
+        "url": "#"
+       },
+       {
+        "_key": "seed2515",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-footwear",
+         "_type": "reference"
+        },
+        "label": "Footwear",
+        "url": "#"
+       },
+       {
+        "_key": "seed2516",
+        "_type": "navLink",
+        "label": "Final Few",
+        "url": "#"
+       }
+      ],
+      "title": "Featured"
+     },
+     {
+      "_key": "seed2517",
+      "_type": "navColumn",
+      "links": [
+       {
+        "_key": "seed2518",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-mens-polos",
+         "_type": "reference"
+        },
+        "label": "Polos",
+        "url": "#"
+       },
+       {
+        "_key": "seed2519",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-mens-tshirts",
+         "_type": "reference"
+        },
+        "label": "T-Shirts",
+        "url": "#"
+       },
+       {
+        "_key": "seed2520",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-mens-sweaters",
+         "_type": "reference"
+        },
+        "label": "Sweaters",
+        "url": "#"
+       },
+       {
+        "_key": "seed2521",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-mens-hoodies",
+         "_type": "reference"
+        },
+        "label": "Hoodies & Pullovers",
+        "url": "#"
+       },
+       {
+        "_key": "seed2522",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-mens-outerwear",
+         "_type": "reference"
+        },
+        "label": "Outerwear",
+        "url": "#"
+       }
+      ],
+      "title": "Tops"
+     },
+     {
+      "_key": "seed2523",
+      "_type": "navColumn",
+      "links": [
+       {
+        "_key": "seed2524",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-mens-shorts",
+         "_type": "reference"
+        },
+        "label": "Shorts",
+        "url": "#"
+       },
+       {
+        "_key": "seed2525",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-mens-pants",
+         "_type": "reference"
+        },
+        "label": "Pants",
+        "url": "#"
+       },
+       {
+        "_key": "seed2526",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-mens-pants",
+         "_type": "reference"
+        },
+        "label": "Joggers",
+        "url": "#"
+       }
+      ],
+      "title": "Bottoms"
+     },
+     {
+      "_key": "seed2527",
+      "_type": "navColumn",
+      "links": [
+       {
+        "_key": "seed2528",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-mens-headwear",
+         "_type": "reference"
+        },
+        "label": "Headwear",
+        "url": "#"
+       },
+       {
+        "_key": "seed2529",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-gloves",
+         "_type": "reference"
+        },
+        "label": "Gloves",
+        "url": "#"
+       },
+       {
+        "_key": "seed2530",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-bags",
+         "_type": "reference"
+        },
+        "label": "Bags",
+        "url": "#"
+       },
+       {
+        "_key": "seed2531",
+        "_type": "navLink",
+        "label": "Socks",
+        "url": "#"
+       },
+       {
+        "_key": "seed2532",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-mens-outerwear",
+         "_type": "reference"
+        },
+        "label": "Outerwear",
+        "url": "#"
+       }
+      ],
+      "title": "Accessories"
+     }
+    ],
+    "image": {
+     "_type": "image",
+     "asset": {
+      "_ref": "image-7752200a6fd3514a40c7fe8584e58559c6d37f06-1250x1666-png",
+      "_type": "reference"
+     }
+    },
+    "imageCollection": {
+     "_ref": "collection-mens",
+     "_type": "reference"
+    },
+    "imageTitle": "Men\u2019s Apparel",
+    "layout": "columns",
+    "title": "Men"
+   },
+   {
+    "_key": "seed2533",
+    "_type": "navItem",
+    "columns": [
+     {
+      "_key": "seed2534",
+      "_type": "navColumn",
+      "links": [
+       {
+        "_key": "seed2535",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-new-arrivals",
+         "_type": "reference"
+        },
+        "label": "New Arrivals",
+        "url": "#"
+       },
+       {
+        "_key": "seed2536",
+        "_type": "navLink",
+        "label": "The Coral Standard",
+        "url": "#"
+       },
+       {
+        "_key": "seed2537",
+        "_type": "navLink",
+        "label": "Training Gear",
+        "url": "#"
+       },
+       {
+        "_key": "seed2538",
+        "_type": "navLink",
+        "label": "First Light Collection",
+        "url": "#"
+       },
+       {
+        "_key": "seed2539",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-footwear",
+         "_type": "reference"
+        },
+        "label": "Footwear",
+        "url": "#"
+       },
+       {
+        "_key": "seed2540",
+        "_type": "navLink",
+        "label": "Final Few",
+        "url": "#"
+       }
+      ],
+      "title": "Featured"
+     },
+     {
+      "_key": "seed2541",
+      "_type": "navColumn",
+      "links": [
+       {
+        "_key": "seed2542",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-polos",
+         "_type": "reference"
+        },
+        "label": "Polos",
+        "url": "#"
+       },
+       {
+        "_key": "seed2543",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-tshirts",
+         "_type": "reference"
+        },
+        "label": "T-Shirts",
+        "url": "#"
+       },
+       {
+        "_key": "seed2544",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-sweaters",
+         "_type": "reference"
+        },
+        "label": "Sweaters",
+        "url": "#"
+       },
+       {
+        "_key": "seed2545",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-hoodies",
+         "_type": "reference"
+        },
+        "label": "Hoodies & Pullovers",
+        "url": "#"
+       }
+      ],
+      "title": "Tops"
+     },
+     {
+      "_key": "seed2546",
+      "_type": "navColumn",
+      "links": [
+       {
+        "_key": "seed2547",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-shorts",
+         "_type": "reference"
+        },
+        "label": "Shorts",
+        "url": "#"
+       },
+       {
+        "_key": "seed2548",
+        "_type": "navLink",
+        "label": "Skirts",
+        "url": "#"
+       },
+       {
+        "_key": "seed2549",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-pants",
+         "_type": "reference"
+        },
+        "label": "Pants",
+        "url": "#"
+       },
+       {
+        "_key": "seed2550",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-pants",
+         "_type": "reference"
+        },
+        "label": "Joggers",
+        "url": "#"
+       }
+      ],
+      "title": "Bottoms"
+     },
+     {
+      "_key": "seed2551",
+      "_type": "navColumn",
+      "links": [
+       {
+        "_key": "seed2552",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-headwear",
+         "_type": "reference"
+        },
+        "label": "Headwear",
+        "url": "#"
+       },
+       {
+        "_key": "seed2553",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-gloves",
+         "_type": "reference"
+        },
+        "label": "Gloves",
+        "url": "#"
+       },
+       {
+        "_key": "seed2554",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-bags",
+         "_type": "reference"
+        },
+        "label": "Bags",
+        "url": "#"
+       },
+       {
+        "_key": "seed2555",
+        "_type": "navLink",
+        "label": "Socks",
+        "url": "#"
+       }
+      ],
+      "title": "Accessories"
+     }
+    ],
+    "image": {
+     "_type": "image",
+     "asset": {
+      "_ref": "image-c5ca4957c71d37d71d29caa6c2724f3b6608f526-313x417-png",
+      "_type": "reference"
+     }
+    },
+    "imageCollection": {
+     "_ref": "collection-womens",
+     "_type": "reference"
+    },
+    "imageTitle": "Women\u2019s Apparel",
+    "layout": "columns",
+    "title": "Women"
+   },
+   {
+    "_key": "seed2556",
+    "_type": "navItem",
+    "columns": [
+     {
+      "_key": "seed2557",
+      "_type": "navColumn",
+      "links": [
+       {
+        "_key": "seed2558",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-mens-footwear",
+         "_type": "reference"
+        },
+        "label": "Men\u2019s Footwear",
+        "url": "#"
+       },
+       {
+        "_key": "seed2559",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-womens-footwear",
+         "_type": "reference"
+        },
+        "label": "Women\u2019s Footwear",
+        "url": "#"
+       }
+      ],
+      "title": "Footwear"
+     }
+    ],
+    "layout": "products",
+    "products": [
+     {
+      "_key": "wire060",
+      "_ref": "sdr-pioneer-willow",
+      "_type": "reference"
+     },
+     {
+      "_key": "wire061",
+      "_ref": "sdr-pioneer-cypress",
+      "_type": "reference"
+     },
+     {
+      "_key": "25da1980b918",
+      "_ref": "product-presidio",
+      "_type": "reference"
+     },
+     {
+      "_key": "wire062",
+      "_ref": "sdr-pioneer-magnolia",
+      "_type": "reference"
+     },
+     {
+      "_key": "wire064",
+      "_ref": "sdr-osprey",
+      "_type": "reference"
+     },
+     {
+      "_key": "wire065",
+      "_ref": "sdr-jupiter-slide",
+      "_type": "reference"
+     }
+    ],
+    "title": "Footwear"
+   },
+   {
+    "_key": "seed2566",
+    "_type": "navItem",
+    "columns": [
+     {
+      "_key": "seed2567",
+      "_type": "navColumn",
+      "links": [
+       {
+        "_key": "seed2568",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-new-arrivals",
+         "_type": "reference"
+        },
+        "label": "New Arrivals",
+        "url": "#"
+       },
+       {
+        "_key": "seed2569",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-vessel",
+         "_type": "reference"
+        },
+        "label": "Sun Day Red x Vessel",
+        "url": "#"
+       },
+       {
+        "_key": "seed2570",
+        "_type": "navLink",
+        "label": "Tiger\u2019s Favorites",
+        "url": "#"
+       }
+      ],
+      "title": "Featured"
+     },
+     {
+      "_key": "seed2571",
+      "_type": "navColumn",
+      "links": [
+       {
+        "_key": "seed2572",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-bags",
+         "_type": "reference"
+        },
+        "label": "Golf Bags",
+        "url": "#"
+       },
+       {
+        "_key": "seed2573",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-headcovers",
+         "_type": "reference"
+        },
+        "label": "Headcovers",
+        "url": "#"
+       },
+       {
+        "_key": "seed2574",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-bags",
+         "_type": "reference"
+        },
+        "label": "Shoe Bags",
+        "url": "#"
+       },
+       {
+        "_key": "seed2575",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-bags",
+         "_type": "reference"
+        },
+        "label": "Totes",
+        "url": "#"
+       }
+      ],
+      "title": "Bags & Headcovers"
+     },
+     {
+      "_key": "seed2576",
+      "_type": "navColumn",
+      "links": [
+       {
+        "_key": "seed2577",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-headwear",
+         "_type": "reference"
+        },
+        "label": "Headwear",
+        "url": "#"
+       },
+       {
+        "_key": "seed2578",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-gloves",
+         "_type": "reference"
+        },
+        "label": "Gloves",
+        "url": "#"
+       },
+       {
+        "_key": "seed2579",
+        "_type": "navLink",
+        "label": "Socks",
+        "url": "#"
+       }
+      ],
+      "title": "Wearables"
+     },
+     {
+      "_key": "seed2580",
+      "_type": "navColumn",
+      "links": [
+       {
+        "_key": "seed2581",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-on-course",
+         "_type": "reference"
+        },
+        "label": "Tees",
+        "url": "#"
+       },
+       {
+        "_key": "seed2582",
+        "_type": "navLink",
+        "collection": {
+         "_ref": "collection-on-course",
+         "_type": "reference"
+        },
+        "label": "Ball Markers",
+        "url": "#"
+       }
+      ],
+      "title": "On Course"
+     }
+    ],
+    "image": {
+     "_type": "image",
+     "asset": {
+      "_ref": "image-7752200a6fd3514a40c7fe8584e58559c6d37f06-1250x1666-png",
+      "_type": "reference"
+     }
+    },
+    "imageCollection": {
+     "_ref": "collection-summer-picks",
+     "_type": "reference"
+    },
+    "imageTitle": "Gear",
+    "layout": "columns",
+    "title": "GearS"
+   },
+   {
+    "_key": "seed2583",
+    "_type": "navItem",
+    "cards": [
+     {
+      "_key": "seed2584",
+      "_type": "navCard",
+      "image": {
+       "_type": "image",
+       "asset": {
+        "_ref": "image-7752200a6fd3514a40c7fe8584e58559c6d37f06-1250x1666-png",
+        "_type": "reference"
+       }
+      },
+      "title": "The Legacy",
+      "url": "#"
+     },
+     {
+      "_key": "seed2585",
+      "_type": "navCard",
+      "image": {
+       "_type": "image",
+       "asset": {
+        "_ref": "image-c5ca4957c71d37d71d29caa6c2724f3b6608f526-313x417-png",
+        "_type": "reference"
+       }
+      },
+      "title": "Honors Journal",
+      "url": "#"
+     },
+     {
+      "_key": "seed2586",
+      "_type": "navCard",
+      "image": {
+       "_type": "image",
+       "asset": {
+        "_ref": "image-43592b61318b68eece6357fd4b38d4df1c2c85df-625x355-png",
+        "_type": "reference"
+       }
+      },
+      "title": "Team Sunday Red",
+      "url": "#"
+     }
+    ],
+    "layout": "cards",
+    "title": "Explore"
+   }
+  ]
+ },
+ "page-home": {
+  "_id": "page-home",
+  "_type": "page",
+  "sections": [
+   {
+    "_key": "seed2591",
+    "_type": "sectionHero",
+    "colorMode": "dark",
+    "eyebrow": "Just Arrived",
+    "headline": "Spring Tradition",
+    "image": {
+     "_type": "image",
+     "asset": {
+      "_ref": "image-3dea0f6ed4ff73e87b03c6f56681adbce83f1b1c-4096x2730-png",
+      "_type": "reference"
+     }
+    },
+    "paddingTop": "none",
+    "primaryCta": "Shop Collection",
+    "mediaKind": "image"
+   },
+   {
+    "_key": "seed2592",
+    "_type": "sectionInfoSlider",
+    "cards": [
+     {
+      "_key": "seed2593",
+      "_type": "infoCard",
+      "image": {
+       "_type": "image",
+       "asset": {
+        "_ref": "image-c5ca4957c71d37d71d29caa6c2724f3b6608f526-313x417-png",
+        "_type": "reference"
+       }
+      },
+      "title": "Footwear"
+     },
+     {
+      "_key": "seed2594",
+      "_type": "infoCard",
+      "image": {
+       "_type": "image",
+       "asset": {
+        "_ref": "image-c5ca4957c71d37d71d29caa6c2724f3b6608f526-313x417-png",
+        "_type": "reference"
+       }
+      },
+      "title": "Polos"
+     },
+     {
+      "_key": "seed2595",
+      "_type": "infoCard",
+      "image": {
+       "_type": "image",
+       "asset": {
+        "_ref": "image-c5ca4957c71d37d71d29caa6c2724f3b6608f526-313x417-png",
+        "_type": "reference"
+       }
+      },
+      "title": "Headwear"
+     },
+     {
+      "_key": "seed2596",
+      "_type": "infoCard",
+      "image": {
+       "_type": "image",
+       "asset": {
+        "_ref": "image-c5ca4957c71d37d71d29caa6c2724f3b6608f526-313x417-png",
+        "_type": "reference"
+       }
+      },
+      "title": "T-Shirts"
+     }
+    ],
+    "colorMode": "light",
+    "title": "Explore Sun Day Red"
+   },
+   {
+    "_key": "seed2597",
+    "_type": "sectionFullWidth",
+    "colorMode": "dark",
+    "eyebrow": "Now Arriving",
+    "headline": "Spring Traditions",
+    "image": {
+     "_type": "image",
+     "asset": {
+      "_ref": "image-7752200a6fd3514a40c7fe8584e58559c6d37f06-1250x1666-png",
+      "_type": "reference"
+     }
+    },
+    "primaryCta": "Shop Collection"
+   },
+   {
+    "_key": "seed2598",
+    "_type": "sectionCarousel",
+    "colorMode": "light",
+    "eyebrow": "Shop Footwear",
+    "items": [
+     {
+      "_key": "seed2599",
+      "_type": "carouselItem",
+      "description": "Pioneer \u2014 Maecenas suspendisse ultrices pellentesque et ornare dui nisl. Eget convallis lorem faucibus tortor in. Cursus feugiat a quam vestibulum dignissim sem ullamcorper.",
+      "image": {
+       "_type": "image",
+       "asset": {
+        "_ref": "image-c5ca4957c71d37d71d29caa6c2724f3b6608f526-313x417-png",
+        "_type": "reference"
+       }
+      },
+      "title": "Pioneer"
+     },
+     {
+      "_key": "seed2600",
+      "_type": "carouselItem",
+      "description": "Presidio \u2014 Maecenas suspendisse ultrices pellentesque et ornare dui nisl. Eget convallis lorem faucibus tortor in. Cursus feugiat a quam vestibulum dignissim sem ullamcorper.",
+      "image": {
+       "_type": "image",
+       "asset": {
+        "_ref": "image-7752200a6fd3514a40c7fe8584e58559c6d37f06-1250x1666-png",
+        "_type": "reference"
+       }
+      },
+      "title": "Presidio"
+     },
+     {
+      "_key": "seed2601",
+      "_type": "carouselItem",
+      "description": "Osprey \u2014 Maecenas suspendisse ultrices pellentesque et ornare dui nisl. Eget convallis lorem faucibus tortor in. Cursus feugiat a quam vestibulum dignissim sem ullamcorper.",
+      "image": {
+       "_type": "image",
+       "asset": {
+        "_ref": "image-c5ca4957c71d37d71d29caa6c2724f3b6608f526-313x417-png",
+        "_type": "reference"
+       }
+      },
+      "title": "Osprey"
+     },
+     {
+      "_key": "seed2602",
+      "_type": "carouselItem",
+      "description": "Cardinal \u2014 Maecenas suspendisse ultrices pellentesque et ornare dui nisl. Eget convallis lorem faucibus tortor in. Cursus feugiat a quam vestibulum dignissim sem ullamcorper.",
+      "image": {
+       "_type": "image",
+       "asset": {
+        "_ref": "image-7752200a6fd3514a40c7fe8584e58559c6d37f06-1250x1666-png",
+        "_type": "reference"
+       }
+      },
+      "title": "Cardinal"
+     },
+     {
+      "_key": "seed2603",
+      "_type": "carouselItem",
+      "description": "Jupiter \u2014 Maecenas suspendisse ultrices pellentesque et ornare dui nisl. Eget convallis lorem faucibus tortor in. Cursus feugiat a quam vestibulum dignissim sem ullamcorper.",
+      "image": {
+       "_type": "image",
+       "asset": {
+        "_ref": "image-c5ca4957c71d37d71d29caa6c2724f3b6608f526-313x417-png",
+        "_type": "reference"
+       }
+      },
+      "title": "Jupiter"
+     }
+    ]
+   },
+   {
+    "_key": "seed2604",
+    "_type": "sectionFiftyFifty",
+    "colorMode": "dark",
+    "panels": [
+     {
+      "_key": "seed2605",
+      "_type": "panel",
+      "image": {
+       "_type": "image",
+       "asset": {
+        "_ref": "image-7752200a6fd3514a40c7fe8584e58559c6d37f06-1250x1666-png",
+        "_type": "reference"
+       }
+      },
+      "mediaKind": "image",
+      "title": "Women\u2019s Apparel"
+     },
+     {
+      "_key": "seed2606",
+      "_type": "panel",
+      "image": {
+       "_type": "image",
+       "asset": {
+        "_ref": "image-7752200a6fd3514a40c7fe8584e58559c6d37f06-1250x1666-png",
+        "_type": "reference"
+       }
+      },
+      "mediaKind": "image",
+      "title": "Men\u2019s Apparel"
+     }
+    ],
+    "ratio": "5:4"
+   },
+   {
+    "_key": "seed2607",
+    "_type": "sectionProductSlider",
+    "colorMode": "light",
+    "source": "auto",
+    "tag": "footwear",
+    "title": "Best Sellers"
+   },
+   {
+    "_key": "seed2608",
+    "_type": "sectionProductSlider",
+    "colorMode": "light",
+    "source": "auto",
+    "tag": "polos",
+    "title": "Best Sellers"
+   },
+   {
+    "_key": "seed2609",
+    "_type": "sectionFullWidth",
+    "colorMode": "dark",
+    "eyebrow": "Now Arriving",
+    "headline": "TW Performance",
+    "image": {
+     "_type": "image",
+     "asset": {
+      "_ref": "image-7752200a6fd3514a40c7fe8584e58559c6d37f06-1250x1666-png",
+      "_type": "reference"
+     }
+    },
+    "lookProducts": [
+     {
+      "_key": "seed2610",
+      "_ref": "product-presidio",
+      "_type": "reference"
+     },
+     {
+      "_key": "seed2611",
+      "_ref": "product-seed-003",
+      "_type": "reference"
+     }
+    ],
+    "mediaKind": "look",
+    "primaryCta": "Shop Collection"
+   },
+   {
+    "_key": "seed2612",
+    "_type": "sectionProductSlider",
+    "collection": {
+     "_ref": "collection-summer-picks",
+     "_type": "reference"
+    },
+    "colorMode": "light",
+    "source": "collection"
+   }
+  ],
+  "slug": {
+   "_type": "slug",
+   "current": "home"
+  },
+  "title": "Homepage"
+ }
+}

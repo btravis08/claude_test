@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "motion/react";
+import { m, useScroll, useTransform } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
 /*
@@ -192,11 +192,11 @@ export function FloatingWords({
 
   return (
     <div ref={ref} data-mode="light" className="relative h-[550vh] w-full bg-surface text-ink">
-      <motion.div
+      <m.div
         style={{ backgroundColor: surface }}
         className="sticky top-0 h-screen w-full overflow-hidden border-y border-line"
       >
-        <motion.div
+        <m.div
           style={{ x, width: left(TRACK_D), willChange: "transform" }}
           className="relative h-full"
         >
@@ -217,8 +217,8 @@ export function FloatingWords({
               {text.copy}
             </p>
           ))}
-        </motion.div>
-      </motion.div>
+        </m.div>
+      </m.div>
     </div>
   );
 }
@@ -256,7 +256,7 @@ function GalleryCard({
         {card.meta.toUpperCase()}
       </p>
       <div className={`relative w-full overflow-hidden bg-surface-2 ${card.aspect}`}>
-        <motion.div
+        <m.div
           style={{ x, left: `-${A}%`, width: `${100 + A * 2}%` }}
           className="absolute inset-y-0"
         >
@@ -268,7 +268,7 @@ function GalleryCard({
             decoding="async"
             className="h-full w-full object-cover"
           />
-        </motion.div>
+        </m.div>
         {card.tone === "tint" && (
           <div className="pointer-events-none absolute inset-0 bg-surface/45 mix-blend-color" aria-hidden />
         )}

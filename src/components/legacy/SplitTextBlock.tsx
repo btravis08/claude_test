@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useInView, useScroll } from "motion/react";
+import { m, useInView, useScroll } from "motion/react";
 import { useRef } from "react";
 
 import { ArrowUpRight } from "@/components/icons";
@@ -28,7 +28,7 @@ const WORD_S = 0.8;
 function Rule({ progress, origin }: { progress: import("motion/react").MotionValue<number>; origin: "top" | "bottom" }) {
   return (
     <div className="flex min-h-0 w-px flex-1 justify-center">
-      <motion.span
+      <m.span
         className="w-px bg-line-2"
         style={{
           height: "100%",
@@ -52,7 +52,7 @@ function Word({
   /* state-driven (initial={false} + animate) — mount animations are
      suppressed under the page transition's presence context */
   return (
-    <motion.span
+    <m.span
       initial={false}
       animate={{
         opacity: visible ? 1 : 0,
@@ -62,7 +62,7 @@ function Word({
       className="inline-block"
     >
       {children}&nbsp;
-    </motion.span>
+    </m.span>
   );
 }
 

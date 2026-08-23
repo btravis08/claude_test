@@ -2,7 +2,7 @@
 
 import {
   cubicBezier,
-  motion,
+  m,
   useScroll,
   useTransform,
   type MotionValue,
@@ -57,7 +57,7 @@ function Plane({
     ease: GLIDE,
   });
   return (
-    <motion.div
+    <m.div
       className="absolute"
       style={{
         left: `${x}%`,
@@ -69,7 +69,7 @@ function Plane({
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={src} alt="" loading="lazy" decoding="async" className="w-full" />
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -99,7 +99,7 @@ export function ProductSwirl({
         <Plane key={plane.src} progress={scrollYProgress} {...plane} />
       ))}
       {/* the flat center card — the campaign photo, then the button */}
-      <motion.div
+      <m.div
         className="absolute left-[40.4%] top-[29.64%] w-[20.45%]"
         style={{ x: centerDrift, y: centerDrift }}
       >
@@ -113,7 +113,7 @@ export function ProductSwirl({
             className="absolute inset-0 h-full w-full object-cover"
           />
         </div>
-      </motion.div>
+      </m.div>
       <div className="absolute inset-0 flex items-center justify-center">
         <a
           href="#"

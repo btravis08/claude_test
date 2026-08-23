@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, m } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
 /*
@@ -140,7 +140,7 @@ export function FullBleedCarousel({
     >
       {/* background: quick crossfade, incoming above outgoing */}
       <AnimatePresence initial={false}>
-        <motion.div
+        <m.div
           key={step}
           initial={{ opacity: 0, scale: 1.04 }}
           animate={{
@@ -163,7 +163,7 @@ export function FullBleedCarousel({
           {/* the comp's scrim is 15% black (rgba(0,0,0,0.15)) — it was
               built at 35%, which sat the imagery darker than designed */}
           <div className="absolute inset-0 bg-black/15" aria-hidden />
-        </motion.div>
+        </m.div>
       </AnimatePresence>
 
       {/* timer: number · filling hairline · total */}
@@ -172,7 +172,7 @@ export function FullBleedCarousel({
       <div className="absolute inset-x-0 top-8 flex items-center justify-center gap-[0.4375rem] text-white">
         <span className="label relative block h-[1em] w-[2ch] overflow-hidden font-medium">
           <AnimatePresence initial={false}>
-            <motion.span
+            <m.span
               key={step}
               initial={{ y: "-110%" }}
               animate={{ y: "0%", transition: { duration: 1.2, ease: DRAMA } }}
@@ -180,11 +180,11 @@ export function FullBleedCarousel({
               className="absolute inset-0"
             >
               {String((((step % deck.length) + deck.length) % deck.length) + 1).padStart(2, "0")}
-            </motion.span>
+            </m.span>
           </AnimatePresence>
         </span>
         <span className="relative h-px w-[5.125rem] bg-white/30">
-          <motion.span
+          <m.span
             key={step}
             initial={{ width: 0 }}
             animate={{ width: "100%" }}
@@ -199,13 +199,13 @@ export function FullBleedCarousel({
 
       {/* headline rail: current centered, neighbors bleeding off-page */}
       <div className="absolute left-1/2 top-[42.2%]">
-        <motion.div
+        <m.div
           animate={{ x: `${-step * SLOT}vw` }}
           transition={{ duration: TRANS_S, ease: DRAMA }}
           className="relative"
         >
           {rail.map((i) => (
-            <motion.p
+            <m.p
               key={i}
               animate={{ opacity: i === step ? 1 : 0.35 }}
               transition={{ duration: TRANS_S * 0.8, ease: DRAMA }}
@@ -228,9 +228,9 @@ export function FullBleedCarousel({
               }}
             >
               {deck[((i % deck.length) + deck.length) % deck.length].title}
-            </motion.p>
+            </m.p>
           ))}
-        </motion.div>
+        </m.div>
       </div>
 
       {/* media well: the incoming image slides through as the
@@ -246,7 +246,7 @@ export function FullBleedCarousel({
         }}
       >
         <AnimatePresence initial={false}>
-          <motion.div
+          <m.div
             key={step}
             initial={{ x: "105%" }}
             animate={{ x: "0%", transition: { duration: TRANS_S, ease: DRAMA } }}
@@ -262,13 +262,13 @@ export function FullBleedCarousel({
               className="h-full w-full object-cover"
               draggable={false}
             />
-          </motion.div>
+          </m.div>
         </AnimatePresence>
       </div>
 
       {/* body copy, bottom left */}
       <AnimatePresence mode="wait" initial={false}>
-        <motion.p
+        <m.p
           key={step}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, transition: { duration: 0.8, delay: TRANS_S * 0.5 } }}
@@ -276,7 +276,7 @@ export function FullBleedCarousel({
           className="absolute bottom-8 left-8 w-72 text-body-sm text-white/90"
         >
           {slide.body}
-        </motion.p>
+        </m.p>
       </AnimatePresence>
     </section>
   );

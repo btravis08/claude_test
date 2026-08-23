@@ -1,6 +1,6 @@
 "use client";
 
-import { animate, motion, useMotionValue, useReducedMotion, useTransform } from "motion/react";
+import { animate, m, useMotionValue, useReducedMotion, useTransform } from "motion/react";
 import { useLenis } from "lenis/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -59,7 +59,7 @@ export function LegacyHero({
   const lenis = useLenis();
   const leftRef = useRef<HTMLParagraphElement>(null);
   const rightRef = useRef<HTMLParagraphElement>(null);
-  const [m, setM] = useState<Metrics | null>(null);
+  const [metrics, setMetrics] = useState<Metrics | null>(null);
   const [inverted, setInverted] = useState<{ l: boolean; r: boolean }>({
     l: false,
     r: false,
@@ -144,7 +144,7 @@ export function LegacyHero({
       return () => clearTimeout(t);
     }
     if (phase === "split") {
-      setM(measure());
+      setMetrics(measure());
       const drive = animate(p, 1, { duration: SPLIT_S, ease: DRAMA });
       const t = setTimeout(() => setPhase("done"), SPLIT_S * 1000 + 200);
       return () => {
@@ -156,12 +156,12 @@ export function LegacyHero({
   }, [phase, measure, p, reduced]);
 
   /* ---- the coupled geometry, evaluated per frame ---- */
-  const filmW = useTransform(() => (m ? m.vw * p.get() : 0));
+  const filmW = useTransform(() => (metrics ? metrics.vw * p.get() : 0));
   /* 4:3 while small (the comp's ratio), guaranteed full cover at the
      end regardless of viewport aspect */
   const filmH = useTransform(() => {
-    if (!m) return 0;
-    return Math.max(m.vw * p.get() * 0.75, m.vh * p.get());
+    if (!metrics) return 0;
+    return Math.max(metrics.vw * p.get() * 0.75, metrics.vh * p.get());
   });
 
   /* A word's center offset: pushed ahead of the film's edge, pinned
@@ -176,28 +176,28 @@ export function LegacyHero({
     return dir * Math.min(Math.max(pushed, Math.abs(initial)), max);
   };
   const xL = useTransform(() => {
-    if (!m) return 0;
-    return offsetFor(m.halfL, m.offL0, -1, m.vw) - m.halfL;
+    if (!metrics) return 0;
+    return offsetFor(metrics.halfL, metrics.offL0, -1, metrics.vw) - metrics.halfL;
   });
   const xR = useTransform(() => {
-    if (!m) return 0;
-    return offsetFor(m.halfR, m.offR0, 1, m.vw) - m.halfR;
+    if (!metrics) return 0;
+    return offsetFor(metrics.halfR, metrics.offR0, 1, metrics.vw) - metrics.halfR;
   });
 
   /* Invert each word the moment the film's edge crosses its center. */
   useEffect(() => {
     const un = filmW.on("change", (w) => {
-      if (!m) return;
+      if (!metrics) return;
       const halfFilm = w / 2;
-      const overL = halfFilm >= Math.abs(offsetFor(m.halfL, m.offL0, -1, m.vw));
-      const overR = halfFilm >= offsetFor(m.halfR, m.offR0, 1, m.vw);
+      const overL = halfFilm >= Math.abs(offsetFor(metrics.halfL, metrics.offL0, -1, metrics.vw));
+      const overR = halfFilm >= offsetFor(metrics.halfR, metrics.offR0, 1, metrics.vw);
       setInverted((prev) =>
         prev.l === overL && prev.r === overR ? prev : { l: overL, r: overR },
       );
     });
     return un;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [m]);
+  }, [metrics]);
 
   const splitting = phase === "split" || phase === "done";
   const wordClass =
@@ -209,7 +209,7 @@ export function LegacyHero({
       className="relative h-screen w-full overflow-hidden bg-surface"
     >
       {/* The film, growing from between the words to full bleed. */}
-      <motion.div
+      <m.div
         className="absolute left-1/2 top-1/2 overflow-hidden"
         style={{
           width: filmW,
@@ -225,9 +225,9 @@ export function LegacyHero({
           className="h-full w-full object-cover"
         />
         <div className="pointer-events-none absolute inset-0 bg-black/20" />
-      </motion.div>
+      </m.div>
 
-      {reduced || (phase === "done" && !m) ? (
+      {reduced || (phase === "done" && !metrics) ? (
         /* Resting state without a measured run (reduced motion). */
         <>
           <p className={`${wordClass} absolute left-6 top-1/2 -translate-y-1/2 text-white`}>
@@ -237,10 +237,10 @@ export function LegacyHero({
             {right}
           </p>
         </>
-      ) : splitting && m ? (
+      ) : splitting && metrics ? (
         /* Split: each word absolutely centered, pushed by the film. */
         <>
-          <motion.p
+          <m.p
             className={`${wordClass} absolute left-1/2 top-1/2`}
             style={{
               x: xL,
@@ -249,8 +249,8 @@ export function LegacyHero({
             }}
           >
             {left}
-          </motion.p>
-          <motion.p
+          </m.p>
+          <m.p
             className={`${wordClass} absolute left-1/2 top-1/2`}
             style={{
               x: xR,
@@ -259,12 +259,12 @@ export function LegacyHero({
             }}
           >
             {right}
-          </motion.p>
+          </m.p>
         </>
       ) : (
         /* Enter/hold: the phrase rises to center as one line. */
         <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 px-6">
-          <motion.div
+          <m.div
             initial={false}
             animate={{ y: risen ? 0 : "14vh" }}
             transition={{ duration: 2, ease: DRAMA }}
@@ -276,7 +276,7 @@ export function LegacyHero({
             <p ref={rightRef} className={`${wordClass} text-ink`}>
               {right}
             </p>
-          </motion.div>
+          </m.div>
         </div>
       )}
     </section>

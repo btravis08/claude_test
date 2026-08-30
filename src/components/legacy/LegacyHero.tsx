@@ -4,6 +4,14 @@ import { animate, m, useMotionValue, useReducedMotion, useTransform } from "moti
 import { useLenis } from "lenis/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { sanitySrcSet } from "@/sanity/lib/image";
+
+/* the static fallback (no CMS override) gets a hand-generated
+   srcSet — sanitySrcSet only covers cdn.sanity.io URLs */
+const FALLBACK_IMAGE = "/figma/legacy/hero.jpg";
+const FALLBACK_SRCSET =
+  "/figma/legacy/hero-480.jpg 480w, /figma/legacy/hero-900.jpg 900w, /figma/legacy/hero.jpg 1200w";
+
 /*
   Legacy page introduction (Figma 33982:60407) — a time-driven title
   sequence with scroll locked until it resolves:
@@ -43,7 +51,7 @@ interface Metrics {
 export function LegacyHero({
   left = "A New",
   right = "Legacy",
-  image = "/figma/legacy/hero.jpg",
+  image = FALLBACK_IMAGE,
 }: {
   left?: string;
   right?: string;
@@ -59,6 +67,7 @@ export function LegacyHero({
   const lenis = useLenis();
   const leftRef = useRef<HTMLParagraphElement>(null);
   const rightRef = useRef<HTMLParagraphElement>(null);
+  const filmImgRef = useRef<HTMLImageElement>(null);
   const [metrics, setMetrics] = useState<Metrics | null>(null);
   const [inverted, setInverted] = useState<{ l: boolean; r: boolean }>({
     l: false,
@@ -76,11 +85,12 @@ export function LegacyHero({
   }, [reduced]);
 
   /* the film must be decoded before the split — a load-pop mid-
-     sequence shifts everything */
+     sequence shifts everything. Decoding the actual rendered <img>
+     (rather than a synthetic Image with the raw source) reuses
+     whatever responsive candidate the browser already fetched for it
+     instead of forcing a second, full-resolution download. */
   useEffect(() => {
-    const img = new Image();
-    img.src = image;
-    img.decode?.().catch(() => {});
+    filmImgRef.current?.decode?.().catch(() => {});
   }, [image]);
 
   /* Reloading mid-page restores a deep scroll position and would run
@@ -220,7 +230,11 @@ export function LegacyHero({
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
+          ref={filmImgRef}
           src={image}
+          srcSet={sanitySrcSet(image) ?? (image === FALLBACK_IMAGE ? FALLBACK_SRCSET : undefined)}
+          sizes="100vw"
+          decoding="async"
           alt="Sun Day Red campaign"
           className="h-full w-full object-cover"
         />

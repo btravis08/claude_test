@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-29T14:21:33.217Z",
+  "generatedAt": "2026-08-30T14:25:43.359Z",
   "sections": {
     "hero": {
       "comps": {},
@@ -391,16 +391,16 @@
     "legacy-hero": {
       "comps": {
         "desktop": {
-          "pixel": 37,
+          "pixel": 37.1,
           "layout": 51.8
         },
         "tablet": {
-          "pixel": 33.7,
-          "layout": 51.6
+          "pixel": 33.8,
+          "layout": 51.7
         },
         "mobile": {
-          "pixel": 63.4,
-          "layout": 53.1
+          "pixel": 63.5,
+          "layout": 53
         }
       },
       "tokens": {

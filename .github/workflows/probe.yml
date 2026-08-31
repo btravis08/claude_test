@@ -11,24 +11,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Inspect presidio PDP hero image (preload + LCP img + CDN asset)
+      - name: Compare presidio LCP asset weight across widths + a normal product baseline
         run: |
-          echo "=== fetching production HTML ==="
-          curl -sS "https://sundayred.vercel.app/products/presidio" -o page.html
-          wc -c page.html
+          P="https://cdn.sanity.io/images/alsdve2t/production/9aac221416856796ad4c16b77d946418a3b14928-1250x710.png"
+          echo "=== presidio source asset, w=800&auto=format (what the eager LCP slide serves) ==="
+          curl -sS -o /dev/null -w "http_code=%{http_code} size=%{size_download} total_time=%{time_total} ttfb=%{time_starttransfer} content_type=%{content_type}\n" "$P?w=800&auto=format"
+          echo "=== presidio source asset, w=1200&auto=format (what the lazy slides serve) ==="
+          curl -sS -o /dev/null -w "http_code=%{http_code} size=%{size_download} total_time=%{time_total} ttfb=%{time_starttransfer} content_type=%{content_type}\n" "$P?w=1200&auto=format"
+          echo "=== presidio source asset, RAW (no format/width params) ==="
+          curl -sS -o /dev/null -w "http_code=%{http_code} size=%{size_download} total_time=%{time_total} ttfb=%{time_starttransfer} content_type=%{content_type}\n" "$P"
           echo
-          echo "=== preload link(s) for image ==="
-          grep -oE '<link rel="preload"[^>]*as="image"[^>]*>' page.html || echo "NO IMAGE PRELOAD FOUND"
-          echo
-          echo "=== first no-scrollbar hero img tag ==="
-          grep -oE '<img[^>]*class="absolute left-0 top-1/2[^>]*>' page.html | head -3
-          echo
-          echo "=== extracting first hero img src ==="
-          SRC=$(grep -oE '<img[^>]*class="absolute left-0 top-1/2[^>]*src="[^"]*"' page.html | head -1 | grep -oE 'src="[^"]*"' | sed 's/src="//;s/"$//')
-          echo "SRC=$SRC"
+          echo "=== normal product page for baseline (first PLP product) ==="
+          curl -sS "https://sundayred.vercel.app/collections/shop-all" -o plp.html
+          SRC=$(grep -oE 'https://cdn\.sanity\.io/images/alsdve2t/production/[a-zA-Z0-9]+-[0-9]+x[0-9]+\.(jpg|png)\?w=800[^"&]*' plp.html | head -1)
+          echo "baseline SRC=$SRC"
           if [ -n "$SRC" ]; then
-            echo "=== HEAD request timing for that asset ==="
-            curl -sS -o /dev/null -w "http_code=%{http_code} size=%{size_download} total_time=%{time_total} ttfb=%{time_starttransfer}\n" "$SRC"
+            curl -sS -o /dev/null -w "http_code=%{http_code} size=%{size_download} total_time=%{time_total} ttfb=%{time_starttransfer} content_type=%{content_type}\n" "$SRC"
           fi
       - name: Commit (no-op, log-only probe)
         run: echo "probe is log-only, nothing to commit"

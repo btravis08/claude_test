@@ -11,26 +11,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Fetch pre-overwrite singletons from Sanity history API
+      - name: Inspect presidio PDP hero image (preload + LCP img + CDN asset)
         run: |
-          mkdir -p design/restore
-          # page-home / navigation / siteSettings as they were before the
-          # 2026-08-04T22:43Z sample-pack overwrite (public dataset read)
-          code=$(curl -sS -o design/restore/singletons-pre-pack.json -w "%{http_code}" \
-            "https://alsdve2t.api.sanity.io/v2026-07-01/data/history/production/documents/page-home,navigation,siteSettings?time=2026-08-04T20:00:00Z")
-          echo "HTTP $code"
-          wc -c design/restore/singletons-pre-pack.json
-          head -c 600 design/restore/singletons-pre-pack.json; echo
-          test "$code" = "200"
-          echo "=== BASE64 START ==="
-          base64 -w0 design/restore/singletons-pre-pack.json
+          echo "=== fetching production HTML ==="
+          curl -sS "https://sundayred.vercel.app/products/presidio" -o page.html
+          wc -c page.html
           echo
-          echo "=== BASE64 END ==="
-      - name: Commit
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add design/restore
-          git diff --cached --quiet && echo "No changes" && exit 0
-          git commit -m "Restore capture: pre-sample-pack singletons from Sanity history"
-          git push
+          echo "=== preload link(s) for image ==="
+          grep -oE '<link rel="preload"[^>]*as="image"[^>]*>' page.html || echo "NO IMAGE PRELOAD FOUND"
+          echo
+          echo "=== first no-scrollbar hero img tag ==="
+          grep -oE '<img[^>]*class="absolute left-0 top-1/2[^>]*>' page.html | head -3
+          echo
+          echo "=== extracting first hero img src ==="
+          SRC=$(grep -oE '<img[^>]*class="absolute left-0 top-1/2[^>]*src="[^"]*"' page.html | head -1 | grep -oE 'src="[^"]*"' | sed 's/src="//;s/"$//')
+          echo "SRC=$SRC"
+          if [ -n "$SRC" ]; then
+            echo "=== HEAD request timing for that asset ==="
+            curl -sS -o /dev/null -w "http_code=%{http_code} size=%{size_download} total_time=%{time_total} ttfb=%{time_starttransfer}\n" "$SRC"
+          fi
+      - name: Commit (no-op, log-only probe)
+        run: echo "probe is log-only, nothing to commit"

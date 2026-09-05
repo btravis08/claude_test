@@ -11,6 +11,7 @@ import { NavTextLink } from "@/components/NavTextLink";
 import { SmartLink } from "@/components/SmartLink";
 import type { ProductCardData } from "@/components/home/ProductCard";
 import { activeOnly, productsForCollection, toCards } from "@/components/SectionRenderer";
+import { initialCardImage } from "@/sanity/lib/cards";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { urlFor } from "@/sanity/lib/image";
 import { seoMeta } from "@/sanity/lib/seo";
@@ -212,8 +213,13 @@ export default async function CollectionPage({
   const gridItems = collection ? items : items.length ? items : fallbackItems;
   /* the grid's opening row is above the fold and holds the LCP
      candidate (matches CollectionGrid's priority={true} on the first
-     4 cards) — preload the first card's already-resolved image URL */
-  const firstCardImage = gridItems[0]?.card.image;
+     4 cards) — preload the image the card actually renders first.
+     card.image is the product-level thumb, but ProductCard shows the
+     default colorway's own image whenever the product has variants
+     (true for the whole real catalog), so preloading card.image alone
+     fetched a byte-identical-looking but entirely unused asset while
+     the real LCP image got no preload boost at all. */
+  const firstCardImage = gridItems[0] && initialCardImage(gridItems[0].card);
   if (firstCardImage) {
     preload(firstCardImage, { as: "image", fetchPriority: "high" });
   }

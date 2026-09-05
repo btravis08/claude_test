@@ -29,6 +29,15 @@ export function cardImg(
   }
 }
 
+/* The image a card actually shows before any hover/swatch interaction
+   — ProductCard renders variants[defaultVariant]?.image over card.image
+   whenever the product has colorways, so callers that need to know the
+   real initial shot (e.g. an LCP preload hint) must mirror that lookup
+   rather than assuming card.image, which variant products never show. */
+export function initialCardImage(card: ProductCardData): string | undefined {
+  return card.variants?.[card.defaultVariant ?? 0]?.image ?? card.image;
+}
+
 /* Each color variant renders as its own card: the card defaults to
    that colorway but keeps every sibling variant switchable via the
    swatches. Products without variants yield a single card. Prices run

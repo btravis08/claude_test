@@ -13,7 +13,7 @@ import type { ProductCardData } from "@/components/home/ProductCard";
 import { activeOnly, productsForCollection, toCards } from "@/components/SectionRenderer";
 import { initialCardImage } from "@/sanity/lib/cards";
 import { sanityFetch } from "@/sanity/lib/fetch";
-import { urlFor } from "@/sanity/lib/image";
+import { sanitySrcSet, urlFor } from "@/sanity/lib/image";
 import { seoMeta } from "@/sanity/lib/seo";
 import {
   automaticDiscountsQuery,
@@ -221,7 +221,15 @@ export default async function CollectionPage({
      the real LCP image got no preload boost at all. */
   const firstCardImage = gridItems[0] && initialCardImage(gridItems[0].card);
   if (firstCardImage) {
-    preload(firstCardImage, { as: "image", fetchPriority: "high" });
+    /* imageSrcSet/imageSizes mirror CollectionGrid's CARD_SIZES so the
+       preload fetches the exact candidate the real <img> picks,
+       instead of always warming the widest (800w) source */
+    preload(firstCardImage, {
+      as: "image",
+      fetchPriority: "high",
+      imageSrcSet: sanitySrcSet(firstCardImage),
+      imageSizes: "(min-width: 1024px) 25vw, 50vw",
+    });
   }
   const stories: StoryData[] = storyDocs.length
     ? storyDocs.map((story) => ({

@@ -550,9 +550,15 @@ function CollectionGrid({
   let p = 0;
   let s = 0;
   let side = 0; // alternation counter for auto-placed stories
+  /* matches the grid's own grid-cols-2 lg:grid-cols-4 — without this
+     every card image requests its full 800w source regardless of the
+     ~50vw (mobile) / ~25vw (desktop) slot it actually renders into */
+  const CARD_SIZES = "(min-width: 1024px) 25vw, 50vw";
   const pushProducts = (count: number, priority = false) => {
     for (const card of cards.slice(p, p + count)) {
-      cells.push(<ProductCard key={card._key} product={card} priority={priority} />);
+      cells.push(
+        <ProductCard key={card._key} product={card} priority={priority} sizes={CARD_SIZES} />,
+      );
     }
     p += count;
   };

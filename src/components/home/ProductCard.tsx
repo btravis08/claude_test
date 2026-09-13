@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { MEDIA_EASE } from "@/components/home/AnimatedMedia";
 import { useTouch } from "@/lib/useTouch";
+import { sanitySrcSet } from "@/sanity/lib/image";
 
 export interface ProductVariantData {
   name?: string;
@@ -61,12 +62,17 @@ const EASE_CSS = "cubic-bezier(0.22,1,0.36,1)";
 export function ProductCard({
   product,
   priority = false,
+  sizes,
 }: {
   product: ProductCardData;
   /* above-the-fold grid card (e.g. the PLP's opening row): eager,
      high-priority image fetch, and the well never fades in — it must
      be LCP-honest, matching AnimatedMedia/ProductHero */
   priority?: boolean;
+  /* the img sizes attribute — pass the caller's actual card width
+     (e.g. the collection grid's column fraction) so the responsive
+     srcset below picks a size that fits instead of always the widest */
+  sizes?: string;
 }) {
   const variants = product.variants ?? [];
   const [selected, setSelected] = useState(product.defaultVariant ?? 0);
@@ -126,6 +132,8 @@ export function ProductCard({
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={wellImage}
+        srcSet={sanitySrcSet(wellImage)}
+        sizes={sizes}
         alt={product.title}
         loading={priority ? "eager" : "lazy"}
         fetchPriority={priority ? "high" : undefined}
